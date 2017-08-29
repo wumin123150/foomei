@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:cache="http://www.springframework.org/schema/cache"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+		http://www.springframework.org/schema/cache classpath:org/springframework/cache/config/spring-cache-4.0.xsd"
+	default-lazy-init="true">
+
+	<description>混合Cache配置文件</description>
+
+	<cache:annotation-driven />
+
+	<!-- dummy cacheManager -->
+	<bean id="cacheManager" class="org.springframework.cache.support.CompositeCacheManager">
+		<property name="cacheManagers">
+			<list>
+				<ref bean="simpleCacheManager" />
+			</list>
+		</property>
+		<property name="fallbackToNoOpCache" value="true" />
+	</bean>
+
+	<bean id="simpleCacheManager" class="org.springframework.cache.support.SimpleCacheManager">
+		<property name="caches">
+			<set>
+				<bean class="org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean" p:name="default" />
+			</set>
+		</property>
+	</bean>
+</beans>

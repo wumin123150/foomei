@@ -1,0 +1,15 @@
+.col-sm-3b {
+	position: relative;
+  	min-height: 1px;
+  	padding-left: 12px;
+  	padding-right: 12px;
+}
+@media (min-width: 768px) {
+	.col-sm-3b {
+		float: left;
+		width: 12.5%;
+	}
+	.col-sm-offset-3b {
+		margin-left: 12.5%;
+	}
+}

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.foomei</groupId>
+	<artifactId>foomei</artifactId>
+	<version>2.1.0-GA</version>
+	<name>Foomei Framework Project</name>
+	<packaging>pom</packaging>
+
+	<description>This is a Spring Framework based JavaEE application reference architecture. </description>
+	<url>http://www.github.com/wumin123150/wumin</url>
+	<inceptionYear>2014-2017</inceptionYear>
+	<organization>
+		<name>Foomei</name>
+		<url>http://www.foomei.com</url>
+	</organization>
+
+	<developers>
+		<developer>
+			<id>walker</id>
+			<name>Wu Min</name>
+			<email>84760025@qq.com</email>
+			<organization>Foomei</organization>
+			<roles>
+				<role>Project leader</role>
+			</roles>
+			<timezone>+8</timezone>
+		</developer>
+	</developers>
+
+	<licenses>
+		<license>
+			<name>Apache License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0</url>
+		</license>
+	</licenses>
+
+	<modules>
+		<module>parent</module>
+		<module>common</module>
+		<module>core</module>
+  	</modules>
+	
+    <issueManagement>
+        <system>Github</system>
+        <url>https://github.com/wumin123150/wumin/issues</url>
+    </issueManagement>
+
+    <scm>
+        <url>https://github.com/wumin123150/wumin</url>
+        <connection>scm:git:git://github.com/wumin123150/wumin.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com:wumin123150/wumin.git</developerConnection>
+    </scm>
+
+</project>
