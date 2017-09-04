@@ -9,9 +9,9 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import com.foomei.common.web.ThreadContext;
 import com.google.common.base.Charsets;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,7 +24,6 @@ import com.foomei.common.security.DigestUtil;
 import com.foomei.common.service.impl.JpaServiceImpl;
 import com.foomei.common.text.EncodeUtil;
 import com.foomei.core.dao.jpa.UserDao;
-import com.foomei.core.dto.ShiroUser;
 import com.foomei.core.entity.Role;
 import com.foomei.core.entity.User;
 import com.foomei.core.entity.UserGroup;
@@ -92,7 +91,7 @@ public class UserService extends JpaServiceImpl<UserDao, User, Long>{
 	@Transactional(readOnly = false)
 	public User save(User user) {
 		if (isSupervisor(user)) {
-			logger.warn("操作员{}尝试修改超级管理员用户", getCurrentUserName());
+			logger.warn("操作员{}尝试修改超级管理员用户", ThreadContext.getUserName());
 			throw new ServiceException("不能修改超级管理员用户");
 		}
 
@@ -257,14 +256,6 @@ public class UserService extends JpaServiceImpl<UserDao, User, Long>{
 
 		byte[] hashPassword = DigestUtil.sha1(user.getPlainPassword().getBytes(Charsets.UTF_8), salt, HASH_INTERATIONS);
 		user.setPassword(EncodeUtil.encodeHex(hashPassword));
-	}
-
-	/**
-	 * 取出Shiro中的当前用户LoginName.
-	 */
-	private String getCurrentUserName() {
-		ShiroUser user = (ShiroUser) SecurityUtils.getSubject().getPrincipal();
-		return user.loginName;
 	}
 
 	/**

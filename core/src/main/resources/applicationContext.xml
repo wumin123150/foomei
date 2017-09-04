@@ -111,7 +111,7 @@
 	</bean>
 
 	<!-- production环境 -->
-	<beans profile="production">
+	<beans profile="prod">
 		<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
 			<property name="driverClassName" value="${jdbc.driver}" />
 			<property name="url" value="${jdbc.url}" />
@@ -147,7 +147,7 @@
 	</beans>
 
 	<!-- local development环境 -->
-	<beans profile="development">
+	<beans profile="dev">
 		<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
 			<property name="driverClassName" value="${jdbc.driver}" />
 			<property name="url" value="${jdbc.url}" />

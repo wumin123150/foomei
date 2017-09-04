@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.foomei.core.dto.ConfigDto;
-import com.foomei.core.dto.ConfigList;
+import com.foomei.core.dto.ConfigListDto;
 import com.foomei.core.entity.Config;
 import com.foomei.core.service.ConfigService;
 
@@ -128,7 +128,7 @@ public class ConfigController {
     @ApiOperation(value = "参数修改", httpMethod = "POST")
     @RequiresRoles("admin")
     @RequestMapping(value = "updateAll", method = RequestMethod.POST)
-    public String updateAll(ConfigList configList, Model model, RedirectAttributes redirectAttributes) {
+    public String updateAll(ConfigListDto configList, Model model, RedirectAttributes redirectAttributes) {
         List<ConfigDto> configs = configList.getConfigs();
         for (ConfigDto configDto : configs) {
             Config config = configService.get(configDto.getId());
@@ -139,7 +139,7 @@ public class ConfigController {
         }
 
         redirectAttributes.addFlashAttribute("message", "保存参数成功");
-        return "redirect:/admin/configView";
+        return "redirect:/admin/config/configView";
     }
 
     @ApiOperation(value = "系统配置删除", httpMethod = "GET")

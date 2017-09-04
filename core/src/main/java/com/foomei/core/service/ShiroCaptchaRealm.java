@@ -6,6 +6,8 @@ import java.util.Set;
 
 import javax.annotation.PostConstruct;
 
+import com.foomei.common.entity.CoreUser;
+import com.foomei.common.mapper.BeanMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AccountException;
@@ -26,7 +28,6 @@ import com.foomei.common.security.shiro.CaptchaException;
 import com.foomei.common.security.shiro.CaptchaToken;
 import com.foomei.common.security.shiro.InactiveAccountException;
 import com.foomei.common.security.shiro.SkipCredentialsMatcher;
-import com.foomei.core.dto.ShiroUser;
 import com.foomei.core.entity.Role;
 import com.foomei.core.entity.User;
 import com.foomei.core.entity.UserGroup;
@@ -75,7 +76,7 @@ public class ShiroCaptchaRealm extends AuthorizingRealm {
 				}
 			}
 			
-			return new SimpleAuthenticationInfo(new ShiroUser(user.getId(), user.getLoginName(), user.getName()), null, getName());
+			return new SimpleAuthenticationInfo(BeanMapper.map(user, CoreUser.class), null, getName());
 		} else {
 			throw new UnknownAccountException("No account found");
 		}
@@ -86,8 +87,8 @@ public class ShiroCaptchaRealm extends AuthorizingRealm {
 	 */
 	@Override
 	protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
-		ShiroUser shiroUser = (ShiroUser) principals.getPrimaryPrincipal();
-		User user = userService.getByLoginName(shiroUser.loginName);
+		CoreUser coreUser = (CoreUser) principals.getPrimaryPrincipal();
+		User user = userService.getByLoginName(coreUser.getLoginName());
 
 		Set<Role> roles = Sets.newTreeSet(new RoleComparator());
 		for (UserGroup group : user.getGroupList()) {

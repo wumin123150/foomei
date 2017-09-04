@@ -341,13 +341,13 @@
 	
 	<profiles>
 		<profile>
-			<id>debug</id>
+			<id>dev</id>
 			<activation>
 				<activeByDefault>true</activeByDefault>
 			</activation>
 			<properties>
-				<env>debug</env>
-				<profile.active>development</profile.active>
+				<env>dev</env>
+				<profile.active>dev</profile.active>
 			</properties>
 		</profile>
 		<profile>
@@ -358,10 +358,10 @@
 			</properties>
 		</profile>
 		<profile>
-			<id>release</id>
+			<id>prod</id>
 			<properties>
-				<env>release</env>
-				<profile.active>production</profile.active>
+				<env>prod</env>
+				<profile.active>prod</profile.active>
 			</properties>
 		</profile>
 	</profiles>
