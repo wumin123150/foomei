@@ -47,6 +47,10 @@
 			<artifactId>shiro-web</artifactId>
 			<optional>true</optional>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.shiro</groupId>
+			<artifactId>shiro-ehcache</artifactId>
+		</dependency>
 		<!-- Security end -->
 
 		<!-- Web begin -->
@@ -71,6 +75,12 @@
 			<optional>true</optional>
 		</dependency>
 		<!-- Wed end -->
+		
+		<!-- ehcache -->
+		<dependency>
+			<groupId>net.sf.ehcache</groupId>
+			<artifactId>ehcache-core</artifactId>
+		</dependency>
 
 		<!-- httpclient -->
 		<dependency>
