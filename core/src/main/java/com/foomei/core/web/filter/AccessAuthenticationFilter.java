@@ -5,6 +5,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.foomei.common.entity.CoreUser;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.subject.Subject;
@@ -12,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.foomei.common.net.CookieUtil;
 import com.foomei.common.security.shiro.AccessToken;
-import com.foomei.core.dto.ShiroUser;
 import com.foomei.core.service.TokenService;
 
 /**
@@ -44,7 +44,7 @@ public class AccessAuthenticationFilter extends PasswordAuthenticationFilter {
     }
 
     public void renderSuccess(Subject subject, ServletRequest request, ServletResponse response, String... headers) {
-        ShiroUser user = (ShiroUser) subject.getPrincipal();
+        CoreUser user = (CoreUser) subject.getPrincipal();
         String authToken = tokenService.apply(user.getId(), null, null);
         CookieUtil.cancelCookie((HttpServletRequest)request, (HttpServletResponse)response, "token", null);
         CookieUtil.addCookie((HttpServletRequest)request, (HttpServletResponse)response, "token", authToken, -1, null);

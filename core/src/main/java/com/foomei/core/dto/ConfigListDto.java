@@ -2,7 +2,7 @@ package com.foomei.core.dto;
 
 import java.util.List;
 
-public class ConfigList {
+public class ConfigListDto {
 
     private List<ConfigDto> configs;
 

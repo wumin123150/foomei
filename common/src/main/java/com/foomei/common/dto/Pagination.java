@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.springframework.data.domain.Sort;
 
-public class PageDto<T> {
+public class Pagination<T> {
 
     private int page;
     private int size;

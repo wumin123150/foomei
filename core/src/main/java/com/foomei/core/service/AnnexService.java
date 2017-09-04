@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.foomei.common.service.impl.JpaServiceImpl;
 import com.foomei.common.web.FileRepository;
@@ -82,10 +81,10 @@ public class AnnexService extends JpaServiceImpl<AnnexDao, Annex, String> {
     }
 
     @Transactional(readOnly = false)
-    public Annex save(MultipartFile file, String path, String objectId, String objectType) throws IOException {
-        String fileName = file.getOriginalFilename();
+    public Annex save(BufferedImage image, String fileName, String path, String objectId, String objectType)
+            throws IOException {
         String ext = FilenameUtils.getExtension(fileName).toLowerCase(Locale.ENGLISH);
-        String filePath = fileRepository.storeByPath(file, path);
+        String filePath = fileRepository.storeByExt(image, path, ext);
 
         Annex entity = new Annex();
         entity.setObjectId(objectId);
@@ -101,33 +100,16 @@ public class AnnexService extends JpaServiceImpl<AnnexDao, Annex, String> {
     }
 
     @Transactional(readOnly = false)
-    public Annex save(BufferedImage image, String fileName, String ext, String path, String objectId, String objectType)
+    public Annex save(byte[] data, String fileName, String path, String objectId, String objectType)
             throws IOException {
-        String filePath = fileRepository.storeByExt(image, path, ext);
-
-        Annex entity = new Annex();
-        entity.setObjectId(objectId);
-        entity.setObjectType(objectType);
-        entity.setPath(filePath);
-        entity.setName(fileName == null ? FilenameUtils.getName(filePath) : fileName);
-        entity.setType(ext);
-        entity.setCreateTime(new Date());
-        entity.setCreator(CoreThreadContext.getUserId());
-        save(entity);
-
-        return entity;
-    }
-
-    @Transactional(readOnly = false)
-    public Annex save(byte[] data, String fileName, String ext, String path, String objectId, String objectType)
-            throws IOException {
+        String ext = FilenameUtils.getExtension(fileName).toLowerCase(Locale.ENGLISH);
         String filePath = fileRepository.storeByExt(data, path, ext);
 
         Annex entity = new Annex();
         entity.setObjectId(objectId);
         entity.setObjectType(objectType);
         entity.setPath(filePath);
-        entity.setName(fileName == null ? FilenameUtils.getName(filePath) : fileName);
+        entity.setName(fileName);
         entity.setType(ext);
         entity.setCreateTime(new Date());
         entity.setCreator(CoreThreadContext.getUserId());

@@ -8,6 +8,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.foomei.common.entity.CoreUser;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AccountException;
@@ -36,7 +37,6 @@ import com.foomei.common.net.RequestUtil;
 import com.foomei.common.security.shiro.CaptchaException;
 import com.foomei.common.security.shiro.InactiveAccountException;
 import com.foomei.common.web.Servlets;
-import com.foomei.core.dto.ShiroUser;
 import com.foomei.core.entity.Log;
 import com.foomei.core.service.LogService;
 import com.foomei.core.service.UserService;
@@ -107,7 +107,7 @@ public class PasswordAuthenticationFilter extends FormAuthenticationFilter {
 	 */
 	public boolean onLoginSuccess(AuthenticationToken token, Subject subject, ServletRequest request,
 			ServletResponse response) throws Exception {
-		ShiroUser user = (ShiroUser) subject.getPrincipal();
+		CoreUser user = (CoreUser) subject.getPrincipal();
 		userService.loginSuccess(user.getLoginName(), Servlets.getIpAddress(WebUtils.toHttp(request)));
 
 		log((HttpServletRequest) request, getUsername(request), "success");

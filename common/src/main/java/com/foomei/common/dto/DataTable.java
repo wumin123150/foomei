@@ -4,29 +4,29 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 
-public class DataTableDto<T> {
+public class DataTable<T> {
 
 	private int sEcho;
 	private long iTotalRecords;
 	private long iTotalDisplayRecords;
 	private List<T> entities;
 
-	public DataTableDto() {
+	public DataTable() {
 		
 	}
 	
-	public DataTableDto(int sEcho) {
+	public DataTable(int sEcho) {
 		this.sEcho = sEcho;
 	}
 	
-	public DataTableDto(int sEcho, Page<T> page) {
+	public DataTable(int sEcho, Page<T> page) {
 		this.sEcho = sEcho;
 		this.iTotalDisplayRecords = page.getTotalElements();
 		this.iTotalRecords = page.getTotalElements();
 		this.entities = page.getContent();
 	}
 	
-	public DataTableDto(int sEcho, List<T> entities, long totalElements) {
+	public DataTable(int sEcho, List<T> entities, long totalElements) {
 		this.sEcho = sEcho;
 		this.iTotalDisplayRecords = totalElements;
 		this.iTotalRecords = totalElements;

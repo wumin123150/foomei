@@ -5,6 +5,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.foomei.common.entity.CoreUser;
 import org.apache.shiro.session.SessionException;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.filter.authc.LogoutFilter;
@@ -16,7 +17,6 @@ import com.foomei.common.dto.ResponseResult;
 import com.foomei.common.mapper.JsonMapper;
 import com.foomei.common.net.RequestUtil;
 import com.foomei.common.web.Servlets;
-import com.foomei.core.dto.ShiroUser;
 import com.foomei.core.service.TokenService;
 
 public class ShiroLogoutFilter extends LogoutFilter {
@@ -30,7 +30,7 @@ public class ShiroLogoutFilter extends LogoutFilter {
 	
 	protected boolean preHandle(ServletRequest request, ServletResponse response) throws Exception {
 		Subject subject = getSubject(request, response);
-		ShiroUser user = (ShiroUser) subject.getPrincipal();
+		CoreUser user = (CoreUser) subject.getPrincipal();
 		String redirectUrl = getRedirectUrl(request, response, subject);
 		try {
 			subject.logout();
@@ -39,7 +39,7 @@ public class ShiroLogoutFilter extends LogoutFilter {
 		}
 		if (RequestUtil.isAjaxRequest((HttpServletRequest) request)) {
 			if(user != null) {
-				tokenService.disable(user.id);
+				tokenService.disable(user.getId());
 			}
 			renderJson(response, ResponseResult.SUCCEED);
 		} else {

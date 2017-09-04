@@ -89,6 +89,11 @@
 			<optional>true</optional>
 		</dependency>
 
+		<dependency>
+			<groupId>com.baidu.unbiz</groupId>
+			<artifactId>fluent-validator</artifactId>
+		</dependency>
+
 		<!-- UTILS begin -->
 		<dependency>
 			<groupId>com.google.guava</groupId>
@@ -131,10 +136,10 @@
 			<optional>true</optional>
 		</dependency>
 		
-   	<dependency>
-	    <groupId>net.coobird</groupId>
-	    <artifactId>thumbnailator</artifactId>
-	    <optional>true</optional>
+		<dependency>
+			<groupId>net.coobird</groupId>
+			<artifactId>thumbnailator</artifactId>
+			<optional>true</optional>
 		</dependency>
 
 		<dependency>
