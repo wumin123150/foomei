@@ -135,7 +135,7 @@ public class UserController {
 		
 		if(file != null && !file.isEmpty()) {
 			try {
-				Annex annex = annexService.save(file, User.USER_ANNEX_PATH, String.valueOf(user.getId()), User.USER_ANNEX_TYPE);
+				Annex annex = annexService.save(file.getBytes(), file.getOriginalFilename(), User.USER_ANNEX_PATH, String.valueOf(user.getId()), User.USER_ANNEX_TYPE);
 				if(annex != null) {
 					user.setAvatar(annex.getPath());
 				}
@@ -190,7 +190,7 @@ public class UserController {
 		
 		if(file != null && !file.isEmpty()) {
 			try {
-				Annex annex = annexService.save(file, User.USER_ANNEX_PATH, String.valueOf(user.getId()), User.USER_ANNEX_TYPE);
+				Annex annex = annexService.save(file.getBytes(), file.getOriginalFilename(), User.USER_ANNEX_PATH, String.valueOf(user.getId()), User.USER_ANNEX_TYPE);
 				if(annex != null) {
 					user.setAvatar(annex.getPath());
 				}

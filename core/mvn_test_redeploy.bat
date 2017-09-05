@@ -1,0 +1,1 @@
+mvn clean package cargo:redeploy -Psvr -X > mvn_log.txt

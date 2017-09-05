@@ -146,6 +146,19 @@
 		</bean>
 	</beans>
 
+	<!-- server test环境 -->
+	<beans profile="svr">
+		<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
+			<property name="driverClassName" value="${jdbc.driver}" />
+			<property name="url" value="${jdbc.url}" />
+			<property name="username" value="${jdbc.username}" />
+			<property name="password" value="${jdbc.password}" />
+
+			<!-- 开启Druid的监控统计功能 -->
+			<property name="filters" value="stat" />
+		</bean>
+	</beans>
+
 	<!-- local development环境 -->
 	<beans profile="dev">
 		<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
@@ -171,8 +184,8 @@
 
 		<!-- 初始化数据结构与默认数据 -->
 		<jdbc:initialize-database data-source="dataSource" ignore-failures="ALL">
-			<jdbc:script location="classpath:sql/h2/schema.sql" />
-			<jdbc:script location="classpath:data/h2/import-data.sql" encoding="UTF-8" />
+			<jdbc:script location="classpath:sql/schema.sql" />
+			<jdbc:script location="classpath:sql/data.sql" encoding="UTF-8" />
 		</jdbc:initialize-database>
 	</beans>
 </beans>

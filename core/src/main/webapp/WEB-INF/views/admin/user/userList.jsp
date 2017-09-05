@@ -153,7 +153,7 @@
   					datatype : "json",
   					mtype : "get",
   
-  					colNames : [ '操作', 'ID', '账号', '姓名', '手机号', '微信', '状态' ],
+  					colNames : [ '操作', 'ID', '账号', '姓名', '手机号', '邮箱', '状态' ],
   					colModel : [
   							//{name:'myac',index:'', width:80, fixed:true, sortable:false, resize:false,
   							//formatter:'actions', 
@@ -196,8 +196,8 @@
   								index : 'mobile',
   								width : 100
   							}, {
-  								name : 'weixin',
-  								index : 'weixin',
+  								name : 'email',
+  								index : 'email',
   								width : 100
   							}, {
   								name : 'status',

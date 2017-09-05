@@ -1,0 +1,1 @@
+mvn clean package -Pprod -X > mvn_log.txt

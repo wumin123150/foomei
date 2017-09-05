@@ -36,7 +36,7 @@ public class AccountEndpoint {
     public ResponseResult saveAvatar(@ApiParam(value="base64编码的图片", required=true) String avatar) throws IOException {
         Long id = CoreThreadContext.getUserId();
         byte[] data = Base64.decodeBase64(avatar.getBytes("UTF-8"));
-        Annex annex = annexService.save(data, null, "jpg", User.USER_ANNEX_PATH, String.valueOf(id), User.USER_ANNEX_TYPE);
+        Annex annex = annexService.save(data, "avatar.jpg", User.USER_ANNEX_PATH, String.valueOf(id), User.USER_ANNEX_TYPE);
 
         User user = userService.get(id);
         user.setAvatar(annex.getPath());

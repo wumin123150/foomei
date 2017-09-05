@@ -122,7 +122,7 @@ public class ConfigController {
         model.addAttribute("menu", "configs");
 
         model.addAttribute("configs", configService.getAll());
-        return "admin/config/configView";
+        return "admin/config/view";
     }
     
     @ApiOperation(value = "参数修改", httpMethod = "POST")
@@ -130,11 +130,13 @@ public class ConfigController {
     @RequestMapping(value = "updateAll", method = RequestMethod.POST)
     public String updateAll(ConfigListDto configList, Model model, RedirectAttributes redirectAttributes) {
         List<ConfigDto> configs = configList.getConfigs();
-        for (ConfigDto configDto : configs) {
-            Config config = configService.get(configDto.getId());
-            if(config != null) {
-                config.setValue(configDto.getValue());
-                configService.save(config);
+        if(configs != null) {
+            for (ConfigDto configDto : configs) {
+                Config config = configService.get(configDto.getId());
+                if(config != null) {
+                    config.setValue(configDto.getValue());
+                    configService.save(config);
+                }
             }
         }
 
