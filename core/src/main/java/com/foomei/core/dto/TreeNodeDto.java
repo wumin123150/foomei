@@ -5,7 +5,9 @@ import io.swagger.annotations.ApiModelProperty;
 
 import com.foomei.core.entity.DataDictionary;
 import com.foomei.core.entity.UserGroup;
+import lombok.Data;
 
+@Data
 @ApiModel(description = "树节点")
 public class TreeNodeDto {
 
@@ -41,46 +43,6 @@ public class TreeNodeDto {
 		this.id = id;
 		this.pId = parentId;
 		this.name = name;
-		this.isParent = isParent;
-	}
-
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	public String getpId() {
-		return pId;
-	}
-
-	public void setpId(String pId) {
-		this.pId = pId;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public Boolean getOpen() {
-		return open;
-	}
-
-	public void setOpen(Boolean open) {
-		this.open = open;
-	}
-
-	public Boolean getIsParent() {
-		return isParent;
-	}
-
-	public void setIsParent(Boolean isParent) {
 		this.isParent = isParent;
 	}
 	

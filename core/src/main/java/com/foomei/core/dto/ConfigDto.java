@@ -2,12 +2,9 @@ package com.foomei.core.dto;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
-/**
- * 系统配置
- * 
- * @author walker
- */
+@Data
 @ApiModel(description = "系统配置")
 public class ConfigDto {
 
@@ -16,29 +13,5 @@ public class ConfigDto {
     private String code;
     @ApiModelProperty(value="值", required=true)
     private String value;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
-    }
 
 }

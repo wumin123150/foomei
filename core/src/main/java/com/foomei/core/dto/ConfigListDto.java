@@ -1,17 +1,12 @@
 package com.foomei.core.dto;
 
+import lombok.Data;
+
 import java.util.List;
 
+@Data
 public class ConfigListDto {
 
     private List<ConfigDto> configs;
-
-    public List<ConfigDto> getConfigs() {
-        return configs;
-    }
-
-    public void setConfigs(List<ConfigDto> configs) {
-        this.configs = configs;
-    }  
 
 }

@@ -13,7 +13,9 @@ public class UserDto {
     private String name;
     @ApiModelProperty(value = "电话")
     private String mobile;
-    @ApiModelProperty(value = "电子邮件")
+    @ApiModelProperty(value="邮箱")
     private String email;
+    @ApiModelProperty(value="头像")
+    private String avatar;
 
 }
