@@ -1,11 +1,14 @@
 package com.foomei.core.web.controller;
 
+import com.foomei.common.base.annotation.LogIgnore;
+import com.foomei.core.entity.User;
+import com.foomei.core.service.UserService;
 import com.foomei.core.web.CoreThreadContext;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-
 import org.apache.commons.lang3.StringUtils;
-import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,10 +17,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import com.foomei.common.base.annotation.LogIgnore;
-import com.foomei.core.entity.User;
-import com.foomei.core.service.UserService;
 
 @Api(description = "账户管理")  
 @Controller
@@ -35,6 +34,9 @@ public class AccountController {
 	}
 	
 	@ApiOperation(value = "密码修改", httpMethod = "POST")
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "plainPassword", value = "新密码", required = true, dataType = "string", paramType = "form")
+	})
 	@LogIgnore(value = "field", excludes = {"plainPassword"})
 	@RequestMapping(value = "/{action}/changePwd", method = RequestMethod.POST)
 	public String changePassword(@PathVariable("action") String action, String plainPassword, Model model, RedirectAttributes redirectAttributes) {
@@ -64,6 +66,11 @@ public class AccountController {
 	}
 	
 	@ApiOperation(value = "账户修改", httpMethod = "POST")
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "name", value = "姓名", required = true, dataType = "string", paramType = "form"),
+		@ApiImplicitParam(name = "phone", value = "手机", dataType = "string", paramType = "form"),
+		@ApiImplicitParam(name = "email", value = "邮箱", dataType = "string", paramType = "form")
+	})
 	@RequestMapping(value = "/{action}/changeAccount", method = RequestMethod.POST)
 	public String changeAccount(@PathVariable("action") String action, String name, String phone, String email, Model model, RedirectAttributes redirectAttributes) {
 		ObjectError error = null;

@@ -43,16 +43,9 @@ public class AnnexService extends JpaServiceImpl<AnnexDao, Annex, String> {
     }
 
     @Transactional(readOnly = false)
-    public void delete(String id) {
-        Annex annex = get(id);
-        delete(annex);
-    }
-
-    @Transactional(readOnly = false)
     public void delete(Annex annex) {
         fileRepository.deleteRelevantByPath(annex.getPath());
-        annexDao.delete(annex);
-        logger.info("delete entity {}, id is {}", Annex.class.getName(), annex.getId());
+        delete(annex.getId());
     }
     
     @Transactional(readOnly = false)

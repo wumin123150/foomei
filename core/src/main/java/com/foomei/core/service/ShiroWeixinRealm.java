@@ -6,7 +6,7 @@ import java.util.Set;
 
 import javax.annotation.PostConstruct;
 
-import com.foomei.common.entity.CoreUser;
+import com.foomei.common.security.shiro.ShiroUser;
 import com.foomei.common.mapper.BeanMapper;
 import org.apache.shiro.authc.AccountException;
 import org.apache.shiro.authc.AuthenticationException;
@@ -61,7 +61,7 @@ public class ShiroWeixinRealm extends AuthorizingRealm {
 				}
 			}
 			
-			return new SimpleAuthenticationInfo(BeanMapper.map(user, CoreUser.class), null, getName());
+			return new SimpleAuthenticationInfo(BeanMapper.map(user, ShiroUser.class), null, getName());
 		} else {
 			throw new UnknownAccountException("No account found");
 		}
@@ -72,8 +72,8 @@ public class ShiroWeixinRealm extends AuthorizingRealm {
 	 */
 	@Override
 	protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
-		CoreUser coreUser = (CoreUser) principals.getPrimaryPrincipal();
-		User user = userService.getByLoginName(coreUser.getLoginName());
+		ShiroUser shiroUser = (ShiroUser) principals.getPrimaryPrincipal();
+		User user = userService.getByLoginName(shiroUser.getLoginName());
 
 		Set<Role> roles = Sets.newTreeSet(new RoleComparator());
 		for (UserGroup group : user.getGroupList()) {

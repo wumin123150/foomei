@@ -5,7 +5,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.foomei.common.entity.CoreUser;
+import com.foomei.common.security.shiro.ShiroUser;
 import org.apache.shiro.session.SessionException;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.filter.authc.LogoutFilter;
@@ -30,7 +30,7 @@ public class ShiroLogoutFilter extends LogoutFilter {
 	
 	protected boolean preHandle(ServletRequest request, ServletResponse response) throws Exception {
 		Subject subject = getSubject(request, response);
-		CoreUser user = (CoreUser) subject.getPrincipal();
+		ShiroUser user = (ShiroUser) subject.getPrincipal();
 		String redirectUrl = getRedirectUrl(request, response, subject);
 		try {
 			subject.logout();

@@ -6,29 +6,29 @@ import com.baidu.unbiz.fluentvalidator.ValidatorContext;
 import com.baidu.unbiz.fluentvalidator.ValidatorHandler;
 
 /**
- * 长度校验
+ * 校验数字大小
  */
-public class SizeValidator extends ValidatorHandler<String> implements Validator<String> {
+public class RangeValidator extends ValidatorHandler<Integer> implements Validator<Integer> {
 
-    private int min;
+    private long min;
 
-    private int max;
+    private long max;
 
     private String message;
 
-    public SizeValidator(int max, String message) {
+    public RangeValidator(int max, String message) {
         this(0, max, message);
     }
 
-    public SizeValidator(int min, int max, String message) {
+    public RangeValidator(int min, int max, String message) {
         this.min = min;
         this.max = max;
         this.message = message;
     }
 
     @Override
-    public boolean validate(ValidatorContext context, String s) {
-        if (null == s || s.length() > max || s.length() < min) {
+    public boolean validate(ValidatorContext context, Integer integer) {
+        if (null == integer || integer.intValue() > max || integer.intValue() < min) {
             context.addErrorMsg(message);
             return false;
         }

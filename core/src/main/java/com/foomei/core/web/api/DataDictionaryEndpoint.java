@@ -1,30 +1,23 @@
 package com.foomei.core.web.api;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-
-import java.util.List;
-
-import javax.validation.Valid;
-
-import org.apache.shiro.authz.annotation.RequiresRoles;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
+import com.baidu.unbiz.fluentvalidator.*;
+import com.baidu.unbiz.fluentvalidator.jsr303.HibernateSupportedValidator;
 import com.foomei.common.dto.ResponseResult;
 import com.foomei.core.dto.TreeNodeDto;
 import com.foomei.core.entity.DataDictionary;
 import com.foomei.core.service.DataDictionaryService;
 import com.foomei.core.service.DataTypeService;
 import com.google.common.collect.Lists;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import org.apache.shiro.authz.annotation.RequiresRoles;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Validation;
+import java.util.List;
 
 @Api(description = "数据字典接口")
 @RestController
@@ -37,9 +30,13 @@ public class DataDictionaryEndpoint {
 	private DataDictionaryService dataDictionaryService;
 
 	@ApiOperation(value = "根据数据类型和父节点获取数据字典列表", notes = "父节点为空时，获取数据类型下的所有内容", httpMethod = "POST", produces = "application/json")
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "typeCode", value = "数据类型编码", required = true, dataType = "string", paramType = "query"),
+		@ApiImplicitParam(name = "id", value = "父节点ID", dataType = "long", paramType = "query")
+	})
 	@RequiresRoles("admin")
 	@RequestMapping(value = "tree", method = RequestMethod.POST)
-	public List<TreeNodeDto> tree(@ApiParam(value="数据类型编码", required=true)String typeCode, @ApiParam(value="父节点ID")Long id) {
+	public List<TreeNodeDto> tree(String typeCode, Long id) {
 		if(id != null) {
 			List<DataDictionary> dataDictionarys = dataDictionaryService.findChildrenByTypeAndParent(typeCode, id);
 			return toNodes(dataDictionarys);
@@ -50,25 +47,37 @@ public class DataDictionaryEndpoint {
 	}
 
 	@ApiOperation(value = "数据字典新增", httpMethod = "POST", produces = "application/json")
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "typeCode", value = "数据类型编码", required = true, dataType = "string", paramType = "form")
+	})
 	@RequiresRoles("admin")
 	@RequestMapping(value = "create", method = RequestMethod.POST)
-	public ResponseResult<TreeNodeDto> create(@Valid @ModelAttribute DataDictionary dataDictionary, BindingResult result, @ApiParam(value="数据类型编码", required=true)String typeCode) {
-        if (dataDictionaryService.existCode(dataDictionary.getId(), typeCode, dataDictionary.getCode())) {
-            result.addError(new FieldError("dataDictionary", "code", "编码已经被使用"));
-        }
-        
-        if(dataDictionary.getParentId() != null) {
-            DataDictionary parent = dataDictionaryService.get(dataDictionary.getParentId());
-            if(parent != null) {
-                dataDictionary.setLevel(parent.getLevel() + 1);
-            } else {
-                result.addError(new FieldError("dataDictionary", "parentId", "父节点不存在"));
-            }
-        } else {
-            dataDictionary.setLevel(1);
-        }
+	public ResponseResult<TreeNodeDto> create(@ModelAttribute DataDictionary dataDictionary, String typeCode) {
+		if(dataDictionary.getParentId() != null) {
+			DataDictionary parent = dataDictionaryService.get(dataDictionary.getParentId());
+			if(parent != null) {
+				dataDictionary.setLevel(parent.getLevel() + 1);
+			}
+		} else {
+			dataDictionary.setLevel(1);
+		}
 
-        if (result.hasErrors()) {
+		final String type = typeCode;
+		ComplexResult result = FluentValidator.checkAll()
+				.on(dataDictionary, new HibernateSupportedValidator<DataDictionary>().setHiberanteValidator(Validation.buildDefaultValidatorFactory().getValidator()))
+				.on(dataDictionary, new ValidatorHandler<DataDictionary>() {
+					public boolean validate(ValidatorContext context, DataDictionary t) {
+						if (dataDictionaryService.existCode(t.getId(), type, t.getCode())) {
+							context.addErrorMsg("编码已经被使用");
+							return false;
+						}
+						return true;
+					}
+				})
+				.doValidate()
+				.result(ResultCollectors.toComplex());
+
+		if (!result.isSuccess()) {
             return ResponseResult.createParamError(result);
         } else {
             dataDictionaryService.save(dataDictionary);
@@ -78,14 +87,28 @@ public class DataDictionaryEndpoint {
 	}
 
 	@ApiOperation(value = "数据字典修改", httpMethod = "POST", produces = "application/json")
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "typeCode", value = "数据类型编码", required = true, dataType = "string", paramType = "form")
+	})
 	@RequiresRoles("admin")
 	@RequestMapping(value = "update", method = RequestMethod.POST)
-	public ResponseResult<TreeNodeDto> update(@Valid @ModelAttribute("preloadDataDictionary") DataDictionary dataDictionary, BindingResult result, @ApiParam(value="数据类型编码", required=true)String typeCode) {
-		if (dataDictionaryService.existCode(dataDictionary.getId(), typeCode, dataDictionary.getCode())) {
-			result.addError(new FieldError("dataDictionary", "code", "编码已经被使用"));
-		}
+	public ResponseResult<TreeNodeDto> update(@ModelAttribute("preloadDataDictionary") DataDictionary dataDictionary, String typeCode) {
+        final String type = typeCode;
+        ComplexResult result = FluentValidator.checkAll()
+                .on(dataDictionary, new HibernateSupportedValidator<DataDictionary>().setHiberanteValidator(Validation.buildDefaultValidatorFactory().getValidator()))
+                .on(dataDictionary, new ValidatorHandler<DataDictionary>() {
+                    public boolean validate(ValidatorContext context, DataDictionary t) {
+                        if (dataDictionaryService.existCode(t.getId(), type, t.getCode())) {
+                            context.addErrorMsg("编码已经被使用");
+                            return false;
+                        }
+                        return true;
+                    }
+                })
+                .doValidate()
+                .result(ResultCollectors.toComplex());
 
-		if (result.hasErrors()) {
+        if (!result.isSuccess()) {
 			return ResponseResult.createParamError(result);
 		} else {
 			dataDictionaryService.save(dataDictionary);
@@ -114,8 +137,12 @@ public class DataDictionaryEndpoint {
      * 
      */
 	@ApiOperation(value = "检查数据字典编码是否存在", httpMethod = "GET")
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "typeCode", value = "数据类型编码", required = true, dataType = "string", paramType = "query"),
+		@ApiImplicitParam(name = "code", value = "数据字典编码", required = true, dataType = "string", paramType = "query")
+	})
     @RequestMapping("checkCode")
-    public boolean checkCode(Long id, @ApiParam(value="数据类型编码", required=true)String typeCode, @ApiParam(value="数据字典编码", required=true)String code) {
+    public boolean checkCode(Long id, String typeCode, String code) {
         return !dataDictionaryService.existCode(id, typeCode, code);
     }
 

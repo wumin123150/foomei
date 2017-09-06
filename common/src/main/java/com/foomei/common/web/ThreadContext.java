@@ -1,50 +1,31 @@
 package com.foomei.common.web;
 
 import com.foomei.common.concurrent.ThreadLocalContext;
-import com.foomei.common.entity.CoreUser;
+import com.foomei.common.security.shiro.ShiroUser;
 
 public class ThreadContext extends ThreadLocalContext {
 	
-	public static final String USER_KEY = "_user_key";
+	public static final String USER_ID_KEY = "_user_id_key";
+	public static final String USER_NAME_KEY = "_user_name_key";
 	public static final String IP_KEY = "_ip_key";
 	public static final String URL_KEY = "_url_key";
 	public static final String DATA_SOURCE_KEY = "_data_source_key";
 	public static final String UPLOAD_PATH_KEY = "_upload_path_key";
 	
-	/**
-	 * 获得当前用户
-	 * 
-	 * @return
-	 */
-	public static CoreUser getUser() {
-		return (CoreUser) get(USER_KEY);
-	}
-
-	/**
-	 * 设置当前用户
-	 * 
-	 * @param user
-	 */
-	public static void setUser(CoreUser user) {
-		if (user != null)
-			put(USER_KEY, user);
-	}
-
-	/**
-	 * 移除当前用户
-	 */
-	public static void removeUser() {
-		remove(USER_KEY);
-	}
-	
 	public static Long getUserId() {
-		CoreUser user = getUser();
-		return user != null ? user.getId() : null;
+		return (Long) get(USER_ID_KEY);
+	}
+
+	public static void setUserId(Long userId) {
+		put(USER_ID_KEY, userId);
 	}
 	
 	public static String getUserName() {
-		CoreUser user = getUser();
-		return user != null ? user.getName() : null;
+		return (String) get(USER_NAME_KEY);
+	}
+
+	public static void setUserName(String userName) {
+		put(USER_NAME_KEY, userName);
 	}
 	
 	public static String getIp() {

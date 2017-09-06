@@ -7,23 +7,19 @@ import com.baidu.unbiz.fluentvalidator.ValidatorHandler;
 
 /**
  * 校验不为null
- * Created by shuzheng on 2017/2/18.
  */
 public class NotNullValidator extends ValidatorHandler<String> implements Validator<String> {
 
-    private String fieldName;
+    private String message;
 
-    public NotNullValidator(String fieldName) {
-        this.fieldName = fieldName;
+    public NotNullValidator(String message) {
+        this.message = message;
     }
 
     @Override
     public boolean validate(ValidatorContext context, String s) {
         if (null == s) {
-            context.addError(ValidationError.create(String.format("%s不能为空！", fieldName))
-                    .setErrorCode(-1)
-                    .setField(fieldName)
-                    .setInvalidValue(s));
+            context.addErrorMsg(message);
             return false;
         }
         return true;

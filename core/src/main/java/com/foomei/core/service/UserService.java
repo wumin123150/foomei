@@ -100,9 +100,7 @@ public class UserService extends JpaServiceImpl<UserDao, User, Long>{
 			entryptPassword(user);
 		}
 
-		user = super.save(user);
-		logger.info("save entity: {}", user);
-		return user;
+		return super.save(user);
 	}
 	
 	@Transactional(readOnly = false)
@@ -122,19 +120,17 @@ public class UserService extends JpaServiceImpl<UserDao, User, Long>{
 	}
 	
 	@Transactional(readOnly = false)
-	public User bindingWeixin(Long id, String openId) {
+	public void bindingWeixin(Long id, String openId) {
 		User user = get(id);
 		user.setOpenId(openId);
 		save(user);
-		return user;
 	}
 	
 	@Transactional(readOnly = false)
-	public User unbindingWeixin(Long id) {
+	public void unbindingWeixin(Long id) {
 		User user = get(id);
 		user.setOpenId(null);
 		save(user);
-		return user;
 	}
 	
 	public Page<User> getPageByRole(final String searchKey, final Long roleId, Pageable page) {
@@ -221,7 +217,7 @@ public class UserService extends JpaServiceImpl<UserDao, User, Long>{
 		user.setPlainPassword(password);
 		entryptPassword(user);
 
-		userDao.save(user);
+		super.save(user);
 		logger.info("change password for: {}", user.getName());
 	}
 	
@@ -231,7 +227,7 @@ public class UserService extends JpaServiceImpl<UserDao, User, Long>{
 		user.setPlainPassword(password);
 		entryptPassword(user);
 
-		userDao.save(user);
+		super.save(user);
 		logger.info("change password for: {}", username);
 		// TODO:发送邮件提醒用户
 	}
@@ -243,8 +239,7 @@ public class UserService extends JpaServiceImpl<UserDao, User, Long>{
 		user.setLastLoginIp(ip);
 		user.addLoginCount();
 
-		userDao.save(user);
-		logger.info("login success for: {}", loginName);
+		super.save(user);
 	}
 
 	/**

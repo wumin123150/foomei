@@ -1,19 +1,16 @@
-package com.foomei.common.entity;
+package com.foomei.common.security.shiro;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.io.Serializable;
 
-public class CoreUser implements Serializable {
+public class ShiroUser implements Serializable {
     private static final long serialVersionUID = -1373760761780840081L;
 
     private Long id;
     private String loginName;
     private String name;
-    private String mobile;
-    private String email;
-    private String avatar;
 
     public Long getId() {
         return id;
@@ -37,30 +34,6 @@ public class CoreUser implements Serializable {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getMobile() {
-        return mobile;
-    }
-
-    public void setMobile(String mobile) {
-        this.mobile = mobile;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getAvatar() {
-        return avatar;
-    }
-
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
     }
 
     /**

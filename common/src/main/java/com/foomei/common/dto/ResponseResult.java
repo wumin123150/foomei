@@ -2,6 +2,8 @@ package com.foomei.common.dto;
 
 import java.util.List;
 
+import com.baidu.unbiz.fluentvalidator.ComplexResult;
+import com.baidu.unbiz.fluentvalidator.ValidationError;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -23,7 +25,7 @@ public class ResponseResult<T> {
 //    public final static ResponseResult LOGIN = new ResponseResult<>(ERR_LOGIN, "login");
     public final static ResponseResult UNAUTHORIZED = createError(ErrorCodeFactory.UNAUTHORIZED);//401
     public final static ResponseResult FORBIDDEN = createError(ErrorCodeFactory.FORBIDDEN);//403
-    
+
     private boolean success;
     private int errorCode;
     private String message;
@@ -83,6 +85,12 @@ public class ResponseResult<T> {
     
     public static ResponseResult createParamError(String message) {
         return new ResponseResult(ErrorCodeFactory.BAD_REQUEST, message);
+    }
+
+    public static ResponseResult createParamError(ComplexResult complexResult) {
+        ResponseResult result = createError(ErrorCodeFactory.BAD_REQUEST);
+        result.setData(complexResult.getErrors());
+        return result;
     }
     
     public static ResponseResult createParamError(BindingResult bindingResult) {

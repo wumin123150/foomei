@@ -3,7 +3,8 @@ package com.foomei.core.web;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.foomei.common.entity.CoreUser;
+import com.foomei.common.security.shiro.ShiroUser;
+import com.foomei.core.entity.BaseUser;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,8 +29,11 @@ public class ContextInterceptor extends HandlerInterceptorAdapter {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        CoreUser user = (CoreUser) SecurityUtils.getSubject().getPrincipal();
-        CoreThreadContext.setUser(user);
+        ShiroUser user = (ShiroUser) SecurityUtils.getSubject().getPrincipal();
+        if(user != null) {
+            BaseUser baseUser = baseUserService.get(user.getId());
+            CoreThreadContext.setUser(baseUser);
+        }
 
         CoreThreadContext.setIp(Servlets.getIpAddress(request));
         CoreThreadContext.setUrl(RequestUtil.getLocation(request));
