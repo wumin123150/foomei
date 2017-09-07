@@ -4,13 +4,13 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.foomei</groupId>
 	<artifactId>foomei-parent</artifactId>
-	<version>2.1.0-GA</version>
+	<version>2.1.1-GA</version>
 	<name>Foomei Framework Parent</name>
 	<packaging>pom</packaging>
 
 	<properties>
 		<!-- 主要依赖库的版本定义 -->
-		<foomei.version>2.1.0-GA</foomei.version>
+		<foomei.version>2.1.1-GA</foomei.version>
 		<spring.version>4.3.7.RELEASE</spring.version>
 		<hibernate.version>4.3.11.Final</hibernate.version>
 		<mybatis.version>3.4.2</mybatis.version>
@@ -444,6 +444,14 @@
 				<artifactId>fluent-validator-jsr303</artifactId>
 				<version>${fluent-validator.version}</version>
 				<exclusions>
+					<exclusion>
+						<groupId>javax.el</groupId>
+						<artifactId>javax.el-api</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.glassfish.web</groupId>
+						<artifactId>javax.el</artifactId>
+					</exclusion>
 					<exclusion>
 						<groupId>org.slf4j</groupId>
 						<artifactId>slf4j-log4j12</artifactId>

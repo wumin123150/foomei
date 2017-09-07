@@ -26,7 +26,9 @@ public class ProfileApplicationContextInitializer implements
             profile = properties.getProperty("profile");
 
             applicationContext.getEnvironment().setActiveProfiles(profile.split(","));
-            logger.info("Active spring profile: {}", profile);
+            if(logger.isInfoEnabled()) {
+                logger.info("Active spring profile: {}", profile);
+            }
 
         } catch (IOException e) {
             throw new RuntimeException(e);

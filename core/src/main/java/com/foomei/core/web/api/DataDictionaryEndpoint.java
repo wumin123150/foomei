@@ -3,8 +3,11 @@ package com.foomei.core.web.api;
 import com.baidu.unbiz.fluentvalidator.*;
 import com.baidu.unbiz.fluentvalidator.jsr303.HibernateSupportedValidator;
 import com.foomei.common.dto.ResponseResult;
+import com.foomei.common.mapper.BeanMapper;
+import com.foomei.core.dto.DataDictionaryDto;
 import com.foomei.core.dto.TreeNodeDto;
 import com.foomei.core.entity.DataDictionary;
+import com.foomei.core.entity.DataType;
 import com.foomei.core.service.DataDictionaryService;
 import com.foomei.core.service.DataTypeService;
 import com.google.common.collect.Lists;
@@ -14,7 +17,10 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Validation;
 import java.util.List;
@@ -52,7 +58,10 @@ public class DataDictionaryEndpoint {
 	})
 	@RequiresRoles("admin")
 	@RequestMapping(value = "create", method = RequestMethod.POST)
-	public ResponseResult<TreeNodeDto> create(@ModelAttribute DataDictionary dataDictionary, String typeCode) {
+	public ResponseResult<TreeNodeDto> create(DataDictionaryDto dictionary) {
+		DataDictionary dataDictionary = BeanMapper.map(dictionary, DataDictionary.class);
+		dataDictionary.setType(new DataType(dictionary.getTypeId()));
+
 		if(dataDictionary.getParentId() != null) {
 			DataDictionary parent = dataDictionaryService.get(dataDictionary.getParentId());
 			if(parent != null) {
@@ -62,21 +71,7 @@ public class DataDictionaryEndpoint {
 			dataDictionary.setLevel(1);
 		}
 
-		final String type = typeCode;
-		ComplexResult result = FluentValidator.checkAll()
-				.on(dataDictionary, new HibernateSupportedValidator<DataDictionary>().setHiberanteValidator(Validation.buildDefaultValidatorFactory().getValidator()))
-				.on(dataDictionary, new ValidatorHandler<DataDictionary>() {
-					public boolean validate(ValidatorContext context, DataDictionary t) {
-						if (dataDictionaryService.existCode(t.getId(), type, t.getCode())) {
-							context.addErrorMsg("编码已经被使用");
-							return false;
-						}
-						return true;
-					}
-				})
-				.doValidate()
-				.result(ResultCollectors.toComplex());
-
+		ComplexResult result = validate(dataDictionary, dictionary.getTypeCode());
 		if (!result.isSuccess()) {
             return ResponseResult.createParamError(result);
         } else {
@@ -92,22 +87,11 @@ public class DataDictionaryEndpoint {
 	})
 	@RequiresRoles("admin")
 	@RequestMapping(value = "update", method = RequestMethod.POST)
-	public ResponseResult<TreeNodeDto> update(@ModelAttribute("preloadDataDictionary") DataDictionary dataDictionary, String typeCode) {
-        final String type = typeCode;
-        ComplexResult result = FluentValidator.checkAll()
-                .on(dataDictionary, new HibernateSupportedValidator<DataDictionary>().setHiberanteValidator(Validation.buildDefaultValidatorFactory().getValidator()))
-                .on(dataDictionary, new ValidatorHandler<DataDictionary>() {
-                    public boolean validate(ValidatorContext context, DataDictionary t) {
-                        if (dataDictionaryService.existCode(t.getId(), type, t.getCode())) {
-                            context.addErrorMsg("编码已经被使用");
-                            return false;
-                        }
-                        return true;
-                    }
-                })
-                .doValidate()
-                .result(ResultCollectors.toComplex());
+	public ResponseResult<TreeNodeDto> update(DataDictionaryDto dictionary) {
+		DataDictionary dataDictionary = dataDictionaryService.get(dictionary.getId());
+		dataDictionary = BeanMapper.map(dictionary, dataDictionary, DataDictionaryDto.class, DataDictionary.class);
 
+		ComplexResult result = validate(dataDictionary, dictionary.getTypeCode());
         if (!result.isSuccess()) {
 			return ResponseResult.createParamError(result);
 		} else {
@@ -146,16 +130,21 @@ public class DataDictionaryEndpoint {
         return !dataDictionaryService.existCode(id, typeCode, code);
     }
 
-	/**
-	 * 使用@ModelAttribute, 实现Struts2 Preparable二次部分绑定的效果,先根据form的id从数据库查出对象,再把Form提交的内容绑定到该对象上。
-	 * 因为仅update()方法的form中有id属性，因此本方法在该方法中执行.
-	 */
-	@ModelAttribute("preloadDataDictionary")
-	public DataDictionary getDataDictionary(@RequestParam(value = "id", required = false) Long id) {
-		if (id != null) {
-			return dataDictionaryService.get(id);
-		}
-		return null;
+	private ComplexResult validate(DataDictionary dataDictionary, final String typeCode) {
+		ComplexResult result = FluentValidator.checkAll()
+				.on(dataDictionary, new HibernateSupportedValidator<DataDictionary>().setHiberanteValidator(Validation.buildDefaultValidatorFactory().getValidator()))
+				.on(dataDictionary, new ValidatorHandler<DataDictionary>() {
+					public boolean validate(ValidatorContext context, DataDictionary t) {
+						if (dataDictionaryService.existCode(t.getId(), typeCode, t.getCode())) {
+							context.addErrorMsg("编码已经被使用");
+							return false;
+						}
+						return true;
+					}
+				})
+				.doValidate()
+				.result(ResultCollectors.toComplex());
+		return result;
 	}
 	
 	private List<TreeNodeDto> toNodes(List<DataDictionary> dataDictionarys) {

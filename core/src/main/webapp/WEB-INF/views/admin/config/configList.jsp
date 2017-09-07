@@ -143,7 +143,7 @@
     		{name:'code',index:'code', width:100},
     		{name:'value',index:'value', width:100},
     		{name:'remark',index:'remark', width:200},
-    		{name:'editable',index:'editable', width:40, sortable:false, formatter:dataTypeFormat} 
+    		{name:'editable',index:'editable', width:40, sortable:false, formatter:dataTypeFormat}
 		  ],
 		  nav: {
 		    view: false
@@ -179,7 +179,7 @@
 			var id = $(this).attr("data-id");
 			BootstrapDialog.confirm('你确定要删除吗？', function(result) {
 				if (result) {
-							window.location.href=grid_del_url+id;
+					window.location.href=grid_del_url+id;
  				}
 			});
 		});

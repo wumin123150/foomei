@@ -9,6 +9,8 @@ import lombok.Data;
 public class ConfigDto {
 
     private Long id;
+    @ApiModelProperty(value="名称", required=true)
+    private String name;
     @ApiModelProperty(value="键", required=true)
     private String code;
     @ApiModelProperty(value="值", required=true)

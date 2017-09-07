@@ -199,7 +199,7 @@
   									<label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-role"> 角色 </label>
   									<div class="col-xs-12 col-sm-8">
   										<div class="clearfix">
-  											<select name="roles" id="form-role" class="form-control chosen-select tag-input-style" data-placeholder="角色" multiple="">
+  											<select name="roleIds" id="form-role" class="form-control chosen-select tag-input-style" data-placeholder="角色" multiple="">
   												<c:forEach items="${roles}" var="role">
   													<option value="${role.id}">${role.name}</option>
   												</c:forEach>

@@ -169,8 +169,7 @@
 			$('#form-editable').on('click', function(){
 				if(this.checked) {
 					$("input[name='editable']").val(true);
-				}
-				else {
+				} else {
 					$("input[name='editable']").val(false);
 				}
 			})

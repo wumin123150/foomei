@@ -1,39 +1,33 @@
 package com.foomei.core.web.api;
 
-import com.foomei.common.dto.PageQuery;
-import io.swagger.annotations.*;
-
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-
-import org.apache.shiro.authz.annotation.RequiresRoles;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort.Direction;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
+import com.baidu.unbiz.fluentvalidator.*;
+import com.baidu.unbiz.fluentvalidator.jsr303.HibernateSupportedValidator;
 import com.foomei.common.dto.ErrorCodeFactory;
+import com.foomei.common.dto.PageQuery;
 import com.foomei.common.dto.ResponseResult;
 import com.foomei.common.mapper.BeanMapper;
 import com.foomei.core.dto.TreeNodeDto;
 import com.foomei.core.dto.UserGroupDto;
+import com.foomei.core.entity.DataDictionary;
 import com.foomei.core.entity.Role;
 import com.foomei.core.entity.UserGroup;
 import com.foomei.core.service.UserGroupService;
 import com.foomei.core.service.UserService;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import org.apache.shiro.authz.annotation.RequiresRoles;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Validation;
+import java.util.List;
+import java.util.Map;
 
 @Api(description = "机构接口")
 @RestController
@@ -74,26 +68,14 @@ public class UserGroupEndpoint {
     @ApiOperation(value = "机构新增", httpMethod = "POST", produces = "application/json")
     @RequiresRoles("admin")
     @RequestMapping(value = "create", method = RequestMethod.POST)
-    public ResponseResult create(@Valid @ModelAttribute UserGroup userGroup, BindingResult result,
-                                 @RequestParam(value = "roles", required = false) List<Long> checkedRoles) {
-        if (userGroupService.existCode(userGroup.getId(), userGroup.getCode())) {
-            result.addError(new FieldError("userGroup", "code", "编码已经被使用"));
-        }
-
-        if (checkedRoles != null) {
-            for (Long roleId : checkedRoles) {
-                Role role = new Role(roleId);
-                userGroup.getRoleList().add(role);
-            }
-        }
+    public ResponseResult create(UserGroupDto group) {
+        UserGroup userGroup = BeanMapper.map(group, UserGroup.class);
 
         UserGroup parent = null;
         if (userGroup.getParentId() != null) {
             parent = userGroupService.get(userGroup.getParentId());
             if (parent != null) {
                 userGroup.setLevel(parent.getLevel() + 1);
-            } else {
-                result.addError(new FieldError("userGroup", "parentId", "上一级不存在"));
             }
         } else {
             userGroup.setLevel(1);
@@ -105,7 +87,8 @@ public class UserGroupEndpoint {
             userGroup.setPath(UserGroup.PATH_SPLIT + userGroup.getCode());
         }
 
-        if (result.hasErrors()) {
+        ComplexResult result = validate(userGroup);
+        if (!result.isSuccess()) {
             return ResponseResult.createParamError(result);
         } else {
             userGroupService.save(userGroup);
@@ -117,21 +100,12 @@ public class UserGroupEndpoint {
     @ApiOperation(value = "机构修改", httpMethod = "POST", produces = "application/json")
     @RequiresRoles("admin")
     @RequestMapping(value = "update", method = RequestMethod.POST)
-    public ResponseResult update(@Valid @ModelAttribute("preloadUserGroup") UserGroup userGroup, BindingResult result,
-                                 @RequestParam(value = "roles", required = false) List<Long> checkedRoles) {
-        if (userGroupService.existCode(userGroup.getId(), userGroup.getCode())) {
-            result.addError(new FieldError("userGroup", "code", "编码已经被使用"));
-        }
+    public ResponseResult update(UserGroupDto group) {
+        UserGroup userGroup = userGroupService.get(group.getId());
+        userGroup = BeanMapper.map(group, userGroup, UserGroupDto.class, UserGroup.class);
 
-        userGroup.getRoleList().clear();
-        if (checkedRoles != null) {
-            for (Long roleId : checkedRoles) {
-                Role role = new Role(roleId);
-                userGroup.getRoleList().add(role);
-            }
-        }
-
-        if (result.hasErrors()) {
+        ComplexResult result = validate(userGroup);
+        if (!result.isSuccess()) {
             return ResponseResult.createParamError(result);
         } else {
             userGroupService.save(userGroup);
@@ -172,16 +146,21 @@ public class UserGroupEndpoint {
         return !userGroupService.existCode(id, code);
     }
 
-    /**
-     * 使用@ModelAttribute, 实现Struts2 Preparable二次部分绑定的效果,先根据form的id从数据库查出对象,再把Form提交的内容绑定到该对象上。
-     * 因为仅update()方法的form中有id属性，因此本方法在该方法中执行.
-     */
-    @ModelAttribute("preloadUserGroup")
-    public UserGroup getUserGroup(@RequestParam(value = "id", required = false) Long id) {
-        if (id != null) {
-            return userGroupService.get(id);
-        }
-        return null;
+    private ComplexResult validate(UserGroup userGroup) {
+        ComplexResult result = FluentValidator.checkAll()
+                .on(userGroup, new HibernateSupportedValidator<UserGroup>().setHiberanteValidator(Validation.buildDefaultValidatorFactory().getValidator()))
+                .on(userGroup, new ValidatorHandler<UserGroup>() {
+                    public boolean validate(ValidatorContext context, DataDictionary t) {
+                        if (userGroupService.existCode(t.getId(), t.getCode())) {
+                            context.addErrorMsg("编码已经被使用");
+                            return false;
+                        }
+                        return true;
+                    }
+                })
+                .doValidate()
+                .result(ResultCollectors.toComplex());
+        return result;
     }
 
     private List<TreeNodeDto> toNodes(List<UserGroup> userGroups) {

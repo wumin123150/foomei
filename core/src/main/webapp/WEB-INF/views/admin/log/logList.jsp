@@ -117,7 +117,7 @@
 	<script src="${ctx}/static/js/jqGrid/i18n/grid.locale-cn.js"></script>
   <script src="${ctx}/static/js/jquery.jqGrid.foomei.min.js"></script>
   <script src="${ctx}/static/js/date-time/moment.min.js"></script>
-  <script src="${ctx}/static/js/date-time/daterangepicker.min.js"></script> </script>
+  <script src="${ctx}/static/js/date-time/daterangepicker.min.js"></script>
 </pluginJs>
 <pageJs>
 	<!-- inline scripts related to this page -->
@@ -205,31 +205,14 @@
 				e.stopPropagation();
 			}     
 		 }); 
-	 $.fn.serializeObject = function() {
-         var o = {};
-         var a = this.serializeArray();
-         $.each(a, function() {
-             if (o[this.name] !== undefined) {
-                 if (!o[this.name].push) {
-                     o[this.name] = [o[this.name]];
-                 }
-                 o[this.name].push(this.value || '');
-             } else {
-                 o[this.name] = this.value || '';
-             }
-         });
-         return o;
-     };
+
 		var grid_selector = "#grid-table";
 		var grid_page_url = "${ctx}/api/log/page";
 		var grid_del_url = "${ctx}/front/log/delete/";
 
 		jQuery(function($) {
- 			
 		  $(grid_selector).foomei_JqGrid({
 			  url: grid_page_url,
-
-
 			  colNames: ['操作', '操作用户', '操作描述', 'URL', 'IP', '操作日期', '消耗时间'],
 			  colModel: [
 	  		  //{name:'myac',index:'', width:80, fixed:true, sortable:false, resize:false,
@@ -247,7 +230,6 @@
 								+ '</div>';
 						}
 					},
-
 					{name:'username', index:'username', width:50, sortable:false},
 					{name:'description', index:'description', width:100},
 					{name:'url', index:'url', width:200},
@@ -259,35 +241,30 @@
 			  sortorder:'desc',
 			  nav: {
 			    view: false
-			  },
-
+			  }
 			});
 
 	    $(grid_selector).foomei_JqGrid('resize');
-	    
-	    $("#searchKey").keydown(function(e) {
-          if (e.keyCode == 13) {
-              $(grid_selector).jqGrid('setGridParam', {
-                  search: false,
-                  page: 1,
-                  postData: $(".form-search").serializeObject()
-              }).trigger("reloadGrid");
-          }
-      });
 
-      $("#btn-search").click(function() {
-          $(grid_selector).jqGrid('setGridParam', {
-              search: false,
-              page: 1,
-              postData: $(".form-search").serializeObject()
-          }).trigger("reloadGrid");
-      });
+			$("#searchKey").keydown(function(e) {
+				if (e.keyCode == 13) {
+					$(grid_selector).foomei_JqGrid('search', {
+						"searchKey": $('#searchKey').val()
+					});
+				}
+			});
+
+			$("#btn-search").click(function() {
+				$(grid_selector).foomei_JqGrid('search', {
+					"searchKey": $('#searchKey').val()
+				});
+			});
 			 
 			$(document).on('click', ".btn-del", function() {
 				var id = $(this).attr("data-id");
 				BootstrapDialog.confirm('你确定要删除吗？', function(result) {
 					if (result) {
-								window.location.href=grid_del_url+id;
+						window.location.href=grid_del_url+id;
 	 				}
 				});
 			});

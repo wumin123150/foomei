@@ -81,19 +81,19 @@ public class EhCacheManager implements CacheManager, Initializable, Destroyable 
         try {
             net.sf.ehcache.Ehcache cache = ensureCacheManager().getEhcache(name);
             if (cache == null) {
-                if (log.isInfoEnabled()) {
-                    log.info("Cache with name '{}' does not yet exist.  Creating now.", name);
+                if (log.isDebugEnabled()) {
+                    log.debug("Cache with name '{}' does not yet exist.  Creating now.", name);
                 }
                 this.manager.addCache(name);
 
                 cache = manager.getCache(name);
 
-                if (log.isInfoEnabled()) {
-                    log.info("Added EhCache named [" + name + "]");
+                if (log.isDebugEnabled()) {
+                    log.debug("Added EhCache named [" + name + "]");
                 }
             } else {
-                if (log.isInfoEnabled()) {
-                    log.info("Using existing EHCache named [" + cache.getName() + "]");
+                if (log.isDebugEnabled()) {
+                    log.debug("Using existing EHCache named [" + cache.getName() + "]");
                 }
             }
             return new EhCache<K, V>(cache);

@@ -5,6 +5,7 @@ import com.foomei.common.dto.ResponseResult;
 import com.foomei.common.mapper.JsonMapper;
 import com.foomei.common.persistence.JqGridFilter;
 import com.foomei.common.persistence.SearchFilter;
+import com.foomei.core.dto.DataTypeDto;
 import com.foomei.core.entity.DataType;
 import com.foomei.core.service.DataTypeService;
 import io.swagger.annotations.Api;
@@ -31,7 +32,7 @@ public class DataTypeEndpoint {
 	@ApiOperation(value = "数据类型分页列表", httpMethod = "GET", produces = "application/json")
 	@RequiresRoles("admin")
 	@RequestMapping(value = "page", method = RequestMethod.GET)
-	public ResponseResult<Page<DataType>> page(PageQuery pageQuery, HttpServletRequest request) {
+	public ResponseResult<Page<DataTypeDto>> page(PageQuery pageQuery, HttpServletRequest request) {
 		Page<DataType> page = null;
 		if(pageQuery.getAdvance()) {
 			JqGridFilter jqGridFilter = JsonMapper.nonDefaultMapper().fromJson(request.getParameter("filters"), JqGridFilter.class);
@@ -43,7 +44,7 @@ public class DataTypeEndpoint {
 			page = dataTypeService.getPage(searchFilter, pageQuery.buildPageRequest());
 		}
 
-		return ResponseResult.createSuccess(page);
+		return ResponseResult.createSuccess(page, DataType.class, DataTypeDto.class);
 	}
 	
 	/**
