@@ -13,47 +13,47 @@ import com.google.common.collect.Lists;
 
 /**
  * 数据字典管理业务类.
- * 
+ *
  * @author walker
  */
 @Service
 @Transactional(readOnly = true)
-public class DataDictionaryService extends JpaServiceImpl<DataDictionaryDao, DataDictionary, Long>{
+public class DataDictionaryService extends JpaServiceImpl<DataDictionaryDao, DataDictionary, Long> {
 
-	@Autowired
-	private DataDictionaryDao dataDictionaryDao;
+  @Autowired
+  private DataDictionaryDao dataDictionaryDao;
 
-	public DataDictionary getByTypeAndCode(String typeCode, String code) {
-		return dataDictionaryDao.findByTypeAndCode(typeCode, code);
-	}
+  public DataDictionary getByTypeAndCode(String typeCode, String code) {
+    return dataDictionaryDao.findByTypeAndCode(typeCode, code);
+  }
 
-	public List<DataDictionary> findByTypeCode(String typeCode) {
-		return dataDictionaryDao.findByTypeCode(typeCode);
-	}
-	
-	public List<DataDictionary> findByTypeAndLevel(String typeCode, Integer level) {
-		return dataDictionaryDao.findByTypeAndLevel(typeCode, level);
-	}
-	
-	public List<DataDictionary> findChildrenByTypeAndParent(String typeCode, Long id) {
-		return dataDictionaryDao.findChildrenByTypeAndParent(typeCode, id);
-	}
-	
-	public List<DataDictionary> findChildrenByTypeAndCode(String typeCode, String code) {
-		DataDictionary parent = getByTypeAndCode(typeCode, code);
-		if(parent != null) {
-			return dataDictionaryDao.findChildrenByTypeAndParent(typeCode, parent.getId());
-		}
-		return Lists.newArrayList();
-	}
+  public List<DataDictionary> findByTypeCode(String typeCode) {
+    return dataDictionaryDao.findByTypeCode(typeCode);
+  }
 
-	public boolean existCode(Long id, String typeCode, String code) {
-		DataDictionary dataDictionary = getByTypeAndCode(typeCode, code);
-		if(dataDictionary == null || (id != null && id.equals(dataDictionary.getId()))) {
-			return false;
-		} else {
-			return true;
-		}
-	}
-	
+  public List<DataDictionary> findByTypeAndLevel(String typeCode, Integer level) {
+    return dataDictionaryDao.findByTypeAndLevel(typeCode, level);
+  }
+
+  public List<DataDictionary> findChildrenByTypeAndParent(String typeCode, Long id) {
+    return dataDictionaryDao.findChildrenByTypeAndParent(typeCode, id);
+  }
+
+  public List<DataDictionary> findChildrenByTypeAndCode(String typeCode, String code) {
+    DataDictionary parent = getByTypeAndCode(typeCode, code);
+    if (parent != null) {
+      return dataDictionaryDao.findChildrenByTypeAndParent(typeCode, parent.getId());
+    }
+    return Lists.newArrayList();
+  }
+
+  public boolean existCode(Long id, String typeCode, String code) {
+    DataDictionary dataDictionary = getByTypeAndCode(typeCode, code);
+    if (dataDictionary == null || (id != null && id.equals(dataDictionary.getId()))) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
 }

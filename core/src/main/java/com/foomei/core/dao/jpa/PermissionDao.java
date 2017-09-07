@@ -6,4 +6,5 @@ import com.foomei.core.entity.Permission;
 public interface PermissionDao extends JpaDao<Permission, Long> {
 
 	Permission findByCode(String code);
+
 }

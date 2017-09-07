@@ -16,29 +16,29 @@ import com.foomei.common.entity.IdEntity;
 
 /**
  * 权限
- * 
+ *
  * @author walker
  */
 @Getter
 @Setter
-@ToString(callSuper=true)
+@ToString(callSuper = true)
 @NoArgsConstructor
 @Entity
 @Table(name = "Core_Permission")
 @SuppressWarnings("serial")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Permission extends IdEntity {
-	public static final String PROP_CODE = "code";
-	public static final String PROP_NAME = "name";
-	public static final String PROP_PRIORITY = "priority";
+  public static final String PROP_CODE = "code";
+  public static final String PROP_NAME = "name";
+  public static final String PROP_PRIORITY = "priority";
 
-	private String code;
-	private String name;
-	@Range(min = 0, max = 10000, message="序号必须在0到10000之间")
-	private Integer priority;
-	
-	public Permission(Long id) {
-		this.id = id;
-	}
-	
+  private String code;
+  private String name;
+  @Range(min = 0, max = 10000, message = "序号必须在0到10000之间")
+  private Integer priority;
+
+  public Permission(Long id) {
+    this.id = id;
+  }
+
 }

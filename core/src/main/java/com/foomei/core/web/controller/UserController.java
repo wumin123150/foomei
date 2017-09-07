@@ -43,242 +43,242 @@ import com.foomei.core.service.UserService;
 
 /**
  * 管理员管理用户的Controller.
- * 
+ *
  * @author walker
  */
-@Api(description = "用户管理")  
+@Api(description = "用户管理")
 @Controller
 @RequestMapping(value = "/admin/user")
 public class UserController {
-	
-	private static Logger logger = LoggerFactory.getLogger(UserController.class);
 
-	private static final String MENU = "user";
-	private static final String ACTION_CREATE = "create";
-	private static final String ACTION_UPDATE = "update";
-	
-	@Value("${upload.folder:/opt/upload/}")
-	private String root;
+  private static Logger logger = LoggerFactory.getLogger(UserController.class);
 
-	@Autowired
-	private UserService userService;
-	@Autowired
-	private RoleService roleService;
-	@Autowired
-    private UserGroupService userGroupService;
-	@Autowired
-	private AnnexService annexService;
-	@Autowired
-	private DataDictionaryService dataDictionaryService;
+  private static final String MENU = "user";
+  private static final String ACTION_CREATE = "create";
+  private static final String ACTION_UPDATE = "update";
 
-	@ApiOperation(value = "用户列表页面", httpMethod = "GET")
-	@RequiresRoles("admin")
-	@RequestMapping
-	public String list(Model model) {
-		model.addAttribute("menu", MENU);
-		return "admin/user/userList";
-	}
+  @Value("${upload.folder:/opt/upload/}")
+  private String root;
 
-	@ApiOperation(value = "用户新增页面", httpMethod = "GET")
-	@RequiresRoles("admin")
-	@RequestMapping(value = "create", method = RequestMethod.GET)
-	public String createForm(Model model) {
-		model.addAttribute("menu", MENU);
-		model.addAttribute("action", ACTION_CREATE);
+  @Autowired
+  private UserService userService;
+  @Autowired
+  private RoleService roleService;
+  @Autowired
+  private UserGroupService userGroupService;
+  @Autowired
+  private AnnexService annexService;
+  @Autowired
+  private DataDictionaryService dataDictionaryService;
 
-		model.addAttribute("user", new User());
-		model.addAttribute("roles", roleService.getAll());
-		return "admin/user/userForm";
-	}
+  @ApiOperation(value = "用户列表页面", httpMethod = "GET")
+  @RequiresRoles("admin")
+  @RequestMapping
+  public String list(Model model) {
+    model.addAttribute("menu", MENU);
+    return "admin/user/userList";
+  }
 
-	@ApiOperation(value = "用户新增", httpMethod = "POST")
-	@RequiresRoles("admin")
-	@RequestMapping(value = "create", method = RequestMethod.POST)
-	public String create(@Valid User user, BindingResult result,
-			@RequestParam(value = "roles", required=false) List<Long> checkedRoles, 
-			@RequestParam(value = "groups", required=false) List<Long> checkedGroups,
-			@RequestParam MultipartFile file,
-			Model model, HttpServletRequest request, RedirectAttributes redirectAttributes) {
-		if(checkedRoles != null) {
-			for (Long roleId : checkedRoles) {
-				Role role = new Role(roleId);
-				user.getRoleList().add(role);
-			}
-		}
-		
-		if(checkedGroups != null) {
-            for (Long groupId : checkedGroups) {
-                UserGroup userGroup = new UserGroup(groupId);
-                user.getGroupList().add(userGroup);
-            }
+  @ApiOperation(value = "用户新增页面", httpMethod = "GET")
+  @RequiresRoles("admin")
+  @RequestMapping(value = "create", method = RequestMethod.GET)
+  public String createForm(Model model) {
+    model.addAttribute("menu", MENU);
+    model.addAttribute("action", ACTION_CREATE);
+
+    model.addAttribute("user", new User());
+    model.addAttribute("roles", roleService.getAll());
+    return "admin/user/userForm";
+  }
+
+  @ApiOperation(value = "用户新增", httpMethod = "POST")
+  @RequiresRoles("admin")
+  @RequestMapping(value = "create", method = RequestMethod.POST)
+  public String create(@Valid User user, BindingResult result,
+                       @RequestParam(value = "roles", required = false) List<Long> checkedRoles,
+                       @RequestParam(value = "groups", required = false) List<Long> checkedGroups,
+                       @RequestParam MultipartFile file,
+                       Model model, HttpServletRequest request, RedirectAttributes redirectAttributes) {
+    if (checkedRoles != null) {
+      for (Long roleId : checkedRoles) {
+        Role role = new Role(roleId);
+        user.getRoleList().add(role);
+      }
+    }
+
+    if (checkedGroups != null) {
+      for (Long groupId : checkedGroups) {
+        UserGroup userGroup = new UserGroup(groupId);
+        user.getGroupList().add(userGroup);
+      }
+    }
+
+    if (userService.existLoginName(user.getId(), user.getLoginName())) {
+      result.addError(new FieldError("user", "loginName", "账号已经被使用"));
+    }
+
+    if (result.hasErrors()) {
+      model.addAttribute("menu", MENU);
+      model.addAttribute("action", ACTION_CREATE);
+
+      model.addAttribute("user", user);
+      model.addAttribute("roles", roleService.getAll());
+
+      model.addAttribute("errors", result);
+      return "admin/user/userForm";
+    }
+
+    user.setRegisterTime(new Date());
+    user.setRegisterIp(Servlets.getIpAddress(request));
+
+    userService.save(user);
+
+    if (file != null && !file.isEmpty()) {
+      try {
+        Annex annex = annexService.save(file.getBytes(), file.getOriginalFilename(), User.USER_ANNEX_PATH, String.valueOf(user.getId()), User.USER_ANNEX_TYPE);
+        if (annex != null) {
+          user.setAvatar(annex.getPath());
         }
-		
-		if (userService.existLoginName(user.getId(), user.getLoginName())) {
-			result.addError(new FieldError("user", "loginName", "账号已经被使用"));
-		}
+      } catch (Exception e) {
+        logger.error("存储头像附件失败", e);
+      }
+    }
 
-		if (result.hasErrors()) {
-			model.addAttribute("menu", MENU);
-			model.addAttribute("action", ACTION_CREATE);
+    redirectAttributes.addFlashAttribute("message", "新增用户成功");
+    return "redirect:/admin/user";
+  }
 
-			model.addAttribute("user", user);
-			model.addAttribute("roles", roleService.getAll());
+  @ApiOperation(value = "用户修改页面", httpMethod = "GET")
+  @RequiresRoles("admin")
+  @RequestMapping(value = "update/{id}", method = RequestMethod.GET)
+  public String updateForm(@PathVariable("id") Long id, Model model) {
+    model.addAttribute("menu", MENU);
+    model.addAttribute("action", ACTION_UPDATE);
 
-			model.addAttribute("errors", result);
-			return "admin/user/userForm";
-		} 
-		
-		user.setRegisterTime(new Date());
-		user.setRegisterIp(Servlets.getIpAddress(request));
-		
-		userService.save(user);
-		
-		if(file != null && !file.isEmpty()) {
-			try {
-				Annex annex = annexService.save(file.getBytes(), file.getOriginalFilename(), User.USER_ANNEX_PATH, String.valueOf(user.getId()), User.USER_ANNEX_TYPE);
-				if(annex != null) {
-					user.setAvatar(annex.getPath());
-				}
-			} catch(Exception e) {
-				logger.error("存储头像附件失败", e);
-			}
-		}
+    model.addAttribute("user", userService.get(id));
+    model.addAttribute("roles", roleService.getAll());
+    return "admin/user/userForm";
+  }
 
-		redirectAttributes.addFlashAttribute("message", "新增用户成功");
-		return "redirect:/admin/user";
-	}
+  /**
+   * 演示自行绑定表单中的checkBox roleList到对象中.
+   */
+  @ApiOperation(value = "用户修改", httpMethod = "POST")
+  @RequiresRoles("admin")
+  @RequestMapping(value = "update", method = RequestMethod.POST)
+  public String update(@Valid @ModelAttribute("preloadUser") User user, BindingResult result,
+                       @RequestParam(value = "roles", required = false) List<Long> checkedRoles,
+                       @RequestParam(value = "groups", required = false) List<Long> checkedGroups,
+                       @RequestParam MultipartFile file,
+                       Model model, HttpServletRequest request, RedirectAttributes redirectAttributes) {
+    //bind roles
+    user.getRoleList().clear();
+    if (checkedRoles != null) {
+      for (Long roleId : checkedRoles) {
+        Role role = new Role(roleId);
+        user.getRoleList().add(role);
+      }
+    }
 
-	@ApiOperation(value = "用户修改页面", httpMethod = "GET")
-	@RequiresRoles("admin")
-	@RequestMapping(value = "update/{id}", method = RequestMethod.GET)
-	public String updateForm(@PathVariable("id") Long id, Model model) {
-		model.addAttribute("menu", MENU);
-		model.addAttribute("action", ACTION_UPDATE);
+    user.getGroupList().clear();
+    if (checkedGroups != null) {
+      for (Long groupId : checkedGroups) {
+        UserGroup userGroup = new UserGroup(groupId);
+        user.getGroupList().add(userGroup);
+      }
+    }
 
-		model.addAttribute("user", userService.get(id));
-		model.addAttribute("roles", roleService.getAll());
-		return "admin/user/userForm";
-	}
-
-	/**
-	 * 演示自行绑定表单中的checkBox roleList到对象中.
-	 */
-	@ApiOperation(value = "用户修改", httpMethod = "POST")
-	@RequiresRoles("admin")
-	@RequestMapping(value = "update", method = RequestMethod.POST)
-	public String update(@Valid @ModelAttribute("preloadUser") User user, BindingResult result,
-			@RequestParam(value = "roles", required=false) List<Long> checkedRoles, 
-			@RequestParam(value = "groups", required=false) List<Long> checkedGroups,
-			@RequestParam MultipartFile file, 
-			Model model, HttpServletRequest request, RedirectAttributes redirectAttributes) {
-		//bind roles
-		user.getRoleList().clear();
-		if(checkedRoles != null) {
-			for (Long roleId : checkedRoles) {
-				Role role = new Role(roleId);
-				user.getRoleList().add(role);
-			}
-		}
-		
-		user.getGroupList().clear();
-        if(checkedGroups != null) {
-            for (Long groupId : checkedGroups) {
-                UserGroup userGroup = new UserGroup(groupId);
-                user.getGroupList().add(userGroup);
-            }
+    if (file != null && !file.isEmpty()) {
+      try {
+        Annex annex = annexService.save(file.getBytes(), file.getOriginalFilename(), User.USER_ANNEX_PATH, String.valueOf(user.getId()), User.USER_ANNEX_TYPE);
+        if (annex != null) {
+          user.setAvatar(annex.getPath());
         }
-		
-		if(file != null && !file.isEmpty()) {
-			try {
-				Annex annex = annexService.save(file.getBytes(), file.getOriginalFilename(), User.USER_ANNEX_PATH, String.valueOf(user.getId()), User.USER_ANNEX_TYPE);
-				if(annex != null) {
-					user.setAvatar(annex.getPath());
-				}
-			} catch(Exception e) {
-				logger.error("存储头像附件失败", e);
-			}
-		}
+      } catch (Exception e) {
+        logger.error("存储头像附件失败", e);
+      }
+    }
 
-		if(userService.existLoginName(user.getId(), user.getLoginName())) {
-			result.addError(new FieldError("user", "loginName", "账号已经被使用"));
-		}
+    if (userService.existLoginName(user.getId(), user.getLoginName())) {
+      result.addError(new FieldError("user", "loginName", "账号已经被使用"));
+    }
 
-		if(result.hasErrors()) {
-			model.addAttribute("menu", MENU);
-			model.addAttribute("action", ACTION_UPDATE);
-			
-			model.addAttribute("user", user);
-			model.addAttribute("roles", roleService.getAll());
-			
-			model.addAttribute("errors", result);
-			return "admin/user/userForm";
-		} else 
-			userService.save(user);
+    if (result.hasErrors()) {
+      model.addAttribute("menu", MENU);
+      model.addAttribute("action", ACTION_UPDATE);
 
-		redirectAttributes.addFlashAttribute("message", "保存用户成功");
-		return "redirect:/admin/user";
-	}
-	
-	@ApiOperation(value = "重置密码页面", httpMethod = "GET")
-	@RequiresRoles("admin")
-	@RequestMapping(value = "reset/{id}", method = RequestMethod.GET)
-	public String resetForm(@PathVariable("id") Long id, Model model) {
-		model.addAttribute("menu", MENU);
+      model.addAttribute("user", user);
+      model.addAttribute("roles", roleService.getAll());
 
-		model.addAttribute("user", userService.get(id));
-		return "admin/user/resetPassword";
-	}
-	
-	@ApiOperation(value = "密码重置", httpMethod = "POST")
-	@RequiresRoles("admin")
-	@RequestMapping(value = "reset", method = RequestMethod.POST)
-	public String reset(String loginName, String plainPassword, Model model, RedirectAttributes redirectAttributes) {
-		ObjectError error = null;
-		if(StringUtils.isEmpty(plainPassword)) {
-			error = new ObjectError("password", "密码不能为空");
-		} 
-		
-		if(error != null) {
-			model.addAttribute("menu", MENU);
-			
-			model.addAttribute("user", userService.getByLoginName(loginName));
-			
-			model.addAttribute("error", error);
-			return "admin/user/resetPassword";
-		} else 
-			userService.changePassword(loginName, plainPassword);
+      model.addAttribute("errors", result);
+      return "admin/user/userForm";
+    } else
+      userService.save(user);
 
-		redirectAttributes.addFlashAttribute("message", "重置密码成功");
-		return "redirect:/admin/user";
-	}
+    redirectAttributes.addFlashAttribute("message", "保存用户成功");
+    return "redirect:/admin/user";
+  }
 
-	@ApiOperation(value = "用户停用", httpMethod = "GET")
-	@RequiresRoles("admin")
-	@RequestMapping(value = "delete/{id}")
-	public String delete(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
-		userService.delete(id);
-		redirectAttributes.addFlashAttribute("message", "停用账号成功");
-		return "redirect:/admin/user";
-	}
+  @ApiOperation(value = "重置密码页面", httpMethod = "GET")
+  @RequiresRoles("admin")
+  @RequestMapping(value = "reset/{id}", method = RequestMethod.GET)
+  public String resetForm(@PathVariable("id") Long id, Model model) {
+    model.addAttribute("menu", MENU);
 
-	/**
-	 * 使用@ModelAttribute, 实现Struts2 Preparable二次部分绑定的效果,先根据form的id从数据库查出User对象,再把Form提交的内容绑定到该对象上。
-	 * 因为仅update()方法的form中有id属性，因此本方法在该方法中执行.
-	 */
-	@ModelAttribute("preloadUser")
-	public User getUser(@RequestParam(value = "id", required = false) Long id) {
-		if (id != null) {
-			return userService.get(id);
-		}
-		return null;
-	}
-	
-	/**
-	 * 不自动绑定对象中的roleList属性，另行处理。
-	 */
-	@InitBinder
-	protected void initBinder(WebDataBinder binder) {
-		binder.setDisallowedFields("roleList");
-	}
+    model.addAttribute("user", userService.get(id));
+    return "admin/user/resetPassword";
+  }
+
+  @ApiOperation(value = "密码重置", httpMethod = "POST")
+  @RequiresRoles("admin")
+  @RequestMapping(value = "reset", method = RequestMethod.POST)
+  public String reset(String loginName, String plainPassword, Model model, RedirectAttributes redirectAttributes) {
+    ObjectError error = null;
+    if (StringUtils.isEmpty(plainPassword)) {
+      error = new ObjectError("password", "密码不能为空");
+    }
+
+    if (error != null) {
+      model.addAttribute("menu", MENU);
+
+      model.addAttribute("user", userService.getByLoginName(loginName));
+
+      model.addAttribute("error", error);
+      return "admin/user/resetPassword";
+    } else
+      userService.changePassword(loginName, plainPassword);
+
+    redirectAttributes.addFlashAttribute("message", "重置密码成功");
+    return "redirect:/admin/user";
+  }
+
+  @ApiOperation(value = "用户停用", httpMethod = "GET")
+  @RequiresRoles("admin")
+  @RequestMapping(value = "delete/{id}")
+  public String delete(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
+    userService.delete(id);
+    redirectAttributes.addFlashAttribute("message", "停用账号成功");
+    return "redirect:/admin/user";
+  }
+
+  /**
+   * 使用@ModelAttribute, 实现Struts2 Preparable二次部分绑定的效果,先根据form的id从数据库查出User对象,再把Form提交的内容绑定到该对象上。
+   * 因为仅update()方法的form中有id属性，因此本方法在该方法中执行.
+   */
+  @ModelAttribute("preloadUser")
+  public User getUser(@RequestParam(value = "id", required = false) Long id) {
+    if (id != null) {
+      return userService.get(id);
+    }
+    return null;
+  }
+
+  /**
+   * 不自动绑定对象中的roleList属性，另行处理。
+   */
+  @InitBinder
+  protected void initBinder(WebDataBinder binder) {
+    binder.setDisallowedFields("roleList");
+  }
 
 }

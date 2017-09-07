@@ -6,4 +6,5 @@ import com.foomei.core.entity.Role;
 public interface RoleDao extends JpaDao<Role, Long> {
 
 	Role findByCode(String code);
+
 }

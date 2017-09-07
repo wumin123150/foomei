@@ -29,78 +29,77 @@ import java.util.List;
 @RequestMapping(value = "/api/config")
 public class ConfigEndpoint {
 
-	@Autowired
-	private ConfigService configService;
-	
-	static {
-	    BeanMapper.registerClassMap(Config.class, ConfigDto.class, false, false);
-	}
+  @Autowired
+  private ConfigService configService;
 
-	@ApiOperation(value = "系统配置分页列表", httpMethod = "GET", produces = "application/json")
-	@RequiresRoles("admin")
-	@RequestMapping(value = "page", method = RequestMethod.GET)
-	public ResponseResult<Page<Config>> page(PageQuery pageQuery, HttpServletRequest request) {
-		Page<Config> page = null;
-		if(pageQuery.getAdvance()) {
-			JqGridFilter jqGridFilter = JsonMapper.nonDefaultMapper().fromJson(request.getParameter("filters"), JqGridFilter.class);
-			page = configService.getPage(jqGridFilter, pageQuery.buildPageRequest());
-		} else {
-		    SearchFilter searchFilter = new SearchFilter().or()
-		        .addLike(Config.PROP_CODE, pageQuery.getSearchKey())
-		        .addLike(Config.PROP_NAME, pageQuery.getSearchKey());
-			page = configService.getPage(searchFilter, pageQuery.buildPageRequest());
-		}
+  static {
+    BeanMapper.registerClassMap(Config.class, ConfigDto.class, false, false);
+  }
 
-		return ResponseResult.createSuccess(page);
-	}
-	
-	@ApiOperation(value = "单配置获取", httpMethod = "GET")
-	@ApiImplicitParams({
-		@ApiImplicitParam(name = "code", value = "键", required = true, dataType = "string", paramType = "path")
-	})
-    @RequestMapping("get/{code}")
-    public ResponseResult<ConfigDto> getByCode(@PathVariable("code")String code) {
-	    Config config = configService.getByCode(code);
-	    return ResponseResult.createSuccess(config, ConfigDto.class);
+  @ApiOperation(value = "系统配置分页列表", httpMethod = "GET", produces = "application/json")
+  @RequiresRoles("admin")
+  @RequestMapping(value = "page", method = RequestMethod.GET)
+  public ResponseResult<Page<Config>> page(PageQuery pageQuery, HttpServletRequest request) {
+    Page<Config> page = null;
+    if (pageQuery.getAdvance()) {
+      JqGridFilter jqGridFilter = JsonMapper.nonDefaultMapper().fromJson(request.getParameter("filters"), JqGridFilter.class);
+      page = configService.getPage(jqGridFilter, pageQuery.buildPageRequest());
+    } else {
+      SearchFilter searchFilter = new SearchFilter().or()
+        .addLike(Config.PROP_CODE, pageQuery.getSearchKey())
+        .addLike(Config.PROP_NAME, pageQuery.getSearchKey());
+      page = configService.getPage(searchFilter, pageQuery.buildPageRequest());
     }
-	
-	@ApiOperation(value = "多配置获取", httpMethod = "GET")
-	@ApiImplicitParams({
-		@ApiImplicitParam(name = "code", value = "键前缀", required = true, dataType = "string", paramType = "path")
-	})
-    @RequestMapping("find/{code}")
-    public ResponseResult<List<ConfigDto>> findByCode(@PathVariable("code")String code) {
-	    SearchFilter searchFilter = new SearchFilter()
-	        .addStartWith(Config.PROP_CODE, code + ".");
-        List<Config> configs = configService.getList(searchFilter, null);
-        return ResponseResult.createSuccess(configs, Config.class, ConfigDto.class);
-    }
-	
-	@ApiOperation(value = "保存配置", httpMethod = "POST")
-	@RequestMapping("save")
-	private ResponseResult save(ConfigDto configDto) {
-	    Config config = resolve(configDto);
-	    configService.save(config);
-	    return ResponseResult.SUCCEED;
-	}
-	
-	/**
-	 * 判断编码的唯一性
-	 * 
-	 */
-	@ApiOperation(value = "检查配置键是否存在", httpMethod = "GET")
-	@ApiImplicitParams({
-		@ApiImplicitParam(name = "code", value = "键", required = true, dataType = "string", paramType = "query")
-	})
-	@RequestMapping("checkCode")
-	public boolean checkCode(Long id, String code) {
-		return !configService.existCode(id, code);
-	}
-	
-    private Config resolve(ConfigDto configDto) {
-        Config config = configService.get(configDto.getId());
-        BeanMapper.map(configDto, config, ConfigDto.class, Config.class);
-        return config;
-    }
-	
+
+    return ResponseResult.createSuccess(page);
+  }
+
+  @ApiOperation(value = "单配置获取", httpMethod = "GET")
+  @ApiImplicitParams({
+    @ApiImplicitParam(name = "code", value = "键", required = true, dataType = "string", paramType = "path")
+  })
+  @RequestMapping("get/{code}")
+  public ResponseResult<ConfigDto> getByCode(@PathVariable("code") String code) {
+    Config config = configService.getByCode(code);
+    return ResponseResult.createSuccess(config, ConfigDto.class);
+  }
+
+  @ApiOperation(value = "多配置获取", httpMethod = "GET")
+  @ApiImplicitParams({
+    @ApiImplicitParam(name = "code", value = "键前缀", required = true, dataType = "string", paramType = "path")
+  })
+  @RequestMapping("find/{code}")
+  public ResponseResult<List<ConfigDto>> findByCode(@PathVariable("code") String code) {
+    SearchFilter searchFilter = new SearchFilter()
+      .addStartWith(Config.PROP_CODE, code + ".");
+    List<Config> configs = configService.getList(searchFilter, null);
+    return ResponseResult.createSuccess(configs, Config.class, ConfigDto.class);
+  }
+
+  @ApiOperation(value = "保存配置", httpMethod = "POST")
+  @RequestMapping("save")
+  private ResponseResult save(ConfigDto configDto) {
+    Config config = resolve(configDto);
+    configService.save(config);
+    return ResponseResult.SUCCEED;
+  }
+
+  /**
+   * 判断编码的唯一性
+   */
+  @ApiOperation(value = "检查配置键是否存在", httpMethod = "GET")
+  @ApiImplicitParams({
+    @ApiImplicitParam(name = "code", value = "键", required = true, dataType = "string", paramType = "query")
+  })
+  @RequestMapping("checkCode")
+  public boolean checkCode(Long id, String code) {
+    return !configService.existCode(id, code);
+  }
+
+  private Config resolve(ConfigDto configDto) {
+    Config config = configService.get(configDto.getId());
+    BeanMapper.map(configDto, config, ConfigDto.class, Config.class);
+    return config;
+  }
+
 }

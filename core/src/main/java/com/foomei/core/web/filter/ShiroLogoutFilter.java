@@ -20,37 +20,37 @@ import com.foomei.common.web.Servlets;
 import com.foomei.core.service.TokenService;
 
 public class ShiroLogoutFilter extends LogoutFilter {
-	
-	private Logger logger = LoggerFactory.getLogger(ShiroLogoutFilter.class);
-	
-	@Autowired
-	private TokenService tokenService;
-	
-	private JsonMapper jsonMapper = new JsonMapper();
-	
-	protected boolean preHandle(ServletRequest request, ServletResponse response) throws Exception {
-		Subject subject = getSubject(request, response);
-		ShiroUser user = (ShiroUser) subject.getPrincipal();
-		String redirectUrl = getRedirectUrl(request, response, subject);
-		try {
-			subject.logout();
-		} catch (SessionException ise) {
-			logger.debug("Encountered session exception during logout.  This can generally safely be ignored.", ise);
-		}
-		if (RequestUtil.isAjaxRequest((HttpServletRequest) request)) {
-			if(user != null) {
-				tokenService.disable(user.getId());
-			}
-			renderJson(response, ResponseResult.SUCCEED);
-		} else {
-			issueRedirect(request, response, redirectUrl);
-		}
-		
-		return false;
-	}
-	
-	private void renderJson(final ServletResponse response, final ResponseResult json, final String... headers) {
-		Servlets.renderJson((HttpServletResponse) response, jsonMapper.toJson(json), headers);
-	}
+
+  private Logger logger = LoggerFactory.getLogger(ShiroLogoutFilter.class);
+
+  @Autowired
+  private TokenService tokenService;
+
+  private JsonMapper jsonMapper = new JsonMapper();
+
+  protected boolean preHandle(ServletRequest request, ServletResponse response) throws Exception {
+    Subject subject = getSubject(request, response);
+    ShiroUser user = (ShiroUser) subject.getPrincipal();
+    String redirectUrl = getRedirectUrl(request, response, subject);
+    try {
+      subject.logout();
+    } catch (SessionException ise) {
+      logger.debug("Encountered session exception during logout.  This can generally safely be ignored.", ise);
+    }
+    if (RequestUtil.isAjaxRequest((HttpServletRequest) request)) {
+      if (user != null) {
+        tokenService.disable(user.getId());
+      }
+      renderJson(response, ResponseResult.SUCCEED);
+    } else {
+      issueRedirect(request, response, redirectUrl);
+    }
+
+    return false;
+  }
+
+  private void renderJson(final ServletResponse response, final ResponseResult json, final String... headers) {
+    Servlets.renderJson((HttpServletResponse) response, jsonMapper.toJson(json), headers);
+  }
 
 }

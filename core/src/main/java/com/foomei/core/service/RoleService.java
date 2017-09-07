@@ -10,27 +10,27 @@ import com.foomei.core.entity.Role;
 
 /**
  * 角色管理业务类.
- * 
+ *
  * @author walker
  */
 @Service
 @Transactional(readOnly = true)
 public class RoleService extends JpaServiceImpl<RoleDao, Role, Long> {
 
-	@Autowired
-	private RoleDao roleDao;
+  @Autowired
+  private RoleDao roleDao;
 
-	public Role getByCode(String code) {
-		return roleDao.findByCode(code);
-	}
+  public Role getByCode(String code) {
+    return roleDao.findByCode(code);
+  }
 
-	public boolean existCode(Long id, String code) {
-		Role role = getByCode(code);
-		if(role == null || (id != null && id.equals(role.getId()))) {
-			return false;
-		} else {
-			return true;
-		}
-	}
-	
+  public boolean existCode(Long id, String code) {
+    Role role = getByCode(code);
+    if (role == null || (id != null && id.equals(role.getId()))) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
 }

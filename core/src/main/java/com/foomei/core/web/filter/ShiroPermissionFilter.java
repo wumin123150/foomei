@@ -15,24 +15,24 @@ import com.foomei.common.net.RequestUtil;
 import com.foomei.common.web.Servlets;
 
 public class ShiroPermissionFilter extends PermissionsAuthorizationFilter {
-    
-    private JsonMapper jsonMapper = new JsonMapper();
-	
-	public boolean onAccessDenied(ServletRequest request, ServletResponse response, Object mappedValue) throws Exception {
-		if (RequestUtil.isAjaxRequest((HttpServletRequest) request)) {
-			Subject subject = getSubject(request, response);
-			if (subject.getPrincipal() == null) {
-				renderJson(response, ResponseResult.createError(ErrorCodeFactory.UNAUTHORIZED, "请重新登录。"));
-			} else {
-				renderJson(response, ResponseResult.createError(ErrorCodeFactory.FORBIDDEN, "没有权限访问。"));
-			}
-			return false;
-		} 
-        return onAccessDenied(request, response);
+
+  private JsonMapper jsonMapper = new JsonMapper();
+
+  public boolean onAccessDenied(ServletRequest request, ServletResponse response, Object mappedValue) throws Exception {
+    if (RequestUtil.isAjaxRequest((HttpServletRequest) request)) {
+      Subject subject = getSubject(request, response);
+      if (subject.getPrincipal() == null) {
+        renderJson(response, ResponseResult.createError(ErrorCodeFactory.UNAUTHORIZED, "请重新登录。"));
+      } else {
+        renderJson(response, ResponseResult.createError(ErrorCodeFactory.FORBIDDEN, "没有权限访问。"));
+      }
+      return false;
     }
-	
-	private void renderJson(final ServletResponse response, final ResponseResult json, final String... headers) {
-		Servlets.renderJson((HttpServletResponse) response, jsonMapper.toJson(json), headers);
-	}
+    return onAccessDenied(request, response);
+  }
+
+  private void renderJson(final ServletResponse response, final ResponseResult json, final String... headers) {
+    Servlets.renderJson((HttpServletResponse) response, jsonMapper.toJson(json), headers);
+  }
 
 }

@@ -24,38 +24,37 @@ import javax.servlet.http.HttpServletRequest;
 @RestController
 @RequestMapping(value = "/api/role")
 public class RoleEndpoint {
-	
-	@Autowired
-	private RoleService roleService;
-	
-	@ApiOperation(value = "角色分页列表", httpMethod = "GET", produces = "application/json")
-	@RequiresRoles("admin")
-	@RequestMapping(value = "page")
-	public ResponseResult<Page<RoleDto>> page(PageQuery pageQuery, HttpServletRequest request) {
-		Page<Role> page = null;
-		if(pageQuery.getAdvance()) {
-			JqGridFilter jqGridFilter = JsonMapper.nonDefaultMapper().fromJson(request.getParameter("filters"), JqGridFilter.class);
-			page = roleService.getPage(jqGridFilter, pageQuery.buildPageRequest());
-		} else {
-		    SearchFilter searchFilter = new SearchFilter().or()
-		            .addLike(Role.PROP_CODE, pageQuery.getSearchKey())
-		            .addLike(Role.PROP_NAME, pageQuery.getSearchKey());
-			page = roleService.getPage(searchFilter, pageQuery.buildPageRequest());
-		}
-		return ResponseResult.createSuccess(page, Role.class, RoleDto.class);
-	}
-	
-	/**
-	 * 判断编码的唯一性
-	 * 
-	 */
-	@ApiOperation(value = "检查角色编码是否存在", httpMethod = "GET")
-	@ApiImplicitParams({
-		@ApiImplicitParam(name = "code", value = "编码", required = true, dataType = "string", paramType = "query")
-	})
-	@RequestMapping("checkCode")
-	public boolean checkCode(Long id, String code) {
-		return !roleService.existCode(id, code);
-	}
+
+  @Autowired
+  private RoleService roleService;
+
+  @ApiOperation(value = "角色分页列表", httpMethod = "GET", produces = "application/json")
+  @RequiresRoles("admin")
+  @RequestMapping(value = "page")
+  public ResponseResult<Page<RoleDto>> page(PageQuery pageQuery, HttpServletRequest request) {
+    Page<Role> page = null;
+    if (pageQuery.getAdvance()) {
+      JqGridFilter jqGridFilter = JsonMapper.nonDefaultMapper().fromJson(request.getParameter("filters"), JqGridFilter.class);
+      page = roleService.getPage(jqGridFilter, pageQuery.buildPageRequest());
+    } else {
+      SearchFilter searchFilter = new SearchFilter().or()
+        .addLike(Role.PROP_CODE, pageQuery.getSearchKey())
+        .addLike(Role.PROP_NAME, pageQuery.getSearchKey());
+      page = roleService.getPage(searchFilter, pageQuery.buildPageRequest());
+    }
+    return ResponseResult.createSuccess(page, Role.class, RoleDto.class);
+  }
+
+  /**
+   * 判断编码的唯一性
+   */
+  @ApiOperation(value = "检查角色编码是否存在", httpMethod = "GET")
+  @ApiImplicitParams({
+    @ApiImplicitParam(name = "code", value = "编码", required = true, dataType = "string", paramType = "query")
+  })
+  @RequestMapping("checkCode")
+  public boolean checkCode(Long id, String code) {
+    return !roleService.existCode(id, code);
+  }
 
 }

@@ -12,39 +12,39 @@ import com.foomei.core.entity.Area;
 
 /**
  * 省市县类.
- * 
+ *
  * @author walker
  */
 @Service
 @Transactional(readOnly = true)
 public class AreaService extends JpaServiceImpl<AreaDao, Area, String> {
 
-	@Autowired
-	private AreaDao areaDao;
+  @Autowired
+  private AreaDao areaDao;
 
-	public Area getByCode(String code) {
-		return areaDao.findByCode(code);
-	}
+  public Area getByCode(String code) {
+    return areaDao.findByCode(code);
+  }
 
-	public List<Area> findTop() {
-		return areaDao.findTop();
-	}
-	
-	public List<Area> findChildrenByParent(String parentId) {
-		return areaDao.findChildrenByParent(parentId);
-	}
-	
-	public List<Area> findTownByRoot(String rootId) {
-	    return areaDao.findTownByRoot(rootId);
-	}
-	
-	public boolean existCode(String id, String code) {
-		Area area = getByCode(code);
-		if(area == null || (id != null && id.equals(area.getId()))) {
-			return false;
-		} else {
-			return true;
-		}
-	}
-	
+  public List<Area> findTop() {
+    return areaDao.findTop();
+  }
+
+  public List<Area> findChildrenByParent(String parentId) {
+    return areaDao.findChildrenByParent(parentId);
+  }
+
+  public List<Area> findTownByRoot(String rootId) {
+    return areaDao.findTownByRoot(rootId);
+  }
+
+  public boolean existCode(String id, String code) {
+    Area area = getByCode(code);
+    if (area == null || (id != null && id.equals(area.getId()))) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
 }

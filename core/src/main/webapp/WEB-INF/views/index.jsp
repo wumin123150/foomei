@@ -4,26 +4,26 @@
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 <html>
 <head>
-	<title>首页</title>
+  <title>首页</title>
 </head>
 <myCss>
-	<!-- inline styles related to this page -->
+  <!-- inline styles related to this page -->
 </myCss>
 <body>
-		<!-- /section:basics/sidebar -->
-		<div class="main-content">
-			<div class="main-content-inner">
-      
-			</div>
-		</div><!-- /.main-content -->
+<!-- /section:basics/sidebar -->
+<div class="main-content">
+  <div class="main-content-inner">
+
+  </div>
+</div><!-- /.main-content -->
 </body>
 <myScript>
-	<!-- page specific plugin scripts -->
+  <!-- page specific plugin scripts -->
 </myScript>
 <myJs>
-	<!-- inline scripts related to this page -->
-	<script type="text/javascript">
-		
-	</script>
+  <!-- inline scripts related to this page -->
+  <script type="text/javascript">
+
+  </script>
 </myJs>
 </html>

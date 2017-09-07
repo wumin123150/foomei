@@ -24,55 +24,55 @@ import javax.servlet.http.HttpServletRequest;
 @RestController
 @RequestMapping(value = "/api/membership")
 public class MembershipEndpoint {
-	
-	@Autowired
-	private UserService userService;
-	@Autowired
-	private UserGroupService userGroupService;
 
-	@ApiOperation(value = "机构授权分页列表", httpMethod = "GET", produces = "application/json")
-	@ApiImplicitParams({
-		@ApiImplicitParam(name = "groupId", value = "机构ID", dataType = "long", paramType = "query")
-	})
-	@RequiresRoles("admin")
-	@RequestMapping(value = "page")
-	public ResponseResult<Page<BaseUser>> page(PageQuery pageQuery, Long groupId, HttpServletRequest request) {
-		Page<User> page = userService.getPageByGroup(pageQuery.getSearchKey(), groupId, pageQuery.buildPageRequest());
-		return ResponseResult.createSuccess(page, User.class, BaseUser.class);
-	}
+  @Autowired
+  private UserService userService;
+  @Autowired
+  private UserGroupService userGroupService;
 
-	@ApiOperation(value = "机构授权新增", httpMethod = "POST", produces = "application/json")
-	@ApiImplicitParams({
-		@ApiImplicitParam(name = "userId", value = "用户ID", required = true, dataType = "long", paramType = "form"),
-		@ApiImplicitParam(name = "groupId", value = "机构ID", required = true, dataType = "long", paramType = "form")
-	})
-	@RequiresRoles("admin")
-	@RequestMapping(value = "create", method = RequestMethod.POST)
-	public ResponseResult create(Long userId, Long groupId) {
-		User user = userService.get(userId);
-		UserGroup group = userGroupService.get(groupId);
-		user.getGroupList().add(group);
-		userService.save(user);
-		return ResponseResult.SUCCEED;
-	}
+  @ApiOperation(value = "机构授权分页列表", httpMethod = "GET", produces = "application/json")
+  @ApiImplicitParams({
+    @ApiImplicitParam(name = "groupId", value = "机构ID", dataType = "long", paramType = "query")
+  })
+  @RequiresRoles("admin")
+  @RequestMapping(value = "page")
+  public ResponseResult<Page<BaseUser>> page(PageQuery pageQuery, Long groupId, HttpServletRequest request) {
+    Page<User> page = userService.getPageByGroup(pageQuery.getSearchKey(), groupId, pageQuery.buildPageRequest());
+    return ResponseResult.createSuccess(page, User.class, BaseUser.class);
+  }
 
-	@ApiOperation(value = "机构授权删除", httpMethod = "POST", produces = "application/json")
-	@ApiImplicitParams({
-		@ApiImplicitParam(name = "userId", value = "用户ID", required = true, dataType = "long", paramType = "form"),
-		@ApiImplicitParam(name = "groupId", value = "机构ID", required = true, dataType = "long", paramType = "form")
-	})
-	@RequiresRoles("admin")
-	@RequestMapping(value = "delete")
-	public ResponseResult delete(Long userId, Long groupId) {
-		User user = userService.get(userId);
-		for (UserGroup group : user.getGroupList()) {
-			if(group.getId().equals(groupId)) {
-				user.getGroupList().remove(group);
-				break;
-			}
-		}
-		userService.save(user);
-		return ResponseResult.SUCCEED;
-	}
+  @ApiOperation(value = "机构授权新增", httpMethod = "POST", produces = "application/json")
+  @ApiImplicitParams({
+    @ApiImplicitParam(name = "userId", value = "用户ID", required = true, dataType = "long", paramType = "form"),
+    @ApiImplicitParam(name = "groupId", value = "机构ID", required = true, dataType = "long", paramType = "form")
+  })
+  @RequiresRoles("admin")
+  @RequestMapping(value = "create", method = RequestMethod.POST)
+  public ResponseResult create(Long userId, Long groupId) {
+    User user = userService.get(userId);
+    UserGroup group = userGroupService.get(groupId);
+    user.getGroupList().add(group);
+    userService.save(user);
+    return ResponseResult.SUCCEED;
+  }
+
+  @ApiOperation(value = "机构授权删除", httpMethod = "POST", produces = "application/json")
+  @ApiImplicitParams({
+    @ApiImplicitParam(name = "userId", value = "用户ID", required = true, dataType = "long", paramType = "form"),
+    @ApiImplicitParam(name = "groupId", value = "机构ID", required = true, dataType = "long", paramType = "form")
+  })
+  @RequiresRoles("admin")
+  @RequestMapping(value = "delete")
+  public ResponseResult delete(Long userId, Long groupId) {
+    User user = userService.get(userId);
+    for (UserGroup group : user.getGroupList()) {
+      if (group.getId().equals(groupId)) {
+        user.getGroupList().remove(group);
+        break;
+      }
+    }
+    userService.save(user);
+    return ResponseResult.SUCCEED;
+  }
 
 }

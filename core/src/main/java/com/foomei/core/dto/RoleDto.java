@@ -8,10 +8,10 @@ import lombok.Data;
 @ApiModel(description = "角色")
 public class RoleDto {
 
-	private Long id;
-    @ApiModelProperty(value="编码", required=true)
-	private String code;
-    @ApiModelProperty(value="名称", required=true)
-	private String name;
+  private Long id;
+  @ApiModelProperty(value = "编码", required = true)
+  private String code;
+  @ApiModelProperty(value = "名称", required = true)
+  private String name;
 
 }

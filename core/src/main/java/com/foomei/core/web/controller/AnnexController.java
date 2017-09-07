@@ -29,123 +29,123 @@ import com.foomei.core.service.UserService;
 
 /**
  * 附件
- * 
+ *
  * @author walker
  */
 @Api(description = "附件管理")
 @Controller
 public class AnnexController {
 
-	@Value("${upload.folder:/opt/upload/}")
-	private String root;
-	@Autowired
-	private AnnexService annexService;
-	@Autowired
-	private UserService userService;
+  @Value("${upload.folder:/opt/upload/}")
+  private String root;
+  @Autowired
+  private AnnexService annexService;
+  @Autowired
+  private UserService userService;
 
-	@ApiOperation(value = "附件下载", httpMethod = "GET")
-	@RequestMapping(value = "/annex/{path1}/{name:.+}", method = RequestMethod.GET)
-	public void file(@PathVariable String path1, @PathVariable String name, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		String path = "/" + path1 + "/" + name;
-		String realPath = root + path;
-		File file = new File(realPath);
-		String fileType = FilenameUtils.getExtension(file.getName());
-		String fileName = FilenameUtils.getName(file.getName());
+  @ApiOperation(value = "附件下载", httpMethod = "GET")
+  @RequestMapping(value = "/annex/{path1}/{name:.+}", method = RequestMethod.GET)
+  public void file(@PathVariable String path1, @PathVariable String name, HttpServletRequest request, HttpServletResponse response) throws Exception {
+    String path = "/" + path1 + "/" + name;
+    String realPath = root + path;
+    File file = new File(realPath);
+    String fileType = FilenameUtils.getExtension(file.getName());
+    String fileName = FilenameUtils.getName(file.getName());
 
-		download(file, fileType, fileName, request, response);
-	}
+    download(file, fileType, fileName, request, response);
+  }
 
-	@ApiOperation(value = "附件下载", httpMethod = "GET")
-	@RequestMapping(value = "/annex/{path1}/{path2}/{name:.+}", method = RequestMethod.GET)
-	public void file(@PathVariable String path1, @PathVariable String path2, @PathVariable String name, HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
-		String path = "/" + path1 + "/" + path2 + "/" + name;
-		String realPath = root + path;
-		Annex attachment = annexService.getByPath(path);
+  @ApiOperation(value = "附件下载", httpMethod = "GET")
+  @RequestMapping(value = "/annex/{path1}/{path2}/{name:.+}", method = RequestMethod.GET)
+  public void file(@PathVariable String path1, @PathVariable String path2, @PathVariable String name, HttpServletRequest request, HttpServletResponse response)
+    throws Exception {
+    String path = "/" + path1 + "/" + path2 + "/" + name;
+    String realPath = root + path;
+    Annex attachment = annexService.getByPath(path);
 
-		File file = new File(realPath);
-		String fileType = FilenameUtils.getExtension(file.getName());
-		String fileName = FilenameUtils.getName(file.getName());
+    File file = new File(realPath);
+    String fileType = FilenameUtils.getExtension(file.getName());
+    String fileName = FilenameUtils.getName(file.getName());
 
-		if (attachment != null) {
-			fileType = attachment.getType();
-			fileName = attachment.getName();
-		}
+    if (attachment != null) {
+      fileType = attachment.getType();
+      fileName = attachment.getName();
+    }
 
-		download(file, fileType, fileName, request, response);
-	}
-	
-	@ApiOperation(value = "用户头像下载", httpMethod = "GET")
-	@RequestMapping(value = "/avatar/{id}", method = RequestMethod.GET)
-	public void file(@PathVariable Long id, HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
-		User user = userService.get(id);
-		String path = user.getAvatar();
-		String realPath = root + path;
-		Annex attachment = annexService.getByPath(path);
+    download(file, fileType, fileName, request, response);
+  }
 
-		File file = new File(realPath);
-		String fileType = FilenameUtils.getExtension(file.getName());
-		String fileName = FilenameUtils.getName(file.getName());
+  @ApiOperation(value = "用户头像下载", httpMethod = "GET")
+  @RequestMapping(value = "/avatar/{id}", method = RequestMethod.GET)
+  public void file(@PathVariable Long id, HttpServletRequest request, HttpServletResponse response)
+    throws Exception {
+    User user = userService.get(id);
+    String path = user.getAvatar();
+    String realPath = root + path;
+    Annex attachment = annexService.getByPath(path);
 
-		if (attachment != null) {
-			fileType = attachment.getType();
-			fileName = attachment.getName();
-		}
+    File file = new File(realPath);
+    String fileType = FilenameUtils.getExtension(file.getName());
+    String fileName = FilenameUtils.getName(file.getName());
 
-		download(file, fileType, fileName, request, response);
-	}
+    if (attachment != null) {
+      fileType = attachment.getType();
+      fileName = attachment.getName();
+    }
 
-	private void download(File file, String fileType, String fileName, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		// ---------------------------------------------------------------
-		// 设置MIME
-		// ---------------------------------------------------------------
-		if (fileType.equalsIgnoreCase("xls") || fileType.equalsIgnoreCase("xlsx")) {
-			response.setContentType("application/vnd.ms-excel");
-		} else if (fileType.equalsIgnoreCase("doc")) {
-			response.setContentType("application/msword");
-		} else if (fileType.equalsIgnoreCase("ppt")) {
-			response.setContentType("application/vnd.ms-powerpoint");
-		} else if (fileType.equalsIgnoreCase("pdf")) {
-			response.setContentType("application/pdf");
-		} else if (fileType.equalsIgnoreCase("gif")) {
-			response.setContentType("image/gif");
-		} else if (fileType.equalsIgnoreCase("jpg") || fileType.equalsIgnoreCase("jpeg")) {
-			response.setContentType("image/jpeg");
-		} else if (fileType.equalsIgnoreCase("png")) {
-			response.setContentType("image/png");
-		} else if (fileType.equalsIgnoreCase("bmp")) {
-			response.setContentType("image/x-xbitmap");
-		} else if (fileType.equalsIgnoreCase("svg")) {
-			response.setContentType("image/svg+xml");
-		} else if (fileType.equalsIgnoreCase("zip")) {
-			response.setContentType("application/zip");
-		} else {
-			response.setContentType("multipart/form-data");
-		}
-		
-		if((!file.exists() || file.length() == 0) && ImageUtil.isScale(file)) {
-            String scaleRange = ImageUtil.getScaleRange(file);
-            File srcFile = new File(ImageUtil.getScaleSource(file));
-            ImageUtil.forceScale(srcFile, file, scaleRange);
-        }
+    download(file, fileType, fileName, request, response);
+  }
 
-		response.setHeader("Content-Disposition", String.format("attachment;filename*=utf-8'zh_cn'%s", URLEncoder.encode(fileName, "UTF-8")));
-		response.addHeader("Content-Length", "" + file.length());
+  private void download(File file, String fileType, String fileName, HttpServletRequest request, HttpServletResponse response) throws Exception {
+    // ---------------------------------------------------------------
+    // 设置MIME
+    // ---------------------------------------------------------------
+    if (fileType.equalsIgnoreCase("xls") || fileType.equalsIgnoreCase("xlsx")) {
+      response.setContentType("application/vnd.ms-excel");
+    } else if (fileType.equalsIgnoreCase("doc")) {
+      response.setContentType("application/msword");
+    } else if (fileType.equalsIgnoreCase("ppt")) {
+      response.setContentType("application/vnd.ms-powerpoint");
+    } else if (fileType.equalsIgnoreCase("pdf")) {
+      response.setContentType("application/pdf");
+    } else if (fileType.equalsIgnoreCase("gif")) {
+      response.setContentType("image/gif");
+    } else if (fileType.equalsIgnoreCase("jpg") || fileType.equalsIgnoreCase("jpeg")) {
+      response.setContentType("image/jpeg");
+    } else if (fileType.equalsIgnoreCase("png")) {
+      response.setContentType("image/png");
+    } else if (fileType.equalsIgnoreCase("bmp")) {
+      response.setContentType("image/x-xbitmap");
+    } else if (fileType.equalsIgnoreCase("svg")) {
+      response.setContentType("image/svg+xml");
+    } else if (fileType.equalsIgnoreCase("zip")) {
+      response.setContentType("application/zip");
+    } else {
+      response.setContentType("multipart/form-data");
+    }
 
-		InputStream input = null;
-		OutputStream output = response.getOutputStream();
-		try {
-			input = new FileInputStream(file);
-			// 基于byte数组读取InputStream并直接写入OutputStream, 数组默认大小为4k.
-			IOUtils.copy(input, output);
-			output.flush();
-		} finally {
-			if(input != null) {
-				// 保证InputStream的关闭.
-				IOUtils.closeQuietly(input);
-			}
-		}
-	}
+    if ((!file.exists() || file.length() == 0) && ImageUtil.isScale(file)) {
+      String scaleRange = ImageUtil.getScaleRange(file);
+      File srcFile = new File(ImageUtil.getScaleSource(file));
+      ImageUtil.forceScale(srcFile, file, scaleRange);
+    }
+
+    response.setHeader("Content-Disposition", String.format("attachment;filename*=utf-8'zh_cn'%s", URLEncoder.encode(fileName, "UTF-8")));
+    response.addHeader("Content-Length", "" + file.length());
+
+    InputStream input = null;
+    OutputStream output = response.getOutputStream();
+    try {
+      input = new FileInputStream(file);
+      // 基于byte数组读取InputStream并直接写入OutputStream, 数组默认大小为4k.
+      IOUtils.copy(input, output);
+      output.flush();
+    } finally {
+      if (input != null) {
+        // 保证InputStream的关闭.
+        IOUtils.closeQuietly(input);
+      }
+    }
+  }
 
 }

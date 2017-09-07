@@ -32,86 +32,86 @@ import com.google.common.collect.Sets;
 
 public class ShiroWeixinRealm extends AuthorizingRealm {
 
-	protected UserService userService;
+  protected UserService userService;
 
-	/**
-	 * 认证回调函数,登录时调用.
-	 */
-	@Override
-	protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authcToken) throws AuthenticationException {
-		String openId = ((WeixinToken) authcToken).getOpenId();
-		if(openId == null){
-            throw new AccountException("Null OpenID are not allowed by this realm.");
+  /**
+   * 认证回调函数,登录时调用.
+   */
+  @Override
+  protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authcToken) throws AuthenticationException {
+    String openId = ((WeixinToken) authcToken).getOpenId();
+    if (openId == null) {
+      throw new AccountException("Null OpenID are not allowed by this realm.");
+    }
+    User user = userService.getByWeixin(openId);
+
+    if (user != null) {
+      if (!user.isEnabled()) {
+        if (user.isAccountInactived()) {
+          throw new InactiveAccountException();
         }
-		User user = userService.getByWeixin(openId);
-		
-		if (user != null) {
-			if(!user.isEnabled()) {
-				if(user.isAccountInactived()) {
-					throw new InactiveAccountException();
-				}
-				if(user.isAccountExpired()) {
-					throw new ExpiredCredentialsException();
-				}
-				if(user.isAccountLocked()) {
-					throw new LockedAccountException();
-				}
-				if(user.isAccountTerminated()) {
-					throw new DisabledAccountException();
-				}
-			}
-			
-			return new SimpleAuthenticationInfo(BeanMapper.map(user, ShiroUser.class), null, getName());
-		} else {
-			throw new UnknownAccountException("No account found");
-		}
-	}
+        if (user.isAccountExpired()) {
+          throw new ExpiredCredentialsException();
+        }
+        if (user.isAccountLocked()) {
+          throw new LockedAccountException();
+        }
+        if (user.isAccountTerminated()) {
+          throw new DisabledAccountException();
+        }
+      }
 
-	/**
-	 * 授权查询回调函数, 进行鉴权但缓存中无用户的授权信息时调用.
-	 */
-	@Override
-	protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
-		ShiroUser shiroUser = (ShiroUser) principals.getPrimaryPrincipal();
-		User user = userService.getByLoginName(shiroUser.getLoginName());
+      return new SimpleAuthenticationInfo(BeanMapper.map(user, ShiroUser.class), null, getName());
+    } else {
+      throw new UnknownAccountException("No account found");
+    }
+  }
 
-		Set<Role> roles = Sets.newTreeSet(new RoleComparator());
-		for (UserGroup group : user.getGroupList()) {
-			roles.addAll(group.getRoleList());
-		}
-		roles.addAll(user.getRoleList());
+  /**
+   * 授权查询回调函数, 进行鉴权但缓存中无用户的授权信息时调用.
+   */
+  @Override
+  protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
+    ShiroUser shiroUser = (ShiroUser) principals.getPrimaryPrincipal();
+    User user = userService.getByLoginName(shiroUser.getLoginName());
 
-		SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
-		for (Role role : roles) {
-			// 基于Role的权限信息
-			info.addRole(role.getCode());
-			// 基于Permission的权限信息
-			info.addStringPermissions(role.getPermissions());
-		}
-		return info;
-	}
+    Set<Role> roles = Sets.newTreeSet(new RoleComparator());
+    for (UserGroup group : user.getGroupList()) {
+      roles.addAll(group.getRoleList());
+    }
+    roles.addAll(user.getRoleList());
 
-	/**
-	 * 设定Password校验的Hash算法与迭代次数.
-	 */
-	@PostConstruct
-	public void initCredentialsMatcher() {
-	    SkipCredentialsMatcher matcher = new SkipCredentialsMatcher();
-		setCredentialsMatcher(matcher);
-	}
-	
-	@PostConstruct
-	public void initAuthenticationTokenClass() {
-		setAuthenticationTokenClass(WeixinToken.class);
-	}
+    SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
+    for (Role role : roles) {
+      // 基于Role的权限信息
+      info.addRole(role.getCode());
+      // 基于Permission的权限信息
+      info.addStringPermissions(role.getPermissions());
+    }
+    return info;
+  }
 
-	public void setUserService(UserService userService) {
-		this.userService = userService;
-	}
-	
-	public static class RoleComparator implements Comparator<Role>, Serializable {
-	    public int compare(Role role1, Role role2) {
-	        return role1.getCode().compareTo(role2.getCode());
-	    }
-	}
+  /**
+   * 设定Password校验的Hash算法与迭代次数.
+   */
+  @PostConstruct
+  public void initCredentialsMatcher() {
+    SkipCredentialsMatcher matcher = new SkipCredentialsMatcher();
+    setCredentialsMatcher(matcher);
+  }
+
+  @PostConstruct
+  public void initAuthenticationTokenClass() {
+    setAuthenticationTokenClass(WeixinToken.class);
+  }
+
+  public void setUserService(UserService userService) {
+    this.userService = userService;
+  }
+
+  public static class RoleComparator implements Comparator<Role>, Serializable {
+    public int compare(Role role1, Role role2) {
+      return role1.getCode().compareTo(role2.getCode());
+    }
+  }
 }

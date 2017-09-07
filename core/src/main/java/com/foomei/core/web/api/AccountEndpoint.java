@@ -25,42 +25,42 @@ import java.io.IOException;
 @RequestMapping(value = "/api/account")
 public class AccountEndpoint {
 
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private AnnexService annexService;
+  @Autowired
+  private UserService userService;
+  @Autowired
+  private AnnexService annexService;
 
-    @ApiOperation(value = "保存头像", notes = "图片转成base64编码", httpMethod = "POST", produces = "application/json")
-    @ApiImplicitParams({
-        @ApiImplicitParam(name = "avatar", value = "base64编码的图片", required = true, dataType = "string", paramType = "query")
-    })
-    @RequestMapping(value = "saveAvatar", method = RequestMethod.POST)
-    public ResponseResult saveAvatar(String avatar) throws IOException {
-        Long id = CoreThreadContext.getUserId();
-        byte[] data = Base64.decodeBase64(avatar.getBytes("UTF-8"));
-        Annex annex = annexService.save(data, "avatar.jpg", User.USER_ANNEX_PATH, String.valueOf(id), User.USER_ANNEX_TYPE);
+  @ApiOperation(value = "保存头像", notes = "图片转成base64编码", httpMethod = "POST", produces = "application/json")
+  @ApiImplicitParams({
+    @ApiImplicitParam(name = "avatar", value = "base64编码的图片", required = true, dataType = "string", paramType = "query")
+  })
+  @RequestMapping(value = "saveAvatar", method = RequestMethod.POST)
+  public ResponseResult saveAvatar(String avatar) throws IOException {
+    Long id = CoreThreadContext.getUserId();
+    byte[] data = Base64.decodeBase64(avatar.getBytes("UTF-8"));
+    Annex annex = annexService.save(data, "avatar.jpg", User.USER_ANNEX_PATH, String.valueOf(id), User.USER_ANNEX_TYPE);
 
-        User user = userService.get(id);
-        user.setAvatar(annex.getPath());
-        userService.save(user);
-        return ResponseResult.createSuccess(annex.getPath());
+    User user = userService.get(id);
+    user.setAvatar(annex.getPath());
+    userService.save(user);
+    return ResponseResult.createSuccess(annex.getPath());
+  }
+
+  @ApiOperation(value = "密码修改", httpMethod = "POST", produces = "application/json")
+  @ApiImplicitParams({
+    @ApiImplicitParam(name = "password", value = "原密码", required = true, dataType = "string", paramType = "form"),
+    @ApiImplicitParam(name = "plainPassword", value = "新密码", required = true, dataType = "string", paramType = "form")
+  })
+  @LogIgnore(value = "field", excludes = {"password", "plainPassword"})
+  @RequestMapping(value = "/changePwd", method = RequestMethod.POST)
+  public ResponseResult changePassword(String password, String plainPassword) {
+    Long id = CoreThreadContext.getUserId();
+    if (userService.checkPassword(id, password)) {
+      userService.changePassword(id, plainPassword);
+      return ResponseResult.SUCCEED;
+    } else {
+      return ResponseResult.createError(ErrorCodeFactory.BAD_REQUEST, "原密码错误");
     }
-
-    @ApiOperation(value = "密码修改", httpMethod = "POST", produces = "application/json")
-    @ApiImplicitParams({
-        @ApiImplicitParam(name = "password", value = "原密码", required = true, dataType = "string", paramType = "form"),
-        @ApiImplicitParam(name = "plainPassword", value = "新密码", required = true, dataType = "string", paramType = "form")
-    })
-    @LogIgnore(value = "field", excludes = {"password", "plainPassword"})
-    @RequestMapping(value = "/changePwd", method = RequestMethod.POST)
-    public ResponseResult changePassword(String password, String plainPassword) {
-        Long id = CoreThreadContext.getUserId();
-        if (userService.checkPassword(id, password)) {
-            userService.changePassword(id, plainPassword);
-            return ResponseResult.SUCCEED;
-        } else {
-            return ResponseResult.createError(ErrorCodeFactory.BAD_REQUEST, "原密码错误");
-        }
-    }
+  }
 
 }

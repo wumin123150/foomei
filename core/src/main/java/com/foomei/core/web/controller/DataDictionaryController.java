@@ -17,22 +17,22 @@ import com.foomei.core.service.DataTypeService;
 @RequestMapping(value = "/admin/dataDictionary")
 public class DataDictionaryController {
 
-	private static final String MENU = "dataDictionary";
+  private static final String MENU = "dataDictionary";
 
-	@Autowired
-	private DataTypeService dataTypeService;
-	@Autowired
-	private DataDictionaryService dataDictionaryService;
+  @Autowired
+  private DataTypeService dataTypeService;
+  @Autowired
+  private DataDictionaryService dataDictionaryService;
 
-	@ApiOperation(value = "数据字典页面", httpMethod = "GET")
-	@RequiresRoles("admin")
-	@RequestMapping
-	public String list(String typeCode, Model model) {
-		model.addAttribute("menu", MENU);
-		
-		model.addAttribute("type", dataTypeService.getByCode(typeCode));
+  @ApiOperation(value = "数据字典页面", httpMethod = "GET")
+  @RequiresRoles("admin")
+  @RequestMapping
+  public String list(String typeCode, Model model) {
+    model.addAttribute("menu", MENU);
 
-		return "admin/dataDictionary/dataDictionary";
-	}
-	
+    model.addAttribute("type", dataTypeService.getByCode(typeCode));
+
+    return "admin/dataDictionary/dataDictionary";
+  }
+
 }

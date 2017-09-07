@@ -20,43 +20,43 @@ import com.foomei.core.service.TokenService;
  */
 public class AccessAuthenticationFilter extends PasswordAuthenticationFilter {
 
-    @Autowired
-    private TokenService tokenService;
+  @Autowired
+  private TokenService tokenService;
 
-    public static final String DEFAULT_TOKEN_PARAM = "token";
-    private String tokenParam = DEFAULT_TOKEN_PARAM;
+  public static final String DEFAULT_TOKEN_PARAM = "token";
+  private String tokenParam = DEFAULT_TOKEN_PARAM;
 
-    public boolean continueLogin(ServletRequest request, ServletResponse response) throws Exception {
-        String token = getToken(request);
-        if (StringUtils.isNotBlank(token)) {
-            String host = getHost(request);
-            try {
-                Subject subject = getSubject(request, response);
-                subject.login(new AccessToken(token, host));
-                return true;
-            } catch (AuthenticationException e) {
-                e.printStackTrace();
-                return false;
-            }
-        }
-
+  public boolean continueLogin(ServletRequest request, ServletResponse response) throws Exception {
+    String token = getToken(request);
+    if (StringUtils.isNotBlank(token)) {
+      String host = getHost(request);
+      try {
+        Subject subject = getSubject(request, response);
+        subject.login(new AccessToken(token, host));
+        return true;
+      } catch (AuthenticationException e) {
+        e.printStackTrace();
         return false;
+      }
     }
 
-    public void renderSuccess(Subject subject, ServletRequest request, ServletResponse response, String... headers) {
-        ShiroUser user = (ShiroUser) subject.getPrincipal();
-        String authToken = tokenService.apply(user.getId(), null, null);
-        CookieUtil.cancelCookie((HttpServletRequest)request, (HttpServletResponse)response, "token", null);
-        CookieUtil.addCookie((HttpServletRequest)request, (HttpServletResponse)response, "token", authToken, -1, null);
-        super.renderSuccess(subject, request, response, headers);
-    }
+    return false;
+  }
 
-    public String getTokenParam() {
-        return tokenParam;
-    }
+  public void renderSuccess(Subject subject, ServletRequest request, ServletResponse response, String... headers) {
+    ShiroUser user = (ShiroUser) subject.getPrincipal();
+    String authToken = tokenService.apply(user.getId(), null, null);
+    CookieUtil.cancelCookie((HttpServletRequest) request, (HttpServletResponse) response, "token", null);
+    CookieUtil.addCookie((HttpServletRequest) request, (HttpServletResponse) response, "token", authToken, -1, null);
+    super.renderSuccess(subject, request, response, headers);
+  }
 
-    protected String getToken(ServletRequest request) {
-        return org.apache.shiro.util.StringUtils.clean(((HttpServletRequest)request).getHeader(getTokenParam()));
-    }
+  public String getTokenParam() {
+    return tokenParam;
+  }
+
+  protected String getToken(ServletRequest request) {
+    return org.apache.shiro.util.StringUtils.clean(((HttpServletRequest) request).getHeader(getTokenParam()));
+  }
 
 }

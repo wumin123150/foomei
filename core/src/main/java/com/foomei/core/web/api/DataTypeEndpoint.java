@@ -26,38 +26,37 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping(value = "/api/dataType")
 public class DataTypeEndpoint {
 
-	@Autowired
-	private DataTypeService dataTypeService;
+  @Autowired
+  private DataTypeService dataTypeService;
 
-	@ApiOperation(value = "数据类型分页列表", httpMethod = "GET", produces = "application/json")
-	@RequiresRoles("admin")
-	@RequestMapping(value = "page", method = RequestMethod.GET)
-	public ResponseResult<Page<DataTypeDto>> page(PageQuery pageQuery, HttpServletRequest request) {
-		Page<DataType> page = null;
-		if(pageQuery.getAdvance()) {
-			JqGridFilter jqGridFilter = JsonMapper.nonDefaultMapper().fromJson(request.getParameter("filters"), JqGridFilter.class);
-			page = dataTypeService.getPage(jqGridFilter, pageQuery.buildPageRequest());
-		} else {
-		    SearchFilter searchFilter = new SearchFilter().or()
-		            .addLike(DataType.PROP_CODE, pageQuery.getSearchKey())
-		            .addLike(DataType.PROP_NAME, pageQuery.getSearchKey());
-			page = dataTypeService.getPage(searchFilter, pageQuery.buildPageRequest());
-		}
+  @ApiOperation(value = "数据类型分页列表", httpMethod = "GET", produces = "application/json")
+  @RequiresRoles("admin")
+  @RequestMapping(value = "page", method = RequestMethod.GET)
+  public ResponseResult<Page<DataTypeDto>> page(PageQuery pageQuery, HttpServletRequest request) {
+    Page<DataType> page = null;
+    if (pageQuery.getAdvance()) {
+      JqGridFilter jqGridFilter = JsonMapper.nonDefaultMapper().fromJson(request.getParameter("filters"), JqGridFilter.class);
+      page = dataTypeService.getPage(jqGridFilter, pageQuery.buildPageRequest());
+    } else {
+      SearchFilter searchFilter = new SearchFilter().or()
+        .addLike(DataType.PROP_CODE, pageQuery.getSearchKey())
+        .addLike(DataType.PROP_NAME, pageQuery.getSearchKey());
+      page = dataTypeService.getPage(searchFilter, pageQuery.buildPageRequest());
+    }
 
-		return ResponseResult.createSuccess(page, DataType.class, DataTypeDto.class);
-	}
-	
-	/**
-	 * 判断编码的唯一性
-	 * 
-	 */
-	@ApiOperation(value = "检查数据类型编码是否存在", httpMethod = "GET")
-	@ApiImplicitParams({
-		@ApiImplicitParam(name = "code", value = "编码", required = true, dataType = "string", paramType = "query")
-	})
-	@RequestMapping("checkCode")
-	public boolean checkCode(Long id, String code) {
-		return !dataTypeService.existCode(id, code);
-	}
-	
+    return ResponseResult.createSuccess(page, DataType.class, DataTypeDto.class);
+  }
+
+  /**
+   * 判断编码的唯一性
+   */
+  @ApiOperation(value = "检查数据类型编码是否存在", httpMethod = "GET")
+  @ApiImplicitParams({
+    @ApiImplicitParam(name = "code", value = "编码", required = true, dataType = "string", paramType = "query")
+  })
+  @RequestMapping("checkCode")
+  public boolean checkCode(Long id, String code) {
+    return !dataTypeService.existCode(id, code);
+  }
+
 }

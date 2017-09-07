@@ -23,25 +23,25 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @ComponentScan("com.foomei.*.web")
 public class SwaggerConfig {
 
-    @Bean
-    public Docket createRestApi() {
-        return new Docket(DocumentationType.SWAGGER_2)
-                .apiInfo(apiInfo())
-                .useDefaultResponseMessages(false)
-                .select()
-                .apis(RequestHandlerSelectors.withMethodAnnotation(ApiOperation.class))
-                .paths(PathSelectors.any())
-                .build()
-                .ignoredParameterTypes(ApiIgnore.class, Model.class, ModelMap.class, RedirectAttributes.class);
-    }
-    
-    private ApiInfo apiInfo() {
-        return new ApiInfoBuilder()
-                .title("自动生成的接口文档")
+  @Bean
+  public Docket createRestApi() {
+    return new Docket(DocumentationType.SWAGGER_2)
+      .apiInfo(apiInfo())
+      .useDefaultResponseMessages(false)
+      .select()
+      .apis(RequestHandlerSelectors.withMethodAnnotation(ApiOperation.class))
+      .paths(PathSelectors.any())
+      .build()
+      .ignoredParameterTypes(ApiIgnore.class, Model.class, ModelMap.class, RedirectAttributes.class);
+  }
+
+  private ApiInfo apiInfo() {
+    return new ApiInfoBuilder()
+      .title("自动生成的接口文档")
 //                .description("更多内容请关注：http://www.abc.com")
-                .contact("system")
-                .version("1.0")
-                .build();
-    }
-    
+      .contact("system")
+      .version("1.0")
+      .build();
+  }
+
 }

@@ -10,27 +10,27 @@ import com.foomei.core.entity.BaseUser;
 
 /**
  * 用户管理业务类.
- * 
+ *
  * @author walker
  */
 @Service
 @Transactional(readOnly = true)
-public class BaseUserService extends JpaServiceImpl<BaseUserDao, BaseUser, Long>{
+public class BaseUserService extends JpaServiceImpl<BaseUserDao, BaseUser, Long> {
 
-	@Autowired
-	private BaseUserDao baseUserDao;
+  @Autowired
+  private BaseUserDao baseUserDao;
 
-	public BaseUser getByLoginName(String loginName) {
-		return baseUserDao.findByLoginName(loginName);
-	}
-	
-	public boolean existLoginName(Long id, String loginName) {
-		BaseUser user = getByLoginName(loginName);
-		if(user == null || (id != null && id.equals(user.getId()))) {
-			return false;
-		} else {
-			return true;
-		}
-	}
+  public BaseUser getByLoginName(String loginName) {
+    return baseUserDao.findByLoginName(loginName);
+  }
+
+  public boolean existLoginName(Long id, String loginName) {
+    BaseUser user = getByLoginName(loginName);
+    if (user == null || (id != null && id.equals(user.getId()))) {
+      return false;
+    } else {
+      return true;
+    }
+  }
 
 }

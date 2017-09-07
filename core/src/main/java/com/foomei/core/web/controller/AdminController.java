@@ -9,17 +9,17 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
  * 管理员首页
- * 
+ *
  * @author walker
  */
 @Api(description = "管理员引导")
 @Controller
 public class AdminController {
 
-	@RequiresRoles("admin")
-	@RequestMapping(value = "/admin/index", method = RequestMethod.GET)
-	public String index() {
-		return "admin/index";
-	}
+  @RequiresRoles("admin")
+  @RequestMapping(value = "/admin/index", method = RequestMethod.GET)
+  public String index() {
+    return "admin/index";
+  }
 
 }

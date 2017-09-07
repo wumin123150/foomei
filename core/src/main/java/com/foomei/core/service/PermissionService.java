@@ -14,31 +14,31 @@ import com.foomei.core.entity.Permission;
 
 /**
  * 权限管理业务类.
- * 
+ *
  * @author walker
  */
 @Service
 @Transactional(readOnly = true)
 public class PermissionService extends JpaServiceImpl<PermissionDao, Permission, Long> {
 
-	@Autowired
-	private PermissionDao permissionDao;
+  @Autowired
+  private PermissionDao permissionDao;
 
-	public Permission getByCode(String code) {
-		return permissionDao.findByCode(code);
-	}
+  public Permission getByCode(String code) {
+    return permissionDao.findByCode(code);
+  }
 
-	public List<Permission> getAll() {
-		return permissionDao.findAll(new Sort(Direction.ASC, Permission.PROP_PRIORITY));
-	}
+  public List<Permission> getAll() {
+    return permissionDao.findAll(new Sort(Direction.ASC, Permission.PROP_PRIORITY));
+  }
 
-	public boolean existCode(Long id, String code) {
-		Permission permission = getByCode(code);
-		if(permission == null || (id != null && id.equals(permission.getId()))) {
-			return false;
-		} else {
-			return true;
-		}
-	}
-	
+  public boolean existCode(Long id, String code) {
+    Permission permission = getByCode(code);
+    if (permission == null || (id != null && id.equals(permission.getId()))) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
 }

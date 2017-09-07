@@ -11,28 +11,28 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
 
 public class ProfileApplicationContextInitializer implements
-        ApplicationContextInitializer<ConfigurableApplicationContext> {
+  ApplicationContextInitializer<ConfigurableApplicationContext> {
 
-    private Logger logger = LoggerFactory.getLogger(ProfileApplicationContextInitializer.class);
+  private Logger logger = LoggerFactory.getLogger(ProfileApplicationContextInitializer.class);
 
-    public static String profile;
+  public static String profile;
 
-    @Override
-    public void initialize(ConfigurableApplicationContext applicationContext) {
-        try {
-            ClassPathResource resource = new ClassPathResource("application.properties");
-            Properties properties = PropertiesLoaderUtils.loadProperties(resource);
+  @Override
+  public void initialize(ConfigurableApplicationContext applicationContext) {
+    try {
+      ClassPathResource resource = new ClassPathResource("application.properties");
+      Properties properties = PropertiesLoaderUtils.loadProperties(resource);
 
-            profile = properties.getProperty("profile");
+      profile = properties.getProperty("profile");
 
-            applicationContext.getEnvironment().setActiveProfiles(profile.split(","));
-            if(logger.isInfoEnabled()) {
-                logger.info("Active spring profile: {}", profile);
-            }
+      applicationContext.getEnvironment().setActiveProfiles(profile.split(","));
+      if (logger.isInfoEnabled()) {
+        logger.info("Active spring profile: {}", profile);
+      }
 
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    } catch (IOException e) {
+      throw new RuntimeException(e);
     }
+  }
 
 }

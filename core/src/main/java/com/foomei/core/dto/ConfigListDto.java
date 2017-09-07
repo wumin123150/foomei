@@ -7,6 +7,6 @@ import java.util.List;
 @Data
 public class ConfigListDto {
 
-    private List<ConfigDto> configs;
+  private List<ConfigDto> configs;
 
 }

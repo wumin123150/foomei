@@ -8,12 +8,12 @@ import lombok.Data;
 @ApiModel(description = "系统配置")
 public class ConfigDto {
 
-    private Long id;
-    @ApiModelProperty(value="名称", required=true)
-    private String name;
-    @ApiModelProperty(value="键", required=true)
-    private String code;
-    @ApiModelProperty(value="值", required=true)
-    private String value;
+  private Long id;
+  @ApiModelProperty(value = "名称", required = true)
+  private String name;
+  @ApiModelProperty(value = "键", required = true)
+  private String code;
+  @ApiModelProperty(value = "值", required = true)
+  private String value;
 
 }

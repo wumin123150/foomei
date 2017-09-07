@@ -14,27 +14,27 @@ import com.foomei.common.security.shiro.CaptchaToken;
  */
 public class CaptchaAuthenticationFilter extends PasswordAuthenticationFilter {
 
-    public static final String DEFAULT_CAPTCHA_PARAM = "captcha";
-    private String captchaParam = DEFAULT_CAPTCHA_PARAM;
-    
-    protected AuthenticationToken createToken(ServletRequest request, ServletResponse response) {
-        String captcha = getCaptcha(request);
+  public static final String DEFAULT_CAPTCHA_PARAM = "captcha";
+  private String captchaParam = DEFAULT_CAPTCHA_PARAM;
 
-        if(StringUtils.isEmpty(captcha)) {
-            return super.createToken(request, response);
-        } else {
-            String username = getUsername(request);
-            String host = getHost(request);
-            return new CaptchaToken(username, captcha, host);
-        }
-    }
+  protected AuthenticationToken createToken(ServletRequest request, ServletResponse response) {
+    String captcha = getCaptcha(request);
 
-    public String getCaptchaParam() {
-        return captchaParam;
+    if (StringUtils.isEmpty(captcha)) {
+      return super.createToken(request, response);
+    } else {
+      String username = getUsername(request);
+      String host = getHost(request);
+      return new CaptchaToken(username, captcha, host);
     }
+  }
 
-    protected String getCaptcha(ServletRequest request) {
-        return WebUtils.getCleanParam(request, getCaptchaParam());
-    }
+  public String getCaptchaParam() {
+    return captchaParam;
+  }
+
+  protected String getCaptcha(ServletRequest request) {
+    return WebUtils.getCleanParam(request, getCaptchaParam());
+  }
 
 }

@@ -46,103 +46,101 @@ import com.google.common.collect.Lists;
 @Component
 public class LogAspect {
 
-    private static Logger logger = LoggerFactory.getLogger(LogAspect.class);
+  private static Logger logger = LoggerFactory.getLogger(LogAspect.class);
 
-    JsonMapper jsonMapper = new JsonMapper();
+  JsonMapper jsonMapper = new JsonMapper();
 
-    // 开始时间
-    private long startTime = 0L;
-    // 结束时间
-    private long endTime = 0L;
+  // 开始时间
+  private long startTime = 0L;
+  // 结束时间
+  private long endTime = 0L;
 
-    @Autowired
-    LogService logService;
+  @Autowired
+  LogService logService;
 
-    @Before("@annotation(io.swagger.annotations.ApiOperation)")
-    // @Before("execution(* *..controller.*.*(..))")
-    public void doBeforeInServiceLayer(JoinPoint joinPoint) {
-        logger.debug("doBeforeInServiceLayer");
-        startTime = System.currentTimeMillis();
+  @Before("@annotation(io.swagger.annotations.ApiOperation)")
+  // @Before("execution(* *..controller.*.*(..))")
+  public void doBeforeInServiceLayer(JoinPoint joinPoint) {
+    logger.debug("doBeforeInServiceLayer");
+    startTime = System.currentTimeMillis();
+  }
+
+  @After("@annotation(io.swagger.annotations.ApiOperation)")
+  // @After("execution(* *..controller.*.*(..))")
+  public void doAfterInServiceLayer(JoinPoint joinPoint) {
+    logger.debug("doAfterInServiceLayer");
+  }
+
+  @Around("@annotation(io.swagger.annotations.ApiOperation)")
+  // @Around("execution(* *..controller.*.*(..))")
+  public Object doAround(ProceedingJoinPoint pjp) throws Throwable {
+    // 获取request
+    HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+
+    Log log = new Log();
+    // 从注解中获取操作名称、获取响应结果
+    Object result = pjp.proceed();
+    Signature signature = pjp.getSignature();
+    MethodSignature methodSignature = (MethodSignature) signature;
+    Method method = methodSignature.getMethod();
+    LogIgnore logIgnore = method.getAnnotation(LogIgnore.class);
+    if (method.isAnnotationPresent(ApiOperation.class) && !(logIgnore != null && StringUtils.equals("method", logIgnore.value()))) {
+      ApiOperation api = method.getAnnotation(ApiOperation.class);
+      log.setDescription(api.value());
+    } else {
+      return result;
     }
 
-    @After("@annotation(io.swagger.annotations.ApiOperation)")
-    // @After("execution(* *..controller.*.*(..))")
-    public void doAfterInServiceLayer(JoinPoint joinPoint) {
-        logger.debug("doAfterInServiceLayer");
+    endTime = System.currentTimeMillis();
+    if (logger.isDebugEnabled()) {
+      logger.debug("doAround>>>result={},耗时：{}", result, endTime - startTime);
     }
 
-    @Around("@annotation(io.swagger.annotations.ApiOperation)")
-    // @Around("execution(* *..controller.*.*(..))")
-    public Object doAround(ProceedingJoinPoint pjp) throws Throwable {
-        // 获取request
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes())
-                .getRequest();
+    List<String> excludes = Lists.newArrayList();
+    if (logIgnore != null && StringUtils.equals("field", logIgnore.value())) {
+      excludes = ArrayUtil.asList(logIgnore.excludes());
+    }
 
-        Log log = new Log();
-        // 从注解中获取操作名称、获取响应结果
-        Object result = pjp.proceed();
-        Signature signature = pjp.getSignature();
-        MethodSignature methodSignature = (MethodSignature) signature;
-        Method method = methodSignature.getMethod();
-        LogIgnore logIgnore = method.getAnnotation(LogIgnore.class);
-        if (method.isAnnotationPresent(ApiOperation.class) && !(logIgnore != null && StringUtils.equals("method", logIgnore.value()))) {
-            ApiOperation api = method.getAnnotation(ApiOperation.class);
-            log.setDescription(api.value());
-        } else {
-            return result;
-        }
-
-        endTime = System.currentTimeMillis();
-        logger.debug("doAround>>>result={},耗时：{}", result, endTime - startTime);
-        
-        List<String> excludes = Lists.newArrayList();
-        if(logIgnore != null && StringUtils.equals("field", logIgnore.value())) {
-            excludes = ArrayUtil.asList(logIgnore.excludes());
-        }
-
-        Map<String, Object> parameter = RequestUtil.getParameters(request, excludes);
+    Map<String, Object> parameter = RequestUtil.getParameters(request, excludes);
         /*
          * 使用multipart/form-data的接口，必须增加HttpServletRequest参数
          * 因为通过CommonsMultipartResolver转换成MultipartHttpServletRequest后，就无法从原request中获取参数
          */
-        if (ServletFileUpload.isMultipartContent(request)) {
-            MultipartHttpServletRequest multiRequest = null;
-            Object[] args = pjp.getArgs();
-            for (int i = 0; i < args.length; i++) {
-                if (args[i] instanceof MultipartHttpServletRequest) {
-                    multiRequest = (MultipartHttpServletRequest) args[i];
+    if (ServletFileUpload.isMultipartContent(request)) {
+      MultipartHttpServletRequest multiRequest = null;
+      Object[] args = pjp.getArgs();
+      for (int i = 0; i < args.length; i++) {
+        if (args[i] instanceof MultipartHttpServletRequest) {
+          multiRequest = (MultipartHttpServletRequest) args[i];
 
-                    parameter = RequestUtil.getParameters(multiRequest, excludes);
+          parameter = RequestUtil.getParameters(multiRequest, excludes);
 
-                    Map<String, MultipartFile> files = multiRequest.getFileMap();
-                    for (Map.Entry<String, MultipartFile> entry : files.entrySet()) {
-                        MultipartFile file = entry.getValue();
-                        if (file.isEmpty()) {
-                            parameter.put(entry.getKey(), null);
-                        } else {
-                            parameter.put(
-                                    entry.getKey(),
-                                    MapUtil.newHashMap(new String[] { "filename", "size" },
-                                            new Object[] { file.getOriginalFilename(), file.getSize() }));
-                        }
-                    }
-
-                    break;
-                }
+          Map<String, MultipartFile> files = multiRequest.getFileMap();
+          for (Map.Entry<String, MultipartFile> entry : files.entrySet()) {
+            MultipartFile file = entry.getValue();
+            if (file.isEmpty()) {
+              parameter.put(entry.getKey(), null);
+            } else {
+              parameter.put(entry.getKey(), MapUtil.newHashMap(new String[]{"filename", "size"}, new Object[]{file.getOriginalFilename(), file.getSize()}));
             }
+          }
+
+          break;
         }
-
-        log.setIp(Servlets.getIpAddress(request));
-        log.setUrl(ObjectUtil.toPrettyString(request.getRequestURL()));
-        log.setMethod(request.getMethod());
-        log.setUserAgent(request.getHeader("User-Agent"));
-        log.setParameter(jsonMapper.toJson(parameter));
-        log.setResult(result instanceof String ? (String) result : jsonMapper.toJson(result));
-        log.setLogTime(new Date(startTime));
-        log.setSpendTime((int) (endTime - startTime));
-        log.setUsername(ObjectUtil.toPrettyString(request.getUserPrincipal()));
-        logService.save(log);
-
-        return result;
+      }
     }
+
+    log.setIp(Servlets.getIpAddress(request));
+    log.setUrl(ObjectUtil.toPrettyString(request.getRequestURL()));
+    log.setMethod(request.getMethod());
+    log.setUserAgent(request.getHeader("User-Agent"));
+    log.setParameter(jsonMapper.toJson(parameter));
+    log.setResult(result instanceof String ? (String) result : jsonMapper.toJson(result));
+    log.setLogTime(new Date(startTime));
+    log.setSpendTime((int) (endTime - startTime));
+    log.setUsername(ObjectUtil.toPrettyString(request.getUserPrincipal()));
+    logService.save(log);
+
+    return result;
+  }
 }

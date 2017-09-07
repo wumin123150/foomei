@@ -10,27 +10,27 @@ import com.foomei.core.entity.Config;
 
 /**
  * 系统配置管理业务类.
- * 
+ *
  * @author walker
  */
 @Service
 @Transactional(readOnly = true)
 public class ConfigService extends JpaServiceImpl<ConfigDao, Config, Long> {
 
-	@Autowired
-	private ConfigDao configDao;
+  @Autowired
+  private ConfigDao configDao;
 
-	public Config getByCode(String code) {
-		return configDao.findByCode(code);
-	}
-	
-	public boolean existCode(Long id, String code) {
-		Config config = getByCode(code);
-		if(config == null || (id != null && id.equals(config.getId()))) {
-			return false;
-		} else {
-			return true;
-		}
-	}
-	
+  public Config getByCode(String code) {
+    return configDao.findByCode(code);
+  }
+
+  public boolean existCode(Long id, String code) {
+    Config config = getByCode(code);
+    if (config == null || (id != null && id.equals(config.getId()))) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
 }

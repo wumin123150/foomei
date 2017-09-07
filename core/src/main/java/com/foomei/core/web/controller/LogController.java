@@ -19,27 +19,27 @@ import com.foomei.core.service.LogService;
 @RequestMapping(value = "/admin/log")
 public class LogController {
 
-	private static final String MENU = "log";
+  private static final String MENU = "log";
 
-	@Autowired
-	private LogService logService;
+  @Autowired
+  private LogService logService;
 
-	@ApiOperation(value = "日志列表页面", httpMethod = "GET")
-	@LogIgnore
-	@RequiresRoles("admin")
-	@RequestMapping
-	public String list(Model model) {
-		model.addAttribute("menu", MENU);
-		return "admin/log/logList";
-	}
+  @ApiOperation(value = "日志列表页面", httpMethod = "GET")
+  @LogIgnore
+  @RequiresRoles("admin")
+  @RequestMapping
+  public String list(Model model) {
+    model.addAttribute("menu", MENU);
+    return "admin/log/logList";
+  }
 
-	@ApiOperation(value = "日志删除", httpMethod = "GET")
-	@RequiresRoles("admin")
-	@RequestMapping(value = "delete/{id}")
-	public String delete(@PathVariable("id") String id, RedirectAttributes redirectAttributes) {
-		logService.delete(id);
-		redirectAttributes.addFlashAttribute("message", "删除日志成功");
-		return "redirect:/admin/log";
-	}
+  @ApiOperation(value = "日志删除", httpMethod = "GET")
+  @RequiresRoles("admin")
+  @RequestMapping(value = "delete/{id}")
+  public String delete(@PathVariable("id") String id, RedirectAttributes redirectAttributes) {
+    logService.delete(id);
+    redirectAttributes.addFlashAttribute("message", "删除日志成功");
+    return "redirect:/admin/log";
+  }
 
 }

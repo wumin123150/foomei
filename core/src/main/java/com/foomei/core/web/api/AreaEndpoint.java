@@ -22,58 +22,58 @@ import java.util.List;
 @RequestMapping(value = "/api/area")
 public class AreaEndpoint {
 
-    @Autowired
-    private AreaService areaService;
+  @Autowired
+  private AreaService areaService;
 
-    @ApiOperation(value = "根据父节点ID获取地区列表", httpMethod = "GET", produces = "application/json")
-    @RequestMapping(value = "findByParent")
-    public ResponseResult<List<Area>> findByParent(String parentId) {
-        List<Area> areas = Lists.newArrayList();
-        if (StringUtils.isEmpty(parentId)) {
-            areas = areaService.findTop();
-        } else {
-            areas = areaService.findChildrenByParent(parentId);
-        }
-        return ResponseResult.createSuccess(areas);
+  @ApiOperation(value = "根据父节点ID获取地区列表", httpMethod = "GET", produces = "application/json")
+  @RequestMapping(value = "findByParent")
+  public ResponseResult<List<Area>> findByParent(String parentId) {
+    List<Area> areas = Lists.newArrayList();
+    if (StringUtils.isEmpty(parentId)) {
+      areas = areaService.findTop();
+    } else {
+      areas = areaService.findChildrenByParent(parentId);
     }
+    return ResponseResult.createSuccess(areas);
+  }
 
-    @ApiOperation(value = "获取省列表", httpMethod = "GET", produces = "application/json")
-    @RequestMapping(value = "province", method = RequestMethod.GET)
-    public ResponseResult<List<Area>> province() {
-        return ResponseResult.createSuccess(areaService.findTop());
-    }
+  @ApiOperation(value = "获取省列表", httpMethod = "GET", produces = "application/json")
+  @RequestMapping(value = "province", method = RequestMethod.GET)
+  public ResponseResult<List<Area>> province() {
+    return ResponseResult.createSuccess(areaService.findTop());
+  }
 
-    @ApiOperation(value = "获取市列表", httpMethod = "GET", produces = "application/json")
-    @ApiImplicitParams({
-        @ApiImplicitParam(name = "parentId", value = "省ID", required = true, dataType = "string", paramType = "query")
-    })
-    @RequestMapping(value = "city", method = RequestMethod.GET)
-    public ResponseResult<List<Area>> city(String parentId) {
-        return ResponseResult.createSuccess(areaService.findChildrenByParent(parentId));
-    }
+  @ApiOperation(value = "获取市列表", httpMethod = "GET", produces = "application/json")
+  @ApiImplicitParams({
+    @ApiImplicitParam(name = "parentId", value = "省ID", required = true, dataType = "string", paramType = "query")
+  })
+  @RequestMapping(value = "city", method = RequestMethod.GET)
+  public ResponseResult<List<Area>> city(String parentId) {
+    return ResponseResult.createSuccess(areaService.findChildrenByParent(parentId));
+  }
 
-    @ApiOperation(value = "获取县列表", httpMethod = "GET", produces = "application/json")
-    @ApiImplicitParams({
-        @ApiImplicitParam(name = "parentId", value = "市ID", required = true, dataType = "string", paramType = "query")
-    })
-    @RequestMapping(value = "county", method = RequestMethod.GET)
-    public ResponseResult<List<Area>> county(String parentId) {
-        return ResponseResult.createSuccess(areaService.findChildrenByParent(parentId));
-    }
+  @ApiOperation(value = "获取县列表", httpMethod = "GET", produces = "application/json")
+  @ApiImplicitParams({
+    @ApiImplicitParam(name = "parentId", value = "市ID", required = true, dataType = "string", paramType = "query")
+  })
+  @RequestMapping(value = "county", method = RequestMethod.GET)
+  public ResponseResult<List<Area>> county(String parentId) {
+    return ResponseResult.createSuccess(areaService.findChildrenByParent(parentId));
+  }
 
-    @ApiOperation(value = "获取城市列表", httpMethod = "GET", produces = "application/json")
-    @ApiImplicitParams({
-        @ApiImplicitParam(name = "rootId", value = "省ID", required = true, dataType = "string", paramType = "query")
-    })
-    @RequestMapping(value = "town", method = RequestMethod.GET)
-    public ResponseResult<List<Area>> town(String rootId) {
-        return ResponseResult.createSuccess(areaService.findTownByRoot(rootId));
-    }
+  @ApiOperation(value = "获取城市列表", httpMethod = "GET", produces = "application/json")
+  @ApiImplicitParams({
+    @ApiImplicitParam(name = "rootId", value = "省ID", required = true, dataType = "string", paramType = "query")
+  })
+  @RequestMapping(value = "town", method = RequestMethod.GET)
+  public ResponseResult<List<Area>> town(String rootId) {
+    return ResponseResult.createSuccess(areaService.findTownByRoot(rootId));
+  }
 
-    @ApiOperation(value = "地区获取", httpMethod = "GET", produces = "application/json")
-    @RequestMapping(value = "get/{id}")
-    public ResponseResult<Area> get(@PathVariable("id") String id) {
-        return ResponseResult.createSuccess(areaService.get(id));
-    }
+  @ApiOperation(value = "地区获取", httpMethod = "GET", produces = "application/json")
+  @RequestMapping(value = "get/{id}")
+  public ResponseResult<Area> get(@PathVariable("id") String id) {
+    return ResponseResult.createSuccess(areaService.get(id));
+  }
 
 }

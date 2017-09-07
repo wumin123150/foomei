@@ -6,4 +6,5 @@ import com.foomei.core.entity.Config;
 public interface ConfigDao extends JpaDao<Config, Long> {
 
 	Config findByCode(String code);
+
 }

@@ -27,37 +27,37 @@ import java.util.Date;
 @RestController
 @RequestMapping(value = "/api/log")
 public class LogEndpoint {
-	
-	@Autowired
-	private LogService logService;
-	
-	@ApiOperation(value = "日志分页列表", httpMethod = "GET", produces = "application/json")
-	@ApiImplicitParams({
-		@ApiImplicitParam(name = "startTime", value = "开始时间(yyyy-MM-dd HH:mm)", dataType = "date", paramType = "query"),
-		@ApiImplicitParam(name = "endTime", value = "结束时间(yyyy-MM-dd HH:mm)", dataType = "date", paramType = "query")
-	})
-	@LogIgnore
-	@RequiresRoles("admin")
-	@RequestMapping(value = "page")
-	public ResponseResult<Page<LogDto>> page(PageQuery pageQuery,
-			@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm") Date startTime, @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm") Date endTime,
-			HttpServletRequest request) {
-		Page<Log> page = null;
-		if(pageQuery.getAdvance()) {
-			JqGridFilter jqGridFilter = JsonMapper.nonDefaultMapper().fromJson(request.getParameter("filters"), JqGridFilter.class);
-			page = logService.getPage(jqGridFilter, pageQuery.buildPageRequest());
-		} else {
-			page = logService.getPage(pageQuery.getSearchKey(), startTime, endTime, pageQuery.buildPageRequest("logTime", "desc"));
-		}
-		return ResponseResult.createSuccess(page, Log.class, LogDto.class);
-	}
 
-	@ApiOperation(value = "日志获取", httpMethod = "GET", produces = "application/json")
-	@LogIgnore
-	@RequestMapping("get/{id}")
-	public ResponseResult<LogDto> get(@PathVariable("id")String id) {
-		Log log = logService.get(id);
-		return ResponseResult.createSuccess(log, LogDto.class);
-	}
+  @Autowired
+  private LogService logService;
+
+  @ApiOperation(value = "日志分页列表", httpMethod = "GET", produces = "application/json")
+  @ApiImplicitParams({
+    @ApiImplicitParam(name = "startTime", value = "开始时间(yyyy-MM-dd HH:mm)", dataType = "date", paramType = "query"),
+    @ApiImplicitParam(name = "endTime", value = "结束时间(yyyy-MM-dd HH:mm)", dataType = "date", paramType = "query")
+  })
+  @LogIgnore
+  @RequiresRoles("admin")
+  @RequestMapping(value = "page")
+  public ResponseResult<Page<LogDto>> page(PageQuery pageQuery,
+                                           @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm") Date startTime, @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm") Date endTime,
+                                           HttpServletRequest request) {
+    Page<Log> page = null;
+    if (pageQuery.getAdvance()) {
+      JqGridFilter jqGridFilter = JsonMapper.nonDefaultMapper().fromJson(request.getParameter("filters"), JqGridFilter.class);
+      page = logService.getPage(jqGridFilter, pageQuery.buildPageRequest());
+    } else {
+      page = logService.getPage(pageQuery.getSearchKey(), startTime, endTime, pageQuery.buildPageRequest("logTime", "desc"));
+    }
+    return ResponseResult.createSuccess(page, Log.class, LogDto.class);
+  }
+
+  @ApiOperation(value = "日志获取", httpMethod = "GET", produces = "application/json")
+  @LogIgnore
+  @RequestMapping("get/{id}")
+  public ResponseResult<LogDto> get(@PathVariable("id") String id) {
+    Log log = logService.get(id);
+    return ResponseResult.createSuccess(log, LogDto.class);
+  }
 
 }

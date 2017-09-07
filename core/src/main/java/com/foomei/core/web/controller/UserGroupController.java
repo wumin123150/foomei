@@ -12,25 +12,25 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.foomei.core.service.RoleService;
 import com.foomei.core.service.UserGroupService;
 
-@Api(description = "机构管理") 
+@Api(description = "机构管理")
 @Controller
 @RequestMapping(value = "/admin/userGroup")
 public class UserGroupController {
 
-	private static final String MENU = "userGroup";
+  private static final String MENU = "userGroup";
 
-	@Autowired
-	private UserGroupService userGroupService;
-	@Autowired
-	private RoleService roleService;
+  @Autowired
+  private UserGroupService userGroupService;
+  @Autowired
+  private RoleService roleService;
 
-	@ApiOperation(value = "机构列表页面", httpMethod = "GET")
-	@RequiresRoles("admin")
-	@RequestMapping
-	public String list(Model model) {
-		model.addAttribute("menu", MENU);
-		model.addAttribute("roles", roleService.getAll());
-		return "admin/userGroup/userGroupList";
-	}
+  @ApiOperation(value = "机构列表页面", httpMethod = "GET")
+  @RequiresRoles("admin")
+  @RequestMapping
+  public String list(Model model) {
+    model.addAttribute("menu", MENU);
+    model.addAttribute("roles", roleService.getAll());
+    return "admin/userGroup/userGroupList";
+  }
 
 }

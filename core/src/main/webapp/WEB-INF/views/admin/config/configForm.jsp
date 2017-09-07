@@ -39,7 +39,8 @@
         <li>
           <a href="${ctx}/admin/config">系统配置管理</a>
         </li>
-        <li class="active"><c:choose><c:when test='${action == "create"}'>新增配置</c:when><c:when test='${action == "update"}'>修改配置</c:when></c:choose></li>
+        <li class="active"><c:choose><c:when test='${action == "create"}'>新增配置</c:when><c:when
+          test='${action == "update"}'>修改配置</c:when></c:choose></li>
       </ul><!-- /.breadcrumb -->
     </div>
 
@@ -76,26 +77,31 @@
               </div>
             </c:forEach>
           </c:if>
-          <form class="form-horizontal" id="validation-form" action="${ctx}/admin/config/${action}" method="post" role="form">
+          <form class="form-horizontal" id="validation-form" action="${ctx}/admin/config/${action}" method="post"
+                role="form">
             <input type="hidden" name="id" id="id" value="${config.id}"/>
             <!-- #section:elements.form -->
             <div class="row">
               <div class="col-xs-12 col-sm-6">
                 <div class="form-group">
-                  <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-code"> 键<span class="input-required">*</span> </label>
+                  <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-code"> 键<span
+                    class="input-required">*</span> </label>
                   <div class="col-xs-12 col-sm-8">
                     <div class="clearfix">
-                      <input type="text" name="code" value="${config.code}" id="form-code" placeholder="键" class="form-control"/>
+                      <input type="text" name="code" value="${config.code}" id="form-code" placeholder="键"
+                             class="form-control"/>
                     </div>
                   </div>
                 </div>
               </div>
               <div class="col-xs-12 col-sm-6">
                 <div class="form-group">
-                  <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-name"> 名称<span class="input-required">*</span> </label>
+                  <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-name"> 名称<span
+                    class="input-required">*</span> </label>
                   <div class="col-xs-12 col-sm-8">
                     <div class="clearfix">
-                      <input type="text" name="name" value="${config.name}" id="form-name" placeholder="名称" class="form-control"/>
+                      <input type="text" name="name" value="${config.name}" id="form-name" placeholder="名称"
+                             class="form-control"/>
                     </div>
                   </div>
                 </div>
@@ -104,10 +110,12 @@
             <div class="row">
               <div class="col-xs-12 col-sm-6">
                 <div class="form-group">
-                  <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-editable"> 值可修改<span class="input-required">*</span> </label>
+                  <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-editable"> 值可修改<span
+                    class="input-required">*</span> </label>
                   <div class="col-xs-12 col-sm-8">
                     <div class="clearfix" style="padding-top: 7px;">
-                      <input type="hidden" name="editable" value="${config.editable}" placeholder="值可修改" class="form-control"/>
+                      <input type="hidden" name="editable" value="${config.editable}" placeholder="值可修改"
+                             class="form-control"/>
                       <input type="checkbox" id="form-editable" class="ace ace-switch ace-switch-6"
                              <c:if test="${config.editable}">checked</c:if> />
                       <span class="lbl"></span>
@@ -117,7 +125,8 @@
               </div>
               <div class="col-xs-12 col-sm-6">
                 <div class="form-group">
-                  <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-type"> 类型<span class="input-required">*</span> </label>
+                  <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-type"> 类型<span
+                    class="input-required">*</span> </label>
                   <div class="col-xs-12 col-sm-8">
                     <div class="clearfix">
                       <select name="type" id="form-type" class="form-control" data-placeholder="类型">
@@ -139,7 +148,8 @@
                   <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-params"> 参数 </label>
                   <div class="col-xs-12 col-sm-8">
                     <div class="clearfix">
-                      <textarea name="params" id="form-params" placeholder='json格式（例如：{"1":"男","2":"女"}），选择时使用' class="form-control">${config.params}</textarea>
+                      <textarea name="params" id="form-params" placeholder='json格式（例如：{"1":"男","2":"女"}），选择时使用'
+                                class="form-control">${config.params}</textarea>
                     </div>
                   </div>
                 </div>
@@ -149,7 +159,8 @@
                   <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-remark"> 备注 </label>
                   <div class="col-xs-12 col-sm-8">
                     <div class="clearfix">
-                      <textarea name="remark" id="form-remark" placeholder="备注" class="form-control">${config.remark}</textarea>
+                      <textarea name="remark" id="form-remark" placeholder="备注"
+                                class="form-control">${config.remark}</textarea>
                     </div>
                   </div>
                 </div>

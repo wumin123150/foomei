@@ -6,4 +6,5 @@ import com.foomei.core.entity.DataType;
 public interface DataTypeDao extends JpaDao<DataType, Long> {
 
 	DataType findByCode(String code);
+
 }

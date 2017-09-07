@@ -21,35 +21,35 @@ import com.foomei.common.web.MediaTypes;
 import com.foomei.common.web.Servlets;
 import com.google.common.collect.Maps;
 
-@ControllerAdvice(annotations = { RestController.class })
+@ControllerAdvice(annotations = {RestController.class})
 public class ApiExceptionHandler {
 
-    private Logger logger = LoggerFactory.getLogger(ApiExceptionHandler.class);
+  private Logger logger = LoggerFactory.getLogger(ApiExceptionHandler.class);
 
-    private JsonMapper jsonMapper = new JsonMapper();
+  private JsonMapper jsonMapper = new JsonMapper();
 
-    @ExceptionHandler(value = { Exception.class })
-    public final ResponseEntity<ResponseResult> handleGeneralException(Exception ex, HttpServletRequest request)
-            throws Exception {
-        logError(ex, request);
+  @ExceptionHandler(value = {Exception.class})
+  public final ResponseEntity<ResponseResult> handleGeneralException(Exception ex, HttpServletRequest request)
+    throws Exception {
+    logError(ex, request);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.parseMediaType(MediaTypes.JSON_UTF_8));
-        ResponseResult result = ResponseResult.create4Exception(ex);
-        return new ResponseEntity<ResponseResult>(result, headers, HttpStatus.OK);
-    }
-    
-    // public void logError(Exception ex) {
-    // Map<String, String> map = Maps.newHashMap();
-    // map.put("message", ex.getMessage());
-    // logger.error(jsonMapper.toJson(map), ex);
-    // }
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.parseMediaType(MediaTypes.JSON_UTF_8));
+    ResponseResult result = ResponseResult.create4Exception(ex);
+    return new ResponseEntity<ResponseResult>(result, headers, HttpStatus.OK);
+  }
 
-    public void logError(Exception ex, HttpServletRequest request) {
-        Map<String, String> map = Maps.newHashMap();
-        map.put("message", ex.getMessage());
-        map.put("from", Servlets.getIpAddress(request));
-        map.put("path", RequestUtil.getLocation(request));
-        logger.error(jsonMapper.toJson(map), ex);
-    }
+  // public void logError(Exception ex) {
+  // Map<String, String> map = Maps.newHashMap();
+  // map.put("message", ex.getMessage());
+  // logger.error(jsonMapper.toJson(map), ex);
+  // }
+
+  public void logError(Exception ex, HttpServletRequest request) {
+    Map<String, String> map = Maps.newHashMap();
+    map.put("message", ex.getMessage());
+    map.put("from", Servlets.getIpAddress(request));
+    map.put("path", RequestUtil.getLocation(request));
+    logger.error(jsonMapper.toJson(map), ex);
+  }
 }

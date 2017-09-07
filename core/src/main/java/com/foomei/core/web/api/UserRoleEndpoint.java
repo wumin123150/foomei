@@ -25,54 +25,54 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping(value = "/api/userRole")
 public class UserRoleEndpoint {
 
-	@Autowired
-	private UserService userService;
-	@Autowired
-	private RoleService roleService;
+  @Autowired
+  private UserService userService;
+  @Autowired
+  private RoleService roleService;
 
-	@ApiOperation(value = "角色授权分页列表", httpMethod = "GET", produces = "application/json")
-	@ApiImplicitParams({
-		@ApiImplicitParam(name = "roleId", value = "角色ID", dataType = "long", paramType = "query")
-	})
-	@RequiresRoles("admin")
-	@RequestMapping(value = "page")
-	public ResponseResult<Page<BaseUser>> page(PageQuery pageQuery, Long roleId, HttpServletRequest request) {
-		Page<User> page = userService.getPageByRole(pageQuery.getSearchKey(), roleId, pageQuery.buildPageRequest());
-		return ResponseResult.createSuccess(page, User.class, BaseUser.class);
-	}
+  @ApiOperation(value = "角色授权分页列表", httpMethod = "GET", produces = "application/json")
+  @ApiImplicitParams({
+    @ApiImplicitParam(name = "roleId", value = "角色ID", dataType = "long", paramType = "query")
+  })
+  @RequiresRoles("admin")
+  @RequestMapping(value = "page")
+  public ResponseResult<Page<BaseUser>> page(PageQuery pageQuery, Long roleId, HttpServletRequest request) {
+    Page<User> page = userService.getPageByRole(pageQuery.getSearchKey(), roleId, pageQuery.buildPageRequest());
+    return ResponseResult.createSuccess(page, User.class, BaseUser.class);
+  }
 
-	@ApiOperation(value = "角色授权新增", httpMethod = "POST", produces = "application/json")
-	@ApiImplicitParams({
-		@ApiImplicitParam(name = "userId", value = "用户ID", required = true, dataType = "long", paramType = "form"),
-		@ApiImplicitParam(name = "roleId", value = "角色ID", required = true, dataType = "long", paramType = "form")
-	})
-	@RequiresRoles("admin")
-	@RequestMapping(value = "create", method = RequestMethod.POST)
-	public ResponseResult create(Long userId, Long roleId) {
-		User user = userService.get(userId);
-		Role role = roleService.get(roleId);
-		user.getRoleList().add(role);
-		userService.save(user);
-		return ResponseResult.SUCCEED;
-	}
+  @ApiOperation(value = "角色授权新增", httpMethod = "POST", produces = "application/json")
+  @ApiImplicitParams({
+    @ApiImplicitParam(name = "userId", value = "用户ID", required = true, dataType = "long", paramType = "form"),
+    @ApiImplicitParam(name = "roleId", value = "角色ID", required = true, dataType = "long", paramType = "form")
+  })
+  @RequiresRoles("admin")
+  @RequestMapping(value = "create", method = RequestMethod.POST)
+  public ResponseResult create(Long userId, Long roleId) {
+    User user = userService.get(userId);
+    Role role = roleService.get(roleId);
+    user.getRoleList().add(role);
+    userService.save(user);
+    return ResponseResult.SUCCEED;
+  }
 
-	@ApiOperation(value = "角色授权删除", httpMethod = "POST", produces = "application/json")
-	@ApiImplicitParams({
-		@ApiImplicitParam(name = "userId", value = "用户ID", required = true, dataType = "long", paramType = "form"),
-		@ApiImplicitParam(name = "roleId", value = "角色ID", required = true, dataType = "long", paramType = "form")
-	})
-	@RequiresRoles("admin")
-	@RequestMapping(value = "delete")
-	public ResponseResult delete(Long userId, Long roleId) {
-		User user = userService.get(userId);
-		for (Role role : user.getRoleList()) {
-			if(role.getId().equals(roleId)) {
-				user.getRoleList().remove(role);
-				break;
-			}
-		}
-		userService.save(user);
-		return ResponseResult.SUCCEED;
-	}
+  @ApiOperation(value = "角色授权删除", httpMethod = "POST", produces = "application/json")
+  @ApiImplicitParams({
+    @ApiImplicitParam(name = "userId", value = "用户ID", required = true, dataType = "long", paramType = "form"),
+    @ApiImplicitParam(name = "roleId", value = "角色ID", required = true, dataType = "long", paramType = "form")
+  })
+  @RequiresRoles("admin")
+  @RequestMapping(value = "delete")
+  public ResponseResult delete(Long userId, Long roleId) {
+    User user = userService.get(userId);
+    for (Role role : user.getRoleList()) {
+      if (role.getId().equals(roleId)) {
+        user.getRoleList().remove(role);
+        break;
+      }
+    }
+    userService.save(user);
+    return ResponseResult.SUCCEED;
+  }
 
 }
