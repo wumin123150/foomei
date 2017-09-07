@@ -86,8 +86,9 @@
             <div class="row">
               <div class="col-xs-12 col-sm-6">
                 <div class="form-group">
-                  <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-loginName"> 用户名<span
-                    class="input-required">*</span> </label>
+                  <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-loginName">
+                    用户名<span class="input-required">*</span>
+                  </label>
                   <div class="col-xs-12 col-sm-8">
                     <div class="clearfix">
                       <input type="text" name="loginName" value="${user.loginName}" id="form-loginName"
@@ -98,8 +99,9 @@
               </div>
               <div class="col-xs-12 col-sm-6">
                 <div class="form-group">
-                  <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-name"> 姓名<span
-                    class="input-required">*</span> </label>
+                  <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-name">
+                    姓名<span class="input-required">*</span>
+                  </label>
                   <div class="col-xs-12 col-sm-8">
                     <div class="clearfix">
                       <input type="text" name="name" value="${user.name}" id="form-name" placeholder="姓名"
@@ -112,23 +114,23 @@
             <div class="row">
               <div class="col-xs-12 col-sm-6">
                 <div class="form-group">
-                  <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-password"> 密码<span
-                    class="input-required">*</span> </label>
+                  <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-password">
+                    密码<span class="input-required">*</span>
+                  </label>
                   <div class="col-xs-12 col-sm-8">
                     <div class="input-group">
                       <input type="password" name="plainPassword" id="form-password" placeholder="6~16个字符，区分大小写"
                              class="form-control"/>
-                      <span class="input-group-addon pswState">
-                                                      &nbsp;&nbsp;&nbsp;
-                                                    </span>
+                      <span class="input-group-addon pswState">&nbsp;&nbsp;&nbsp;</span>
                     </div>
                   </div>
                 </div>
               </div>
               <div class="col-xs-12 col-sm-6">
                 <div class="form-group">
-                  <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-repassword"> 确认密码<span
-                    class="input-required">*</span> </label>
+                  <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-repassword">
+                    确认密码<span class="input-required">*</span>
+                  </label>
                   <div class="col-xs-12 col-sm-8">
                     <div class="clearfix">
                       <input type="password" name="repassword" id="form-repassword" placeholder="请再次填写密码"

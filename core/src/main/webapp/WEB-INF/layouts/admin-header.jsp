@@ -46,10 +46,11 @@
           <a data-toggle="dropdown" href="javascript:void(0);" class="dropdown-toggle">
             <img class="nav-user-photo" src="${ctx}/static/avatars/user.jpg" alt="Jason's Photo"/>
             <span class="user-info">
-								<shiro:user>
-                  <small>欢迎您,</small>
-                  <shiro:principal property="name"/></shiro:user>
-							</span>
+              <shiro:user>
+                <small>欢迎您,</small>
+                <shiro:principal property="name"/>
+              </shiro:user>
+            </span>
 
             <i class="ace-icon fa fa-caret-down"></i>
           </a>

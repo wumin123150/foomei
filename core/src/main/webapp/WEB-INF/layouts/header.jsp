@@ -215,11 +215,13 @@
         <li><a href="${ctx}/" onclick="_hmt.push(['_trackEvent', 'navbar', 'click', ''])">首页</a></li>
         <shiro:guest>
           <li class="top_line" id="_nav_login_line"><span>&nbsp;</span></li>
-          <li id="_nav_login"><a href="${ctx}/login"
-                                 onclick="_hmt.push(['_trackEvent', 'navbar', 'click', 'login'])">登录</a></li>
+          <li id="_nav_login">
+            <a href="${ctx}/login" onclick="_hmt.push(['_trackEvent', 'navbar', 'click', 'login'])">登录</a>
+          </li>
           <li class="top_line" id="_nav_register_line"><span>&nbsp;</span></li>
-          <li id="_nav_register"><a href="${ctx}/register"
-                                    onclick="_hmt.push(['_trackEvent', 'navbar', 'click', 'register'])">注册</a></li>
+          <li id="_nav_register">
+            <a href="${ctx}/register" onclick="_hmt.push(['_trackEvent', 'navbar', 'click', 'register'])">注册</a>
+          </li>
         </shiro:guest>
         <shiro:user>
           <li class="top_line"><span>&nbsp;</span></li>
@@ -227,10 +229,11 @@
             <a href="${ctx}/admin/index">管理后台</a>&nbsp;&nbsp;
           </shiro:hasRole>
           <li class="top_line"><span>&nbsp;</span></li>
-          <li id="_nav_logout"><a href="${ctx}/logout"
-                                  onclick="_hmt.push(['_trackEvent', 'navbar', 'click', 'logout'])"> <i
-            class="ace-icon fa fa-power-off"></i>退出
-          </a></li>
+          <li id="_nav_logout">
+            <a href="${ctx}/logout" onclick="_hmt.push(['_trackEvent', 'navbar', 'click', 'logout'])">
+              <i class="ace-icon fa fa-power-off"></i>退出
+            </a>
+          </li>
         </shiro:user>
       </ul>
     </div>

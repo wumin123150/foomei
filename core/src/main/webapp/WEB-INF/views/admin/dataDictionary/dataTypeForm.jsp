@@ -84,8 +84,9 @@
             <div class="row">
               <div class="col-xs-12 col-sm-6">
                 <div class="form-group">
-                  <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-code"> 编码<span
-                    class="input-required">*</span> </label>
+                  <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-code">
+                    编码<span class="input-required">*</span>
+                  </label>
                   <div class="col-xs-12 col-sm-8">
                     <div class="clearfix">
                       <input type="text" name="code" value="${dataType.code}" id="form-code" placeholder="编码"
@@ -96,8 +97,9 @@
               </div>
               <div class="col-xs-12 col-sm-6">
                 <div class="form-group">
-                  <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-name"> 名称<span
-                    class="input-required">*</span> </label>
+                  <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-name">
+                    名称<span class="input-required">*</span>
+                  </label>
                   <div class="col-xs-12 col-sm-8">
                     <div class="clearfix">
                       <input type="text" name="name" value="${dataType.name}" id="form-name" placeholder="名称"
@@ -110,8 +112,9 @@
             <div class="row">
               <div class="col-xs-12 col-sm-6">
                 <div class="form-group">
-                  <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-level"> 层级<span
-                    class="input-required">*</span> </label>
+                  <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-level">
+                    层级<span class="input-required">*</span>
+                  </label>
                   <div class="col-xs-12 col-sm-8">
                     <div class="clearfix">
                       <input type="text" name="level" value="${dataType.level}" id="form-level" placeholder="层级"
@@ -122,8 +125,9 @@
               </div>
               <div class="col-xs-12 col-sm-6">
                 <div class="form-group">
-                  <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-editable"> 数据可修改<span
-                    class="input-required">*</span> </label>
+                  <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-editable">
+                    数据可修改<span class="input-required">*</span>
+                  </label>
                   <div class="col-xs-12 col-sm-8">
                     <div class="clearfix" style="padding-top: 7px;">
                       <input type="hidden" name="editable" value="${dataType.editable}" placeholder="数据可修改"
@@ -139,7 +143,7 @@
             <div class="row">
               <div class="col-xs-12 col-sm-6">
                 <div class="form-group">
-                  <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-remark"> 备注 </label>
+                  <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-remark">备注</label>
                   <div class="col-xs-12 col-sm-8">
                     <div class="clearfix">
                       <textarea name="remark" id="form-remark" placeholder="备注 "

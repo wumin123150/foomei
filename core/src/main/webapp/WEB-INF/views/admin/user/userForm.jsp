@@ -350,11 +350,12 @@
             </div>
             <div class="clearfix form-actions">
               <div class="col-sm-offset-4 col-sm-8 col-xs-offset-3 col-xs-9">
-                <button class="btn btn-info btn-sm" type="submit"><i class="ace-icon fa fa-check bigger-110"></i> 保存
+                <button class="btn btn-info btn-sm" type="submit">
+                  <i class="ace-icon fa fa-check bigger-110"></i> 保存
                 </button>
                 &nbsp; &nbsp; &nbsp;
-                <button class="btn btn-sm" type="reset" onclick="history.back()"><i
-                  class="ace-icon fa fa-undo bigger-110"></i> 返回
+                <button class="btn btn-sm" type="reset" onclick="history.back()">
+                  <i class="ace-icon fa fa-undo bigger-110"></i> 返回
                 </button>
               </div>
             </div>

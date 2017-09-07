@@ -39,8 +39,9 @@
         <li>
           <a href="${ctx}/admin/config">系统配置管理</a>
         </li>
-        <li class="active"><c:choose><c:when test='${action == "create"}'>新增配置</c:when><c:when
-          test='${action == "update"}'>修改配置</c:when></c:choose></li>
+        <li class="active">
+          <c:choose><c:when test='${action == "create"}'>新增配置</c:when><c:when test='${action == "update"}'>修改配置</c:when></c:choose>
+        </li>
       </ul><!-- /.breadcrumb -->
     </div>
 
@@ -84,8 +85,9 @@
             <div class="row">
               <div class="col-xs-12 col-sm-6">
                 <div class="form-group">
-                  <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-code"> 键<span
-                    class="input-required">*</span> </label>
+                  <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-code">
+                    键<span class="input-required">*</span>
+                  </label>
                   <div class="col-xs-12 col-sm-8">
                     <div class="clearfix">
                       <input type="text" name="code" value="${config.code}" id="form-code" placeholder="键"
@@ -96,8 +98,9 @@
               </div>
               <div class="col-xs-12 col-sm-6">
                 <div class="form-group">
-                  <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-name"> 名称<span
-                    class="input-required">*</span> </label>
+                  <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-name">
+                    名称<span class="input-required">*</span>
+                  </label>
                   <div class="col-xs-12 col-sm-8">
                     <div class="clearfix">
                       <input type="text" name="name" value="${config.name}" id="form-name" placeholder="名称"
@@ -110,8 +113,9 @@
             <div class="row">
               <div class="col-xs-12 col-sm-6">
                 <div class="form-group">
-                  <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-editable"> 值可修改<span
-                    class="input-required">*</span> </label>
+                  <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-editable">
+                    值可修改<span class="input-required">*</span>
+                  </label>
                   <div class="col-xs-12 col-sm-8">
                     <div class="clearfix" style="padding-top: 7px;">
                       <input type="hidden" name="editable" value="${config.editable}" placeholder="值可修改"
@@ -125,8 +129,9 @@
               </div>
               <div class="col-xs-12 col-sm-6">
                 <div class="form-group">
-                  <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-type"> 类型<span
-                    class="input-required">*</span> </label>
+                  <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-type">
+                    类型<span class="input-required">*</span>
+                  </label>
                   <div class="col-xs-12 col-sm-8">
                     <div class="clearfix">
                       <select name="type" id="form-type" class="form-control" data-placeholder="类型">

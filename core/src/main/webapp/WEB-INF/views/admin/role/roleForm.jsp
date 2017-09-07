@@ -85,8 +85,9 @@
             <div class="row">
               <div class="col-xs-12 col-sm-6">
                 <div class="form-group">
-                  <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-code"> 编码<span
-                    class="input-required">*</span> </label>
+                  <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-code">
+                    编码<span class="input-required">*</span>
+                  </label>
                   <div class="col-xs-12 col-sm-8">
                     <div class="clearfix">
                       <input type="text" name="code" value="${role.code}" id="form-code" placeholder="编码"
@@ -97,8 +98,9 @@
               </div>
               <div class="col-xs-12 col-sm-6">
                 <div class="form-group">
-                  <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-name"> 名称<span
-                    class="input-required">*</span> </label>
+                  <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-name">
+                    名称<span class="input-required">*</span>
+                  </label>
                   <div class="col-xs-12 col-sm-8">
                     <div class="clearfix">
                       <input type="text" name="name" value="${role.name}" id="form-name" placeholder="名称"

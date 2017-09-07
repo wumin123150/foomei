@@ -3,11 +3,10 @@
   <div class="footer-inner">
     <!-- #section:basics/footer -->
     <div class="footer-content">
-					<span class="bigger-120">
-						© ${iCompany}
-					</span>
+      <span class="bigger-120">
+        © ${iCompany}
+      </span>
     </div>
-
     <!-- /section:basics/footer -->
   </div>
 </div>

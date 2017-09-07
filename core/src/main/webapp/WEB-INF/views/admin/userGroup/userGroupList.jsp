@@ -184,8 +184,9 @@
                 <input type="hidden" name="id" id="id"/>
                 <input type="hidden" name="parentId" id="form-parentId"/>
                 <div class="form-group">
-                  <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-code"> 机构编码<span
-                    class="input-required">*</span> </label>
+                  <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-code">
+                    机构编码<span class="input-required">*</span>
+                  </label>
                   <div class="col-xs-12 col-sm-8">
                     <div class="clearfix">
                       <input type="text" name="code" id="form-code" placeholder="机构编码" class="form-control"/>
@@ -193,8 +194,9 @@
                   </div>
                 </div>
                 <div class="form-group">
-                  <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-name"> 机构名称<span
-                    class="input-required">*</span> </label>
+                  <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-name">
+                    机构名称<span class="input-required">*</span>
+                  </label>
                   <div class="col-xs-12 col-sm-8">
                     <div class="clearfix">
                       <input type="text" name="name" id="form-name" placeholder="机构名称" class="form-control"/>
@@ -202,8 +204,9 @@
                   </div>
                 </div>
                 <div class="form-group">
-                  <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-type"> 机构类型<span
-                    class="input-required">*</span> </label>
+                  <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-type">
+                    机构类型<span class="input-required">*</span>
+                  </label>
                   <div class="col-xs-12 col-sm-8">
                     <div class="clearfix">
                       <select name="type" id="form-type" class="form-control" data-placeholder="机构类型">

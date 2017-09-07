@@ -67,19 +67,20 @@
                         <div class="row">
                           <div class="col-xs-12 col-sm-12">
                             <div class="form-group">
-                              <label class="col-xs-12 col-sm-12"
-                                     for="form-${config.code}"> ${config.name}（编码：${config.code}）<c:if
-                                test="${fn:length(config.remark)>1}"> <span class="help-button" data-rel="popover"
-                                                                            data-trigger="hover" data-placement="bottom"
-                                                                            data-content="${config.remark}"
-                                                                            title="参数说明">?</span></c:if></label>
+                              <label class="col-xs-12 col-sm-12" for="form-${config.code}">
+                                  ${config.name}（编码：${config.code}）
+                                <c:if test="${fn:length(config.remark)>1}">
+                                  <span class="help-button" data-rel="popover" data-trigger="hover"
+                                        data-placement="bottom" data-content="${config.remark}" title="参数说明">?</span>
+                                </c:if>
+                              </label>
                               <div class="col-xs-12 col-sm-12">
                                 <input type="hidden" name="configs[${status.index}].id" value="${config.id}">
                                 <c:choose>
                                   <c:when test="${config.type eq 0}">
                                     <input type="text" name="configs[${status.index}].value" id="form-${config.code}"
-                                           class="form-control" value="${config.value}"
-                                      <c:if test="${not config.editable}"> readonly="true"</c:if>
+                                           class="form-control" value="${config.value}" <c:if
+                                      test="${not config.editable}"> readonly="true"</c:if>
                                     />
                                   </c:when>
                                   <c:when test="${config.type eq 1}">
@@ -94,7 +95,7 @@
                                           <input type="radio" name="configs[${status.index}].value" class="ace"
                                                  value="${option.key}"
                                           <c:if test="${config.value eq option.key}"> checked</c:if>
-                                            <c:if test="${not config.editable}"> readonly="true"</c:if>>
+                                          <c:if test="${not config.editable}"> readonly="true"</c:if>>
                                           <span class="lbl">${option.value}</span>
                                         </label>
                                       </c:forEach>
@@ -114,7 +115,7 @@
                                           <input type="checkbox" name="configs[${status.index}].value" class="ace"
                                                  value="${option.key}"
                                           <c:if test="${selectedConfig}"> checked</c:if>
-                                            <c:if test="${not config.editable}"> readonly="true"</c:if>>
+                                          <c:if test="${not config.editable}"> readonly="true"</c:if>>
                                           <span class="lbl">${option.value}</span>
                                         </label>
                                       </c:forEach>

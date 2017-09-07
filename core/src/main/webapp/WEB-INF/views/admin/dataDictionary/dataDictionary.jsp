@@ -121,8 +121,7 @@
                     class="input-required">*</span> </label>
                   <div class="col-xs-12 col-sm-8">
                     <div class="clearfix">
-                      <input type="text" name="code" id="form-code" placeholder="编码"
-                             class="form-control"/>
+                      <input type="text" name="code" id="form-code" placeholder="编码" class="form-control"/>
                     </div>
                   </div>
                 </div>
@@ -131,8 +130,7 @@
                     class="input-required">*</span> </label>
                   <div class="col-xs-12 col-sm-8">
                     <div class="clearfix">
-                      <input type="text" name="name" id="form-name" placeholder="名称"
-                             class="form-control"/>
+                      <input type="text" name="name" id="form-name" placeholder="名称" class="form-control"/>
                     </div>
                   </div>
                 </div>
@@ -141,8 +139,7 @@
                          for="form-priority"> 序号<span class="input-required">*</span> </label>
                   <div class="col-xs-12 col-sm-8">
                     <div class="clearfix">
-                      <input type="text" name="priority" id="form-priority" placeholder="序号"
-                             class="form-control"/>
+                      <input type="text" name="priority" id="form-priority" placeholder="序号" class="form-control"/>
                     </div>
                   </div>
                 </div>
@@ -162,8 +159,7 @@
                     备注 </label>
                   <div class="col-xs-12 col-sm-8">
                     <div class="clearfix">
-                                            <textarea name="remark" id="form-remark" placeholder="备注 "
-                                                      class="form-control"></textarea>
+                      <textarea name="remark" id="form-remark" placeholder="备注" class="form-control"></textarea>
                     </div>
                   </div>
                 </div>

@@ -27,9 +27,9 @@
 <footer id="footer" class="footer">
   <div class="footer-inner">
     <div class="footer-content">
-        <span class="bigger-120">
-          © ${iCompany}
-        </span>
+      <span class="bigger-120">
+        © ${iCompany}
+      </span>
     </div>
   </div>
 </footer>
