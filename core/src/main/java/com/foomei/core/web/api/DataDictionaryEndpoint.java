@@ -78,7 +78,7 @@ public class DataDictionaryEndpoint {
             dataDictionaryService.save(dataDictionary);
         }
 
-		return new ResponseResult<TreeNodeDto>(new TreeNodeDto(dataDictionary));
+		return new ResponseResult<>(new TreeNodeDto(dataDictionary));
 	}
 
 	@ApiOperation(value = "数据字典修改", httpMethod = "POST", produces = "application/json")
@@ -98,7 +98,7 @@ public class DataDictionaryEndpoint {
 			dataDictionaryService.save(dataDictionary);
 		}
 
-		return new ResponseResult<TreeNodeDto>(new TreeNodeDto(dataDictionary));
+		return new ResponseResult<>(new TreeNodeDto(dataDictionary));
 	}
 
 	@ApiOperation(value = "数据字典删除", httpMethod = "GET", produces = "application/json")
@@ -113,7 +113,7 @@ public class DataDictionaryEndpoint {
 	@RequiresRoles("admin")
 	@RequestMapping(value = "get/{id}")
 	public ResponseResult get(@PathVariable("id") Long id) {
-		return new ResponseResult<DataDictionary>(dataDictionaryService.get(id));
+		return new ResponseResult<>(dataDictionaryService.get(id));
 	}
 	
 	/**

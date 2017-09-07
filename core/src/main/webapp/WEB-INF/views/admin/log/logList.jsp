@@ -84,9 +84,9 @@
 										<div class="col-xs-8">
 										<div class="input-daterange input-group">
 											<label>操作时间范围:</label>
-												 <input type="text" name="plantRange" id="form-planRange" style="width:245px" class="input-sm" placeholder="按时间范围查询" aria-controls="datatables">
- 									          <input type="hidden" name="startTime" id="form-startTime" />
- 									          <input type="hidden" name="endTime" id="form-endTime" />
+												<input type="text" name="plantRange" id="timeRange" style="width:245px" class="input-sm" placeholder="按时间范围查询" aria-controls="datatables">
+												<input type="hidden" name="startTime" id="startTime" />
+												<input type="hidden" name="endTime" id="endTime" />
 										</div>
 										</div>
 										<div class="col-xs-4">
@@ -122,89 +122,42 @@
 <pageJs>
 	<!-- inline scripts related to this page -->
 	<script type="text/javascript">
-		var locale = {
-			format : "YYYY-MM-DD",
-			separator: " ~ ",
-			applyLabel : "确定",
-			cancelLabel : "取消",
-			fromLabel : "起始时间",
-			toLabel: "结束时间'",
-			customRangeLabel : "自定义",
-			weekLabel : "W",
-			daysOfWeek : [ "日", "一", "二", "三", "四", "五", "六" ],
-			monthNames : [ "一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月" ],
-			firstDay : 1
-		};
-		
-		function getTimeOne(data) {
-			return data < 10 ? ("0" + data) : data;
-		}
-
-		function getStartTimeStr(day) {
-			var dd = new Date();
-			dd.setDate(dd.getDate() + day);//获取AddDayCount天后的日期
-			var y = getTimeOne(dd.getFullYear());
-			var m = getTimeOne(dd.getMonth() + 1);//获取当前月份的日期
-			var d = getTimeOne(dd.getDate()); 
-			return y + "-" + m + "-" + d + "00:00";
-		}
-		
-		function getEndTimeStr(day) {
-			var dd = new Date();
-			dd.setDate(dd.getDate() + day);//获取AddDayCount天后的日期
-			var y = getTimeOne(dd.getFullYear());
-			var m = getTimeOne(dd.getMonth() + 1);//获取当前月份的日期
-			var d = getTimeOne(dd.getDate()); 
-			return y + "-" + m + "-" + d + "23:59";
-		}
-		
-		var ranges = { 
-	    "清空" : [],
-	 		"今天" : [ getStartTimeStr(0), getEndTimeStr(0) ],
-			"昨天" : [ getStartTimeStr(-1), getEndTimeStr(-1) ],
-			"近三天" : [ getStartTimeStr(-2), getEndTimeStr(0) ]
-		};
-		
-		$("#form-planRange").daterangepicker({
-			locale : locale,
-			/* timePicker : true,
-			timePicker24Hour : true, */
-			ranges : ranges, 
-			 
+		$("#timeRange").daterangepicker({
+			locale : {
+        format : "YYYY-MM-DD HH:mm",
+        applyLabel: '确认',
+        cancelLabel: '取消',
+        fromLabel : '起始时间',
+        toLabel : '结束时间',
+        customRangeLabel : '自定义',
+        daysOfWeek : [ "日", "一", "二", "三", "四", "五", "六" ],
+        monthNames : [ "一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月" ],
+        firstDay : 1
+      },
+      timePicker: true,
+      timePickerIncrement: 10,
+      timePicker24Hour: true,
+			ranges: {
+        '最近1小时': [moment().subtract('hours',1), moment()],
+        '今日': [moment().startOf('day'), moment()],
+        '昨日': [moment().subtract('days', 1).startOf('day'), moment().subtract('days', 1).endOf('day')],
+        '最近7日': [moment().subtract('days', 6), moment()],
+        '最近30日': [moment().subtract('days', 29), moment()],
+        '本月': [moment().startOf("month"),moment().endOf("month")],
+        '上个月': [moment().subtract(1,"month").startOf("month"),moment().subtract(1,"month").endOf("month")]
+      }
 		});
-		$("#form-planRange").attr("value", "");
-		function setTimeRange() {
-			var range = $("#form-planRange").val().split("~");
-			var startTime = range[0].trim();
-			var endTime = range[1].trim();
-			$("#form-startTime").attr("value", startTime + " 00:00");
-			$("#form-endTime").attr("value", endTime+" 23:59");
-			if(startTime == endTime) {
-				$("#form-planRange").val(startTime);
-			}
-		} 
-		$(document).on("change", "#form-planRange", function() { 
-		     setTimeRange();
-	 	}); 
-		 $(document).on("click", "li[data-range-key='清空']", function() {
-			 $("#form-planRange").attr("value", "");
-			 $("#form-planRange").val("");
-			 $("#form-startTime").attr("value", "");
-			 $("#form-endTime").attr("value", "");
-		 });
-		 $("#form-planRange").attr("value", "");
-		 $("#form-planRange").val("");
-		 
-		 $("button.cancelBtn").bind("click", function(e) {
-	  		if($("#form-planRange").val() == "") {
-				$("#form-planRange").attr("value", "");
-				$("#form-planRange").val("");
-				$("#form-startTime").attr("value", "");
-				$("#form-endTime").attr("value", "");
-				$("div.daterangepicker.dropdown-menu").css("display", "none");
-				e.stopPropagation();
-			}     
-		 }); 
+
+		$('#timeRange').on('apply.daterangepicker', function(ev, picker) {
+			$('#startTime').val(picker.startDate.format('YYYY-MM-DD HH:mm'));
+			$('#endTime').val(picker.endDate.format('YYYY-MM-DD HH:mm'));
+		});
+
+		$('#timeRange').on('cancel.daterangepicker', function(ev, picker) {
+			$('#timeRange').val('');
+			$("#startTime").val('');
+			$("#endTime").val('');
+		});
 
 		var grid_selector = "#grid-table";
 		var grid_page_url = "${ctx}/api/log/page";
@@ -249,14 +202,18 @@
 			$("#searchKey").keydown(function(e) {
 				if (e.keyCode == 13) {
 					$(grid_selector).foomei_JqGrid('search', {
-						"searchKey": $('#searchKey').val()
+						"searchKey": $('#searchKey').val(),
+						"startTime": $('#startTime').val(),
+						"endTime": $('#endTime').val()
 					});
 				}
 			});
 
 			$("#btn-search").click(function() {
 				$(grid_selector).foomei_JqGrid('search', {
-					"searchKey": $('#searchKey').val()
+					"searchKey": $('#searchKey').val(),
+					"startTime": $('#startTime').val(),
+					"endTime": $('#endTime').val()
 				});
 			});
 			 

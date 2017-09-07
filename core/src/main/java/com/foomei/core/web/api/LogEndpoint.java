@@ -16,6 +16,7 @@ import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -49,6 +50,14 @@ public class LogEndpoint {
 			page = logService.getPage(pageQuery.getSearchKey(), startTime, endTime, pageQuery.buildPageRequest("logTime", "desc"));
 		}
 		return ResponseResult.createSuccess(page, Log.class, LogDto.class);
+	}
+
+	@ApiOperation(value = "日志获取", httpMethod = "GET", produces = "application/json")
+	@LogIgnore
+	@RequestMapping("get/{id}")
+	public ResponseResult<LogDto> get(@PathVariable("id")String id) {
+		Log log = logService.get(id);
+		return ResponseResult.createSuccess(log, LogDto.class);
 	}
 
 }
