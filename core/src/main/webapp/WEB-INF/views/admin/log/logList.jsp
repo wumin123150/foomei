@@ -40,6 +40,14 @@
     .ui-jqdialog-content .searchFilter .input-elm {
       padding-bottom: 5px;
     }
+
+    .break-content {
+      display: block;
+      word-break: break-all;
+      word-wrap: break-word;
+      max-height: 200px;
+      overflow-y: auto;
+    }
   </style>
 </pageCss>
 <body>
@@ -104,8 +112,8 @@
                              class="input-sm" placeholder="操作用户、操作描述、URL、IP" aria-controls="datatables">
                       <input style="display:none"/>
                       <span class="input-group-btn">
-												<button id="btn-search" class="btn btn-xs btn-purple" type="button"><i class="fa fa-search"></i>查询</button>
-											</span>
+                        <button id="btn-search" class="btn btn-xs btn-purple" type="button"><i class="fa fa-search"></i>查询</button>
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -114,6 +122,34 @@
           </div>
 
           <table id="grid-table"></table>
+
+          <div id="dialog-container" class="hide">
+            <div id="dialog-form">
+              <div class="profile-user-info profile-user-info-striped">
+                <div class="profile-info-row">
+                  <div class="profile-info-name">操作描述</div><div class="profile-info-value" id="form-description"></div>
+                </div>
+                <div class="profile-info-row">
+                  <div class="profile-info-name">操作用户</div><div class="profile-info-value" id="form-username"></div>
+                </div>
+                <div class="profile-info-row">
+                  <div class="profile-info-name">操作时间</div><div class="profile-info-value" id="form-logTime"></div>
+                </div>
+                <div class="profile-info-row">
+                  <div class="profile-info-name">访问路径</div><div class="profile-info-value" id="form-url"></div>
+                </div>
+                <div class="profile-info-row">
+                  <div class="profile-info-name">访问方式</div><div class="profile-info-value"><div class="break-content" id="form-userAgent"></div></div>
+                </div>
+                <div class="profile-info-row">
+                  <div class="profile-info-name">输入参数</div><div class="profile-info-value"><div class="break-content" id="form-parameter"></div></div>
+                </div>
+                <div class="profile-info-row">
+                  <div class="profile-info-name">返回结果</div><div class="profile-info-value"><div class="break-content" id="form-result"></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
           <!-- PAGE CONTENT ENDS -->
         </div><!-- /.col -->
       </div><!-- /.row -->
@@ -191,6 +227,7 @@
             formatter: function (cellvalue, options, rowObject) {
               return '<div class="action-buttons">'
                 + '<div title="删除" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" onmouseover="$(this).addClass(\'ui-state-hover\');" onmouseout="$(this).removeClass(\'ui-state-hover\')"><a class="red btn-del" href="javascript:void(0);" data-id="' + rowObject.id + '"><i class="ace-icon fa fa-trash-o bigger-140"></i></a></div>'
+                + '<div title="详情" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" onmouseover="$(this).addClass(\'ui-state-hover\');" onmouseout="$(this).removeClass(\'ui-state-hover\')"><a class="green btn-view" href="javascript:void(0);" data-id="' + rowObject.id + '"><i class="ace-icon fa fa-eye bigger-140"></i></a></div>'
                 + '</div>';
             }
           },
@@ -239,6 +276,40 @@
         BootstrapDialog.confirm('你确定要删除吗？', function (result) {
           if (result) {
             window.location.href = grid_del_url + id;
+          }
+        });
+      });
+
+      $(document).on('click', ".btn-view", function () {
+        var id = $(this).attr("data-id");
+        $.ajax({
+          url: "${ctx}/api/log/get/" + id,
+          type: 'GET',
+          cache: false,
+          dataType: 'json',
+          success: function (result) {
+            $('#form-description').text(result.data.description);
+            $('#form-username').text(result.data.username + '(' + result.data.ip + ')');
+            $('#form-logTime').text(result.data.logTime + '  耗时' + result.data.spendTime + '秒');
+            $('#form-url').text('[' + result.data.method + ']' + result.data.url);
+            $('#form-userAgent').text(result.data.userAgent);
+            $('#form-parameter').text(result.data.parameter);
+            $('#form-result').text(result.data.result);
+
+            BootstrapDialog.show({
+              title: '<i class="ace-icon fa fa-eye bigger-110"></i>&nbsp;查看日志',
+              message: $('#dialog-form'),
+              autodestroy: false,
+              buttons: [{
+                label: '<i class="ace-icon fa fa-times bigger-110"></i>取消',
+                action: function (dialogRef) {
+                  dialogRef.close();
+                }
+              }]
+            });
+          },
+          error: function () {
+            toastr.error('未知错误，请联系管理员');
           }
         });
       });
