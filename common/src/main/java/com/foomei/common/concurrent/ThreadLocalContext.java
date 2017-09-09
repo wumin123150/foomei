@@ -27,106 +27,34 @@ import com.foomei.common.collection.MapUtil;
  * </pre>
  */
 public class ThreadLocalContext {
-    
-    private static final Logger log = LoggerFactory.getLogger(ThreadLocalContext.class);
 
-    private static final ThreadLocal<Map<Object, Object>> resources = new InheritableThreadLocalMap<Map<Object, Object>>();
-
-    public static Map<Object, Object> getResources() {
-        return (resources != null) ? resources.get() : null;
-    }
-
-    public static void setResources(Map<Object, Object> newResources) {
-        if (MapUtil.isEmpty(newResources))
-            return;
-
-        resources.get().clear();
-        resources.get().putAll(newResources);
-    }
-
-    /**
-     * 取出ThreadLocal的上下文信息.
-     */
-    private static Object getValue(Object key) {
-        return resources.get().get(key);
-    }
-
-    /**
-     * 取出ThreadLocal的上下文信息.
-     */
-    public static <T> T get(Object key) {
-        if (log.isTraceEnabled()) {
-            String msg = "get() - in thread [" + Thread.currentThread().getName() + "]";
-            log.trace(msg);
+    private static ThreadLocal<Map<String, Object>> contextMap = new ThreadLocal<Map<String, Object>>() {
+        @Override
+        protected Map<String, Object> initialValue() {
+            // 降低loadFactory减少冲突
+            return new HashMap<String, Object>(16, 0.5f);
         }
-
-        Object value = getValue(key);
-        if ((value != null) && (log.isTraceEnabled())) {
-            String msg = "Retrieved value of type [" + value.getClass().getName() + "] for key [" + key + "] "
-                    + "bound to thread [" + Thread.currentThread().getName() + "]";
-
-            log.trace(msg);
-        }
-        return (T) value;
-    }
-
-    /**
-     * 取出ThreadLocal的上下文信息.
-     */
-    public static String getString(Object key) {
-        Object value = get(key);
-        if (value != null)
-            return value.toString();
-
-        return null;
-    }
+    };
 
     /**
      * 放入ThreadLocal的上下文信息.
      */
-    public static void put(Object key, Object value) {
-        if (key == null) {
-            throw new IllegalArgumentException("key cannot be null");
-        }
-
-        if (value == null) {
-            remove(key);
-            return;
-        }
-
-        resources.get().put(key, value);
-
-        if (log.isTraceEnabled()) {
-            String msg = "Bound value of type [" + value.getClass().getName() + "] for key [" + key + "] to thread "
-                    + "[" + Thread.currentThread().getName() + "]";
-
-            log.trace(msg);
-        }
+    public static void put(String key, Object value) {
+        contextMap.get().put(key, value);
     }
 
-    public static Object remove(Object key) {
-        Object value = resources.get().remove(key);
-
-        if ((value != null) && (log.isTraceEnabled())) {
-            String msg = "Removed value of type [" + value.getClass().getName() + "] for key [" + key + "]"
-                    + "from thread [" + Thread.currentThread().getName() + "]";
-
-            log.trace(msg);
-        }
-
-        return value;
+    /**
+     * 取出ThreadLocal的上下文信息.
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T get(String key) {
+        return (T) (contextMap.get().get(key));
     }
 
-    public static void remove() {
-        resources.remove();
+    /**
+     * 清理ThreadLocal的Context内容.
+     */
+    public static void reset() {
+        contextMap.get().clear();
     }
-
-    private static final class InheritableThreadLocalMap<T extends Map<Object, Object>> extends
-            InheritableThreadLocal<Map<Object, Object>> {
-        protected Map<Object, Object> initialValue() {
-         // 降低loadFactory减少冲突
-            return new HashMap<Object, Object>(16, 0.5f);
-        }
-    }
-    
 }

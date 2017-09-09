@@ -28,7 +28,7 @@ import com.foomei.common.reflect.ClassUtil;
  *
  * @author walker
  */
-public class JaxbMapper {
+public class XmlMapper {
 
 	@SuppressWarnings("rawtypes")
 	private static ConcurrentMap<Class, JAXBContext> jaxbContexts = new ConcurrentHashMap<Class, JAXBContext>();
@@ -151,7 +151,7 @@ public class JaxbMapper {
 		if (jaxbContext == null) {
 			try {
 				jaxbContext = JAXBContext.newInstance(clazz, CollectionWrapper.class);
-				jaxbContext = jaxbContexts.putIfAbsent(clazz, jaxbContext);
+				jaxbContexts.putIfAbsent(clazz, jaxbContext);
 			} catch (JAXBException ex) {
 				throw new RuntimeException("Could not instantiate JAXBContext for class [" + clazz + "]: " + ex.getMessage(), ex);
 			}
