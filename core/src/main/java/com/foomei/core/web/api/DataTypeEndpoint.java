@@ -35,7 +35,7 @@ public class DataTypeEndpoint {
   public ResponseResult<Page<DataTypeDto>> page(PageQuery pageQuery, HttpServletRequest request) {
     Page<DataType> page = null;
     if (pageQuery.getAdvance()) {
-      JqGridFilter jqGridFilter = JsonMapper.nonDefaultMapper().fromJson(request.getParameter("filters"), JqGridFilter.class);
+      JqGridFilter jqGridFilter = JsonMapper.INSTANCE.fromJson(request.getParameter("filters"), JqGridFilter.class);
       page = dataTypeService.getPage(jqGridFilter, pageQuery.buildPageRequest());
     } else {
       SearchFilter searchFilter = new SearchFilter().or()

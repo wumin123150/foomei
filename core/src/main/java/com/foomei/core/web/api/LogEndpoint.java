@@ -44,7 +44,7 @@ public class LogEndpoint {
                                            HttpServletRequest request) {
     Page<Log> page = null;
     if (pageQuery.getAdvance()) {
-      JqGridFilter jqGridFilter = JsonMapper.nonDefaultMapper().fromJson(request.getParameter("filters"), JqGridFilter.class);
+      JqGridFilter jqGridFilter = JsonMapper.INSTANCE.fromJson(request.getParameter("filters"), JqGridFilter.class);
       page = logService.getPage(jqGridFilter, pageQuery.buildPageRequest());
     } else {
       page = logService.getPage(pageQuery.getSearchKey(), startTime, endTime, pageQuery.buildPageRequest("logTime", "desc"));

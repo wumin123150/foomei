@@ -6,6 +6,8 @@
 
 drop table if exists core_annex;
 
+drop table if exists core_area;
+
 drop table if exists core_config;
 
 drop table if exists core_data_dictionary;
@@ -45,6 +47,24 @@ create table core_annex
    type                 varchar(16),
    create_time          datetime,
    creator              bigint,
+   primary key (id)
+);
+
+/*==============================================================*/
+/* Table: core_area                                             */
+/*==============================================================*/
+create table core_area
+(
+   id                   varchar(36) not null,
+   code                 varchar(8),
+   name                 varchar(16),
+   full_name            varchar(32),
+   level                tinyint(1),
+   type                 varchar(1),
+   root_id              varchar(36),
+   parent_id            varchar(36),
+   map_code             varchar(32),
+   weather_code         varchar(32),
    primary key (id)
 );
 

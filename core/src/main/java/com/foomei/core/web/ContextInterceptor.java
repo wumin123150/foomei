@@ -52,7 +52,7 @@ public class ContextInterceptor extends HandlerInterceptorAdapter {
 
   public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)
     throws Exception {
-    CoreThreadContext.remove();
+    CoreThreadContext.reset();
 
     if (ex != null) {
       ex.printStackTrace();

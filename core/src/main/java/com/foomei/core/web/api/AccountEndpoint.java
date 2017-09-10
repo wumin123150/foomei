@@ -3,7 +3,9 @@ package com.foomei.core.web.api;
 import com.foomei.common.base.annotation.LogIgnore;
 import com.foomei.common.dto.ErrorCodeFactory;
 import com.foomei.common.dto.ResponseResult;
+import com.foomei.core.dto.UserDto;
 import com.foomei.core.entity.Annex;
+import com.foomei.core.entity.BaseUser;
 import com.foomei.core.entity.User;
 import com.foomei.core.service.AnnexService;
 import com.foomei.core.service.UserService;
@@ -61,6 +63,23 @@ public class AccountEndpoint {
     } else {
       return ResponseResult.createError(ErrorCodeFactory.BAD_REQUEST, "原密码错误");
     }
+  }
+
+  @ApiOperation(value = "修改用户信息", httpMethod = "POST", produces = "application/json")
+  @ApiImplicitParams({
+    @ApiImplicitParam(name = "name", value = "姓名", required = true, dataType = "string", paramType = "form"),
+    @ApiImplicitParam(name = "mobile", value = "手机", dataType = "string", paramType = "form"),
+    @ApiImplicitParam(name = "email", value = "电子邮件", dataType = "string", paramType = "form")
+  })
+  @RequestMapping(value = "change", method = RequestMethod.POST)
+  public ResponseResult<UserDto> change(String name, String mobile, String email) {
+    Long id = CoreThreadContext.getUserId();
+    User user = userService.get(id);
+    user.setName(name);
+    user.setMobile(mobile);
+    user.setEmail(email);
+    user = userService.save(user);
+    return ResponseResult.SUCCEED;
   }
 
 }
