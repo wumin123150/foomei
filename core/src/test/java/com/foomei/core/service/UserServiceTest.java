@@ -1,18 +1,15 @@
 package com.foomei.core.service;
 
-import static org.assertj.core.api.Assertions.*;
-
-import com.foomei.common.security.shiro.ShiroUser;
-import com.foomei.common.test.security.shiro.ShiroTestUtils;
 import com.foomei.core.dao.jpa.UserDao;
 import com.foomei.core.entity.User;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+
+import static org.assertj.core.api.Assertions.failBecauseExceptionWasNotThrown;
 
 public class UserServiceTest {
 
@@ -25,12 +22,6 @@ public class UserServiceTest {
   @Before
   public void setup() {
     MockitoAnnotations.initMocks(this);
-    ShiroTestUtils.mockSubject(new ShiroUser(1L, "admin", "Admin"));
-  }
-
-  @After
-  public void tearDown() {
-    ShiroTestUtils.clearSubject();
   }
 
   @Test
