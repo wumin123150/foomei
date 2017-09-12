@@ -10,8 +10,6 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.ContextHierarchy;
-import org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -53,7 +51,7 @@ public class UserEndpointFuncTest extends SpringTransactionalTestCase {
 
   @Test
   public void get() throws Exception {
-    mockMvc.perform(MockMvcRequestBuilders.get("/api/user/get/1"))
+    mockMvc.perform(MockMvcRequestBuilders.get("/api/user/get/{id}", 1L))
       .andDo(MockMvcResultHandlers.print())
       .andExpect(MockMvcResultMatchers.status().isOk())
       .andExpect(MockMvcResultMatchers.content().contentType(MediaType.JSON_UTF_8.toString()))

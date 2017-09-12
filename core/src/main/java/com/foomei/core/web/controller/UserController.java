@@ -68,8 +68,6 @@ public class UserController {
   private UserGroupService userGroupService;
   @Autowired
   private AnnexService annexService;
-  @Autowired
-  private DataDictionaryService dataDictionaryService;
 
   @ApiOperation(value = "用户列表页面", httpMethod = "GET")
   @RequiresRoles("admin")
@@ -97,7 +95,7 @@ public class UserController {
   public String create(@Valid User user, BindingResult result,
                        @RequestParam(value = "roles", required = false) List<Long> checkedRoles,
                        @RequestParam(value = "groups", required = false) List<Long> checkedGroups,
-                       @RequestParam MultipartFile file,
+                       @RequestParam(value = "file", required = false) MultipartFile file,
                        Model model, HttpServletRequest request, RedirectAttributes redirectAttributes) {
     if (checkedRoles != null) {
       for (Long roleId : checkedRoles) {
@@ -116,6 +114,8 @@ public class UserController {
     if (userService.existLoginName(user.getId(), user.getLoginName())) {
       result.addError(new FieldError("user", "loginName", "账号已经被使用"));
     }
+
+    logger.debug("创建" + result.hasErrors());
 
     if (result.hasErrors()) {
       model.addAttribute("menu", MENU);
@@ -169,7 +169,7 @@ public class UserController {
   public String update(@Valid @ModelAttribute("preloadUser") User user, BindingResult result,
                        @RequestParam(value = "roles", required = false) List<Long> checkedRoles,
                        @RequestParam(value = "groups", required = false) List<Long> checkedGroups,
-                       @RequestParam MultipartFile file,
+                       @RequestParam(value = "file", required = false) MultipartFile file,
                        Model model, HttpServletRequest request, RedirectAttributes redirectAttributes) {
     //bind roles
     user.getRoleList().clear();
