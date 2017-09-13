@@ -69,8 +69,8 @@ public class Config extends IdEntity {
   @JsonIgnore
   public Map<String, String> getOptions() {
     if (StringUtils.isNotEmpty(params)) {
-      JsonMapper jsonMapper = JsonMapper.nonDefaultMapper();
-      return jsonMapper.fromJson(params, jsonMapper.contructMapType(TreeMap.class, String.class, String.class));
+      JsonMapper jsonMapper = JsonMapper.INSTANCE;
+      return jsonMapper.fromJson(params, jsonMapper.buildMapType(TreeMap.class, String.class, String.class));
     }
     return null;
   }

@@ -28,6 +28,6 @@ public class MashupServerController {
     Map<String, String> map = Collections.singletonMap("content", "<p>你好，世界！</p>");
 
     // 渲染返回结果.
-    return JsonMapper.nonDefaultMapper().toJsonP(callbackName, map);
+    return JsonMapper.INSTANCE.toJsonP(callbackName, map);
   }
 }

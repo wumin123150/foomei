@@ -47,8 +47,8 @@ public class DateFormatUtil {
     // 使用工厂方法FastDateFormat.getInstance(), 从缓存中获取实例
 
     // 以T分隔日期和时间，并带时区信息，符合ISO8601规范
-    public static final FastDateFormat ISO_FORMAT = FastDateFormat.getInstance(PATTERN_ISO);
-    public static final FastDateFormat ISO_ON_SECOND_FORMAT = FastDateFormat.getInstance(PATTERN_ISO_ON_SECOND);
+    public static final FastDateFormat FORMAT_ISO = FastDateFormat.getInstance(PATTERN_ISO);
+    public static final FastDateFormat FORAMT_ISO_ON_SECOND = FastDateFormat.getInstance(PATTERN_ISO_ON_SECOND);
 
     // 以空格分隔日期和时间，不带时区信息
     public static final FastDateFormat FORMAT_DEFAULT = FastDateFormat.getInstance(PATTERN_DEFAULT);

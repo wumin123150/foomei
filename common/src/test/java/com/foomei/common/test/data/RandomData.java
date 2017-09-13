@@ -6,7 +6,7 @@ import java.util.Random;
 
 /**
  * 随机测试数据生成工具类.
- * 
+ *
  * @author walker
  */
 public class RandomData {

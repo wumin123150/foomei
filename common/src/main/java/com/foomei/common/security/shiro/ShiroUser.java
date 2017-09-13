@@ -12,6 +12,16 @@ public class ShiroUser implements Serializable {
     private String loginName;
     private String name;
 
+    public ShiroUser() {
+
+    }
+
+    public ShiroUser(Long id, String loginName, String name) {
+        this.id = id;
+        this.loginName = loginName;
+        this.name = name;
+    }
+
     public Long getId() {
         return id;
     }

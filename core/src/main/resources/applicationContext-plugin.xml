@@ -4,5 +4,23 @@
 
 	<description>导入项目中的applicationContext文件列表</description>
 
-	<import resource="profile/*.xml" />
+	<beans profile="svr,prod">
+		<import resource="security/applicationContext-shiro.xml" />
+		<import resource="cache/applicationContext-guava-cache.xml" />
+		<import resource="schedule/applicationContext-spring-scheduler.xml" />
+		<import resource="monitor/applicationContext-profiler.xml" />
+	</beans>
+
+	<beans profile="dev">
+		<import resource="security/applicationContext-shiro.xml" />
+		<import resource="cache/applicationContext-guava-cache.xml" />
+		<import resource="schedule/applicationContext-spring-scheduler.xml" />
+		<import resource="monitor/applicationContext-profiler.xml" />
+	</beans>
+
+	<beans profile="test">
+		<import resource="security/applicationContext-shiro.xml" />
+		<import resource="cache/applicationContext-guava-cache.xml" />
+	</beans>
+
 </beans>

@@ -42,7 +42,7 @@ public class ConfigEndpoint {
   public ResponseResult<Page<Config>> page(PageQuery pageQuery, HttpServletRequest request) {
     Page<Config> page = null;
     if (pageQuery.getAdvance()) {
-      JqGridFilter jqGridFilter = JsonMapper.nonDefaultMapper().fromJson(request.getParameter("filters"), JqGridFilter.class);
+      JqGridFilter jqGridFilter = JsonMapper.INSTANCE.fromJson(request.getParameter("filters"), JqGridFilter.class);
       page = configService.getPage(jqGridFilter, pageQuery.buildPageRequest());
     } else {
       SearchFilter searchFilter = new SearchFilter().or()

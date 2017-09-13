@@ -34,7 +34,7 @@ public class RoleEndpoint {
   public ResponseResult<Page<RoleDto>> page(PageQuery pageQuery, HttpServletRequest request) {
     Page<Role> page = null;
     if (pageQuery.getAdvance()) {
-      JqGridFilter jqGridFilter = JsonMapper.nonDefaultMapper().fromJson(request.getParameter("filters"), JqGridFilter.class);
+      JqGridFilter jqGridFilter = JsonMapper.INSTANCE.fromJson(request.getParameter("filters"), JqGridFilter.class);
       page = roleService.getPage(jqGridFilter, pageQuery.buildPageRequest());
     } else {
       SearchFilter searchFilter = new SearchFilter().or()

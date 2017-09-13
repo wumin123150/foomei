@@ -23,7 +23,7 @@ public class ProfileApplicationContextInitializer implements
       ClassPathResource resource = new ClassPathResource("application.properties");
       Properties properties = PropertiesLoaderUtils.loadProperties(resource);
 
-      profile = properties.getProperty("profile");
+      profile = properties.getProperty("spring.profile");
 
       applicationContext.getEnvironment().setActiveProfiles(profile.split(","));
       if (logger.isInfoEnabled()) {
