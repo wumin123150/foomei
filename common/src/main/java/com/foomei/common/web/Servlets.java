@@ -124,6 +124,13 @@ public class Servlets {
 		response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + encodedfileName + "\"");
 	}
 
+	public static void setFileDownloadHeader(HttpServletResponse response, String fileName, String fileLength) {
+		// 中文文件名支持
+		String encodedfileName = new String(fileName.getBytes(Charsets.UTF_8), Charsets.ISO_8859_1);
+		response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + encodedfileName + "\"");
+		response.setHeader(HttpHeaders.CONTENT_LENGTH, fileLength);
+	}
+
 	/**
 	 * 获取客户端IP地址.
 	 */
@@ -223,10 +230,10 @@ public class Servlets {
 		response.setContentType(fullContentType);
 		if (noCache) {
 			response.setHeader("Pragma", "no-cache");
-		    response.addHeader("Cache-Control", "must-revalidate");
-		    response.addHeader("Cache-Control", "no-cache");
-		    response.addHeader("Cache-Control", "no-store");
-		    response.setDateHeader("Expires", 0);
+			response.addHeader("Cache-Control", "must-revalidate");
+			response.addHeader("Cache-Control", "no-cache");
+			response.addHeader("Cache-Control", "no-store");
+			response.setDateHeader("Expires", 0);
 		}
 	}
 }
