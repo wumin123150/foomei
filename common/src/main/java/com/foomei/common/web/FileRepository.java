@@ -20,9 +20,9 @@ import com.foomei.common.io.WebFileUtil;
  * 本地文件存储
  */
 public class FileRepository {
-	private Logger log = LoggerFactory.getLogger(FileRepository.class);
+	private static Logger log = LoggerFactory.getLogger(FileRepository.class);
 
-	public String storeByExt(byte[] data, String path, String ext) throws IOException {
+	public static String storeByExt(byte[] data, String path, String ext) throws IOException {
 		String filename = WebFileUtil.generateFilename(path, ext);
 		File dest = retrieve(filename);
 		dest = WebFileUtil.getUniqueFile(dest);
@@ -30,7 +30,7 @@ public class FileRepository {
 		return filename;
 	}
 
-	public String storeByExt(BufferedImage image, String path, String ext) throws IOException {
+	public static String storeByExt(BufferedImage image, String path, String ext) throws IOException {
 		String filename = WebFileUtil.generateFilename(path, ext);
 		File dest = retrieve(filename);
 		dest = WebFileUtil.getUniqueFile(dest);
@@ -38,11 +38,11 @@ public class FileRepository {
 		return filename;
 	}
 	
-	public String storeByPath(String file, String path) throws IOException {
+	public static String storeByPath(String file, String path) throws IOException {
 		return storeByPath(retrieve(file), path);
 	}
 
-	public String storeByPath(File file, String path) throws IOException {
+	public static String storeByPath(File file, String path) throws IOException {
 		String ext = FileUtil.getFileExtension(file.getName()).toLowerCase(Locale.ENGLISH);
 		String filename = WebFileUtil.generateFilename(path, ext);
 		File dest = retrieve(filename);
@@ -51,19 +51,19 @@ public class FileRepository {
 		return filename;
 	}
 
-	public String storeByFilename(File file, String filename) throws IOException {
+	public static String storeByFilename(File file, String filename) throws IOException {
 		File dest = retrieve(filename);
 		store(file, dest);
 		return filename;
 	}
 	
-	public String storeByFilename(byte[] data, String filename) throws IOException {
+	public static String storeByFilename(byte[] data, String filename) throws IOException {
 		File dest = retrieve(filename);
 		store(data, dest);
 		return filename;
 	}
 
-	private void store(byte[] data, File dest) throws IOException {
+	private static void store(byte[] data, File dest) throws IOException {
 		try {
 		    FileUtil.makesureDirExists(dest.getParentFile());
 			FileUtil.write(data, dest);
@@ -73,7 +73,7 @@ public class FileRepository {
 		}
 	}
 
-	private void store(BufferedImage image, File dest, String format) throws IOException {
+	private static void store(BufferedImage image, File dest, String format) throws IOException {
 		try {
 		    FileUtil.makesureDirExists(dest.getParentFile());
 			ImageIO.write(image, format, dest);
@@ -83,7 +83,7 @@ public class FileRepository {
 		}
 	}
 
-	private void store(File file, File dest) throws IOException {
+	private static void store(File file, File dest) throws IOException {
 		try {
 		    FileUtil.makesureDirExists(dest.getParentFile());
 		    FileUtil.copyFile(file, dest);
@@ -93,12 +93,12 @@ public class FileRepository {
 		}
 	}
 
-	public void deleteByPath(String path) {
+	public static void deleteByPath(String path) {
 		File file = retrieve(path);
 		FileUtil.deleteFile(file);
 	}
 	
-	public void deleteRelevantByPath(String path) {
+	public static void deleteRelevantByPath(String path) {
 	    File file = retrieve(path);
 	    Collection<File> files = FileTreeWalker.listFileWithWildcardFileName(file.getParentFile(), file.getName() + "*");
         for (File relevant : files) {
@@ -106,7 +106,7 @@ public class FileRepository {
         }
     }
 
-	public File retrieve(String name) {
+	public static File retrieve(String name) {
 		return new File(ThreadContext.getUploadPath() + name);
 	}
 }
