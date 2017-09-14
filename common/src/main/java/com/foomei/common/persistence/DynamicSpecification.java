@@ -11,75 +11,90 @@ import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import com.foomei.common.persistence.search.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.jpa.domain.Specification;
 
 import com.foomei.common.collection.CollectionUtil;
-import com.foomei.common.persistence.SearchFilter.Filter;
 import com.foomei.common.time.DateFormatUtil;
 import com.google.common.collect.Lists;
 
 public class DynamicSpecification {
 	@SuppressWarnings({"unchecked", "rawtypes"})
-	public static <T> Specification<T> bySearchFilter(final SearchFilter searchFilter, final Class<T> entityClazz) {
+	public static <T> Specification<T> bySearchRequest(final SearchRequest searchRequest, final Class<T> entityClazz) {
 		return new Specification<T>() {
 			public Predicate toPredicate(Root<T> root, CriteriaQuery<?> query, CriteriaBuilder builder) {
-				if (CollectionUtil.isNotEmpty(searchFilter.filters)) {
+				return filterTo(root, builder, searchRequest.getOperator(), searchRequest.getSearchFilters());
+			}
+		};
+	}
 
-					List<Predicate> predicates = Lists.newArrayList();
-					for (Filter filter : searchFilter.filters) {
-						// nested path translate, 如Task的名为"user.name"的filedName, 转换为Task.user.name属性
-						String[] names = StringUtils.split(filter.fieldName, ".");
-						Path expression = root.get(names[0]);
-						for (int i = 1; i < names.length; i++) {
-							expression = expression.get(names[i]);
-						}
-						
-						Object value = null;
+	public static <T> Predicate filterTo(Root<T> root, CriteriaBuilder builder, BooleanOperator operator, List<SearchFilter> searchFilters) {
+		List<Predicate> predicates = Lists.newArrayList();
 
-						// logic operator
-						switch (filter.operator) {
+		if (CollectionUtil.isNotEmpty(searchFilters)) {
+			for (SearchFilter searchFilter : searchFilters) {
+				if (searchFilter instanceof CompoundFilter) {
+					CompoundFilter filter = (CompoundFilter) searchFilter;
+					Predicate predicate = filterTo(root, builder, filter.getOperator(), filter.getSearchFilters());
+					if (predicate != null) {
+						predicates.add(predicate);
+					}
+				} else {
+					SimpleFilter filter = (SimpleFilter) searchFilter;
+
+					// nested path translate, 如Task的名为"user.name"的filedName, 转换为Task.user.name属性
+					String[] names = StringUtils.split(filter.getPropertyName(), ".");
+					Path expression = root.get(names[0]);
+					for (int i = 1; i < names.length; i++) {
+						expression = expression.get(names[i]);
+					}
+
+					Object value = null;
+
+					// logic operator
+					switch (filter.getOperator()) {
 						case EQ:
-							value = stringTo(filter.value, expression.getJavaType());
+							value = stringTo(filter.getValue(), expression.getJavaType());
 							predicates.add(builder.equal(expression, value));
 							break;
 						case NE:
-							value = stringTo(filter.value, expression.getJavaType());
+							value = stringTo(filter.getValue(), expression.getJavaType());
 							predicates.add(builder.notEqual(expression, value));
 							break;
 						case LT:
-							value = stringTo(filter.value, expression.getJavaType());
+							value = stringTo(filter.getValue(), expression.getJavaType());
 							predicates.add(builder.lessThan(expression, (Comparable) value));
 							break;
 						case LE:
-							value = stringTo(filter.value, expression.getJavaType());
+							value = stringTo(filter.getValue(), expression.getJavaType());
 							predicates.add(builder.lessThanOrEqualTo(expression, (Comparable) value));
 							break;
 						case GT:
-							value = stringTo(filter.value, expression.getJavaType());
+							value = stringTo(filter.getValue(), expression.getJavaType());
 							predicates.add(builder.greaterThan(expression, (Comparable) value));
 							break;
 						case GE:
-							value = stringTo(filter.value, expression.getJavaType());
+							value = stringTo(filter.getValue(), expression.getJavaType());
 							predicates.add(builder.greaterThanOrEqualTo(expression, (Comparable) value));
 							break;
-						case BW:
-							predicates.add(builder.like(expression, filter.value + "%"));
+						case SW:
+							predicates.add(builder.like(expression, filter.getValue() + "%"));
 							break;
-						case BN:
-							predicates.add(builder.notLike(expression, filter.value + "%"));
+						case SN:
+							predicates.add(builder.notLike(expression, filter.getValue() + "%"));
 							break;
 						case EW:
-							predicates.add(builder.like(expression, "%" + filter.value));
+							predicates.add(builder.like(expression, "%" + filter.getValue()));
 							break;
 						case EN:
-							predicates.add(builder.notLike(expression, "%" + filter.value));
+							predicates.add(builder.notLike(expression, "%" + filter.getValue()));
 							break;
 						case CN:
-							predicates.add(builder.like(expression, "%" + filter.value + "%"));
+							predicates.add(builder.like(expression, "%" + filter.getValue() + "%"));
 							break;
 						case NC:
-							predicates.add(builder.notLike(expression, "%" + filter.value + "%"));
+							predicates.add(builder.notLike(expression, "%" + filter.getValue() + "%"));
 							break;
 						case NU:
 							predicates.add(builder.isNull(expression));
@@ -89,35 +104,35 @@ public class DynamicSpecification {
 							break;
 						case IN:
 							In in = builder.in(expression);
-							for (Object val : (List)filter.value) {
+							for (Object val : (List) filter.getValue()) {
 								in.value(stringTo(val, expression.getJavaType()));
 							}
 							predicates.add(in);
 							break;
 						case NI:
 							In nin = builder.in(expression);
-							for (Object val : (List)filter.value) {
+							for (Object val : (List) filter.getValue()) {
 								nin.value(stringTo(val, expression.getJavaType()));
 							}
 							predicates.add(builder.not(nin));
 							break;
-						default: break;
-						}
-					}
-
-					// 将所有条件用 and 联合起来
-					if (!predicates.isEmpty()) {
-						if(searchFilter.or) {
-						    return builder.or(predicates.toArray(new Predicate[predicates.size()]));
-						} else {
-						    return builder.and(predicates.toArray(new Predicate[predicates.size()]));
-						}
+						default:
+							break;
 					}
 				}
-
-				return builder.conjunction();
 			}
-		};
+		}
+
+		// 将所有条件用 and 或者 or 联合起来
+		if (!predicates.isEmpty()) {
+			if(operator == BooleanOperator.OR) {
+				return builder.or(predicates.toArray(new Predicate[predicates.size()]));
+			} else {
+				return builder.and(predicates.toArray(new Predicate[predicates.size()]));
+			}
+		}
+
+		return null;
 	}
 	
 	private static Object stringTo(Object value, final Class clazz) {

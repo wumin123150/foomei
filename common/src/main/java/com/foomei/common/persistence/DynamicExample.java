@@ -1,5 +1,16 @@
 package com.foomei.common.persistence;
 
+import com.foomei.common.collection.CollectionUtil;
+import com.foomei.common.persistence.search.BooleanOperator;
+import com.foomei.common.persistence.search.SearchFilter;
+import com.foomei.common.persistence.search.SearchRequest;
+import com.foomei.common.persistence.search.SimpleFilter;
+import com.foomei.common.reflect.ClassUtil;
+import com.foomei.common.time.DateFormatUtil;
+import com.github.abel533.entity.Example;
+import com.github.abel533.entity.Example.Criteria;
+import org.springframework.data.domain.Sort.Order;
+
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -7,24 +18,14 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Order;
-
-import com.foomei.common.collection.CollectionUtil;
-import com.foomei.common.persistence.SearchFilter.Filter;
-import com.foomei.common.reflect.ClassUtil;
-import com.foomei.common.time.DateFormatUtil;
-import com.github.abel533.entity.Example;
-import com.github.abel533.entity.Example.Criteria;
-
 public class DynamicExample {
     
     @SuppressWarnings({"unchecked", "rawtypes"})
-    public static <T> Example bySearchFilter(final SearchFilter searchFilter, final Sort sort, final Class<T> entityClazz) {
-        Example example = bySearchFilter(searchFilter, entityClazz);
-        if(sort != null) {
+    public static <T> Example bySearchRequest(final SearchRequest searchRequest, final Class<T> entityClazz) {
+        Example example = filterTo(searchRequest.getOperator(), searchRequest.getSearchFilters(), entityClazz);
+        if(searchRequest.getSort() != null) {
             StringBuilder builder = new StringBuilder();
-            for (Iterator iterator = sort.iterator(); iterator.hasNext();) {
+            for (Iterator iterator = searchRequest.getSort().iterator(); iterator.hasNext();) {
                 Order order = (Order) iterator.next();
                 builder.append(",").append(order.getProperty()).append(" ").append(order.getDirection().name());
             }
@@ -36,86 +37,91 @@ public class DynamicExample {
     }
     
 	@SuppressWarnings({"unchecked", "rawtypes"})
-	public static <T> Example bySearchFilter(final SearchFilter searchFilter, final Class<T> entityClazz) {
+	public static <T> Example filterTo(final BooleanOperator operator, final List<SearchFilter> searchFilters, final Class<T> entityClazz) {
 		Example example = new Example(entityClazz);
 		
 		Criteria criteria = null;
-		if(CollectionUtil.isNotEmpty(searchFilter.filters)) {
-			for (Filter filter : searchFilter.filters) {
-			    if(searchFilter.or || criteria == null) {
-			        criteria = example.or();
-			    }
-				
-				// nested path translate, 如Task的名为"user.name"的filedName, 转换为Task.user.name属性
-				Field field = ClassUtil.getAccessibleField(entityClazz, filter.fieldName);
-				Class fieldClazz = field != null ? field.getClass() : String.class;
-				
-				Object value = null;
+		if(CollectionUtil.isNotEmpty(searchFilters)) {
+			for (SearchFilter searchFilter : searchFilters) {
+				if(operator == BooleanOperator.OR || criteria == null) {
+						criteria = example.or();
+				}
 
-				// logic operator
-				switch (filter.operator) {
-				case EQ:
-					value = stringTo(filter.value, fieldClazz);
-					criteria.andEqualTo(filter.fieldName, value);
-					break;
-				case NE:
-					value = stringTo(filter.value, fieldClazz);
-					criteria.andNotEqualTo(filter.fieldName, value);
-					break;
-				case LT:
-					value = stringTo(filter.value, fieldClazz);
-					criteria.andLessThan(filter.fieldName, value);
-					break;
-				case LE:
-					value = stringTo(filter.value, fieldClazz);
-					criteria.andLessThanOrEqualTo(filter.fieldName, value);
-					break;
-				case GT:
-					value = stringTo(filter.value, fieldClazz);
-					criteria.andGreaterThan(filter.fieldName, value);
-					break;
-				case GE:
-					value = stringTo(filter.value, fieldClazz);
-					criteria.andGreaterThanOrEqualTo(filter.fieldName, value);
-					break;
-				case BW:
-					criteria.andLike(filter.fieldName, filter.value + "%");
-					break;
-				case BN:
-					criteria.andNotLike(filter.fieldName, filter.value + "%");
-					break;
-				case EW:
-					criteria.andLike(filter.fieldName, "%" + filter.value);
-					break;
-				case EN:
-					criteria.andNotLike(filter.fieldName, "%" + filter.value);
-					break;
-				case CN:
-					criteria.andLike(filter.fieldName, "%" + filter.value + "%");
-					break;
-				case NC:
-					criteria.andNotLike(filter.fieldName, "%" + filter.value + "%");
-					break;
-				case NU:
-					criteria.andIsNull(filter.fieldName);
-					break;
-				case NN:
-					criteria.andIsNotNull(filter.fieldName);
-					break;
-				case IN:
-					List<Object> in = new ArrayList();
-					for (Object val : (List)filter.value) {
-                        in.add(stringTo(val, fieldClazz));
-                    }
-					criteria.andIn(filter.fieldName, in);
-					break;
-				case NI:
-					List<Object> nin = new ArrayList();
-					for (Object val : (List)filter.value) {
-                        nin.add(stringTo(val, fieldClazz));
-                    }
-					criteria.andNotIn(filter.fieldName, nin);
-					break;
+				if (searchFilter instanceof SimpleFilter) {
+
+					SimpleFilter filter = (SimpleFilter) searchFilter;
+
+					// nested path translate, 如Task的名为"user.name"的filedName, 转换为Task.user.name属性
+					Field field = ClassUtil.getAccessibleField(entityClazz, filter.getPropertyName());
+					Class fieldClazz = field != null ? field.getClass() : String.class;
+
+					Object value = null;
+
+					// logic operator
+					switch (filter.getOperator()) {
+						case EQ:
+							value = stringTo(filter.getValue(), fieldClazz);
+							criteria.andEqualTo(filter.getPropertyName(), value);
+							break;
+						case NE:
+							value = stringTo(filter.getValue(), fieldClazz);
+							criteria.andNotEqualTo(filter.getPropertyName(), value);
+							break;
+						case LT:
+							value = stringTo(filter.getValue(), fieldClazz);
+							criteria.andLessThan(filter.getPropertyName(), value);
+							break;
+						case LE:
+							value = stringTo(filter.getValue(), fieldClazz);
+							criteria.andLessThanOrEqualTo(filter.getPropertyName(), value);
+							break;
+						case GT:
+							value = stringTo(filter.getValue(), fieldClazz);
+							criteria.andGreaterThan(filter.getPropertyName(), value);
+							break;
+						case GE:
+							value = stringTo(filter.getValue(), fieldClazz);
+							criteria.andGreaterThanOrEqualTo(filter.getPropertyName(), value);
+							break;
+						case SW:
+							criteria.andLike(filter.getPropertyName(), filter.getValue() + "%");
+							break;
+						case SN:
+							criteria.andNotLike(filter.getPropertyName(), filter.getValue() + "%");
+							break;
+						case EW:
+							criteria.andLike(filter.getPropertyName(), "%" + filter.getValue());
+							break;
+						case EN:
+							criteria.andNotLike(filter.getPropertyName(), "%" + filter.getValue());
+							break;
+						case CN:
+							criteria.andLike(filter.getPropertyName(), "%" + filter.getValue() + "%");
+							break;
+						case NC:
+							criteria.andNotLike(filter.getPropertyName(), "%" + filter.getValue() + "%");
+							break;
+						case NU:
+							criteria.andIsNull(filter.getPropertyName());
+							break;
+						case NN:
+							criteria.andIsNotNull(filter.getPropertyName());
+							break;
+						case IN:
+							List<Object> in = new ArrayList();
+							for (Object val : (List) filter.getValue()) {
+								in.add(stringTo(val, fieldClazz));
+							}
+							criteria.andIn(filter.getPropertyName(), in);
+							break;
+						case NI:
+							List<Object> nin = new ArrayList();
+							for (Object val : (List) filter.getValue()) {
+								nin.add(stringTo(val, fieldClazz));
+							}
+							criteria.andNotIn(filter.getPropertyName(), nin);
+							break;
+					}
 				}
 			}
 		}

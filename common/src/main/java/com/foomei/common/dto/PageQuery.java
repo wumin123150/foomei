@@ -1,6 +1,5 @@
 package com.foomei.common.dto;
 
-import com.foomei.common.base.BooleanUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -10,7 +9,6 @@ public class PageQuery {
     private Integer pageSize;
     private String sortBy;
     private String sortDir;
-    private Boolean advance;
     private String searchKey;
 
     public Integer getPageNo() {
@@ -43,14 +41,6 @@ public class PageQuery {
 
     public void setSortDir(String sortDir) {
         this.sortDir = sortDir;
-    }
-
-    public Boolean getAdvance() {
-        return advance != null ? advance : false;
-    }
-
-    public void setAdvance(Boolean advance) {
-        this.advance = advance;
     }
 
     public String getSearchKey() {

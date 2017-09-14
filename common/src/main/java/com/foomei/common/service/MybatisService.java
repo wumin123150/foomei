@@ -1,45 +1,27 @@
 package com.foomei.common.service;
 
+import com.foomei.common.persistence.search.SearchRequest;
+import org.springframework.data.domain.Page;
+
 import java.io.Serializable;
 import java.util.List;
-import java.util.Map;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+public interface MybatisService<T, ID extends Serializable> {
 
-import com.foomei.common.base.annotation.AutowiredDao;
-import com.foomei.common.dao.MybatisDao;
-import com.foomei.common.persistence.JqGridFilter;
-import com.foomei.common.persistence.SearchFilter;
+  public T get(ID id);
 
-public interface MybatisService<DAO extends MybatisDao<T>, T, ID extends Serializable> {
+  public List<T> getAll();
 
-	public T get(ID id);
+  public T insert(T entity);
 
-	public List<T> getAll();
+  public T update(T entity);
 
-	public T insert(T entity);
-	
-	public T update(T entity);
+  public void delete(ID id);
 
-	public void delete(ID id);
-	
-	public List<T> getList(SearchFilter searchFilter, Sort sort);
-    
-    public List<T> getList(Map<String, Object> searchParams);
-    
-    public Page<T> getPage(SearchFilter searchFilter, Pageable page);
+  public List<T> getList(SearchRequest searchRequest);
 
-    public Page<T> getPage(Map<String, Object> searchParams, Pageable page);
-    
-    public Page<T> getPage(JqGridFilter jqGridFilter, Pageable page);
-    
-    public Long count(SearchFilter searchFilter);
-    
-    public Long count(Map<String, Object> searchParams);
-	
-	@AutowiredDao
-    public void setDao(DAO dao);
-	
+  public Page<T> getPage(SearchRequest searchRequest);
+
+  public Long count(SearchRequest searchRequest);
+
 }
