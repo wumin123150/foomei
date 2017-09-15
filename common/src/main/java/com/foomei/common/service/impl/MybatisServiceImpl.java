@@ -1,6 +1,7 @@
 package com.foomei.common.service.impl;
 
 import com.foomei.common.dao.MybatisDao;
+import com.foomei.common.entity.Deletable;
 import com.foomei.common.persistence.DynamicExample;
 import com.foomei.common.persistence.search.SearchRequest;
 import com.foomei.common.reflect.ClassUtil;
@@ -53,8 +54,22 @@ public abstract class MybatisServiceImpl<T, ID extends Serializable> implements 
 
   @Transactional(readOnly = false)
   public void delete(ID id) {
-    dao.deleteByPrimaryKey(id);
-    logger.info("delete entity {}, id is {}", entityClazz.getName(), id);
+    T t = get(id);
+    delete(t);
+  }
+
+  @Transactional(readOnly = false)
+  public void delete(T entity) {
+    if (entity == null) {
+      return;
+    }
+    if (entity instanceof Deletable) {
+      ((Deletable) entity).markDeleted();
+      update(entity);
+    } else {
+      dao.delete(entity);
+      logger.info("delete entity: {}", entity);
+    }
   }
 
   public List<T> getList(SearchRequest searchRequest) {
