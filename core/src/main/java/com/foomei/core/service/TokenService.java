@@ -20,7 +20,7 @@ import com.foomei.core.entity.User;
  */
 @Service
 @Transactional(readOnly = true)
-public class TokenService extends JpaServiceImpl<TokenDao, Token, String> {
+public class TokenService extends JpaServiceImpl<Token, String> {
 
   @Autowired
   private TokenDao tokenDao;

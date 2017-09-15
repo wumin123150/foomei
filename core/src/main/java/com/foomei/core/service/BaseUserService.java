@@ -15,7 +15,7 @@ import com.foomei.core.entity.BaseUser;
  */
 @Service
 @Transactional(readOnly = true)
-public class BaseUserService extends JpaServiceImpl<BaseUserDao, BaseUser, Long> {
+public class BaseUserService extends JpaServiceImpl<BaseUser, Long> {
 
   @Autowired
   private BaseUserDao baseUserDao;

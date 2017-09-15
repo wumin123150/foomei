@@ -1,6 +1,5 @@
 package com.foomei.common.dto;
 
-import com.foomei.common.base.BooleanUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -10,7 +9,6 @@ public class PageQuery {
     private Integer pageSize;
     private String sortBy;
     private String sortDir;
-    private Boolean advance;
     private String searchKey;
 
     public Integer getPageNo() {
@@ -45,14 +43,6 @@ public class PageQuery {
         this.sortDir = sortDir;
     }
 
-    public Boolean getAdvance() {
-        return advance != null ? advance : false;
-    }
-
-    public void setAdvance(Boolean advance) {
-        this.advance = advance;
-    }
-
     public String getSearchKey() {
         return searchKey;
     }
@@ -66,23 +56,28 @@ public class PageQuery {
     }
 
     public PageRequest buildPageRequest(int pageNo, int pageSize) {
-        return buildPageRequest(pageNo, pageSize, null, null);
+        return buildPageRequest(pageNo, pageSize, null);
     }
 
-    public PageRequest buildPageRequest(String sortBy, String sortDir) {
-        return buildPageRequest(1, 10, sortBy, sortDir);
+    public PageRequest buildPageRequest(Sort sort) {
+        return buildPageRequest(1, 10, sort);
     }
 
-    public PageRequest buildPageRequest(int pageNo, int pageSize, String sortBy, String sortDir) {
+    public PageRequest buildPageRequest(int pageNo, int pageSize, Sort defaultSort) {
         int page = this.pageNo != null ? (this.pageNo - 1) : (pageNo - 1);
         int size = this.pageSize != null ? this.pageSize : pageSize;
 
-        if(StringUtils.isEmpty(this.sortBy) && StringUtils.isEmpty(sortBy)) {
-            return new PageRequest(page, size);
+        if(StringUtils.isEmpty(this.sortBy)) {
+            return new PageRequest(page, size, defaultSort);
         } else {
-            Sort.Direction direction = StringUtils.isNotEmpty(this.sortDir) ? Sort.Direction.fromString(this.sortDir) : Sort.Direction.fromString(sortDir);
-            String[] properties =  StringUtils.isNotEmpty(this.sortBy) ? StringUtils.split(this.sortBy, ",") : StringUtils.split(sortBy, ",");
+            Sort.Direction direction = StringUtils.isNotEmpty(this.sortDir) ? Sort.Direction.fromString(this.sortDir) : Sort.Direction.DESC;
+            String[] properties =  StringUtils.split(this.sortBy, ",");
             return new PageRequest(page, size, direction, properties);
         }
     }
+
+    public boolean hasSort() {
+        return StringUtils.isNotEmpty(sortBy);
+    }
+
 }

@@ -1,96 +1,96 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans" 
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
 	http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.0.xsd"
-	default-lazy-init="true">
+       default-lazy-init="true">
 
-	<description>Shiro安全配置</description>
+    <description>Shiro安全配置</description>
 
-	<!-- Shiro's main business-tier object for web-enabled applications -->
-	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
-		<property name="authenticator" ref="authenticator" />  
-		<property name="realms">
-			<list>
-				<ref bean="shiroPasswordRealm" />
-				<ref bean="shiroAccessRealm" />
-				<ref bean="shiroWeixinRealm" />
-				<ref bean="shiroCaptchaRealm" />
-			</list>
-		</property>
-		<property name="cacheManager" ref="shiroEhcacheManager" />
+    <!-- Shiro's main business-tier object for web-enabled applications -->
+    <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+        <property name="authenticator" ref="authenticator"/>
+        <property name="realms">
+            <list>
+                <ref bean="shiroPasswordRealm"/>
+                <ref bean="shiroAccessRealm"/>
+                <ref bean="shiroWeixinRealm"/>
+                <ref bean="shiroCaptchaRealm"/>
+            </list>
+        </property>
+        <property name="cacheManager" ref="shiroEhcacheManager"/>
         <!--
 		<property name="sessionManager" ref="sessionManager" />
 		-->
-	</bean>
+    </bean>
 
-	<bean id="authenticator" class="com.foomei.common.security.shiro.OneModularRealmAuthenticator" />  
+    <bean id="authenticator" class="com.foomei.common.security.shiro.OneModularRealmAuthenticator"/>
 
-	<!-- 項目自定义的Realm -->
-	<bean id="shiroPasswordRealm" class="com.foomei.core.service.ShiroPasswordRealm">
-		<property name="userService" ref="userService" />
-	</bean>
-	<bean id="shiroAccessRealm" class="com.foomei.core.service.ShiroAccessRealm">
-		<property name="userService" ref="userService" />
-		<property name="tokenService" ref="tokenService" />
-	</bean>
-	<bean id="shiroWeixinRealm" class="com.foomei.core.service.ShiroWeixinRealm">
-		<property name="userService" ref="userService" />
-	</bean>
-	<bean id="shiroCaptchaRealm" class="com.foomei.core.service.ShiroCaptchaRealm">
-		<property name="userService" ref="userService" />
-	</bean>
-	
-	<!-- Shiro Filter -->
-	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean" lazy-init="true">
-		<property name="securityManager" ref="securityManager" />
-		<property name="loginUrl" value="/login" />
-		<property name="successUrl" value="/" />
-		<property name="filters">
-			<util:map>
-				<entry key="authc" value-ref="authcFilter" />
-        <entry key="adminAuthc" value-ref="adminAuthcFilter" />  
-				<entry key="adminUser" value-ref="adminUserFilter" />
-				<entry key="logout" value-ref="logoutFilter" />
-				<entry key="perms" value-ref="permsFilter" />
-				<entry key="roles" value-ref="rolesFilter" />
-			</util:map>
-		</property>
-		<property name="filterChainDefinitions">
-			<value>
-				/admin/login = adminAuthc
-				/logout = logout
-				/admin/** = adminAuthc, adminUser, roles[admin]
-				/front/** = authc, roles[attendant]
-				/member/** = authc
-				/api/captcha/** = anon
-				/api/user/checkLoginName = anon
-				/api/retrieve = anon
-				/api/config/get/** = anon
-				/api/config/find/** = anon
-				/api/area/** = anon
-				/api/** = authc
-			</value>
-		</property>
-	</bean>
-	
-	<bean id="adminAuthcFilter" class="com.foomei.core.web.filter.PasswordAuthenticationFilter">  
-    <property name="loginUrl" value="/admin/login" />  
-    <property name="successUrl" value="/admin/index" />  
-	</bean>  
-	<bean id="adminUserFilter" class="org.apache.shiro.web.filter.authc.UserFilter">  
-    <property name="loginUrl" value="/admin/login" />  
-	</bean>  
-	
-	<bean id="authcFilter" class="com.foomei.core.web.filter.PasswordAuthenticationFilter" />
-	<bean id="logoutFilter" class="com.foomei.core.web.filter.ShiroLogoutFilter" />
-	<bean id="rolesFilter" class="com.foomei.core.web.filter.ShiroRoleFilter" />
-	<bean id="permsFilter" class="com.foomei.core.web.filter.ShiroPermissionFilter" />
+    <!-- 項目自定义的Realm -->
+    <bean id="shiroPasswordRealm" class="com.foomei.core.service.ShiroPasswordRealm">
+        <property name="userService" ref="userService"/>
+    </bean>
+    <bean id="shiroAccessRealm" class="com.foomei.core.service.ShiroAccessRealm">
+        <property name="userService" ref="userService"/>
+        <property name="tokenService" ref="tokenService"/>
+    </bean>
+    <bean id="shiroWeixinRealm" class="com.foomei.core.service.ShiroWeixinRealm">
+        <property name="userService" ref="userService"/>
+    </bean>
+    <bean id="shiroCaptchaRealm" class="com.foomei.core.service.ShiroCaptchaRealm">
+        <property name="userService" ref="userService"/>
+    </bean>
 
-	<!-- 用户授权信息Cache, 采用EhCache -->
-	<bean id="shiroEhcacheManager" class="com.foomei.common.security.shiro.EhCacheManager">
-		<property name="cacheManagerConfigFile" value="classpath:security/ehcache-shiro.xml" />
-	</bean>
+    <!-- Shiro SearchFilter -->
+    <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean" lazy-init="true">
+        <property name="securityManager" ref="securityManager"/>
+        <property name="loginUrl" value="/login"/>
+        <property name="successUrl" value="/"/>
+        <property name="filters">
+            <util:map>
+                <entry key="authc" value-ref="authcFilter"/>
+                <entry key="adminAuthc" value-ref="adminAuthcFilter"/>
+                <entry key="adminUser" value-ref="adminUserFilter"/>
+                <entry key="logout" value-ref="logoutFilter"/>
+                <entry key="perms" value-ref="permsFilter"/>
+                <entry key="roles" value-ref="rolesFilter"/>
+            </util:map>
+        </property>
+        <property name="filterChainDefinitions">
+            <value>
+                /admin/login = adminAuthc
+                /logout = logout
+                /admin/** = adminAuthc, adminUser, roles[admin]
+                /front/** = authc, roles[attendant]
+                /member/** = authc
+                /api/captcha/** = anon
+                /api/user/checkLoginName = anon
+                /api/retrieve = anon
+                /api/config/get/** = anon
+                /api/config/find/** = anon
+                /api/area/** = anon
+                /api/** = authc
+            </value>
+        </property>
+    </bean>
+
+    <bean id="adminAuthcFilter" class="com.foomei.core.web.filter.PasswordAuthenticationFilter">
+        <property name="loginUrl" value="/admin/login"/>
+        <property name="successUrl" value="/admin/index"/>
+    </bean>
+    <bean id="adminUserFilter" class="org.apache.shiro.web.filter.authc.UserFilter">
+        <property name="loginUrl" value="/admin/login"/>
+    </bean>
+
+    <bean id="authcFilter" class="com.foomei.core.web.filter.PasswordAuthenticationFilter"/>
+    <bean id="logoutFilter" class="com.foomei.core.web.filter.ShiroLogoutFilter"/>
+    <bean id="rolesFilter" class="com.foomei.core.web.filter.ShiroRoleFilter"/>
+    <bean id="permsFilter" class="com.foomei.core.web.filter.ShiroPermissionFilter"/>
+
+    <!-- 用户授权信息Cache, 采用EhCache -->
+    <bean id="shiroEhcacheManager" class="com.foomei.common.security.shiro.EhCacheManager">
+        <property name="cacheManagerConfigFile" value="classpath:security/ehcache-shiro.xml"/>
+    </bean>
     <!--
 	<bean id="sessionManager" class="org.apache.shiro.web.session.mgt.DefaultWebSessionManager">
 		<property name="globalSessionTimeout" value="1800000"/>
@@ -100,15 +100,16 @@
 		<property name="activeSessionsCacheName" value="shiro-activeSessionCache"/>
 	</bean>
 	-->
-	
-	<!-- 保证实现了Shiro内部lifecycle函数的bean执行 -->
-	<bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor" />
-	
-	<!-- AOP式方法级权限检查  -->
-	<bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" depends-on="lifecycleBeanPostProcessor">
-		<property name="proxyTargetClass" value="true" />
-	</bean>
-	<bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
-    	<property name="securityManager" ref="securityManager" />
-	</bean>
+
+    <!-- 保证实现了Shiro内部lifecycle函数的bean执行 -->
+    <bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
+
+    <!-- AOP式方法级权限检查  -->
+    <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"
+          depends-on="lifecycleBeanPostProcessor">
+        <property name="proxyTargetClass" value="true"/>
+    </bean>
+    <bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+        <property name="securityManager" ref="securityManager"/>
+    </bean>
 </beans>

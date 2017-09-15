@@ -1,7 +1,7 @@
 package com.foomei.core.web.api;
 
 import com.foomei.common.collection.ListUtil;
-import com.foomei.common.persistence.SearchFilter;
+import com.foomei.common.persistence.search.SearchRequest;
 import com.foomei.core.entity.BaseUser;
 import com.foomei.core.service.BaseUserService;
 import com.google.common.net.MediaType;
@@ -12,7 +12,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
@@ -37,7 +36,7 @@ public class UserEndpointTest {
 
   @Test
   public void page() throws Exception {
-    Mockito.when(userService.getPage(Mockito.any(SearchFilter.class), Mockito.any(Pageable.class))).thenReturn(new PageImpl(ListUtil.newArrayList(new BaseUser(1L))));
+    Mockito.when(userService.getPage(Mockito.any(SearchRequest.class))).thenReturn(new PageImpl(ListUtil.newArrayList(new BaseUser(1L))));
 
     mockMvc.perform(MockMvcRequestBuilders.get("/api/user/page").param("searchKey", "admin"))
       .andDo(MockMvcResultHandlers.print())

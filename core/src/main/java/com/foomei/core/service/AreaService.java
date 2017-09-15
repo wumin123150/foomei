@@ -17,7 +17,7 @@ import com.foomei.core.entity.Area;
  */
 @Service
 @Transactional(readOnly = true)
-public class AreaService extends JpaServiceImpl<AreaDao, Area, String> {
+public class AreaService extends JpaServiceImpl<Area, String> {
 
   @Autowired
   private AreaDao areaDao;
