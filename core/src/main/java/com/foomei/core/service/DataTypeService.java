@@ -15,7 +15,7 @@ import com.foomei.core.entity.DataType;
  */
 @Service
 @Transactional(readOnly = true)
-public class DataTypeService extends JpaServiceImpl<DataTypeDao, DataType, Long> {
+public class DataTypeService extends JpaServiceImpl<DataType, Long> {
 
   @Autowired
   private DataTypeDao dataTypeDao;

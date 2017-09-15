@@ -5,7 +5,7 @@ import com.foomei.common.dto.ResponseResult;
 import com.foomei.common.mapper.BeanMapper;
 import com.foomei.common.mapper.JsonMapper;
 import com.foomei.common.persistence.JqGridFilter;
-import com.foomei.common.persistence.SearchFilter;
+import com.foomei.common.persistence.search.SearchRequest;
 import com.foomei.core.dto.ConfigDto;
 import com.foomei.core.entity.Config;
 import com.foomei.core.service.ConfigService;
@@ -13,6 +13,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -39,16 +40,13 @@ public class ConfigEndpoint {
   @ApiOperation(value = "系统配置分页列表", httpMethod = "GET", produces = "application/json")
   @RequiresRoles("admin")
   @RequestMapping(value = "page", method = RequestMethod.GET)
-  public ResponseResult<Page<Config>> page(PageQuery pageQuery, HttpServletRequest request) {
+  public ResponseResult<Page<Config>> page(PageQuery pageQuery, Boolean advance, HttpServletRequest request) {
     Page<Config> page = null;
-    if (pageQuery.getAdvance()) {
+    if (BooleanUtils.isTrue(advance)) {
       JqGridFilter jqGridFilter = JsonMapper.INSTANCE.fromJson(request.getParameter("filters"), JqGridFilter.class);
-      page = configService.getPage(jqGridFilter, pageQuery.buildPageRequest());
+      page = configService.getPage(new SearchRequest(jqGridFilter, pageQuery));
     } else {
-      SearchFilter searchFilter = new SearchFilter().or()
-        .addLike(Config.PROP_CODE, pageQuery.getSearchKey())
-        .addLike(Config.PROP_NAME, pageQuery.getSearchKey());
-      page = configService.getPage(searchFilter, pageQuery.buildPageRequest());
+      page = configService.getPage(new SearchRequest(pageQuery, Config.PROP_CODE, Config.PROP_NAME));
     }
 
     return ResponseResult.createSuccess(page);
@@ -70,9 +68,8 @@ public class ConfigEndpoint {
   })
   @RequestMapping("find/{code}")
   public ResponseResult<List<ConfigDto>> findByCode(@PathVariable("code") String code) {
-    SearchFilter searchFilter = new SearchFilter()
-      .addStartWith(Config.PROP_CODE, code + ".");
-    List<Config> configs = configService.getList(searchFilter, null);
+    SearchRequest searchRequest = new SearchRequest().addStartWith(Config.PROP_CODE, code + ".");
+    List<Config> configs = configService.getList(searchRequest);
     return ResponseResult.createSuccess(configs, Config.class, ConfigDto.class);
   }
 

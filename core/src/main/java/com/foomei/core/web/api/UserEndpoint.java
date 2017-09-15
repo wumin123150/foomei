@@ -4,16 +4,18 @@ import com.foomei.common.dto.PageQuery;
 import com.foomei.common.dto.ResponseResult;
 import com.foomei.common.mapper.JsonMapper;
 import com.foomei.common.persistence.JqGridFilter;
-import com.foomei.common.persistence.SearchFilter;
+import com.foomei.common.persistence.search.SearchRequest;
 import com.foomei.core.entity.BaseUser;
 import com.foomei.core.service.BaseUserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -35,28 +37,20 @@ public class UserEndpoint {
   })
   @RequestMapping(value = "search")
   public ResponseResult<Page<BaseUser>> search(PageQuery pageQuery, @RequestParam("q") String searchKey) {
-    SearchFilter searchFilter = new SearchFilter().or()
-      .addLike(BaseUser.PROP_NAME, searchKey)
-      .addLike(BaseUser.PROP_LOGIN_NAME, searchKey)
-      .addLike(BaseUser.PROP_MOBILE, searchKey);
-    Page<BaseUser> users = baseUserService.getPage(searchFilter, pageQuery.buildPageRequest(BaseUser.PROP_NAME, "desc"));
+    Page<BaseUser> users = baseUserService.getPage(new SearchRequest(pageQuery, new Sort(Sort.Direction.DESC, BaseUser.PROP_NAME), BaseUser.PROP_NAME, BaseUser.PROP_LOGIN_NAME, BaseUser.PROP_MOBILE));
     return ResponseResult.createSuccess(users);
   }
 
   @ApiOperation(value = "用户分页列表", httpMethod = "GET", produces = "application/json")
   @RequiresRoles("admin")
   @RequestMapping(value = "page")
-  public ResponseResult<Page<BaseUser>> page(PageQuery pageQuery, HttpServletRequest request) {
+  public ResponseResult<Page<BaseUser>> page(PageQuery pageQuery, Boolean advance, HttpServletRequest request) {
     Page<BaseUser> page = null;
-    if (pageQuery.getAdvance()) {
+    if (BooleanUtils.isTrue(advance)) {
       JqGridFilter jqGridFilter = JsonMapper.INSTANCE.fromJson(request.getParameter("filters"), JqGridFilter.class);
-      page = baseUserService.getPage(jqGridFilter, pageQuery.buildPageRequest());
+      page = baseUserService.getPage(new SearchRequest(jqGridFilter, pageQuery));
     } else {
-      SearchFilter searchFilter = new SearchFilter().or()
-        .addLike(BaseUser.PROP_NAME, pageQuery.getSearchKey())
-        .addLike(BaseUser.PROP_LOGIN_NAME, pageQuery.getSearchKey())
-        .addLike(BaseUser.PROP_MOBILE, pageQuery.getSearchKey());
-      page = baseUserService.getPage(searchFilter, pageQuery.buildPageRequest());
+      page = baseUserService.getPage(new SearchRequest(pageQuery, BaseUser.PROP_NAME, BaseUser.PROP_LOGIN_NAME, BaseUser.PROP_MOBILE));
     }
     return ResponseResult.createSuccess(page);
   }

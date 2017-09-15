@@ -31,7 +31,7 @@ import com.foomei.core.entity.Log;
  */
 @Service
 @Transactional(readOnly = true)
-public class LogService extends JpaServiceImpl<LogDao, Log, String> {
+public class LogService extends JpaServiceImpl<Log, String> {
 
   @Value("${log.period:30}")
   private int period;

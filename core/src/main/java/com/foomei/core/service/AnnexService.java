@@ -31,7 +31,7 @@ import com.foomei.core.web.CoreThreadContext;
 // Spring Service Bean的标识.
 @Service
 @Transactional(readOnly = true)
-public class AnnexService extends JpaServiceImpl<AnnexDao, Annex, String> {
+public class AnnexService extends JpaServiceImpl<Annex, String> {
 
   @Autowired
   private AnnexDao annexDao;

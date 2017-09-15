@@ -15,7 +15,7 @@ import com.foomei.core.entity.Role;
  */
 @Service
 @Transactional(readOnly = true)
-public class RoleService extends JpaServiceImpl<RoleDao, Role, Long> {
+public class RoleService extends JpaServiceImpl<Role, Long> {
 
   @Autowired
   private RoleDao roleDao;

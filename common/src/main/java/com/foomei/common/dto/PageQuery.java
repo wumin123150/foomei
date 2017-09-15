@@ -56,23 +56,28 @@ public class PageQuery {
     }
 
     public PageRequest buildPageRequest(int pageNo, int pageSize) {
-        return buildPageRequest(pageNo, pageSize, null, null);
+        return buildPageRequest(pageNo, pageSize, null);
     }
 
-    public PageRequest buildPageRequest(String sortBy, String sortDir) {
-        return buildPageRequest(1, 10, sortBy, sortDir);
+    public PageRequest buildPageRequest(Sort sort) {
+        return buildPageRequest(1, 10, sort);
     }
 
-    public PageRequest buildPageRequest(int pageNo, int pageSize, String sortBy, String sortDir) {
+    public PageRequest buildPageRequest(int pageNo, int pageSize, Sort defaultSort) {
         int page = this.pageNo != null ? (this.pageNo - 1) : (pageNo - 1);
         int size = this.pageSize != null ? this.pageSize : pageSize;
 
-        if(StringUtils.isEmpty(this.sortBy) && StringUtils.isEmpty(sortBy)) {
-            return new PageRequest(page, size);
+        if(StringUtils.isEmpty(this.sortBy)) {
+            return new PageRequest(page, size, defaultSort);
         } else {
-            Sort.Direction direction = StringUtils.isNotEmpty(this.sortDir) ? Sort.Direction.fromString(this.sortDir) : Sort.Direction.fromString(sortDir);
-            String[] properties =  StringUtils.isNotEmpty(this.sortBy) ? StringUtils.split(this.sortBy, ",") : StringUtils.split(sortBy, ",");
+            Sort.Direction direction = StringUtils.isNotEmpty(this.sortDir) ? Sort.Direction.fromString(this.sortDir) : Sort.Direction.DESC;
+            String[] properties =  StringUtils.split(this.sortBy, ",");
             return new PageRequest(page, size, direction, properties);
         }
     }
+
+    public boolean hasSort() {
+        return StringUtils.isNotEmpty(sortBy);
+    }
+
 }

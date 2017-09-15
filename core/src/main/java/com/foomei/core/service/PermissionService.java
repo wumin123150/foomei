@@ -19,7 +19,7 @@ import com.foomei.core.entity.Permission;
  */
 @Service
 @Transactional(readOnly = true)
-public class PermissionService extends JpaServiceImpl<PermissionDao, Permission, Long> {
+public class PermissionService extends JpaServiceImpl<Permission, Long> {
 
   @Autowired
   private PermissionDao permissionDao;

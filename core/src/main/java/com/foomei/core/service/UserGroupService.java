@@ -28,7 +28,7 @@ import com.google.common.collect.Lists;
  */
 @Service
 @Transactional(readOnly = true)
-public class UserGroupService extends JpaServiceImpl<UserGroupDao, UserGroup, Long> {
+public class UserGroupService extends JpaServiceImpl<UserGroup, Long> {
 
   @Autowired
   private UserGroupDao userGroupDao;

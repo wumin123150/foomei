@@ -15,17 +15,22 @@ import java.util.*;
 
 public class SearchRequest {
 
-  protected BooleanOperator operator;
+  protected BooleanOperator operator = BooleanOperator.AND;
   private final List<SearchFilter> searchFilters = Lists.newArrayList();
   private Pageable page;
   private Sort sort;
+
+  public SearchRequest() {
+    this(new TreeMap<String, Object>());
+  }
 
   public SearchRequest(final PageQuery pageQuery, String... searchProperty) {
     this(pageQuery, null, searchProperty);
   }
 
-  public SearchRequest(final PageQuery pageQuery, final Sort sort, String... searchProperty) {
-    this(new TreeMap<String, Object>(), pageQuery.buildPageRequest(), sort);
+  public SearchRequest(final PageQuery pageQuery, final Sort defaultSort, String... searchProperty) {
+    this.page = pageQuery.buildPageRequest(defaultSort);
+    this.sort = this.page.getSort();
 
     if(searchProperty != null && StringUtils.isNotEmpty(pageQuery.getSearchKey())) {
       List<SearchFilter> searchFilters = Lists.newArrayList();
@@ -34,8 +39,17 @@ public class SearchRequest {
       }
       addOrSearchFilters(searchFilters);
     }
+  }
 
-    merge(sort, page);
+  public SearchRequest(final JqGridFilter jqGridFilter, final PageQuery pageQuery) {
+    toSearchFilters(jqGridFilter);
+  }
+
+  public SearchRequest(final JqGridFilter jqGridFilter, final PageQuery pageQuery, final Sort defaultSort) {
+    this.page = pageQuery.buildPageRequest(defaultSort);
+    this.sort = this.page.getSort();
+
+    toSearchFilters(jqGridFilter);
   }
 
   public SearchRequest(final Map<String, Object> searchParams) {
@@ -54,16 +68,6 @@ public class SearchRequest {
     toSearchFilters(searchParams);
     merge(sort, page);
   }
-
-  public SearchRequest(final JqGridFilter jqGridFilter, final PageQuery pageQuery) {
-    toSearchFilters(jqGridFilter);
-  }
-
-  public SearchRequest(final JqGridFilter jqGridFilter, final PageQuery pageQuery, final Sort sort) {
-    toSearchFilters(jqGridFilter);
-    merge(sort, pageQuery.buildPageRequest());
-  }
-
 
   private void toSearchFilters(final Map<String, Object> searchParams) {
     if (searchParams == null || searchParams.size() == 0) {
@@ -243,6 +247,11 @@ public class SearchRequest {
     return this;
   }
 
+  public SearchRequest setOperator(final BooleanOperator operator) {
+    this.operator = operator;
+    return this;
+  }
+
   public SearchRequest setPage(final Pageable page) {
     merge(sort, page);
     return this;
@@ -311,6 +320,27 @@ public class SearchRequest {
     }
 
     //合并排序
+    if (sort == null) {
+      this.sort = page != null ? page.getSort() : null;
+    } else {
+      this.sort = (page != null ? sort.and(page.getSort()) : sort);
+    }
+    //把排序合并到page中
+    if (page != null) {
+      this.page = new PageRequest(page.getPageNumber(), page.getPageSize(), this.sort);
+    } else {
+      this.page = null;
+    }
+  }
+
+  private void replace(Sort sort, Pageable page) {
+    if (sort == null) {
+      sort = this.sort;
+    }
+    if (page == null) {
+      page = this.page;
+    }
+
     if (sort == null) {
       this.sort = page != null ? page.getSort() : null;
     } else {

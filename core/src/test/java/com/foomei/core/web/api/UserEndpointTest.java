@@ -1,14 +1,8 @@
 package com.foomei.core.web.api;
 
 import com.foomei.common.collection.ListUtil;
-import com.foomei.common.dto.PageQuery;
-import com.foomei.common.dto.ResponseResult;
-import com.foomei.common.persistence.SearchFilter;
 import com.foomei.core.entity.BaseUser;
-import com.foomei.core.entity.User;
 import com.foomei.core.service.BaseUserService;
-import com.foomei.core.service.TokenService;
-import com.foomei.core.service.UserService;
 import com.google.common.net.MediaType;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,7 +10,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.web.servlet.MockMvc;
@@ -24,7 +17,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.bind.annotation.RequestParam;
 
 public class UserEndpointTest {
 

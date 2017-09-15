@@ -15,7 +15,7 @@ import com.foomei.core.entity.Config;
  */
 @Service
 @Transactional(readOnly = true)
-public class ConfigService extends JpaServiceImpl<ConfigDao, Config, Long> {
+public class ConfigService extends JpaServiceImpl<Config, Long> {
 
   @Autowired
   private ConfigDao configDao;

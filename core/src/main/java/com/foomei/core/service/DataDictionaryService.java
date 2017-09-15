@@ -18,7 +18,7 @@ import com.google.common.collect.Lists;
  */
 @Service
 @Transactional(readOnly = true)
-public class DataDictionaryService extends JpaServiceImpl<DataDictionaryDao, DataDictionary, Long> {
+public class DataDictionaryService extends JpaServiceImpl<DataDictionary, Long> {
 
   @Autowired
   private DataDictionaryDao dataDictionaryDao;
