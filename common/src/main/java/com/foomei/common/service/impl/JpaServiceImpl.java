@@ -1,11 +1,14 @@
 package com.foomei.common.service.impl;
 
 import com.foomei.common.dao.JpaDao;
-import com.foomei.common.entity.Deletable;
+import com.foomei.common.entity.CreateRecord;
+import com.foomei.common.entity.DeleteRecord;
+import com.foomei.common.entity.UpdateRecord;
 import com.foomei.common.persistence.DynamicSpecification;
 import com.foomei.common.persistence.search.SearchRequest;
 import com.foomei.common.reflect.ClassUtil;
 import com.foomei.common.service.JpaService;
+import com.foomei.common.web.ThreadContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +17,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 public abstract class JpaServiceImpl<T, ID extends Serializable> implements JpaService<T, ID> {
@@ -37,6 +41,14 @@ public abstract class JpaServiceImpl<T, ID extends Serializable> implements JpaS
 
   @Transactional(readOnly = false)
   public T save(T entity) {
+    if(entity instanceof CreateRecord && !((CreateRecord) entity).isCreated()) {
+      ((CreateRecord) entity).setCreateTime(new Date());
+      ((CreateRecord) entity).setCreator(ThreadContext.getUserId());
+    }
+    if (entity instanceof UpdateRecord) {
+      ((UpdateRecord) entity).setUpdateTime(new Date());
+      ((UpdateRecord) entity).setUpdator(ThreadContext.getUserId());
+    }
     T t = dao.save(entity);
     logger.info("save entity: {}", entity);
     return t;
@@ -60,8 +72,8 @@ public abstract class JpaServiceImpl<T, ID extends Serializable> implements JpaS
     if (entity == null) {
       return;
     }
-    if (entity instanceof Deletable) {
-      ((Deletable) entity).markDeleted();
+    if (entity instanceof DeleteRecord) {
+      ((DeleteRecord) entity).markDeleted();
       save(entity);
     } else {
       dao.delete(entity);

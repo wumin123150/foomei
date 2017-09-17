@@ -1,7 +1,7 @@
 package com.foomei.common.service.impl;
 
 import com.foomei.common.dao.MybatisDao;
-import com.foomei.common.entity.Deletable;
+import com.foomei.common.entity.DeleteRecord;
 import com.foomei.common.persistence.DynamicExample;
 import com.foomei.common.persistence.search.SearchRequest;
 import com.foomei.common.reflect.ClassUtil;
@@ -63,8 +63,8 @@ public abstract class MybatisServiceImpl<T, ID extends Serializable> implements 
     if (entity == null) {
       return;
     }
-    if (entity instanceof Deletable) {
-      ((Deletable) entity).markDeleted();
+    if (entity instanceof DeleteRecord) {
+      ((DeleteRecord) entity).markDeleted();
       update(entity);
     } else {
       dao.delete(entity);
