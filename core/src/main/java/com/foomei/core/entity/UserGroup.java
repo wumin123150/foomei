@@ -1,5 +1,6 @@
 package com.foomei.core.entity;
 
+import com.foomei.common.entity.DeleteRecord;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.util.List;
@@ -39,7 +40,7 @@ import com.google.common.collect.Lists;
 @Table(name = "Core_User_Group")
 @SuppressWarnings("serial")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class UserGroup extends IdEntity {
+public class UserGroup extends IdEntity implements DeleteRecord {
 
   public static final String PROP_CODE = "code";
   public static final String PROP_NAME = "name";
@@ -50,16 +51,20 @@ public class UserGroup extends IdEntity {
   public static final String PROP_REMARK = "remark";
   public static final String PROP_DEL_FLAG = "delFlag";
 
+  public static final Integer TYPE_COMPAMY = 0;//公司
+  public static final Integer TYPE_DEPARTMENT = 1;//部门
+  public static final Integer TYPE_GROUP = 2;//小组
+  public static final Integer TYPE_OTHER = 3;//其他
+
   public static final String PATH_SPLIT = "/";
 
-  @NotBlank(message = "编码不能为空")
   @Size(max = 64, message = "编码长度必须在1到64位之间")
   private String code;
   @NotBlank(message = "名称不能为空")
   @Size(max = 64, message = "名称长度必须在1到64位之间")
   private String name;
   private Integer type;
-  @ApiModelProperty(value = "层级")
+  @ApiModelProperty(value = "级别")
   private Integer level;
   private String path;
   private Long parentId;
@@ -81,5 +86,9 @@ public class UserGroup extends IdEntity {
   // 缓存策略
   @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
   private List<Role> roleList = Lists.newArrayList();
+
+  public void markDeleted() {
+    delFlag = true;
+  }
 
 }

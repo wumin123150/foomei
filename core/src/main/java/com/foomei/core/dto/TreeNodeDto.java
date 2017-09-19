@@ -1,5 +1,7 @@
 package com.foomei.core.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -9,6 +11,7 @@ import lombok.Data;
 
 @Data
 @ApiModel(description = "树节点")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class TreeNodeDto {
 
   private String id;
@@ -16,8 +19,6 @@ public class TreeNodeDto {
   private String pId;
   @ApiModelProperty(value = "名称")
   private String name;
-  @ApiModelProperty(value = "展开状态")
-  private Boolean open;
   @ApiModelProperty(value = "分支节点")
   private Boolean isParent;
 
@@ -34,6 +35,8 @@ public class TreeNodeDto {
     this.id = String.valueOf(userGroup.getId());
     if (userGroup.getParentId() != null) {
       this.pId = String.valueOf(userGroup.getParentId());
+    } else {
+      this.pId = "0";
     }
     this.name = userGroup.getName();
     this.isParent = true;

@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 <html>
@@ -11,6 +12,7 @@
   <link rel="stylesheet" href="${ctx}/static/css/chosen.min.css"/>
   <link rel="stylesheet" href="${ctx}/static/js/smartselect/smartselect.min.css"/>
   <link rel="stylesheet" href="${ctx}/static/js/zTree/metroStyle/metroStyle.css">
+  <link rel="stylesheet" href="${ctx}/static/css/datepicker.min.css" />
 </pluginCss>
 <pageCss>
   <!-- inline styles related to this page -->
@@ -57,53 +59,12 @@
       box-shadow: none;
     }
 
-    /*
-    .smartselect>button {
-      width: 100%;
-      color: #858585!important;
-      background-color: #fff!important;
-      border: 1px solid #d5d5d5;
-      text-align: left;
-    }
-    .smartselect>button:focus, .smartselect>button:hover {
-      color: #333!important;
-      background-color: #fff!important;
-      border: 1px solid #d5d5d5;
-    }
-    .smartselect.open>.btn.dropdown-toggle {
-      background-color: #fff!important;
-      border: 1px solid #d5d5d5;
-    }
-    .smartselect.open .ss-toolbar .btn {
-      color: #333!important;
-      background-color: #fff!important;
-      border: 1px solid #d5d5d5;
-    }
-    .smartselect.open .ss-toolbar .btn:focus, .smartselect.open .ss-toolbar .btn:hover {
-      background-color: #e6e6e6!important;
-      border-color: #adadad;
-    }
-    .smartselect .btn-group>.btn>.caret {
-      border-top-color: #333;
-    }
-    .smartselect.open .ss-toolbar .btn.dropdown-toggle {
-      background-color: #fff!important;
-      border: 1px solid #d5d5d5;
-    }
-    .smartselect.open .ss-toolbar .btn.dropdown-toggle:focus, .smartselect.open .ss-toolbar .btn.dropdown-toggle:hover {
-      background-color: #e6e6e6!important;
-      border-color: #adadad;
-    }
-    .smartselect .btn-group-vertical>.btn:last-child:not(:first-child) {
-      border-radius: 0;
-    }
-    */
     ul.ztree {
       margin-top: 0;
       border: 1px solid #d5d5d5;
       background: #fff;
       width: 100% !important;
-      height: 360px;
+      height: 200px;
       overflow-y: scroll;
       overflow-x: auto;
     }
@@ -241,6 +202,40 @@
             <div class="row">
               <div class="col-xs-12 col-sm-6">
                 <div class="form-group">
+                  <label class="col-xs-12 col-sm-3 control-label no-padding-right"> 性别 </label>
+                  <div class="col-xs-12 col-sm-8">
+                    <div class="clearfix">
+                      <div class="radio">
+                        <label>
+                          <input type="radio" name="sex" class="ace" value="0" <c:if test="${user.sex eq 0}"> checked</c:if>>
+                          <span class="lbl">未知</span>
+                        </label>
+                        <label>
+                          <input type="radio" name="sex" class="ace" value="1" <c:if test="${user.sex eq 1}"> checked</c:if>>
+                          <span class="lbl">男</span>
+                        </label>
+                        <label>
+                          <input type="radio" name="sex" class="ace" value="2" <c:if test="${user.sex eq 2}"> checked</c:if>>
+                          <span class="lbl">女</span>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xs-12 col-sm-6">
+                <div class="form-group">
+                  <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-birthday"> 出生日期 </label>
+                  <div class="col-xs-12 col-sm-8">
+                    <input type="text" name="birthday" value="<fmt:formatDate value='${user.birthday}'/>" id="form-birthday" placeholder="出生日期"
+                           class="form-control date-picker"/>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xs-12 col-sm-6">
+                <div class="form-group">
                   <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-mobile"> 手机 </label>
                   <div class="col-xs-12 col-sm-8">
                     <div class="input-group">
@@ -269,25 +264,12 @@
             <div class="row">
               <div class="col-xs-12 col-sm-6">
                 <div class="form-group">
-                  <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-group"> 机构 </label>
+                  <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-group"> 归属部门 </label>
                   <div class="col-xs-12 col-sm-8">
                     <div class="clearfix">
-                      <!--
-                        <select name="groups" id="form-group" class="form-control" data-placeholder="机构" multiple="">
-                          <c:forEach items="${groups}" var="group">
-                            <c:set var="selectedGroup" value="false" />
-                            <c:forEach items="${user.groupList}" var="ownGroup">
-                              <c:if test="${ownGroup.code eq group.code}">
-                                <c:set var="selectedGroup" value="true" />
-                              </c:if>
-                            </c:forEach>
-                            <option value="${group.id}" data-level="${group.level}" <c:if test="${selectedGroup}">selected</c:if>>${group.name}</option>
-                          </c:forEach>
-                        </select>
-                         -->
                       <input type="hidden" name="groups" id="groups"/>
                       <input type="text" name="groupNames" value="${user.groupNames}" id="form-group" readonly
-                             data-placeholder="机构" class="form-control" style="background: #fff!important;"
+                             data-placeholder="归属部门" class="form-control" style="background: #fff!important;"
                              onclick="showMenu();"/>
                       <div id="menuContent" class="menuContent" style="display:none; position: absolute; z-index: 1;">
                         <ul id="tree" class="ztree"></ul>
@@ -381,81 +363,50 @@
   <script src="${ctx}/static/js/smartselect/jquery.smartselect.min.js"></script>
   <script src="${ctx}/static/js/zTree/jquery.ztree.core.min.js"></script>
   <script src="${ctx}/static/js/zTree/jquery.ztree.excheck.min.js"></script>
+  <script src="${ctx}/static/js/date-time/bootstrap-datepicker.me.js"></script>
 </pluginJs>
 <pageJs>
   <!-- inline scripts related to this page -->
   <script type="text/javascript">
-    /*
-     $("select#form-group").smartselect({
-     defaultView: 'expand',
-     multiple: true,
-     closeOnClickOutside: true,
-     text: {
-     selectLabel: '机构'
-     },
-     toolbar: false
-     });
-     */
+    $('.date-picker').datepicker({
+      format: 'yyyy-mm-dd',
+      language: 'cn',
+      todayBtn: 'linked',
+      autoclose: true
+    })
 
     var setting = {
-      async: {
-        enable: true,
-        url: '${ctx}/api/userGroup/tree',
-        dataType: "json",
-        autoParam: ["id"]
-      },
       check: {
         enable: true,
         chkboxType: {"Y": "", "N": ""}
       },
       data: {
         simpleData: {
-          enable: true
+          enable: true,
+          idKey: "id",
+          pIdKey: "parentId",
+          rootPId: null
         }
       },
       view: {
         selectedMulti: true,
         autoCancelSelected: true
       }, callback: {
-        onCheck: onCheck,
-        onAsyncSuccess: function (event, treeId, treeNode, msg) {
-          var nodes = null;
-          if (treeNode != null) {
-            nodes = treeNode.children;
-          } else {
-            var zTree = $.fn.zTree.getZTreeObj(treeId);
-            zTree.expandAll(true);
-            nodes = zTree.getCheckedNodes(false);
+        onCheck: function (event, treeId, treeNode) {
+          var zTree = $.fn.zTree.getZTreeObj("tree"),
+            nodes = zTree.getCheckedNodes(true),
+            names = "", ids = "";
+          for (var i = 0, l = nodes.length; i < l; i++) {
+            names += nodes[i].name + ", ";
+            ids += nodes[i].id + ",";
           }
-          var names = $("#form-group").val();
-          if (nodes != null && names != '') {
-            var name = names.split(", ");
-            for (var i = 0; i < nodes.length; i++) {
-              for (var j = 0; j < name.length; j++) {
-                if (nodes[i].name == name[j]) {
-                  zTree.checkNode(nodes[i], true, null, true);
-                  break;
-                }
-              }
-            }
-          }
+          if (names.length > 0) names = names.substring(0, names.length - 2);
+          if (ids.length > 0) ids = ids.substring(0, ids.length - 1);
+          $("#form-group").val(names);
+          $("#groups").val(ids);
         }
       }
     };
-
-    function onCheck(e, treeId, treeNode) {
-      var zTree = $.fn.zTree.getZTreeObj("tree"),
-        nodes = zTree.getCheckedNodes(true),
-        names = "", ids = "";
-      for (var i = 0, l = nodes.length; i < l; i++) {
-        names += nodes[i].name + ", ";
-        ids += nodes[i].id + ",";
-      }
-      if (names.length > 0) names = names.substring(0, names.length - 2);
-      if (ids.length > 0) ids = ids.substring(0, ids.length - 1);
-      $("#form-group").val(names);
-      $("#groups").val(ids);
-    }
 
     function showMenu() {
       $("#menuContent").css({width: $("#form-group").outerWidth()}).slideDown("fast");
@@ -474,9 +425,14 @@
     }
 
     jQuery(function ($) {
-      //$.post('${ctx}/api/userGroup/tree', function(result) {
-      $.fn.zTree.init($('#tree'), setting, null);
-      //});
+      $.post('${ctx}/api/userGroup/list', function(result) {
+        if(result.success) {
+          for(var i =0; i < result.data.length; i++) {
+            result.data[i].open = true;
+          }
+          $.fn.zTree.init($('#tree'), setting, result.data);
+        }
+      });
 
       $('#form-password').bind('keyup', function (event) {
         var psw = $(this).val();

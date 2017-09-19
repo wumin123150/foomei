@@ -154,6 +154,17 @@ public class UserService extends JpaServiceImpl<User, Long> {
     }, page);
   }
 
+  public List<User> getListByGroup(final Long groupId) {
+    return userDao.findAll(new Specification<User>() {
+      public Predicate toPredicate(Root<User> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+        List<Predicate> predicates = new ArrayList<Predicate>();
+        predicates.add(cb.equal(root.join(User.PROP_GROUP_LIST).get(UserGroup.PROP_ID).as(Long.class), groupId));
+        predicates.add(cb.notEqual(root.get(User.PROP_STATUS).as(String.class), User.STATUS_TERMINATED));
+        return cb.and(predicates.toArray(new Predicate[predicates.size()]));
+      }
+    });
+  }
+
   public Page<User> getPageByGroup(final String searchKey, final Long groupId, Pageable page) {
     return userDao.findAll(new Specification<User>() {
       public Predicate toPredicate(Root<User> root, CriteriaQuery<?> query, CriteriaBuilder cb) {

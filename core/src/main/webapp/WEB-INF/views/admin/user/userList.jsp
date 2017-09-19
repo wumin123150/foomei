@@ -124,30 +124,6 @@
     var grid_del_url = "${ctx}/admin/user/delete/";
     var grid_reset_url = "${ctx}/admin/user/reset/";
 
-    function userStatusFormat(value) {
-      var content;
-      switch (value) {
-        case 'A':
-          content = '<span class="label label-sm label-success">正常</span>';
-          break;
-        case 'E':
-          content = '<span class="label label-sm label-warning">过期</span>';
-          break;
-        case 'L':
-          content = '<span class="label label-sm label-info">锁定</span>';
-          break;
-        case 'T':
-          content = '<span class="label label-sm label-danger"><s>停用</s></span>';
-          break;
-        case 'I':
-          content = '<span class="label label-sm">未激活</span>';
-          break;
-        default:
-          content = '<span class="label label-sm">未知</span>';
-      }
-      return content;
-    }
-
     jQuery(function ($) {
       $(grid_selector).foomei_JqGrid(
         {
@@ -205,7 +181,29 @@
               name: 'status',
               index: 'status',
               width: 100,
-              formatter: userStatusFormat
+              formatter: function (cellvalue, options, rowObject) {
+                var content;
+                switch (cellvalue) {
+                  case 'A':
+                    content = '<span class="label label-sm label-success">正常</span>';
+                    break;
+                  case 'E':
+                    content = '<span class="label label-sm label-warning">过期</span>';
+                    break;
+                  case 'L':
+                    content = '<span class="label label-sm label-info">锁定</span>';
+                    break;
+                  case 'T':
+                    content = '<span class="label label-sm label-danger"><s>停用</s></span>';
+                    break;
+                  case 'I':
+                    content = '<span class="label label-sm">未激活</span>';
+                    break;
+                  default:
+                    content = '<span class="label label-sm">未知</span>';
+                }
+                return content;
+              }
             }],
           nav: {
             view: false

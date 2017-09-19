@@ -3,9 +3,7 @@ package com.foomei.core.web.api;
 import com.foomei.common.base.annotation.LogIgnore;
 import com.foomei.common.dto.ErrorCodeFactory;
 import com.foomei.common.dto.ResponseResult;
-import com.foomei.core.dto.UserDto;
 import com.foomei.core.entity.Annex;
-import com.foomei.core.entity.BaseUser;
 import com.foomei.core.entity.User;
 import com.foomei.core.service.AnnexService;
 import com.foomei.core.service.UserService;
@@ -16,11 +14,13 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.util.Date;
 
 @Api(description = "账户接口")
 @RestController
@@ -68,17 +68,21 @@ public class AccountEndpoint {
   @ApiOperation(value = "修改用户信息", httpMethod = "POST", produces = "application/json")
   @ApiImplicitParams({
     @ApiImplicitParam(name = "name", value = "姓名", required = true, dataType = "string", paramType = "form"),
+    @ApiImplicitParam(name = "sex", value = "性别", dataType = "int", paramType = "form"),
+    @ApiImplicitParam(name = "birthday", value = "出生日期", dataType = "date", paramType = "form"),
     @ApiImplicitParam(name = "mobile", value = "手机", dataType = "string", paramType = "form"),
     @ApiImplicitParam(name = "email", value = "电子邮件", dataType = "string", paramType = "form")
   })
   @RequestMapping(value = "change", method = RequestMethod.POST)
-  public ResponseResult<UserDto> change(String name, String mobile, String email) {
+  public ResponseResult change(String name, Integer sex, @DateTimeFormat(pattern = "yyyy-MM-dd") Date birthday, String mobile, String email) {
     Long id = CoreThreadContext.getUserId();
     User user = userService.get(id);
     user.setName(name);
+    user.setSex(sex);
+    user.setBirthday(birthday);
     user.setMobile(mobile);
     user.setEmail(email);
-    user = userService.save(user);
+    userService.save(user);
     return ResponseResult.SUCCEED;
   }
 

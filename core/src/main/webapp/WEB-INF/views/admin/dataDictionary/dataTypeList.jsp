@@ -119,14 +119,6 @@
     var grid_del_url = "${ctx}/admin/dataType/delete/";
     var grid_data_url = "${ctx}/admin/dataDictionary?typeCode=";
 
-    function dataTypeFormat(value) {
-      if (value) {
-        return '<i class="ace-icon fa fa-check-circle orange bigger-140"></i>';
-      } else {
-        return '<i class="ace-icon fa fa-times-circle grey bigger-140"></i>';
-      }
-    }
-
     jQuery(function ($) {
       $(grid_selector).foomei_JqGrid({
         url: grid_page_url,
@@ -153,7 +145,13 @@
           {name: 'code', index: 'code', width: 100},
           {name: 'name', index: 'name', width: 100},
           {name: 'remark', index: 'remark', width: 70},
-          {name: 'editable', index: 'editable', width: 50, sortable: false, formatter: dataTypeFormat}
+          {name: 'editable', index: 'editable', width: 50, sortable: false, formatter: function (cellvalue, options, rowObject) {
+            if (cellvalue) {
+              return '<i class="ace-icon fa fa-check-circle orange bigger-140"></i>';
+            } else {
+              return '<i class="ace-icon fa fa-times-circle grey bigger-140"></i>';
+            }
+          }}
         ],
         nav: {
           view: false

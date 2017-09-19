@@ -87,10 +87,7 @@
 
 	<context:property-placeholder ignore-resource-not-found="true" location="classpath*:/application.properties" />
 
-	<beans profile="dev">
-		<bean class="com.foomei.core.web.SwaggerConfig" />
-	</beans>
-	<beans profile="svr">
+	<beans profile="dev,svr">
 		<bean class="com.foomei.core.web.SwaggerConfig" />
 	</beans>
 

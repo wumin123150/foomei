@@ -10,7 +10,7 @@ import com.foomei.core.entity.UserGroup;
 
 public interface UserGroupDao extends JpaDao<UserGroup, Long> {
 
-  @Query("FROM UserGroup entity WHERE entity.code = :code AND entity.delFlag = false")
+  @Query("FROM UserGroup entity WHERE entity.code = :code")
   UserGroup findByCode(@Param("code") String code);
 
   @Query("FROM UserGroup entity WHERE entity.delFlag = false ORDER BY entity.path ASC")

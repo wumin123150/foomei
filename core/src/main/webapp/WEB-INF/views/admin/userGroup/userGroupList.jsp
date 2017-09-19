@@ -210,8 +210,10 @@
                   <div class="col-xs-12 col-sm-8">
                     <div class="clearfix">
                       <select name="type" id="form-type" class="form-control" data-placeholder="机构类型">
-                        <option value="1">部门</option>
                         <option value="0">公司</option>
+                        <option value="1">部门</option>
+                        <option value="2">小组</option>
+                        <option value="3">其他</option>
                       </select>
                     </div>
                   </div>
@@ -748,19 +750,6 @@
         }
       });
 
-      function typeFormat(value) {
-        var content;
-        switch (value) {
-          case 1:
-            content = '部门';
-            break;
-          case 0:
-            content = '公司';
-            break;
-        }
-        return content;
-      }
-
       $(grid_selector).foomei_JqGrid({
         url: grid_page_url,
         colNames: ['操作', '机构编码', '机构名称', '机构类型'],
@@ -784,7 +773,16 @@
           },
           {name: 'code', index: 'code', width: 100},
           {name: 'name', index: 'name', width: 100},
-          {name: 'type', index: 'type', width: 100, formatter: typeFormat}
+          {name: 'type', index: 'type', width: 100, formatter: function (cellvalue, options, rowObject) {
+            var content;
+            switch (cellvalue) {
+              case 0: content = '公司'; break;
+              case 1: content = '部门'; break;
+              case 2: content = '小组'; break;
+              case 3: content = '其他'; break;
+            }
+            return content;
+          }}
         ],
         nav: {
           view: false,

@@ -56,17 +56,23 @@
           </a>
 
           <ul class="user-menu dropdown-menu-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
-            <li>
-              <a href="javascript:void(0);">
-                <i class="ace-icon fa fa-cog"></i>
-                设置
-              </a>
-            </li>
 
             <li>
               <a href="javascript:void(0);">
+                <i class="ace-icon fa fa-cog"></i>
+                修改头像
+              </a>
+            </li>
+            <li>
+              <a href="${ctx}/admin/changePwd">
+                <i class="ace-icon fa fa-cog"></i>
+                修改密码
+              </a>
+            </li>
+            <li>
+              <a href="${ctx}/admin/changAccount">
                 <i class="ace-icon fa fa-user"></i>
-                个人信息
+                个人资料
               </a>
             </li>
 

@@ -128,6 +128,10 @@
 			<groupId>javax.servlet</groupId>
 			<artifactId>jstl</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>javax.websocket</groupId>
+			<artifactId>javax.websocket-api</artifactId>
+		</dependency>
 		<!-- WEB end -->
 
 		<!-- SECURITY begin -->
@@ -148,6 +152,16 @@
 			<artifactId>shiro-ehcache</artifactId>
 		</dependency>
 		<!-- SECURITY end -->
+
+		<!-- websocket -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-websocket</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-messaging</artifactId>
+		</dependency>
 
 		<!-- Redis -->
 		<dependency>

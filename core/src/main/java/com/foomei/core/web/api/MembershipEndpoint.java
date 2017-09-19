@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @Api(description = "机构授权接口")
 @RestController
@@ -29,6 +30,17 @@ public class MembershipEndpoint {
   private UserService userService;
   @Autowired
   private UserGroupService userGroupService;
+
+  @ApiOperation(value = "机构用户列表", httpMethod = "GET", produces = "application/json")
+  @ApiImplicitParams({
+    @ApiImplicitParam(name = "groupId", value = "机构ID", dataType = "long", paramType = "query")
+  })
+  @RequiresRoles("admin")
+  @RequestMapping(value = "list")
+  public ResponseResult<List<BaseUser>> page(Long groupId, HttpServletRequest request) {
+    List<User> user = userService.getListByGroup(groupId);
+    return ResponseResult.createSuccess(user, User.class, BaseUser.class);
+  }
 
   @ApiOperation(value = "机构授权分页列表", httpMethod = "GET", produces = "application/json")
   @ApiImplicitParams({

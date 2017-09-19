@@ -45,7 +45,7 @@ public class UserGroupEndpoint {
     BeanMapper.registerClassMap(UserGroup.class, UserGroupDto.class, mapFields);
   }
 
-  @ApiOperation(value = "根据父节点ID获取机构列表", httpMethod = "POST", produces = "application/json")
+  @ApiOperation(value = "根据父节点ID获取机构列表", httpMethod = "GET", produces = "application/json")
   @RequiresRoles("admin")
   @RequestMapping(value = "tree")
   public List<TreeNodeDto> tree(Long id) {
@@ -56,6 +56,14 @@ public class UserGroupEndpoint {
       List<UserGroup> userGroups = userGroupService.getAll();
       return toNodes(userGroups);
     }
+  }
+
+  @ApiOperation(value = "机构列表", httpMethod = "", produces = "application/json")
+  @RequiresRoles("admin")
+  @RequestMapping(value = "list")
+  public ResponseResult<List<UserGroupDto>> list() {
+    List<UserGroup> userGroups = userGroupService.getAll();
+    return ResponseResult.createSuccess(userGroups);
   }
 
   @ApiOperation(value = "机构分页列表", httpMethod = "GET", produces = "application/json")
@@ -122,7 +130,7 @@ public class UserGroupEndpoint {
       return ResponseResult.createError(ErrorCodeFactory.BAD_REQUEST, "请先删除此机构下的用户");
     }
 
-    userGroupService.flagDelete(id);
+    userGroupService.delete(id);
     return ResponseResult.SUCCEED;
   }
 

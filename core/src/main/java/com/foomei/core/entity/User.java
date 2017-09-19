@@ -3,13 +3,7 @@ package com.foomei.core.entity;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.OrderBy;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import javax.validation.constraints.Size;
 
 import lombok.Getter;
@@ -26,6 +20,7 @@ import org.hibernate.validator.constraints.NotBlank;
 import com.foomei.common.collection.CollectionExtractor;
 import com.foomei.common.entity.IdEntity;
 import com.google.common.collect.Lists;
+import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  * 用户.
@@ -48,6 +43,8 @@ public class User extends IdEntity {
   public static final String PROP_NAME = "name";
   public static final String PROP_QUESTION = "question";
   public static final String PROP_ANSWER = "answer";
+  public static final String PROP_SEX = "sex";
+  public static final String PROP_BIRTHDAY = "birthday";
   public static final String PROP_MOBILE = "mobile";
   public static final String PROP_EMAIL = "email";
   public static final String PROP_AVATAR = "avatar";
@@ -81,6 +78,10 @@ public class User extends IdEntity {
   private String name;
   private String question;
   private String answer;
+  private Integer sex;
+  @DateTimeFormat(pattern="yyyy-MM-dd")
+  @Temporal(TemporalType.DATE)
+  private Date birthday;
   @Size(max = 16, message = "手机长度必须在1到16位之间")
   private String mobile;
   @Size(max = 64, message = "邮箱长度必须在1到64位之间")

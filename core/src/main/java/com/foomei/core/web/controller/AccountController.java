@@ -1,7 +1,10 @@
 package com.foomei.core.web.controller;
 
 import com.foomei.common.base.annotation.LogIgnore;
+import com.foomei.core.entity.Annex;
 import com.foomei.core.entity.User;
+import com.foomei.core.service.AnnexService;
+import com.foomei.core.service.NoticeReceiveService;
 import com.foomei.core.service.UserService;
 import com.foomei.core.web.CoreThreadContext;
 import io.swagger.annotations.Api;
@@ -16,6 +19,8 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Api(description = "账户管理")
@@ -24,6 +29,40 @@ public class AccountController {
 
   @Autowired
   private UserService userService;
+  @Autowired
+  private AnnexService annexService;
+  @Autowired
+  private NoticeReceiveService noticeReceiveService;
+
+  @ApiOperation(value = "修改头像页面", httpMethod = "GET")
+  @RequestMapping(value = "/{action}/changeAvatar", method = RequestMethod.GET)
+  public String changeAvatarForm(@PathVariable("action") String action, Model model) {
+    model.addAttribute("action", action);
+    model.addAttribute("user", userService.get(CoreThreadContext.getUserId()));
+    return "user/changeAvatar";
+  }
+
+  @ApiOperation(value = "头像修改", httpMethod = "POST")
+  @ApiImplicitParams({
+    @ApiImplicitParam(name = "file", value = "头像", required = true, dataType = "file", paramType = "form")
+  })
+  @RequestMapping(value = "/{action}/changeAvatar", method = RequestMethod.POST)
+  public String changeAvatar(@PathVariable("action") String action, @RequestParam(value = "file") MultipartFile file, Model model, RedirectAttributes redirectAttributes) {
+    User user = userService.get(CoreThreadContext.getUserId());
+
+    try {
+      Annex annex = annexService.save(file.getBytes(), file.getOriginalFilename(), User.USER_ANNEX_PATH, String.valueOf(user.getId()), User.USER_ANNEX_TYPE);
+      if (annex != null) {
+        user.setAvatar(annex.getPath());
+        userService.save(user);
+      }
+    } catch (Exception e) {
+
+    }
+
+    redirectAttributes.addFlashAttribute("message", "修改头像成功");
+    return "redirect:/" + action + "/index";
+  }
 
   @ApiOperation(value = "修改密码页面", httpMethod = "GET")
   @RequestMapping(value = "/{action}/changePwd", method = RequestMethod.GET)
@@ -93,6 +132,20 @@ public class AccountController {
 
     redirectAttributes.addFlashAttribute("message", "修改账户成功");
     return "redirect:/" + action + "/index";
+  }
+
+  @ApiOperation(value = "我的通知账户页面", httpMethod = "GET")
+  @RequestMapping(value = "/{action}/readNotice", method = RequestMethod.GET)
+  public String noticeForm(@PathVariable("action") String action, Model model) {
+    model.addAttribute("action", action);
+    return "user/notice";
+  }
+
+  @ApiOperation(value = "我的通知账户页面", httpMethod = "GET")
+  @RequestMapping(value = "/{action}/readNotice/{id}")
+  public String notice(@PathVariable("action") String action, @PathVariable("id") String id, Model model) {
+    noticeReceiveService.read(id);
+    return "redirect:/"+action+"/readNotice";
   }
 
 }

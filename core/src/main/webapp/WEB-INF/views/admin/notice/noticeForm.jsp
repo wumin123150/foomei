@@ -4,10 +4,11 @@
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 <html>
 <head>
-  <title>数据字典管理</title>
+  <title>通知管理</title>
 </head>
 <pluginCss>
   <!-- page specific plugin styles -->
+  <link rel="stylesheet" href="${ctx}/static/js/zTree/metroStyle/metroStyle.css">
 </pluginCss>
 <pageCss>
   <!-- inline styles related to this page -->
@@ -15,6 +16,16 @@
     .input-required {
       margin-left: 2px;
       color: #c00;
+    }
+
+    ul.ztree {
+      margin-top: 0;
+      border: 1px solid #d5d5d5;
+      background: #fff;
+      width: 100% !important;
+      height: 200px;
+      overflow-y: scroll;
+      overflow-x: auto;
     }
   </style>
 </pageCss>
@@ -37,10 +48,10 @@
           <a href="${ctx}/admin/index">首页</a>
         </li>
         <li>
-          <a href="${ctx}/admin/dataType">数据字典管理</a>
+          <a href="${ctx}/admin/notice">通知管理</a>
         </li>
-        <li class="active"><c:choose><c:when test='${action == "create"}'>新增类型</c:when><c:when
-          test='${action == "update"}'>修改类型</c:when></c:choose></li>
+        <li class="active"><c:choose><c:when test='${action == "create"}'>新增通知</c:when><c:when
+          test='${action == "update"}'>修改通知</c:when></c:choose></li>
       </ul><!-- /.breadcrumb -->
     </div>
 
@@ -48,7 +59,7 @@
     <div class="page-content">
       <div class="page-header">
         <h1>
-          <c:choose><c:when test='${action == "create"}'>新增类型</c:when><c:when test='${action == "update"}'>修改类型</c:when></c:choose>
+          <c:choose><c:when test='${action == "create"}'>新增通知</c:when><c:when test='${action == "update"}'>修改通知</c:when></c:choose>
         </h1>
       </div><!-- /.page-header -->
 
@@ -77,19 +88,19 @@
               </div>
             </c:forEach>
           </c:if>
-          <form class="form-horizontal" id="validation-form" action="${ctx}/admin/dataType/${action}" method="post"
+          <form class="form-horizontal" id="validation-form" action="${ctx}/admin/notice/${action}" method="post"
                 role="form">
-            <input type="hidden" name="id" id="id" value="${dataType.id}"/>
+            <input type="hidden" name="id" id="id" value="${notice.id}"/>
             <!-- #section:elements.form -->
             <div class="row">
               <div class="col-xs-12 col-sm-6">
                 <div class="form-group">
-                  <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-code">
-                    编码<span class="input-required">*</span>
+                  <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-title">
+                    标题<span class="input-required">*</span>
                   </label>
                   <div class="col-xs-12 col-sm-8">
                     <div class="clearfix">
-                      <input type="text" name="code" value="${dataType.code}" id="form-code" placeholder="编码"
+                      <input type="text" name="title" value="${notice.title}" id="form-title" placeholder="标题"
                              class="form-control"/>
                     </div>
                   </div>
@@ -97,44 +108,21 @@
               </div>
               <div class="col-xs-12 col-sm-6">
                 <div class="form-group">
-                  <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-name">
-                    名称<span class="input-required">*</span>
+                  <label class="col-xs-12 col-sm-3 control-label no-padding-right">
+                    状态<span class="input-required">*</span>
                   </label>
                   <div class="col-xs-12 col-sm-8">
                     <div class="clearfix">
-                      <input type="text" name="name" value="${dataType.name}" id="form-name" placeholder="名称"
-                             class="form-control"/>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-xs-12 col-sm-6">
-                <div class="form-group">
-                  <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-level">
-                    层级<span class="input-required">*</span>
-                  </label>
-                  <div class="col-xs-12 col-sm-8">
-                    <div class="clearfix">
-                      <input type="text" name="level" value="${dataType.level}" id="form-level" placeholder="层级"
-                             class="form-control"/>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-xs-12 col-sm-6">
-                <div class="form-group">
-                  <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-editable">
-                    数据可修改<span class="input-required">*</span>
-                  </label>
-                  <div class="col-xs-12 col-sm-8">
-                    <div class="clearfix" style="padding-top: 7px;">
-                      <input type="hidden" name="editable" value="${dataType.editable}" placeholder="数据可修改"
-                             class="form-control"/>
-                      <input type="checkbox" id="form-editable" class="ace ace-switch ace-switch-6"
-                             <c:if test="${dataType.editable}">checked</c:if> />
-                      <span class="lbl"></span>
+                      <div class="radio">
+                        <label>
+                          <input type="radio" name="status" class="ace" value="0" <c:if test="${notice.status ne 1}"> checked</c:if>>
+                          <span class="lbl">草稿</span>
+                        </label>
+                        <label>
+                          <input type="radio" name="status" class="ace" value="1" <c:if test="${notice.status eq 1}"> checked</c:if>>
+                          <span class="lbl">发布</span>
+                        </label>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -143,11 +131,30 @@
             <div class="row">
               <div class="col-xs-12 col-sm-6">
                 <div class="form-group">
-                  <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-remark">备注</label>
+                  <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-content">
+                    内容<span class="input-required">*</span>
+                  </label>
                   <div class="col-xs-12 col-sm-8">
                     <div class="clearfix">
-                      <textarea name="remark" id="form-remark" placeholder="备注"
-                                class="form-control">${dataType.remark}</textarea>
+                      <textarea name="content" id="form-content" placeholder="内容" class="form-control" rows="5">${notice.content}</textarea>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xs-12 col-sm-6">
+                <div class="form-group">
+                  <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-receiver">
+                    接收人<span class="input-required">*</span>
+                  </label>
+                  <div class="col-xs-12 col-sm-8">
+                    <div class="clearfix">
+                      <input type="hidden" name="users" value="${userIds}" id="users"/>
+                      <input type="text" name="userNames" value="${userNames}" id="form-receiver" readonly
+                             data-placeholder="接收人" class="form-control" style="background: #fff!important;"
+                             onclick="showMenu();"/>
+                      <div id="menuContent" class="menuContent" style="display:none; position: absolute; z-index: 1;">
+                        <ul id="tree" class="ztree"></ul>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -180,18 +187,88 @@
   <script src="${ctx}/static/js/jquery.validate.min.js"></script>
   <script src="${ctx}/static/js/additional-methods.min.js"></script>
   <script src="${ctx}/static/js/messages_zh.min.js"></script>
+  <script src="${ctx}/static/js/zTree/jquery.ztree.core.min.js"></script>
+  <script src="${ctx}/static/js/zTree/jquery.ztree.excheck.min.js"></script>
 </pluginJs>
 <pageJs>
   <!-- inline scripts related to this page -->
   <script type="text/javascript">
-    jQuery(function ($) {
-      $('#form-editable').on('click', function () {
-        if (this.checked) {
-          $("input[name='editable']").val(true);
-        } else {
-          $("input[name='editable']").val(false);
+    var setting = {
+      check: {
+        enable: true,
+        chkboxType: {"Y": "ps", "N": "ps"}
+      },
+      data: {
+        simpleData: {
+          enable: true,
+          idKey: "id",
+          pIdKey: "parentId",
+          rootPId: null
         }
-      })
+      },
+      view: {
+        selectedMulti: true,
+        autoCancelSelected: true
+      }, callback: {
+        onCheck: function (event, treeId, treeNode) {
+          var zTree = $.fn.zTree.getZTreeObj("tree");
+          var nodes = zTree.getCheckedNodes(true);
+          var names = new Array(), ids = new Array();
+          for (var i = 0, l = nodes.length; i < l; i++) {
+            if(!nodes[i].isParent) {
+              let id = nodes[i].id.substr(nodes[i].id.indexOf('_') + 1);
+              if(ids.indexOf(id) == -1) {
+                names.push(nodes[i].name);
+                ids.push(id);
+              }
+            }
+          }
+          $("#form-receiver").val(names.join(','));
+          $("#users").val(ids.join(','));
+        }
+      }
+    };
+
+    function showMenu() {
+      $("#menuContent").css({width: $("#form-receiver").outerWidth()}).slideDown("fast");
+      $("body").bind("mousedown", onBodyDown);
+    }
+
+    function hideMenu() {
+      $("#menuContent").fadeOut("fast");
+      $("body").unbind("mousedown", onBodyDown);
+    }
+
+    function onBodyDown(event) {
+      if (!(event.target.id == "form-receiver" || event.target.id == "menuContent" || $(event.target).parents("#menuContent").length > 0)) {
+        hideMenu();
+      }
+    }
+
+    jQuery(function ($) {
+      $.get('${ctx}/api/userGroup/list', function(result) {
+        if(result.success && result.data.length) {
+          for(var i =0; i < result.data.length; i++) {
+            result.data[i].open = true;
+            result.data[i].isParent = true;
+          }
+          $.fn.zTree.init($('#tree'), setting, result.data);
+
+          for(var i =0; i < result.data.length; i++) {
+            let groupId = result.data[i].id;
+            $.get('${ctx}/api/membership/list?groupId=' + groupId, function(result) {
+              if(result.success && result.data.length > 0) {
+                for (var i = 0; i < result.data.length; i++) {
+                  result.data[i].id = groupId + '_' + result.data[i].id;
+                }
+                var zTree = $.fn.zTree.getZTreeObj("tree");
+                var parentNode = zTree.getNodeByParam("id", groupId, null);
+                zTree.addNodes(parentNode, result.data, true);
+              }
+            })
+          }
+        }
+      });
 
       $('#validation-form').validate({
         errorElement: 'div',
@@ -199,38 +276,23 @@
         focusInvalid: false,
         ignore: "",
         rules: {
-          code: {
+          title: {
             required: true,
-            maxlength: 64,
-            remote: {
-              type: 'POST',
-              url: '${ctx}/api/dataType/checkCode',
-              dataType: 'json',
-              data: {
-                id: function () {
-                  return $('#id').val();
-                }, code: function () {
-                  return $('#form-code').val();
-                }
-              }
-            }
+            maxlength: 32
           },
-          name: {
+          status: {
+            required: true
+          },
+          content: {
             required: true,
-            maxlength: 64
+            maxlength: 200
           },
-          level: {
-            required: true,
-            digits: true
-          },
-          remark: {
-            maxlength: 128
+          users: {
+            required: true
           }
         },
         messages: {
-          code: {
-            remote: '编码已经被使用'
-          }
+
         },
         highlight: function (e) {
           $(e).closest('.form-group').removeClass('has-info').addClass('has-error');

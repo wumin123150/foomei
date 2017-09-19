@@ -62,13 +62,6 @@ public class UserGroupService extends JpaServiceImpl<UserGroup, Long> {
   }
 
   @Transactional(readOnly = false)
-  public UserGroup flagDelete(Long id) {
-    UserGroup userGroup = get(id);
-    userGroup.setDelFlag(true);
-    return super.save(userGroup);
-  }
-
-  @Transactional(readOnly = false)
   public UserGroup save(UserGroup userGroup) {
     if (userGroup.getId() == null) {
       userGroup.setDelFlag(false);

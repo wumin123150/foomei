@@ -4,7 +4,7 @@
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 <html>
 <head>
-  <title>系统配置管理</title>
+  <title>通知管理</title>
 </head>
 <pluginCss>
   <!-- page specific plugin styles -->
@@ -55,7 +55,7 @@
           <i class="ace-icon fa fa-home home-icon"></i>
           <a href="${ctx}/admin/index">首页</a>
         </li>
-        <li class="active">系统配置管理</li>
+        <li class="active">通知管理</li>
       </ul><!-- /.breadcrumb -->
     </div>
 
@@ -63,7 +63,7 @@
     <div class="page-content">
       <div class="page-header">
         <h1>
-          系统配置管理
+          通知管理
         </h1>
       </div><!-- /.page-header -->
 
@@ -85,7 +85,7 @@
               <form class="form-search" action="">
                 <div class="dataTables_filter input-group">
                   <input type="text" id="searchKey" name="searchKey" value="${searchKey}" class="input-sm"
-                         placeholder="键、值、名称" aria-controls="datatables">
+                         placeholder="标题" aria-controls="datatables">
                   <input style="display:none"/>
                   <span class="input-group-btn">
 											<button id="btn-search" class="btn btn-xs btn-purple" type="button"><i class="fa fa-search"></i>查询</button>
@@ -113,15 +113,15 @@
   <!-- inline scripts related to this page -->
   <script type="text/javascript">
     var grid_selector = "#grid-table";
-    var grid_page_url = "${ctx}/api/config/page";
-    var grid_add_url = "${ctx}/admin/config/create";
-    var grid_edit_url = "${ctx}/admin/config/update/";
-    var grid_del_url = "${ctx}/admin/config/delete/";
+    var grid_page_url = "${ctx}/api/notice/page";
+    var grid_add_url = "${ctx}/admin/notice/create";
+    var grid_edit_url = "${ctx}/admin/notice/update/";
+    var grid_del_url = "${ctx}/admin/notice/delete/";
 
     jQuery(function ($) {
       $(grid_selector).foomei_JqGrid({
         url: grid_page_url,
-        colNames: ['操作', '名称', '键', '值', '备注', '值可修改'],
+        colNames: ['操作', '标题', '内容', '状态', '更新时间'],
         colModel: [
           //{name:'myac',index:'', width:80, fixed:true, sortable:false, resize:false,
           //formatter:'actions',
@@ -136,21 +136,26 @@
             formatter: function (cellvalue, options, rowObject) {
               return '<div class="action-buttons">'
                 + '<div title="编辑" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" onmouseover="$(this).addClass(\'ui-state-hover\');" onmouseout="$(this).removeClass(\'ui-state-hover\')"><a class="blue" href="' + grid_edit_url + rowObject.id + '"><i class="ace-icon fa fa-pencil bigger-140"></i></a></div>'
-                + (rowObject.editable ? '<div title="删除" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" onmouseover="$(this).addClass(\'ui-state-hover\');" onmouseout="$(this).removeClass(\'ui-state-hover\')"><a class="red btn-del" href="javascript:void(0);" data-id="' + rowObject.id + '"><i class="ace-icon fa fa-trash-o bigger-140"></i></a></div>' : '')
+                + '<div title="删除" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" onmouseover="$(this).addClass(\'ui-state-hover\');" onmouseout="$(this).removeClass(\'ui-state-hover\')"><a class="red btn-del" href="javascript:void(0);" data-id="' + rowObject.id + '"><i class="ace-icon fa fa-trash-o bigger-140"></i></a></div>'
                 + '</div>';
             }
           },
-          {name: 'name', index: 'name', width: 100},
-          {name: 'code', index: 'code', width: 100},
-          {name: 'value', index: 'value', width: 100},
-          {name: 'remark', index: 'remark', width: 200},
-          {name: 'editable', index: 'editable', width: 40, sortable: false, formatter: function (cellvalue, options, rowObject) {
-            if (cellvalue) {
-              return '<i class="ace-icon fa fa-check-circle orange bigger-140"></i>';
+          {name: 'title', index: 'title', width: 100},
+          {name: 'content', index: 'content'},
+          {name: 'status', index: 'status', width: 40, formatter: function (cellvalue, options, rowObject) {
+            if (cellvalue == 1) {
+              return '<span class="label label-sm label-success">发布</span>';
             } else {
-              return '<i class="ace-icon fa fa-times-circle grey bigger-140"></i>';
+              return '<span class="label label-sm">草稿</span>';
             }
-          }}
+          }},
+          {
+            name: 'updateTime',
+            index: 'updateTime',
+            formatter: 'date',
+            formatoptions: {srcformat: 'Y-m-d H:i:s', newformat: 'Y-m-d H:i:s'},
+            width: 80
+          }
         ],
         nav: {
           view: false

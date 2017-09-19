@@ -138,6 +138,7 @@ public class UserController {
         Annex annex = annexService.save(file.getBytes(), file.getOriginalFilename(), User.USER_ANNEX_PATH, String.valueOf(user.getId()), User.USER_ANNEX_TYPE);
         if (annex != null) {
           user.setAvatar(annex.getPath());
+          userService.save(user);
         }
       } catch (Exception e) {
         logger.error("存储头像附件失败", e);

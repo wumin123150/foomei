@@ -66,8 +66,6 @@ public class AnnexService extends JpaServiceImpl<Annex, String> {
     entity.setPath(filePath);
     entity.setName(annex.getName());
     entity.setType(annex.getType());
-    entity.setCreateTime(new Date());
-    entity.setCreator(CoreThreadContext.getUserId());
     save(entity);
 
     return entity;
@@ -85,8 +83,6 @@ public class AnnexService extends JpaServiceImpl<Annex, String> {
     entity.setPath(filePath);
     entity.setName(fileName);
     entity.setType(ext);
-    entity.setCreateTime(new Date());
-    entity.setCreator(CoreThreadContext.getUserId());
     save(entity);
 
     return entity;
@@ -104,8 +100,6 @@ public class AnnexService extends JpaServiceImpl<Annex, String> {
     entity.setPath(filePath);
     entity.setName(fileName);
     entity.setType(ext);
-    entity.setCreateTime(new Date());
-    entity.setCreator(CoreThreadContext.getUserId());
     save(entity);
 
     return entity;
@@ -121,8 +115,6 @@ public class AnnexService extends JpaServiceImpl<Annex, String> {
     entity.setPath(filePath);
     entity.setName(FilenameUtils.getName(fileName));
     entity.setType(FilenameUtils.getExtension(fileName).toLowerCase(Locale.ENGLISH));
-    entity.setCreateTime(new Date());
-    entity.setCreator(CoreThreadContext.getUserId());
     save(entity);
 
     return entity;

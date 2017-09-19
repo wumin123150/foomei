@@ -1,14 +1,16 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 <html>
 <head>
-  <title>修改账户</title>
+  <title>修改资料</title>
 </head>
 <pluginCss>
   <!-- page specific plugin styles -->
   <link rel="stylesheet" href="${ctx}/static/css/chosen.min.css"/>
+  <link rel="stylesheet" href="${ctx}/static/css/datepicker.min.css" />
 </pluginCss>
 <pageCss>
   <!-- inline styles related to this page -->
@@ -58,14 +60,14 @@
           <i class="ace-icon fa fa-home home-icon"></i>
           <a href="${ctx}/${action}/index">首页</a>
         </li>
-        <li class="active">修改账户</li>
+        <li class="active">修改资料</li>
     </div>
 
     <!-- /section:basics/content.breadcrumbs -->
     <div class="page-content">
       <div class="page-header">
         <h1>
-          修改账户
+          修改资料
         </h1>
       </div><!-- /.page-header -->
 
@@ -120,6 +122,40 @@
                       <input type="text" name="name" value="${user.name}" id="form-name" placeholder="姓名"
                              class="form-control"/>
                     </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xs-12 col-sm-6">
+                <div class="form-group">
+                  <label class="col-xs-12 col-sm-3 control-label no-padding-right"> 性别 </label>
+                  <div class="col-xs-12 col-sm-8">
+                    <div class="clearfix">
+                      <div class="radio">
+                        <label>
+                          <input type="radio" name="sex" class="ace" value="0" <c:if test="${user.sex eq 0}"> checked</c:if>>
+                          <span class="lbl">未知</span>
+                        </label>
+                        <label>
+                          <input type="radio" name="sex" class="ace" value="1" <c:if test="${user.sex eq 1}"> checked</c:if>>
+                          <span class="lbl">男</span>
+                        </label>
+                        <label>
+                          <input type="radio" name="sex" class="ace" value="2" <c:if test="${user.sex eq 2}"> checked</c:if>>
+                          <span class="lbl">女</span>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xs-12 col-sm-6">
+                <div class="form-group">
+                  <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-birthday"> 出生日期 </label>
+                  <div class="col-xs-12 col-sm-8">
+                    <input type="text" name="birthday" value="<fmt:formatDate value='${user.birthday}'/>" id="form-birthday" placeholder="出生日期"
+                           class="form-control date-picker"/>
                   </div>
                 </div>
               </div>
@@ -185,11 +221,19 @@
   <script src="${ctx}/static/js/additional-methods.min.js"></script>
   <script src="${ctx}/static/js/jquery.validate-methods.me.js"></script>
   <script src="${ctx}/static/js/messages_zh.min.js"></script>
+  <script src="${ctx}/static/js/date-time/bootstrap-datepicker.me.js"></script>
 </pluginJs>
 <pageJs>
   <!-- inline scripts related to this page -->
   <script type="text/javascript">
     jQuery(function ($) {
+      $('.date-picker').datepicker({
+        format: 'yyyy-mm-dd',
+        language: 'cn',
+        todayBtn: 'linked',
+        autoclose: true
+      })
+
       $('#validation-form').validate({
         errorElement: 'div',
         errorClass: 'help-block',

@@ -13,6 +13,8 @@ import lombok.ToString;
 
 import com.foomei.common.entity.IdEntity;
 
+import java.util.Date;
+
 /**
  * 用户基本信息.
  *
@@ -30,6 +32,8 @@ public class BaseUser extends IdEntity {
 
   public static final String PROP_LOGIN_NAME = "loginName";
   public static final String PROP_NAME = "name";
+  public static final String PROP_SEX = "sex";
+  public static final String PROP_BIRTHDAY = "birthday";
   public static final String PROP_MOBILE = "mobile";
   public static final String PROP_EMAIL = "email";
   public static final String PROP_AVATAR = "avatar";
@@ -47,6 +51,10 @@ public class BaseUser extends IdEntity {
   private String loginName;
   @ApiModelProperty(value = "姓名")
   private String name;
+  @ApiModelProperty(value = "性别")
+  private Integer sex;
+  @ApiModelProperty(value = "出生日期")
+  private Date birthday;
   @ApiModelProperty(value = "手机")
   private String mobile;
   @ApiModelProperty(value = "邮箱")

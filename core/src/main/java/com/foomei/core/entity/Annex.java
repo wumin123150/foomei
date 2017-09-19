@@ -1,15 +1,14 @@
 package com.foomei.core.entity;
 
-import java.util.Date;
-
-import javax.persistence.Entity;
-import javax.persistence.Table;
-
+import com.foomei.common.entity.CreateRecord;
+import com.foomei.common.entity.UuidEntity;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import com.foomei.common.entity.UuidEntity;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import java.util.Date;
 
 /**
  * 附件
@@ -22,7 +21,7 @@ import com.foomei.common.entity.UuidEntity;
 @Entity
 @Table(name = "Core_Annex")
 @SuppressWarnings("serial")
-public class Annex extends UuidEntity {
+public class Annex extends UuidEntity implements CreateRecord {
 
   public static final String PROP_OBJECT_ID = "objectId";
   public static final String PROP_OBJECT_TYPE = "objectType";
@@ -39,5 +38,9 @@ public class Annex extends UuidEntity {
   private String type;
   private Date createTime;
   private Long creator;
+
+  public boolean isCreated() {
+    return id != null;
+  }
 
 }
