@@ -1,5 +1,6 @@
 package com.foomei.common.service.impl;
 
+import com.foomei.common.collection.CollectionUtil;
 import com.foomei.common.dao.JpaDao;
 import com.foomei.common.entity.CreateRecord;
 import com.foomei.common.entity.DeleteRecord;
@@ -78,6 +79,22 @@ public abstract class JpaServiceImpl<T, ID extends Serializable> implements JpaS
     } else {
       dao.delete(entity);
       logger.info("delete entity: {}", entity);
+    }
+  }
+
+  @Transactional(readOnly = false)
+  public void deleteInBatch(final List<T> entities) {
+    if (CollectionUtil.isEmpty(entities)) {
+      return;
+    }
+    if (entities.get(0) instanceof DeleteRecord) {
+      for(T entity : entities) {
+        ((DeleteRecord) entity).markDeleted();
+        save(entity);
+      }
+    } else {
+      dao.deleteInBatch(entities);
+      logger.info("delete entities: {}", entities);
     }
   }
 

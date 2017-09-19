@@ -10,29 +10,29 @@ import com.baidu.unbiz.fluentvalidator.ValidatorHandler;
  */
 public class SizeValidator extends ValidatorHandler<String> implements Validator<String> {
 
-    private int min;
+  private int min;
 
-    private int max;
+  private int max;
 
-    private String message;
+  private String message;
 
-    public SizeValidator(int max, String message) {
-        this(0, max, message);
+  public SizeValidator(int max, String message) {
+    this(0, max, message);
+  }
+
+  public SizeValidator(int min, int max, String message) {
+    this.min = min;
+    this.max = max;
+    this.message = message;
+  }
+
+  @Override
+  public boolean validate(ValidatorContext context, String s) {
+    if (null == s || s.length() > max || s.length() < min) {
+      context.addErrorMsg(message);
+      return false;
     }
-
-    public SizeValidator(int min, int max, String message) {
-        this.min = min;
-        this.max = max;
-        this.message = message;
-    }
-
-    @Override
-    public boolean validate(ValidatorContext context, String s) {
-        if (null == s || s.length() > max || s.length() < min) {
-            context.addErrorMsg(message);
-            return false;
-        }
-        return true;
-    }
+    return true;
+  }
 
 }

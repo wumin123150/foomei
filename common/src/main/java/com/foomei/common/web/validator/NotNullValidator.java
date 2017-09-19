@@ -10,19 +10,19 @@ import com.baidu.unbiz.fluentvalidator.ValidatorHandler;
  */
 public class NotNullValidator extends ValidatorHandler<String> implements Validator<String> {
 
-    private String message;
+  private String message;
 
-    public NotNullValidator(String message) {
-        this.message = message;
-    }
+  public NotNullValidator(String message) {
+    this.message = message;
+  }
 
-    @Override
-    public boolean validate(ValidatorContext context, String s) {
-        if (null == s) {
-            context.addErrorMsg(message);
-            return false;
-        }
-        return true;
+  @Override
+  public boolean validate(ValidatorContext context, String s) {
+    if (null == s) {
+      context.addErrorMsg(message);
+      return false;
     }
+    return true;
+  }
 
 }

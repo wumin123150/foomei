@@ -1,4 +1,5 @@
 package com.foomei.common.collection.type.primitive;
+
 import java.util.Map;
 
 
@@ -9,62 +10,62 @@ import java.util.Map;
  */
 public interface IntObjectMap<V> extends Map<Integer, V> {
 
+  /**
+   * A primitive entry in the map, provided by the iterator from {@link #entries()}
+   *
+   * @param <V> the value type stored in the map.
+   */
+  interface PrimitiveEntry<V> {
     /**
-     * A primitive entry in the map, provided by the iterator from {@link #entries()}
-     *
-     * @param <V> the value type stored in the map.
+     * Gets the key for this entry.
      */
-    interface PrimitiveEntry<V> {
-        /**
-         * Gets the key for this entry.
-         */
-        int key();
-
-        /**
-         * Gets the value for this entry.
-         */
-        V value();
-
-        /**
-         * Sets the value for this entry.
-         */
-        void setValue(V value);
-    }
+    int key();
 
     /**
-     * Gets the value in the map with the specified key.
-     *
-     * @param key the key whose associated value is to be returned.
-     * @return the value or {@code null} if the key was not found in the map.
+     * Gets the value for this entry.
      */
-    V get(int key);
+    V value();
 
     /**
-     * Puts the given entry into the map.
-     *
-     * @param key the key of the entry.
-     * @param value the value of the entry.
-     * @return the previous value for this key or {@code null} if there was no previous mapping.
+     * Sets the value for this entry.
      */
-    V put(int key, V value);
+    void setValue(V value);
+  }
 
-    /**
-     * Removes the entry with the specified key.
-     *
-     * @param key the key for the entry to be removed from this map.
-     * @return the previous value for the key, or {@code null} if there was no mapping.
-     */
-    V remove(int key);
+  /**
+   * Gets the value in the map with the specified key.
+   *
+   * @param key the key whose associated value is to be returned.
+   * @return the value or {@code null} if the key was not found in the map.
+   */
+  V get(int key);
 
-    /**
-     * Gets an iterable to traverse over the primitive entries contained in this map. As an optimization,
-     * the {@link PrimitiveEntry}s returned by the {@link Iterator} may change as the {@link Iterator}
-     * progresses. The caller should not rely on {@link PrimitiveEntry} key/value stability.
-     */
-    Iterable<PrimitiveEntry<V>> entries();
+  /**
+   * Puts the given entry into the map.
+   *
+   * @param key   the key of the entry.
+   * @param value the value of the entry.
+   * @return the previous value for this key or {@code null} if there was no previous mapping.
+   */
+  V put(int key, V value);
 
-    /**
-     * Indicates whether or not this map contains a value for the specified key.
-     */
-    boolean containsKey(int key);
+  /**
+   * Removes the entry with the specified key.
+   *
+   * @param key the key for the entry to be removed from this map.
+   * @return the previous value for the key, or {@code null} if there was no mapping.
+   */
+  V remove(int key);
+
+  /**
+   * Gets an iterable to traverse over the primitive entries contained in this map. As an optimization,
+   * the {@link PrimitiveEntry}s returned by the {@link Iterator} may change as the {@link Iterator}
+   * progresses. The caller should not rely on {@link PrimitiveEntry} key/value stability.
+   */
+  Iterable<PrimitiveEntry<V>> entries();
+
+  /**
+   * Indicates whether or not this map contains a value for the specified key.
+   */
+  boolean containsKey(int key);
 }

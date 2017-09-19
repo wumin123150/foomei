@@ -10,29 +10,29 @@ import com.baidu.unbiz.fluentvalidator.ValidatorHandler;
  */
 public class RangeValidator extends ValidatorHandler<Integer> implements Validator<Integer> {
 
-    private long min;
+  private long min;
 
-    private long max;
+  private long max;
 
-    private String message;
+  private String message;
 
-    public RangeValidator(int max, String message) {
-        this(0, max, message);
+  public RangeValidator(int max, String message) {
+    this(0, max, message);
+  }
+
+  public RangeValidator(int min, int max, String message) {
+    this.min = min;
+    this.max = max;
+    this.message = message;
+  }
+
+  @Override
+  public boolean validate(ValidatorContext context, Integer integer) {
+    if (null == integer || integer.intValue() > max || integer.intValue() < min) {
+      context.addErrorMsg(message);
+      return false;
     }
-
-    public RangeValidator(int min, int max, String message) {
-        this.min = min;
-        this.max = max;
-        this.message = message;
-    }
-
-    @Override
-    public boolean validate(ValidatorContext context, Integer integer) {
-        if (null == integer || integer.intValue() > max || integer.intValue() < min) {
-            context.addErrorMsg(message);
-            return false;
-        }
-        return true;
-    }
+    return true;
+  }
 
 }
