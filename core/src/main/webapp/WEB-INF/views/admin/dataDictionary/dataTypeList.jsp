@@ -153,9 +153,6 @@
             }
           }}
         ],
-        nav: {
-          view: false
-        },
         navAdd: [
           {
             caption: '',

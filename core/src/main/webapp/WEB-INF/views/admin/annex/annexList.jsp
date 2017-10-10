@@ -4,12 +4,13 @@
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 <html>
 <head>
-  <title>日志管理</title>
+  <title>附件管理</title>
 </head>
 <pluginCss>
   <!-- page specific plugin styles -->
   <link rel="stylesheet" href="${ctx}/static/css/ui.jqgrid.min.css"/>
   <link rel="stylesheet" href="${ctx}/static/css/daterangepicker.min.css"/>
+  <link rel="stylesheet" href="${ctx}/static/css/colorbox.min.css" />
 </pluginCss>
 <pageCss>
   <!-- inline styles related to this page -->
@@ -68,7 +69,7 @@
           <i class="ace-icon fa fa-home home-icon"></i>
           <a href="${ctx}/admin/index">首页</a>
         </li>
-        <li class="active">日志管理</li>
+        <li class="active">附件管理</li>
       </ul><!-- /.breadcrumb -->
     </div>
 
@@ -76,7 +77,7 @@
     <div class="page-content">
       <div class="page-header">
         <h1>
-          日志管理
+          附件管理
         </h1>
       </div><!-- /.page-header -->
 
@@ -109,7 +110,7 @@
                   <div class="col-xs-4">
                     <div class="input-group">
                       <input type="text" id="searchKey" style="width:200px" name="searchKey" value="${searchKey}"
-                             class="input-sm" placeholder="操作用户、操作描述、URL、IP" aria-controls="datatables">
+                             class="input-sm" placeholder="文件名称、存储路径、使用对象" aria-controls="datatables">
                       <input style="display:none"/>
                       <span class="input-group-btn">
                         <button id="btn-search" class="btn btn-xs btn-purple" type="button"><i class="fa fa-search"></i>查询</button>
@@ -122,34 +123,6 @@
           </div>
 
           <table id="grid-table"></table>
-
-          <div id="dialog-container" class="hide">
-            <div id="dialog-form">
-              <div class="profile-user-info profile-user-info-striped">
-                <div class="profile-info-row">
-                  <div class="profile-info-name">操作描述</div><div class="profile-info-value" id="form-description"></div>
-                </div>
-                <div class="profile-info-row">
-                  <div class="profile-info-name">操作用户</div><div class="profile-info-value" id="form-username"></div>
-                </div>
-                <div class="profile-info-row">
-                  <div class="profile-info-name">操作时间</div><div class="profile-info-value" id="form-logTime"></div>
-                </div>
-                <div class="profile-info-row">
-                  <div class="profile-info-name">访问路径</div><div class="profile-info-value" id="form-url"></div>
-                </div>
-                <div class="profile-info-row">
-                  <div class="profile-info-name">访问方式</div><div class="profile-info-value"><div class="break-content" id="form-userAgent"></div></div>
-                </div>
-                <div class="profile-info-row">
-                  <div class="profile-info-name">输入参数</div><div class="profile-info-value"><div class="break-content" id="form-parameter"></div></div>
-                </div>
-                <div class="profile-info-row">
-                  <div class="profile-info-name">返回结果</div><div class="profile-info-value"><div class="break-content" id="form-result"></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
           <!-- PAGE CONTENT ENDS -->
         </div><!-- /.col -->
       </div><!-- /.row -->
@@ -164,6 +137,7 @@
   <script src="${ctx}/static/js/jquery.jqGrid.foomei.min.js"></script>
   <script src="${ctx}/static/js/date-time/moment.min.js"></script>
   <script src="${ctx}/static/js/date-time/daterangepicker.min.js"></script>
+  <script src="${ctx}/static/js/jquery.colorbox.min.js"></script>
 </pluginJs>
 <pageJs>
   <!-- inline scripts related to this page -->
@@ -205,14 +179,39 @@
       $("#endTime").val('');
     });
 
+    var $overflow = '';
+    var colorbox_params = {
+      rel: 'colorbox',
+      reposition:true,
+      scalePhotos:true,
+      scrolling:false,
+      previous:'<i class="ace-icon fa fa-arrow-left"></i>',
+      next:'<i class="ace-icon fa fa-arrow-right"></i>',
+      close:'&times;',
+      current:'{current} of {total}',
+      maxWidth:'100%',
+      maxHeight:'100%',
+      onOpen:function(){
+        $overflow = document.body.style.overflow;
+        document.body.style.overflow = 'hidden';
+      },
+      onClosed:function(){
+        document.body.style.overflow = $overflow;
+      },
+      onComplete:function(){
+        $.colorbox.resize();
+      }
+    };
+
     var grid_selector = "#grid-table";
-    var grid_page_url = "${ctx}/api/log/page";
-    var grid_del_url = "${ctx}/admin/log/delete/";
+    var grid_page_url = "${ctx}/api/annex/page";
+    var grid_del_url = "${ctx}/admin/annex/delete/";
+    var grid_download_url = "${ctx}/admin/annex/download/";
 
     jQuery(function ($) {
       $(grid_selector).foomei_JqGrid({
         url: grid_page_url,
-        colNames: ['操作', '操作用户', '操作描述', 'URL', 'IP', '操作日期', '消耗时间'],
+        colNames: ['操作', '文件名称', '存储路径', '使用对象', '创建日期'],
         colModel: [
           //{name:'myac',index:'', width:80, fixed:true, sortable:false, resize:false,
           //formatter:'actions',
@@ -227,25 +226,32 @@
             formatter: function (cellvalue, options, rowObject) {
               return '<div class="action-buttons">'
                 + '<div title="删除" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" onmouseover="$(this).addClass(\'ui-state-hover\');" onmouseout="$(this).removeClass(\'ui-state-hover\')"><a class="red btn-del" href="javascript:void(0);" data-id="' + rowObject.id + '"><i class="ace-icon fa fa-trash-o bigger-140"></i></a></div>'
-                + '<div title="详情" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" onmouseover="$(this).addClass(\'ui-state-hover\');" onmouseout="$(this).removeClass(\'ui-state-hover\')"><a class="green btn-view" href="javascript:void(0);" data-id="' + rowObject.id + '"><i class="ace-icon fa fa-eye bigger-140"></i></a></div>'
+                + '<div title="下载" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" onmouseover="$(this).addClass(\'ui-state-hover\');" onmouseout="$(this).removeClass(\'ui-state-hover\')"><a class="green btn-download" href="javascript:void(0);" data-id="' + rowObject.id + '"><i class="ace-icon fa fa-download bigger-140"></i></a></div>'
                 + '</div>';
             }
           },
-          {name: 'username', index: 'username', width: 50, sortable: false},
-          {name: 'description', index: 'description', width: 100},
-          {name: 'url', index: 'url', width: 200},
-          {name: 'ip', index: 'ip', width: 100},
+          {name: 'name', index: 'name', width: 100, formatter: function (cellvalue, options, rowObject) {
+            var content = cellvalue;
+            if(rowObject.type == 'jpg' || rowObject.type == 'jpeg' || rowObject.type == 'png' || rowObject.type == 'gif') {
+              content += '<a href="${ctx}/annex/' + rowObject.path + '" title="' + rowObject.name + '" data-rel="colorbox"><i class="ace-icon fa fa-eye bigger-140"></i></a>';
+            }
+            return content;
+          }},
+          {name: 'path', index: 'path', width: 200},
+          {name: 'objectType', index: 'objectType', width: 100},
           {
-            name: 'logTime',
-            index: 'logTime',
+            name: 'createTime',
+            index: 'createTime',
             formatter: 'date',
             formatoptions: {srcformat: 'Y-m-d H:i:s', newformat: 'Y-m-d H:i:s'},
             width: 100
-          },
-          {name: 'spendTime', index: 'spendTime', width: 100}
+          }
         ],
-        sortname: 'logTime',
-        sortorder: 'desc'
+        sortname: 'createTime',
+        sortorder: 'desc',
+        renderCallback: function(data) {
+          $('td [data-rel="colorbox"]').colorbox(colorbox_params);
+        }
       });
 
       $(grid_selector).foomei_JqGrid('resize');
@@ -277,38 +283,9 @@
         });
       });
 
-      $(document).on('click', ".btn-view", function () {
+      $(document).on('click', ".btn-download", function () {
         var id = $(this).attr("data-id");
-        $.ajax({
-          url: "${ctx}/api/log/get/" + id,
-          type: 'GET',
-          cache: false,
-          dataType: 'json',
-          success: function (result) {
-            $('#form-description').text(result.data.description);
-            $('#form-username').text(result.data.username + '(' + result.data.ip + ')');
-            $('#form-logTime').text(result.data.logTime + '  耗时' + result.data.spendTime + '秒');
-            $('#form-url').text('[' + result.data.method + ']' + result.data.url);
-            $('#form-userAgent').text(result.data.userAgent);
-            $('#form-parameter').text(result.data.parameter);
-            $('#form-result').text(result.data.result);
-
-            BootstrapDialog.show({
-              title: '<i class="ace-icon fa fa-eye bigger-110"></i>&nbsp;查看日志',
-              message: $('#dialog-form'),
-              autodestroy: false,
-              buttons: [{
-                label: '<i class="ace-icon fa fa-times bigger-110"></i>取消',
-                action: function (dialogRef) {
-                  dialogRef.close();
-                }
-              }]
-            });
-          },
-          error: function () {
-            toastr.error('未知错误，请联系管理员');
-          }
-        });
+        window.location.href = grid_download_url + id;
       });
     })
   </script>

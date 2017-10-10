@@ -157,9 +157,6 @@
             width: 80
           }
         ],
-        nav: {
-          view: false
-        },
         navAdd: [
           {
             caption: '',

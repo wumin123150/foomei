@@ -9,12 +9,15 @@ import com.foomei.core.utils.DownloadUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -29,6 +32,8 @@ import java.io.File;
 @Controller
 public class AnnexController {
 
+  private static final String MENU = "annex";
+
   @Value("${upload.folder:/opt/upload/}")
   private String root;
   @Autowired
@@ -36,11 +41,44 @@ public class AnnexController {
   @Autowired
   private UserService userService;
 
+  @ApiOperation(value = "附件列表页面", httpMethod = "GET")
+  @RequiresRoles("admin")
+  @RequestMapping(value = "/admin/annex")
+  public String list(Model model) {
+    model.addAttribute("menu", MENU);
+    return "admin/annex/annexList";
+  }
+
+  @ApiOperation(value = "附件删除", httpMethod = "GET")
+  @RequiresRoles("admin")
+  @RequestMapping(value = "/admin/annex/delete/{id}")
+  public String delete(@PathVariable("id") String id, RedirectAttributes redirectAttributes) {
+    annexService.delete(id);
+    redirectAttributes.addFlashAttribute("message", "删除附件成功");
+    return "redirect:/admin/annex";
+  }
+
+  @ApiOperation(value = "附件下载", httpMethod = "GET")
+  @RequiresRoles("admin")
+  @RequestMapping(value = "/admin/annex/download/{id}")
+  public void download(@PathVariable("id") String id, HttpServletRequest request, HttpServletResponse response) throws Exception {
+    Annex attachment = annexService.get(id);
+    File file = new File(root + attachment.getPath());
+
+    if ((!file.exists() || file.length() == 0) && ImageUtil.isScale(file)) {
+      String scaleRange = ImageUtil.getScaleRange(file);
+      File srcFile = new File(ImageUtil.getScaleSource(file));
+      ImageUtil.forceScale(srcFile, file, scaleRange);
+    }
+
+    DownloadUtil.download(file, attachment.getName(), request, response);
+  }
+
   @ApiOperation(value = "附件下载", httpMethod = "GET")
   @RequestMapping(value = "/annex/{path1}/{name:.+}", method = RequestMethod.GET)
   public void file(@PathVariable String path1, @PathVariable String name, HttpServletRequest request, HttpServletResponse response) throws Exception {
     String path = "/" + path1 + "/" + name;
-    download(path, request, response);
+    handle(path, request, response);
   }
 
   @ApiOperation(value = "附件下载", httpMethod = "GET")
@@ -48,19 +86,19 @@ public class AnnexController {
   public void file(@PathVariable String path1, @PathVariable String path2, @PathVariable String name, HttpServletRequest request, HttpServletResponse response)
     throws Exception {
     String path = "/" + path1 + "/" + path2 + "/" + name;
-    download(path, request, response);
+    handle(path, request, response);
   }
 
   @ApiOperation(value = "用户头像下载", httpMethod = "GET")
   @RequestMapping(value = "/avatar/{id}", method = RequestMethod.GET)
-  public void file(@PathVariable Long id, HttpServletRequest request, HttpServletResponse response)
+  public void avatar(@PathVariable Long id, HttpServletRequest request, HttpServletResponse response)
     throws Exception {
     User user = userService.get(id);
     String path = user.getAvatar();
-    download(path, request, response);
+    handle(path, request, response);
   }
 
-  private void download(String path, HttpServletRequest request, HttpServletResponse response) throws Exception {
+  private void handle(String path, HttpServletRequest request, HttpServletResponse response) throws Exception {
     File file = new File(root + path);
     String fileName = FilenameUtils.getName(file.getName());
 

@@ -63,7 +63,7 @@ public class UserGroupEndpoint {
   @RequestMapping(value = "list")
   public ResponseResult<List<UserGroupDto>> list() {
     List<UserGroup> userGroups = userGroupService.getAll();
-    return ResponseResult.createSuccess(userGroups);
+    return ResponseResult.createSuccess(userGroups, UserGroup.class, UserGroupDto.class);
   }
 
   @ApiOperation(value = "机构分页列表", httpMethod = "GET", produces = "application/json")

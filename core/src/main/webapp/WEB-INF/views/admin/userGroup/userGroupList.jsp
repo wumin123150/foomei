@@ -785,7 +785,6 @@
           }}
         ],
         nav: {
-          view: false,
           search: false
         },
         navAdd: [
@@ -845,7 +844,6 @@
           {name: 'email', index: 'email', width: 80}
         ],
         nav: {
-          view: false,
           search: false
         },
         navAdd: [

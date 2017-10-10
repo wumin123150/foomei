@@ -102,6 +102,14 @@
 
       <b class="arrow"></b>
     </li>
+    <li class="<c:if test='${menu == "annex"}'>active</c:if>">
+      <a href="${ctx}/admin/annex">
+        <i class="menu-icon fa fa-list"></i>
+        <span class="menu-text"> 附件 </span>
+      </a>
+
+      <b class="arrow"></b>
+    </li>
     <li class="<c:if test='${menu == "log"}'>active</c:if>">
       <a href="${ctx}/admin/log">
         <i class="menu-icon fa fa-list"></i>

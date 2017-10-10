@@ -145,9 +145,6 @@
           {name: 'code', index: 'code', width: 100},
           {name: 'name', index: 'name', width: 100}
         ],
-        nav: {
-          view: false
-        },
         navAdd: [
           {
             caption: '',

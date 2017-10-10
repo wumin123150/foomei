@@ -205,9 +205,6 @@
                 return content;
               }
             }],
-          nav: {
-            view: false
-          },
           navAdd: [{
             caption: '',
             title: '添加',
