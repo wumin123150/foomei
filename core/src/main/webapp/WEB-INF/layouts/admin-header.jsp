@@ -44,13 +44,13 @@
         <!-- #section:basics/navbar.user_menu -->
         <li class="light-blue">
           <a data-toggle="dropdown" href="javascript:void(0);" class="dropdown-toggle">
-            <img class="nav-user-photo" src="${ctx}/static/avatars/user.jpg" alt="Jason's Photo"/>
-            <span class="user-info">
-              <shiro:user>
-                <small>欢迎您,</small>
-                <shiro:principal property="name"/>
-              </shiro:user>
-            </span>
+            <shiro:user>
+              <img class="nav-user-photo" src="${ctx}/avatar/<shiro:principal property="id"/>" onerror="this.src='${ctx}/static/avatars/avatar6.jpg'"/>
+              <span class="user-info">
+                  <small>欢迎您,</small>
+                  <shiro:principal property="name"/>
+              </span>
+            </shiro:user>
 
             <i class="ace-icon fa fa-caret-down"></i>
           </a>
@@ -64,13 +64,7 @@
               </a>
             </li>
             <li>
-              <a href="${ctx}/admin/changePwd">
-                <i class="ace-icon fa fa-cog"></i>
-                修改密码
-              </a>
-            </li>
-            <li>
-              <a href="${ctx}/admin/changAccount">
+              <a href="${ctx}/admin/changeAccount">
                 <i class="ace-icon fa fa-user"></i>
                 个人资料
               </a>

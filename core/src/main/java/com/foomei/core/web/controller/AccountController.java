@@ -34,68 +34,6 @@ public class AccountController {
   @Autowired
   private NoticeReceiveService noticeReceiveService;
 
-  @ApiOperation(value = "修改头像页面", httpMethod = "GET")
-  @RequestMapping(value = "/{action}/changeAvatar", method = RequestMethod.GET)
-  public String changeAvatarForm(@PathVariable("action") String action, Model model) {
-    model.addAttribute("action", action);
-    model.addAttribute("user", userService.get(CoreThreadContext.getUserId()));
-    return "user/changeAvatar";
-  }
-
-  @ApiOperation(value = "头像修改", httpMethod = "POST")
-  @ApiImplicitParams({
-    @ApiImplicitParam(name = "file", value = "头像", required = true, dataType = "file", paramType = "form")
-  })
-  @RequestMapping(value = "/{action}/changeAvatar", method = RequestMethod.POST)
-  public String changeAvatar(@PathVariable("action") String action, @RequestParam(value = "file") MultipartFile file, Model model, RedirectAttributes redirectAttributes) {
-    User user = userService.get(CoreThreadContext.getUserId());
-
-    try {
-      Annex annex = annexService.save(file.getBytes(), file.getOriginalFilename(), User.USER_ANNEX_PATH, String.valueOf(user.getId()), User.USER_ANNEX_TYPE);
-      if (annex != null) {
-        user.setAvatar(annex.getPath());
-        userService.save(user);
-      }
-    } catch (Exception e) {
-
-    }
-
-    redirectAttributes.addFlashAttribute("message", "修改头像成功");
-    return "redirect:/" + action + "/index";
-  }
-
-  @ApiOperation(value = "修改密码页面", httpMethod = "GET")
-  @RequestMapping(value = "/{action}/changePwd", method = RequestMethod.GET)
-  public String changePasswordForm(@PathVariable("action") String action, Model model) {
-    model.addAttribute("action", action);
-    model.addAttribute("user", userService.get(CoreThreadContext.getUserId()));
-    return "user/changePassword";
-  }
-
-  @ApiOperation(value = "密码修改", httpMethod = "POST")
-  @ApiImplicitParams({
-    @ApiImplicitParam(name = "plainPassword", value = "新密码", required = true, dataType = "string", paramType = "form")
-  })
-  @LogIgnore(value = "field", excludes = {"plainPassword"})
-  @RequestMapping(value = "/{action}/changePwd", method = RequestMethod.POST)
-  public String changePassword(@PathVariable("action") String action, String plainPassword, Model model, RedirectAttributes redirectAttributes) {
-    ObjectError error = null;
-    if (StringUtils.isEmpty(plainPassword)) {
-      error = new ObjectError("password", "密码不能为空");
-    }
-
-    if (error != null) {
-      model.addAttribute("user", userService.get(CoreThreadContext.getUserId()));
-
-      model.addAttribute("error", error);
-      return "user/changePassword";
-    } else
-      userService.changePassword(CoreThreadContext.getUserId(), plainPassword);
-
-    redirectAttributes.addFlashAttribute("message", "修改密码成功");
-    return "redirect:/" + action + "/index";
-  }
-
   @ApiOperation(value = "修改账户页面", httpMethod = "GET")
   @RequestMapping(value = "/{action}/changeAccount", method = RequestMethod.GET)
   public String changeAccountForm(@PathVariable("action") String action, Model model) {
@@ -131,6 +69,52 @@ public class AccountController {
     userService.save(currentUser);
 
     redirectAttributes.addFlashAttribute("message", "修改账户成功");
+    return "redirect:/" + action + "/index";
+  }
+
+  @ApiOperation(value = "头像修改", httpMethod = "POST")
+  @ApiImplicitParams({
+    @ApiImplicitParam(name = "file", value = "头像", required = true, dataType = "file", paramType = "form")
+  })
+  @RequestMapping(value = "/{action}/changeAvatar", method = RequestMethod.POST)
+  public String changeAvatar(@PathVariable("action") String action, @RequestParam(value = "file") MultipartFile file, Model model, RedirectAttributes redirectAttributes) {
+    User user = userService.get(CoreThreadContext.getUserId());
+
+    try {
+      Annex annex = annexService.save(file.getBytes(), file.getOriginalFilename(), User.USER_ANNEX_PATH, String.valueOf(user.getId()), User.USER_ANNEX_TYPE);
+      if (annex != null) {
+        user.setAvatar(annex.getPath());
+        userService.save(user);
+      }
+    } catch (Exception e) {
+
+    }
+
+    redirectAttributes.addFlashAttribute("message", "修改头像成功");
+    return "redirect:/" + action + "/index";
+  }
+
+  @ApiOperation(value = "密码修改", httpMethod = "POST")
+  @ApiImplicitParams({
+    @ApiImplicitParam(name = "plainPassword", value = "新密码", required = true, dataType = "string", paramType = "form")
+  })
+  @LogIgnore(value = "field", excludes = {"plainPassword"})
+  @RequestMapping(value = "/{action}/changePwd", method = RequestMethod.POST)
+  public String changePassword(@PathVariable("action") String action, String plainPassword, Model model, RedirectAttributes redirectAttributes) {
+    ObjectError error = null;
+    if (StringUtils.isEmpty(plainPassword)) {
+      error = new ObjectError("password", "密码不能为空");
+    }
+
+    if (error != null) {
+      model.addAttribute("user", userService.get(CoreThreadContext.getUserId()));
+
+      model.addAttribute("error", error);
+      return "user/changeAccount";
+    } else
+      userService.changePassword(CoreThreadContext.getUserId(), plainPassword);
+
+    redirectAttributes.addFlashAttribute("message", "修改密码成功");
     return "redirect:/" + action + "/index";
   }
 

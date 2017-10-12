@@ -492,7 +492,7 @@
 
       $('#form-file').ace_file_input({
         style: 'well',
-        btn_choose: '拖动图片到此处或点击选择',
+        btn_choose: '点击选择头像',
         btn_change: null,
         no_icon: 'ace-icon fa fa-picture-o',
         droppable: true,
