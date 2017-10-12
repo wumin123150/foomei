@@ -1,6 +1,8 @@
 package com.foomei.common.service.impl;
 
+import com.foomei.common.collection.ArrayUtil;
 import com.foomei.common.collection.CollectionUtil;
+import com.foomei.common.collection.ListUtil;
 import com.foomei.common.dao.JpaDao;
 import com.foomei.common.entity.CreateRecord;
 import com.foomei.common.entity.DeleteRecord;
@@ -10,6 +12,8 @@ import com.foomei.common.persistence.search.SearchRequest;
 import com.foomei.common.reflect.ClassUtil;
 import com.foomei.common.service.JpaService;
 import com.foomei.common.web.ThreadContext;
+import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +22,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -64,8 +69,8 @@ public abstract class JpaServiceImpl<T, ID extends Serializable> implements JpaS
 
   @Transactional(readOnly = false)
   public void delete(ID id) {
-    T t = get(id);
-    delete(t);
+    T t = this.get(id);
+    this.delete(t);
   }
 
   @Transactional(readOnly = false)
@@ -75,7 +80,7 @@ public abstract class JpaServiceImpl<T, ID extends Serializable> implements JpaS
     }
     if (entity instanceof DeleteRecord) {
       ((DeleteRecord) entity).markDeleted();
-      save(entity);
+      this.save(entity);
     } else {
       dao.delete(entity);
       logger.info("delete entity: {}", entity);
@@ -83,14 +88,23 @@ public abstract class JpaServiceImpl<T, ID extends Serializable> implements JpaS
   }
 
   @Transactional(readOnly = false)
+  public void deleteInBatch(final ID[] ids) {
+    if (ArrayUtils.isEmpty(ids)) {
+      return;
+    }
+    List<T> entities = dao.findAll(ArrayUtil.asList(ids));
+    this.deleteInBatch(entities);
+  }
+
+  @Transactional(readOnly = false)
   public void deleteInBatch(final List<T> entities) {
     if (CollectionUtil.isEmpty(entities)) {
       return;
     }
-    if (entities.get(0) instanceof DeleteRecord) {
+    if (DeleteRecord.class.isAssignableFrom(this.entityClazz)) {
       for(T entity : entities) {
         ((DeleteRecord) entity).markDeleted();
-        save(entity);
+        this.save(entity);
       }
     } else {
       dao.deleteInBatch(entities);

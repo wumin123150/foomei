@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @Api(description = "通知接口")
 @RestController
@@ -37,6 +38,16 @@ public class NoticeEndpoint {
   public ResponseResult<Page<NoticeDto>> page(PageQuery pageQuery, HttpServletRequest request) {
     Page<Notice> page = noticeService.getPage(new SearchRequest(pageQuery, Notice.PROP_TITLE));
     return ResponseResult.createSuccess(page, Notice.class, NoticeDto.class);
+  }
+
+  @ApiOperation(value = "通知删除", httpMethod = "GET")
+  @RequiresRoles("admin")
+  @RequestMapping(value = "delete/{id}")
+  public ResponseResult delete(@PathVariable("id") String id) {
+    List<NoticeReceive> noticeReceives = noticeReceiveService.findByNotice(id);
+    noticeReceiveService.deleteInBatch(noticeReceives);
+    noticeService.delete(id);
+    return ResponseResult.SUCCEED;
   }
 
   @ApiOperation(value = "我的通知分页列表", httpMethod = "GET", produces = "application/json")

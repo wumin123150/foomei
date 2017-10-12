@@ -1,11 +1,9 @@
 package com.foomei.core.web.api;
 
-import com.foomei.common.base.BooleanUtil;
 import com.foomei.common.dto.PageQuery;
 import com.foomei.common.dto.ResponseResult;
 import com.foomei.common.mapper.JsonMapper;
 import com.foomei.common.persistence.JqGridFilter;
-import com.foomei.common.persistence.search.SearchFilter;
 import com.foomei.common.persistence.search.SearchRequest;
 import com.foomei.core.dto.DataTypeDto;
 import com.foomei.core.entity.DataType;
@@ -18,7 +16,7 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -46,6 +44,14 @@ public class DataTypeEndpoint {
     }
 
     return ResponseResult.createSuccess(page, DataType.class, DataTypeDto.class);
+  }
+
+  @ApiOperation(value = "数据类型删除", httpMethod = "GET")
+  @RequiresRoles("admin")
+  @RequestMapping(value = "delete/{id}")
+  public ResponseResult delete(@PathVariable("id") Long id) {
+    dataTypeService.delete(id);
+    return ResponseResult.SUCCEED;
   }
 
   /**

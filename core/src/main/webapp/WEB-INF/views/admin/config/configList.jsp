@@ -116,7 +116,7 @@
     var grid_page_url = "${ctx}/api/config/page";
     var grid_add_url = "${ctx}/admin/config/create";
     var grid_edit_url = "${ctx}/admin/config/update/";
-    var grid_del_url = "${ctx}/admin/config/delete/";
+    var grid_del_url = "${ctx}/api/config/delete/";
 
     jQuery(function ($) {
       $(grid_selector).foomei_JqGrid({
@@ -185,7 +185,23 @@
         var id = $(this).attr("data-id");
         BootstrapDialog.confirm('你确定要删除吗？', function (result) {
           if (result) {
-            window.location.href = grid_del_url + id;
+            $.ajax({
+              url: grid_del_url + id,
+              type: 'GET',
+              cache: false,
+              dataType: 'json',
+              success: function (result) {
+                if (result.success) {
+                  toastr.success('删除成功');
+                  $(grid_selector).foomei_JqGrid('reload');
+                } else {
+                  toastr.error(result.message);
+                }
+              },
+              error: function () {
+                toastr.error('未知错误，请联系管理员');
+              }
+            });
           }
         });
       });

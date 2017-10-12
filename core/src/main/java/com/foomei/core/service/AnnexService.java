@@ -12,8 +12,10 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import com.foomei.common.collection.ArrayUtil;
 import com.foomei.core.entity.Log;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -50,20 +52,31 @@ public class AnnexService extends JpaServiceImpl<Annex, String> {
   @Transactional(readOnly = false)
   public void delete(String id) {
     Annex annex = get(id);
-    delete(annex);
+    this.delete(annex);
+  }
+
+  @Transactional(readOnly = false)
+  public void deleteInBatch(final String[] ids) {
+    if (ArrayUtils.isEmpty(ids)) {
+      return;
+    }
+    List<Annex> annexs = dao.findAll(ArrayUtil.asList(ids));
+    for(Annex annex: annexs) {
+      this.delete(annex);
+    }
   }
 
   @Transactional(readOnly = false)
   public void delete(Annex annex) {
     fileRepository.deleteRelevantByPath(annex.getPath());
-    super.delete(annex.getId());
+    super.delete(annex);
   }
 
   @Transactional(readOnly = false)
   public void deleteByObject(String objectId, String objectType) {
     List<Annex> annexs = findByObject(objectId, objectType);
     for (Annex annex : annexs) {
-      delete(annex);
+      this.delete(annex);
     }
   }
 

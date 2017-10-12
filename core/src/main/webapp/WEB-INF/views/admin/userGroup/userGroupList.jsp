@@ -332,7 +332,7 @@
                 dataType: 'json',
                 success: function (result) {
                   if (result.success) {
-                    $(grid_selector).trigger('reloadGrid');
+                    $(grid_selector).foomei_JqGrid('reload');
                     reloadTree();
                     dialogRef.close();
                   } else {
@@ -393,7 +393,7 @@
                     dataType: 'json',
                     success: function (result) {
                       if (result.success) {
-                        $(grid_selector).trigger('reloadGrid');
+                        $(grid_selector).foomei_JqGrid('reload');
                         reloadTree();
                         dialogRef.close();
                       } else {
@@ -426,7 +426,8 @@
             dataType: 'json',
             success: function (result) {
               if (result.success) {
-                $(grid_selector).trigger('reloadGrid');
+                $(grid_selector).foomei_JqGrid('reload');
+                toastr.success('删除成功');
                 reloadTree();
               } else {
                 toastr.error(result.message);
@@ -475,7 +476,7 @@
                 dataType: 'json',
                 success: function (result) {
                   if (result.success) {
-                    $(grid_selector).trigger('reloadGrid');
+                    $(auth_selector).foomei_JqGrid('reload');
                     dialogRef.close();
                   } else {
                     var error = $('<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert"><i class="ace-icon fa fa-times"></i></button><i class="ace-icon fa fa-times"></i>' + result.message + '</div>');
@@ -495,6 +496,11 @@
     function delForm2(id) {
       var groupId = $("#groupId").val();
 
+      if(groupId == '') {
+        toastr.error('请先选择机构！');
+        return;
+      }
+
       BootstrapDialog.confirm('你确定要删除吗？', function (result) {
         if (result) {
           $.ajax({
@@ -508,7 +514,8 @@
             dataType: 'json',
             success: function (result) {
               if (result.success) {
-                $(grid_selector).trigger('reloadGrid');
+                toastr.success('删除成功');
+                $(auth_selector).foomei_JqGrid('reload');
               } else {
                 toastr.error(result.message);
               }

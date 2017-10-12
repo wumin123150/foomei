@@ -17,7 +17,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -47,15 +46,6 @@ public class AnnexController {
   public String list(Model model) {
     model.addAttribute("menu", MENU);
     return "admin/annex/annexList";
-  }
-
-  @ApiOperation(value = "附件删除", httpMethod = "GET")
-  @RequiresRoles("admin")
-  @RequestMapping(value = "/admin/annex/delete/{id}")
-  public String delete(@PathVariable("id") String id, RedirectAttributes redirectAttributes) {
-    annexService.delete(id);
-    redirectAttributes.addFlashAttribute("message", "删除附件成功");
-    return "redirect:/admin/annex";
   }
 
   @ApiOperation(value = "附件下载", httpMethod = "GET")

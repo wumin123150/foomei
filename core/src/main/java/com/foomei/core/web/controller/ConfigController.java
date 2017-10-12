@@ -1,29 +1,22 @@
 package com.foomei.core.web.controller;
 
+import com.foomei.core.dto.ConfigDto;
+import com.foomei.core.dto.ConfigListDto;
+import com.foomei.core.entity.Config;
+import com.foomei.core.service.ConfigService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-
-import java.util.List;
-
-import javax.validation.Valid;
-
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.foomei.core.dto.ConfigDto;
-import com.foomei.core.dto.ConfigListDto;
-import com.foomei.core.entity.Config;
-import com.foomei.core.service.ConfigService;
+import javax.validation.Valid;
+import java.util.List;
 
 @Api(description = "系统配置管理")
 @Controller
@@ -122,7 +115,7 @@ public class ConfigController {
     model.addAttribute("menu", "configs");
 
     model.addAttribute("configs", configService.getAll());
-    return "admin/config/view";
+    return "admin/config/configView";
   }
 
   @ApiOperation(value = "参数修改", httpMethod = "POST")
@@ -141,16 +134,7 @@ public class ConfigController {
     }
 
     redirectAttributes.addFlashAttribute("message", "保存参数成功");
-    return "redirect:/admin/config/configView";
-  }
-
-  @ApiOperation(value = "系统配置删除", httpMethod = "GET")
-  @RequiresRoles("admin")
-  @RequestMapping(value = "delete/{id}")
-  public String delete(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
-    configService.delete(id);
-    redirectAttributes.addFlashAttribute("message", "删除系统配置成功");
-    return "redirect:/admin/config";
+    return "redirect:/admin/config/view";
   }
 
   /**

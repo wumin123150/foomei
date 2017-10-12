@@ -113,17 +113,6 @@ public class NoticeController {
     return "redirect:/admin/notice";
   }
 
-  @ApiOperation(value = "通知删除", httpMethod = "GET")
-  @RequiresRoles("admin")
-  @RequestMapping(value = "delete/{id}")
-  public String delete(@PathVariable("id") String id, RedirectAttributes redirectAttributes) {
-    List<NoticeReceive> noticeReceives = noticeReceiveService.findByNotice(id);
-    noticeReceiveService.deleteInBatch(noticeReceives);
-    noticeService.delete(id);
-    redirectAttributes.addFlashAttribute("message", "删除通知成功");
-    return "redirect:/admin/notice";
-  }
-
   /**
    * 使用@ModelAttribute, 实现Struts2 Preparable二次部分绑定的效果,先根据form的id从数据库查出对象,再把Form提交的内容绑定到该对象上。
    * 因为仅update()方法的form中有id属性，因此本方法在该方法中执行.

@@ -17,7 +17,19 @@ public interface JpaService<T, ID extends Serializable> {
 	public T save(T entity);
 
 	@Transactional(readOnly = false)
+	public T saveAndFlush(T entity);
+
+	@Transactional(readOnly = false)
 	public void delete(ID id);
+
+	@Transactional(readOnly = false)
+	public void delete(final T entity);
+
+	@Transactional(readOnly = false)
+	public void deleteInBatch(final ID[] ids);
+
+	@Transactional(readOnly = false)
+	public void deleteInBatch(final List<T> entities);
 	
 	public List<T> getList(SearchRequest searchRequest);
 	

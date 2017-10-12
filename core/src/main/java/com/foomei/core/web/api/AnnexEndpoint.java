@@ -18,7 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
@@ -50,6 +52,22 @@ public class AnnexEndpoint {
       page = annexService.getPage(pageQuery.getSearchKey(), startTime, endTime, pageQuery.buildPageRequest(new Sort(Sort.Direction.DESC, Annex.PROP_CREATE_TIME)));
     }
     return ResponseResult.createSuccess(page, Annex.class, AnnexDto.class);
+  }
+
+  @ApiOperation(value = "附件删除", httpMethod = "GET")
+  @RequiresRoles("admin")
+  @RequestMapping(value = "delete/{id}")
+  public ResponseResult delete(@PathVariable("id") String id) {
+    annexService.delete(id);
+    return ResponseResult.SUCCEED;
+  }
+
+  @ApiOperation(value = "附件批量删除", httpMethod = "POST")
+  @RequiresRoles("admin")
+  @RequestMapping(value = "batch/delete")
+  public ResponseResult deleteInBatch(@RequestParam(value = "ids", required = false) String[] ids) {
+    annexService.deleteInBatch(ids);
+    return ResponseResult.SUCCEED;
   }
 
 }

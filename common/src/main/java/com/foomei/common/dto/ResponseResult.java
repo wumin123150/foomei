@@ -46,19 +46,19 @@ public class ResponseResult<T> {
     this.message = message;
   }
 
-  public static <T> ResponseResult createSuccess(T data) {
+  public static <T> ResponseResult<T> createSuccess(T data) {
     return new ResponseResult(data);
   }
 
-  public static <S, T> ResponseResult createSuccess(S data, Class<T> targetClass) {
+  public static <S, T> ResponseResult<T> createSuccess(S data, Class<T> targetClass) {
     return new ResponseResult(BeanMapper.map(data, targetClass));
   }
 
-  public static <S, T> ResponseResult createSuccess(Iterable<S> sourceList, Class<S> sourceClass, Class<T> targetClass) {
+  public static <S, T> ResponseResult<List<T>> createSuccess(Iterable<S> sourceList, Class<S> sourceClass, Class<T> targetClass) {
     return new ResponseResult(BeanMapper.mapList(sourceList, sourceClass, targetClass));
   }
 
-  public static <S, T> ResponseResult createSuccess(Page<S> sourcePage, Class<S> sourceClass, Class<T> targetClass) {
+  public static <S, T> ResponseResult<Page<T>> createSuccess(Page<S> sourcePage, Class<S> sourceClass, Class<T> targetClass) {
     List<T> content = BeanMapper.mapList(sourcePage.getContent(), sourceClass, targetClass);
     return new ResponseResult(new PageImpl(content, (Pageable) ReflectionUtil.getProperty(sourcePage, "pageable"), sourcePage.getTotalElements()));
   }

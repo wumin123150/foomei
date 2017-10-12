@@ -21,6 +21,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
@@ -57,10 +58,29 @@ public class LogEndpoint {
 
   @ApiOperation(value = "日志获取", httpMethod = "GET", produces = "application/json")
   @LogIgnore
+  @RequiresRoles("admin")
   @RequestMapping("get/{id}")
   public ResponseResult<LogDto> get(@PathVariable("id") String id) {
     Log log = logService.get(id);
     return ResponseResult.createSuccess(log, LogDto.class);
+  }
+
+  @ApiOperation(value = "日志删除", httpMethod = "GET", produces = "application/json")
+  @LogIgnore
+  @RequiresRoles("admin")
+  @RequestMapping(value = "delete/{id}")
+  public ResponseResult delete(@PathVariable("id") String id) {
+    logService.delete(id);
+    return ResponseResult.SUCCEED;
+  }
+
+  @ApiOperation(value = "日志批量删除", httpMethod = "POST")
+  @LogIgnore
+  @RequiresRoles("admin")
+  @RequestMapping(value = "batch/delete")
+  public ResponseResult deleteInBatch(@RequestParam(value = "ids", required = false) String[] ids) {
+    logService.deleteInBatch(ids);
+    return ResponseResult.SUCCEED;
   }
 
 }

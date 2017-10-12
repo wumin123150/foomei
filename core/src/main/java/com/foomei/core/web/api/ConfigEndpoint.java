@@ -73,11 +73,20 @@ public class ConfigEndpoint {
     return ResponseResult.createSuccess(configs, Config.class, ConfigDto.class);
   }
 
-  @ApiOperation(value = "保存配置", httpMethod = "POST")
+  @ApiOperation(value = "配置保存", httpMethod = "POST")
+  @RequiresRoles("admin")
   @RequestMapping("save")
   private ResponseResult save(ConfigDto configDto) {
     Config config = resolve(configDto);
     configService.save(config);
+    return ResponseResult.SUCCEED;
+  }
+
+  @ApiOperation(value = "配置删除", httpMethod = "GET")
+  @RequiresRoles("admin")
+  @RequestMapping(value = "delete/{id}")
+  public ResponseResult delete(@PathVariable("id") Long id) {
+    configService.delete(id);
     return ResponseResult.SUCCEED;
   }
 

@@ -1,25 +1,19 @@
 package com.foomei.core.web.controller;
 
+import com.foomei.core.entity.DataType;
+import com.foomei.core.service.DataTypeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-
-import javax.validation.Valid;
-
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.foomei.core.entity.DataType;
-import com.foomei.core.service.DataTypeService;
+import javax.validation.Valid;
 
 @Api(description = "数据类型管理")
 @Controller
@@ -108,15 +102,6 @@ public class DataTypeController {
       dataTypeService.save(dataType);
 
     redirectAttributes.addFlashAttribute("message", "保存数据类型成功");
-    return "redirect:/admin/dataType";
-  }
-
-  @ApiOperation(value = "数据类型删除", httpMethod = "GET")
-  @RequiresRoles("admin")
-  @RequestMapping(value = "delete/{id}")
-  public String delete(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
-    dataTypeService.delete(id);
-    redirectAttributes.addFlashAttribute("message", "删除数据类型成功");
     return "redirect:/admin/dataType";
   }
 

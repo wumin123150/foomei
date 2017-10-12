@@ -1,29 +1,22 @@
 package com.foomei.core.web.controller;
 
+import com.foomei.core.entity.Permission;
+import com.foomei.core.entity.Role;
+import com.foomei.core.service.PermissionService;
+import com.foomei.core.service.RoleService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-
-import java.util.List;
-
-import javax.validation.Valid;
-
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.foomei.core.entity.Permission;
-import com.foomei.core.entity.Role;
-import com.foomei.core.service.PermissionService;
-import com.foomei.core.service.RoleService;
+import javax.validation.Valid;
+import java.util.List;
 
 @Api(description = "角色管理")
 @Controller
@@ -139,15 +132,6 @@ public class RoleController {
       roleService.save(role);
 
     redirectAttributes.addFlashAttribute("message", "保存角色成功");
-    return "redirect:/admin/role";
-  }
-
-  @ApiOperation(value = "角色删除", httpMethod = "GET")
-  @RequiresRoles("admin")
-  @RequestMapping(value = "delete/{id}")
-  public String delete(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
-    roleService.delete(id);
-    redirectAttributes.addFlashAttribute("message", "删除角色成功");
     return "redirect:/admin/role";
   }
 

@@ -98,13 +98,22 @@
               </div>
               <div class="col-xs-12 col-sm-6">
                 <div class="form-group">
-                  <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-name">
-                    名称<span class="input-required">*</span>
+                  <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-value">
+                    值<span class="input-required">*</span>
                   </label>
-                  <div class="col-xs-12 col-sm-8">
+                  <div class="col-xs-12 col-sm-6">
                     <div class="clearfix">
-                      <input type="text" name="name" value="${config.name}" id="form-name" placeholder="名称"
+                      <input type="text" name="value" value="${config.value}" id="form-value" placeholder="值"
                              class="form-control"/>
+                    </div>
+                  </div>
+                  <div class="col-xs-12 col-sm-2" style="padding-left: 0px;">
+                    <div class="checkbox">
+                      <label>
+                        <input type="hidden" name="editable" value="${config.editable}" placeholder="值可修改" class="form-control"/>
+                        <input name="form-editable" value="${config.editable}" id="form-editable" type="checkbox" class="ace" <c:if test="${config.editable}">checked</c:if>>
+                        <span class="lbl">可修改</span>
+                      </label>
                     </div>
                   </div>
                 </div>
@@ -113,16 +122,13 @@
             <div class="row">
               <div class="col-xs-12 col-sm-6">
                 <div class="form-group">
-                  <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-editable">
-                    值可修改<span class="input-required">*</span>
+                  <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-name">
+                    名称<span class="input-required">*</span>
                   </label>
                   <div class="col-xs-12 col-sm-8">
-                    <div class="clearfix" style="padding-top: 7px;">
-                      <input type="hidden" name="editable" value="${config.editable}" placeholder="值可修改"
+                    <div class="clearfix">
+                      <input type="text" name="name" value="${config.name}" id="form-name" placeholder="名称"
                              class="form-control"/>
-                      <input type="checkbox" id="form-editable" class="ace ace-switch ace-switch-6"
-                             <c:if test="${config.editable}">checked</c:if> />
-                      <span class="lbl"></span>
                     </div>
                   </div>
                 </div>
@@ -153,7 +159,7 @@
                   <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-params"> 参数 </label>
                   <div class="col-xs-12 col-sm-8">
                     <div class="clearfix">
-                      <textarea name="params" id="form-params" placeholder='json格式（例如：{"1":"男","2":"女"}），选择时使用'
+                      <textarea name="params" id="form-params" placeholder='类型为选择时使用，json格式（例如：{"1":"男","2":"女"}）'
                                 class="form-control">${config.params}</textarea>
                     </div>
                   </div>
@@ -233,12 +239,15 @@
               }
             }
           },
+          value: {
+            required: true,
+            maxlength: 128
+          },
           name: {
             required: true,
             maxlength: 64
           },
           params: {
-            required: true,
             maxlength: 64
           },
           remark: {

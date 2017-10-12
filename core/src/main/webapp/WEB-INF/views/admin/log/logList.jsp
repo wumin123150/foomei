@@ -207,7 +207,8 @@
 
     var grid_selector = "#grid-table";
     var grid_page_url = "${ctx}/api/log/page";
-    var grid_del_url = "${ctx}/admin/log/delete/";
+    var grid_del_url = "${ctx}/api/log/delete/";
+    var grid_batch_del_url = "${ctx}/api/log/batch/delete";
 
     jQuery(function ($) {
       $(grid_selector).foomei_JqGrid({
@@ -245,7 +246,40 @@
           {name: 'spendTime', index: 'spendTime', width: 100}
         ],
         sortname: 'logTime',
-        sortorder: 'desc'
+        sortorder: 'desc',
+        navAdd: [{
+          caption: '',
+          title: '批量删除',
+          buttonicon: 'ace-icon fa fa-trash-o red',
+          onClickButton: function () {
+            var ids = $(grid_selector).foomei_JqGrid("getIds");
+            if(ids.length > 0) {
+              BootstrapDialog.confirm('你确定要删除吗？', function (result) {
+                if (result) {
+                  $.ajax({
+                    url: grid_batch_del_url,
+                    data: {ids: ids.join(',')},
+                    type: 'POST',
+                    cache: false,
+                    dataType: 'json',
+                    success: function (result) {
+                      if (result.success) {
+                        toastr.success('批量删除成功');
+                        $(grid_selector).foomei_JqGrid('reload');
+                      } else {
+                        toastr.error(result.message);
+                      }
+                    },
+                    error: function () {
+                      toastr.error('未知错误，请联系管理员');
+                    }
+                  });
+                }
+              });
+            }
+          },
+          position: 'first'
+        }]
       });
 
       $(grid_selector).foomei_JqGrid('resize');
@@ -272,7 +306,23 @@
         var id = $(this).attr("data-id");
         BootstrapDialog.confirm('你确定要删除吗？', function (result) {
           if (result) {
-            window.location.href = grid_del_url + id;
+            $.ajax({
+              url: grid_del_url + id,
+              type: 'GET',
+              cache: false,
+              dataType: 'json',
+              success: function (result) {
+                if (result.success) {
+                  toastr.success('删除成功');
+                  $(grid_selector).foomei_JqGrid('reload');
+                } else {
+                  toastr.error(result.message);
+                }
+              },
+              error: function () {
+                toastr.error('未知错误，请联系管理员');
+              }
+            });
           }
         });
       });
