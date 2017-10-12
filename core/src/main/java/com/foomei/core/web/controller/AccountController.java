@@ -122,11 +122,11 @@ public class AccountController {
   @RequestMapping(value = "/{action}/readNotice", method = RequestMethod.GET)
   public String noticeForm(@PathVariable("action") String action, Model model) {
     model.addAttribute("action", action);
-    return "user/notice";
+    return "user/readNotice";
   }
 
   @ApiOperation(value = "我的通知账户页面", httpMethod = "GET")
-  @RequestMapping(value = "/{action}/readNotice/{id}")
+  @RequestMapping(value = "/{action}/notice/read/{id}")
   public String notice(@PathVariable("action") String action, @PathVariable("id") String id, Model model) {
     noticeReceiveService.read(id);
     return "redirect:/"+action+"/readNotice";

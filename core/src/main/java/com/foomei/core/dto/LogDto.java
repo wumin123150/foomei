@@ -31,9 +31,9 @@ public class LogDto {
   private String method;
   @ApiModelProperty(value = "用户标识")
   private String userAgent;
-  @ApiModelProperty(value = "输入参数")
+  @ApiModelProperty(value = "请求参数")
   private String parameter;
-  @ApiModelProperty(value = "返回结果")
+  @ApiModelProperty(value = "响应结果")
   private String result;
 
 }
