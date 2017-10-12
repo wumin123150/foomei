@@ -1,8 +1,7 @@
 /*==============================================================*/
 /* DBMS name:      MySQL 5.0                                    */
-/* Created on:     2017/7/12 16:45:24                           */
+/* Created on:     2017/10/12 21:10:15                          */
 /*==============================================================*/
-
 
 drop table if exists core_annex;
 
@@ -20,7 +19,17 @@ drop table if exists core_log;
 
 drop table if exists core_membership;
 
+drop table if exists core_message;
+
+drop table if exists core_message_content;
+
+drop table if exists core_notice;
+
+drop table if exists core_notice_receive;
+
 drop table if exists core_permission;
+
+drop table if exists core_relationship;
 
 drop table if exists core_role;
 
@@ -39,81 +48,89 @@ drop table if exists core_user_role;
 /*==============================================================*/
 create table core_annex
 (
-   id                   varchar(36) not null,
-   object_id            varchar(36),
-   object_type          varchar(32),
-   path                 varchar(512),
-   name                 varchar(128),
-   type                 varchar(16),
-   create_time          datetime,
-   creator              bigint,
+   id                   varchar(36) not null comment '编号',
+   object_id            varchar(36) comment '对象ID',
+   object_type          varchar(32) comment '对象类型',
+   path                 varchar(512) comment '存储路径',
+   name                 varchar(128) comment '文件名称',
+   type                 varchar(16) comment '文件类型',
+   create_time          datetime comment '创建时间',
+   creator              bigint comment '创建人',
    primary key (id)
 );
+
+alter table core_annex comment '附件';
 
 /*==============================================================*/
 /* Table: core_area                                             */
 /*==============================================================*/
 create table core_area
 (
-   id                   varchar(36) not null,
-   code                 varchar(8),
-   name                 varchar(16),
-   full_name            varchar(32),
-   level                tinyint(1),
-   type                 varchar(1),
-   root_id              varchar(36),
-   parent_id            varchar(36),
-   map_code             varchar(32),
-   weather_code         varchar(32),
+   id                   varchar(36) not null comment '编号',
+   code                 varchar(8) comment '代码',
+   name                 varchar(16) comment '名称',
+   full_name            varchar(32) comment '全称',
+   grade                tinyint(1) comment '层级',
+   type                 varchar(1) comment '类型(1:省,2:直辖市,3:地级市,4:县级市,5:县,6:区)',
+   root_id              varchar(36) comment '根ID',
+   parent_id            varchar(36) comment '父ID',
    primary key (id)
 );
+
+alter table core_area comment '地区';
 
 /*==============================================================*/
 /* Table: core_config                                           */
 /*==============================================================*/
 create table core_config
 (
-   id                   bigint not null auto_increment,
-   code                 varchar(128),
-   value                text,
-   name                 varchar(64),
-   type									tinyint(1),
-   params								text,
-   editable             tinyint(1),
-   remark               varchar(128),
+   id                   bigint not null auto_increment comment '编号',
+   code                 varchar(128) comment '键',
+   value                text comment '值',
+   name                 varchar(64) comment '名称',
+   type                 tinyint(1) comment '类型(0:Input输入框,1:Textarea文本框,2:Radio单选框,3:Checkbox多选框,4:Select单选框,5:Select多选框)',
+   params               text comment '参数',
+   editable             tinyint(1) comment '是否可修改 (0:不可修改,1:可修改)',
+   remark               varchar(128) comment '备注',
    primary key (id)
 );
+
+alter table core_config comment '系统配置';
 
 /*==============================================================*/
 /* Table: core_data_dictionary                                  */
 /*==============================================================*/
 create table core_data_dictionary
 (
-   id                   bigint not null auto_increment,
-   type_id              bigint,
-   code                 varchar(64),
-   name                 varchar(64),
-   priority             int,
-   level                smallint(6),
-   is_item              tinyint(1),
-   parent_id            bigint,
-   remark               varchar(128),
+   id                   bigint not null auto_increment comment '编号',
+   type_id              bigint comment '类型',
+   code                 varchar(64) comment '代码',
+   name                 varchar(64) comment '名称',
+   priority             int comment '序号',
+   grade                smallint(6) comment '层级',
+   is_item              tinyint(1) comment '叶子节点(0:父节点,1:叶子节点)',
+   parent_id            bigint comment '父ID',
+   remark               varchar(128) comment '备注',
    primary key (id)
 );
+
+alter table core_data_dictionary comment '数据字典';
 
 /*==============================================================*/
 /* Table: core_data_type                                        */
 /*==============================================================*/
 create table core_data_type
 (
-   id                   bigint not null auto_increment,
-   code                 varchar(64),
-   name                 varchar(64),
-   level                smallint(6),
-   editable             tinyint(1),
-   remark               varchar(128),
+   id                   bigint not null auto_increment comment '编号',
+   code                 varchar(64) comment '代码',
+   name                 varchar(64) comment '名称',
+   grade                smallint(6) comment '层级',
+   editable             tinyint(1) comment '是否可修改 (0:不可修改,1:可修改)',
+   remark               varchar(128) comment '备注',
    primary key (id)
 );
+
+alter table core_data_type comment '数据类型';
 
 /*==============================================================*/
 /* Table: core_group_role                                       */
@@ -124,6 +141,8 @@ create table core_group_role
    role_id              bigint not null,
    primary key (role_id, group_id)
 );
+
+alter table core_group_role comment '用户组和角色';
 
 /*==============================================================*/
 /* Table: core_log                                              */
@@ -156,16 +175,103 @@ create table core_membership
    primary key (user_id, group_id)
 );
 
+alter table core_membership comment '用户和用户组';
+
+/*==============================================================*/
+/* Table: core_message                                          */
+/*==============================================================*/
+create table core_message
+(
+   id                   varchar(36) not null comment '编号',
+   sender               bigint comment '发件人',
+   sender_status        tinyint(1) comment '发件人状态(0:草稿箱,1:发件箱,2:收件箱,3:收藏箱,4:垃圾箱,5:已删除)
+            在收件箱\发件箱,365天后状态改成垃圾箱
+            在收藏箱,不允许删除
+            在垃圾箱,30天后状态改成已删除
+            在草稿箱,永久不删除
+            邮件删除了，只有收件人和发件人都删除了，才能真正删除',
+   send_time            datetime comment '发送时间',
+   receiver             bigint comment '收件人',
+   receiver_status      tinyint(1) comment '收件人状态',
+   title                varchar(32) comment '标题',
+   is_read              tinyint(1) comment '是否已读',
+   is_reply             tinyint(1) comment '是否已回复',
+   parent_id            varchar(36) comment '父ID',
+   primary key (id)
+);
+
+alter table core_message comment '消息';
+
+/*==============================================================*/
+/* Table: core_message_content                                  */
+/*==============================================================*/
+create table core_message_content
+(
+   id                   varchar(36) not null comment '编号',
+   content              longtext comment '内容',
+   primary key (id)
+);
+
+alter table core_message_content comment '消息内容';
+
+/*==============================================================*/
+/* Table: core_notice                                           */
+/*==============================================================*/
+create table core_notice
+(
+   id                   varchar(36) not null comment '编号',
+   title                varchar(32) comment '标题',
+   content              varchar(255) comment '内容',
+   status               tinyint(1) comment '状态(0:草稿,1:发布)',
+   create_time          datetime comment '创建时间',
+   creator              bigint comment '创建人',
+   update_time          datetime comment '更新时间',
+   updator              bigint comment '更新人',
+   primary key (id)
+);
+
+alter table core_notice comment '通知';
+
+/*==============================================================*/
+/* Table: core_notice_receive                                   */
+/*==============================================================*/
+create table core_notice_receive
+(
+   id                   varchar(36) not null comment '编号',
+   notice_id            varchar(36) comment '通知ID',
+   user_id              bigint comment '用户ID',
+   send_status          tinyint(1) comment '发送状态(0:发送中,1:已发送,2:发送失败)',
+   read_status          tinyint(1) comment '阅读状态(0:未读,1:已读)',
+   read_time            datetime comment '阅读时间',
+   primary key (id)
+);
+
+alter table core_notice_receive comment '用户通知';
+
 /*==============================================================*/
 /* Table: core_permission                                       */
 /*==============================================================*/
 create table core_permission
 (
-   id                   bigint not null auto_increment,
-   code                 varchar(64) not null,
-   name                 varchar(64),
-   priority             int,
+   id                   bigint not null auto_increment comment '编号',
+   code                 varchar(64) not null comment '代码',
+   name                 varchar(64) comment '名称',
+   priority             int comment '序号',
    primary key (id)
+);
+
+alter table core_permission comment '权限';
+
+/*==============================================================*/
+/* Table: core_relationship                                     */
+/*==============================================================*/
+create table core_relationship
+(
+   user_id              bigint not null comment '用户ID',
+   group_id             bigint not null comment '用户组ID',
+   duty                 varchar(64) comment '职务',
+   relation             tinyint(1) comment '主从关系',
+   primary key (user_id, group_id)
 );
 
 /*==============================================================*/
@@ -173,11 +279,13 @@ create table core_permission
 /*==============================================================*/
 create table core_role
 (
-   id                   bigint not null auto_increment,
-   code                 varchar(64) not null,
-   name                 varchar(64),
+   id                   bigint not null auto_increment comment '编号',
+   code                 varchar(64) not null comment '代码',
+   name                 varchar(64) comment '名称',
    primary key (id)
 );
+
+alter table core_role comment '角色';
 
 /*==============================================================*/
 /* Table: core_role_permission                                  */
@@ -194,57 +302,67 @@ create table core_role_permission
 /*==============================================================*/
 create table core_token
 (
-   id                   varchar(36) not null,
-   user_id              bigint,
-   expire_time          datetime,
-   terminal             varchar(16),
-   remark               varchar(128),
-   status               tinyint(1),
-   create_time          datetime,
+   id                   varchar(36) not null comment '编号',
+   user_id              bigint comment '用户ID',
+   expire_time          datetime comment '过期时间',
+   terminal             varchar(16) comment '终端',
+   remark               varchar(128) comment '备注',
+   status               tinyint(1) comment '状态(0:有效,1:失效)',
+   create_time          datetime comment '创建时间',
    primary key (id)
 );
+
+alter table core_token comment '访问令牌';
 
 /*==============================================================*/
 /* Table: core_user                                             */
 /*==============================================================*/
 create table core_user
 (
-   id                   bigint not null auto_increment,
-   login_name           varchar(64) not null,
-   password             varchar(255),
-   salt                 varchar(64) comment '防止密码攻击，暂不使用',
-   name                 varchar(64),
-   question             varchar(255) comment '太多网站的需要问题找回密码，用户难以记住特定的答案，通过问题找回密码的方式不再适应潮流',
-   answer               varchar(255) comment '暂不使用',
-   mobile               varchar(16),
-   email                varchar(32),
-   avatar               varchar(255),
-   open_id              varchar(32),
-   register_time        datetime,
-   register_ip          varchar(16),
-   last_login_time      datetime,
-   last_login_ip        varchar(16),
-   login_count          int,
-   status               varchar(1),
+   id                   bigint not null auto_increment comment '编号',
+   login_name           varchar(64) not null comment '账号',
+   password             varchar(255) comment '密码',
+   salt                 varchar(64) comment '散列',
+   name                 varchar(64) comment '姓名',
+   question             varchar(255) comment '问题',
+   answer               varchar(255) comment '答案',
+   sex                  tinyint(0) comment '性别',
+   birthday             date comment '出生日期',
+   mobile               varchar(16) comment '电话',
+   email                varchar(32) comment '邮箱',
+   avatar               varchar(255) comment '头像',
+   open_id              varchar(32) comment '微信身份ID',
+   register_time        datetime comment '注册时间',
+   register_ip          varchar(16) comment '注册IP',
+   last_login_time      datetime comment '最后登录时间',
+   last_login_ip        varchar(16) comment '最后登录IP',
+   login_count          int comment '登录次数',
+   status               varchar(1) comment '状态(I:未激活,A:正常,E:过期,L:锁定,T:终止)',
    primary key (id)
 );
+
+alter table core_user comment '系统用户';
 
 /*==============================================================*/
 /* Table: core_user_group                                       */
 /*==============================================================*/
 create table core_user_group
 (
-   ID                   bigint not null auto_increment,
-   code                 varchar(64),
-   name                 varchar(64),
-   type                 tinyint(1) comment '0：公司；1：部门',
-   level                int,
-   path                 varchar(512),
-   parent_id            bigint,
-   remark               varchar(128),
-   del_flag             tinyint(1) comment '0：正常；1：停用',
+   ID                   bigint not null auto_increment comment '编号',
+   code                 varchar(64) comment '代码',
+   name                 varchar(64) comment '名称',
+   type                 tinyint(1) comment '类型(0:公司,1:部门,2:小组,3:其他)',
+   grade                tinyint(1) comment '层级',
+   director             bigint comment '负责人',
+   priority             int comment '序号',
+   path                 varchar(512) comment '路径',
+   parent_id            bigint comment '父ID',
+   remark               varchar(128) comment '备注',
+   del_flag             tinyint(1) comment '删除标志(0:正常,1:停用)',
    primary key (ID)
 );
+
+alter table core_user_group comment '组织机构';
 
 /*==============================================================*/
 /* Table: core_user_role                                        */
@@ -255,3 +373,5 @@ create table core_user_role
    role_id              bigint not null,
    primary key (user_id, role_id)
 );
+
+alter table core_user_role comment '用户和角色';

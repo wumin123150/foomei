@@ -58,15 +58,15 @@
           <ul class="user-menu dropdown-menu-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
 
             <li>
-              <a href="javascript:void(0);">
-                <i class="ace-icon fa fa-cog"></i>
-                修改头像
-              </a>
-            </li>
-            <li>
               <a href="${ctx}/admin/changeAccount">
                 <i class="ace-icon fa fa-user"></i>
                 个人资料
+              </a>
+            </li>
+            <li>
+              <a href="${ctx}/admin/readNotice">
+                <i class="ace-icon fa fa-cog"></i>
+                通知
               </a>
             </li>
 
