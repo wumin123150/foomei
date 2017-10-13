@@ -12,6 +12,6 @@ import ${package}.entity.${model};
 */
 @Service
 @Transactional(readOnly = true)
-public class ${model}Service extends JpaServiceImpl<${model}Dao, ${model}, ${idType}> {
+public class ${model}Service extends JpaServiceImpl<${model}, ${idType}> {
 
 }

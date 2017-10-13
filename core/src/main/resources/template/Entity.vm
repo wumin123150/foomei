@@ -9,9 +9,18 @@ import lombok.Setter;
 import lombok.ToString;
 
 import com.foomei.common.entity.${idStrategy}Entity;
+<#if hasCreateRecord>
+import com.foomei.common.entity.CreateRecord;
+</#if>
+<#if hasUpdateRecord>
+import com.foomei.common.entity.UpdateRecord;
+</#if>
+<#if hasDeleteRecord>
+import com.foomei.common.entity.DeleteRecord;
+</#if>
 
 /**
- * ${model}
+ * ${comment}
  */
 @Getter
 @Setter
@@ -20,13 +29,29 @@ import com.foomei.common.entity.${idStrategy}Entity;
 @Entity
 @Table(name = "${tableName}")
 @SuppressWarnings("serial")
-public class ${model} extends ${idStrategy}Entity {
-	<#list props?keys as k>
-	public static final String PROP_${props[k]} = "${k}";
-	</#list>
+public class ${model} extends ${idStrategy}Entity<#if hasImplement> implements ${implements}</#if> {
+  <#list props?keys as k>
+  public static final String PROP_${props[k]} = "${k}";
+  </#list>
+
+  <#list consts as const>
+  ${const}
+  </#list>
 	
-	<#list fields?keys as k>
-	private ${fields[k]} ${k};
-	</#list>
+  <#list fields?keys as k>
+  private ${fields[k].first} ${k};//${fields[k].second}
+  </#list>
+
+  <#if hasCreateRecord>
+  public boolean isCreated() {
+    return id != null;
+  }
+  </#if>
+
+  <#if hasDeleteRecord>
+  public void markDeleted() {
+    delFlag = true;
+  }
+  </#if>
 	
 }
