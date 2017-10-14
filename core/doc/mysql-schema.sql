@@ -326,7 +326,7 @@ create table core_user
    name                 varchar(64) comment '姓名',
    question             varchar(255) comment '问题',
    answer               varchar(255) comment '答案',
-   sex                  tinyint(0) comment '性别',
+   sex                  tinyint(1) comment '性别(0:未知,1:男,2:女)',
    birthday             date comment '出生日期',
    mobile               varchar(16) comment '电话',
    email                varchar(32) comment '邮箱',

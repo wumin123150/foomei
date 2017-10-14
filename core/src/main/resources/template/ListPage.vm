@@ -137,9 +137,7 @@
             }
           }
           <#list fields?keys as k>
-          <#if fields[k].first == 'java.util.Date'>
-          ,{name: '${k}', index: '${k}', width: 100, formatter: 'date', formatoptions: {srcformat: 'Y-m-d H:i:s', newformat: 'Y-m-d H:i:s'}}
-          <#elseif consts?keys?seq_contains(k)>
+          <#if consts?keys?seq_contains(k)>
           ,{name: '${k}', index: '${k}', width: 100, formatter: function (value, options, rowObject) {
           <#assign values=consts[k]/>
           <#list values as value>

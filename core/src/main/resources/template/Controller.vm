@@ -75,7 +75,7 @@ public class ${model}Controller {
 
   @ApiOperation(value = "${comment}修改", httpMethod = "POST")
   @RequestMapping(value = "update", method = RequestMethod.POST)
-  public String update(@Valid @ModelAttribute("preloadDataType") ${model} ${variable}, BindingResult result, Model model, RedirectAttributes redirectAttributes) {
+  public String update(@Valid @ModelAttribute("preload${model}") ${model} ${variable}, BindingResult result, Model model, RedirectAttributes redirectAttributes) {
     if (result.hasErrors()) {
       model.addAttribute("menu", MENU);
       model.addAttribute("action", ACTION_UPDATE);

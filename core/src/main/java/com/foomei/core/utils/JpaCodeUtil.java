@@ -2,6 +2,7 @@ package com.foomei.core.utils;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -27,6 +28,7 @@ import com.google.common.collect.Maps;
 public class JpaCodeUtil {
 
   // 模板路径
+  private static String VM_FORM_PAGE = "src/main/resources/template/FormPage.vm";
   private static String VM_LIST_PAGE = "src/main/resources/template/ListPage.vm";
   private static String VM_ENDPOINT = "src/main/resources/template/Endpoint.vm";
   private static String VM_CONTROLLER = "src/main/resources/template/Controller.vm";
@@ -36,7 +38,7 @@ public class JpaCodeUtil {
   private static String VM_ENTITY = "src/main/resources/template/Entity.vm";
 
   public static final String TABLE_SQL = "SELECT table_name, table_comment FROM INFORMATION_SCHEMA.TABLES WHERE table_schema = '%s' AND table_name LIKE '%s';";
-  public static final String COLUMN_SQL = "SELECT column_name, data_type, column_comment FROM INFORMATION_SCHEMA.COLUMNS WHERE table_schema = '%s' AND table_name = '%s';";
+  public static final String COLUMN_SQL = "SELECT column_name, data_type, column_comment, character_maximum_length, is_nullable, column_key FROM INFORMATION_SCHEMA.COLUMNS WHERE table_schema = '%s' AND table_name = '%s';";
 
   public static Map<Pair<String, String>, List<Map<String, String>>> getTableDefine(String jdbcDriver, String jdbcUrl,
                                                                       String jdbcUsername, String jdbcPassword, String database, String tablePrefix) throws Exception {
@@ -47,8 +49,7 @@ public class JpaCodeUtil {
 
       // 查询定制前缀的所有表
       JdbcUtil jdbcUtil = new JdbcUtil(jdbcDriver, jdbcUrl, jdbcUsername, jdbcPassword);
-      List<Map> tableDefines = jdbcUtil.selectByParams(String.format(TABLE_SQL, database, tablePrefix + "%"),
-              null);
+      List<Map> tableDefines = jdbcUtil.selectByParams(String.format(TABLE_SQL, database, tablePrefix + "%"), null);
       for (Map tableDefine : tableDefines) {
         String tableName = (String) tableDefine.get("TABLE_NAME");
         String tableComment = (String) tableDefine.get("TABLE_COMMENT");
@@ -59,8 +60,11 @@ public class JpaCodeUtil {
           String columnName = (String) columnDefine.get("COLUMN_NAME");
           String columnComment = (String) columnDefine.get("COLUMN_COMMENT");
           String dataType = (String) columnDefine.get("DATA_TYPE");
-          columns.add(MapUtil.newHashMap(new String[]{"column", "type", "comment"}, new String[]{columnName,
-                  dataType, columnComment}));
+          String stringLength = String.valueOf(columnDefine.get("CHARACTER_MAXIMUM_LENGTH"));
+          String isNull = (String) columnDefine.get("IS_NULLABLE");
+          String columnKey = (String) columnDefine.get("COLUMN_KEY");
+          columns.add(MapUtil.newHashMap(new String[]{"column", "type", "comment", "stringLength", "isNull", "key"}, new String[]{columnName,
+                  dataType, columnComment, stringLength, isNull, columnKey}));
         }
 
         tables.put(new Pair(tableName, tableComment), columns);
@@ -86,7 +90,7 @@ public class JpaCodeUtil {
       tableName = table.getKey().getFirst();
       tableComment = table.getKey().getSecond();
       columns = table.getValue();
-      if (hasColumn(columns, "id")) {
+      if (!isExclude(excludes, tableName) && hasColumn(columns, "id")) {
         String model = toModel(tableName, tablePrefix);
         String entity = entityPath + "/" + model + ".java";
         // 生成entity
@@ -116,12 +120,13 @@ public class JpaCodeUtil {
           params.put("model", model);
           params.put("idStrategy", getIdStrategy(columns));
           params.put("fields", toFields(columns));
+          params.put("fieldNotBlanks", toFieldNotBlanks(columns));
+          params.put("fieldSizes", toFieldSizes(columns));
           params.put("props", toProps(columns));
           params.put("consts", toConsts(columns));
           params.put("hasImplement", hasCreateRecord || hasUpdateRecord || hasDeleteRecord);
           params.put("implements", StringUtils.join(records, ", "));
           params.put("hasCreateRecord", hasCreateRecord);
-          params.put("hasUpdateRecord", hasUpdateRecord);
           params.put("hasDeleteRecord", hasDeleteRecord);
           String content = FreeMarkerUtil.renderString(FileUtil.toString(new File(localProjectPath, VM_ENTITY)),
                   params);
@@ -146,7 +151,7 @@ public class JpaCodeUtil {
       tableName = table.getKey().getFirst();
       tableComment = table.getKey().getSecond();
       columns = table.getValue();
-      if (hasColumn(columns, "id")) {
+      if (!isExclude(excludes, tableName) && hasColumn(columns, "id")) {
         String model = toModel(tableName, tablePrefix);
         String entity = entityPath + "/" + model + "Dto.java";
         // 生成dto
@@ -180,7 +185,7 @@ public class JpaCodeUtil {
     for (Map.Entry<Pair<String, String>, List<Map<String, String>>> table : tables.entrySet()) {
       tableName = table.getKey().getFirst();
       columns = table.getValue();
-      if (hasColumn(columns, "id")) {
+      if (!isExclude(excludes, tableName) && hasColumn(columns, "id")) {
         String model = toModel(tableName, tablePrefix);
         String dao = daoPath + "/" + model + "Dao.java";
         // 生成dao
@@ -212,7 +217,7 @@ public class JpaCodeUtil {
     for (Map.Entry<Pair<String, String>, List<Map<String, String>>> table : tables.entrySet()) {
       tableName = table.getKey().getFirst();
       columns = table.getValue();
-      if (hasColumn(columns, "id")) {
+      if (!isExclude(excludes, tableName) && hasColumn(columns, "id")) {
         String model = toModel(tableName, tablePrefix);
         String service = servicePath + "/" + model + "Service.java";
         // 生成service
@@ -246,7 +251,7 @@ public class JpaCodeUtil {
       tableName = table.getKey().getFirst();
       tableComment = table.getKey().getSecond();
       columns = table.getValue();
-      if (!excludes.contains(tableName) && hasColumn(columns, "id")) {
+      if (!isExclude(excludes, tableName) && hasColumn(columns, "id")) {
         String model = toModel(tableName, tablePrefix);
         String controller = controllerPath + "/" + model + "Controller.java";
         // controller
@@ -283,7 +288,7 @@ public class JpaCodeUtil {
       tableName = table.getKey().getFirst();
       tableComment = table.getKey().getSecond();
       columns = table.getValue();
-      if (!excludes.contains(tableName) && hasColumn(columns, "id")) {
+      if (!isExclude(excludes, tableName) && hasColumn(columns, "id")) {
         String model = toModel(tableName, tablePrefix);
         String endpoint = endpointPath + "/" + model + "Endpoint.java";
         // endpoint
@@ -342,6 +347,42 @@ public class JpaCodeUtil {
     System.out.println("========== 结束生成ListPage ==========");
   }
 
+  public static void generateFormPage(Map<Pair<String, String>, List<Map<String, String>>> tables, String tablePrefix,
+                                      String packageName, String projectPath, List<String> excludes) throws IOException {
+    String localProjectPath = localProjectPath();
+
+    System.out.println("========== 开始生成FormPage ==========");
+    String formPagePath = projectPath + "/src/main/webapp/WEB-INF/views/" + StringUtils.substringAfterLast(packageName, ".");
+    String tableName = null;
+    String tableComment = null;
+    List<Map<String, String>> columns = null;
+    for (Map.Entry<Pair<String, String>, List<Map<String, String>>> table : tables.entrySet()) {
+      tableName = table.getKey().getFirst();
+      tableComment = table.getKey().getSecond();
+      columns = table.getValue();
+      if (!isExclude(excludes, tableName) && hasColumn(columns, "id")) {
+        String variable = toVariable(tableName, tablePrefix);
+        String formPage = formPagePath + "/" + variable + "/" + variable + "Form.jsp";
+        // formPage
+        File formPageFile = new File(formPage);
+        if (!formPageFile.exists()) {
+          FileUtil.makesureParentDirExists(formPageFile);
+
+          Map<String, Object> params = Maps.newHashMap();
+          params.put("folder", StringUtils.substringAfterLast(packageName, "."));
+          params.put("comment", StringUtils.isNotEmpty(tableComment) ? tableComment : toModel(tableName, tablePrefix));
+          params.put("variable", toVariable(tableName, tablePrefix));
+          params.put("fields", toFieldLists(columns));
+          params.put("consts", toFieldConsts(columns));
+          String content = FreeMarkerUtil.renderString(FileUtil.toString(new File(localProjectPath, VM_FORM_PAGE)), params);
+          FileUtil.write(content, formPageFile);
+          System.out.println(formPage);
+        }
+      }
+    }
+    System.out.println("========== 结束生成FormPage ==========");
+  }
+
   public static void generateModule(String jdbcDriver, String jdbcUrl, String jdbcUsername, String jdbcPassword,
                                     String database, String tablePrefix, String packageName, String projectPath, Map<String, List<String>> excludes) throws Exception {
     Map<Pair<String, String>, List<Map<String, String>>> tables = getTableDefine(jdbcDriver, jdbcUrl, jdbcUsername, jdbcPassword, database, tablePrefix);
@@ -353,6 +394,7 @@ public class JpaCodeUtil {
     generateController(tables, tablePrefix, packageName, projectPath, excludes.get("controller"));
     generateEndpoint(tables, tablePrefix, packageName, projectPath, excludes.get("endpoint"));
     generateListPage(tables, tablePrefix, packageName, projectPath, excludes.get("listpage"));
+    generateFormPage(tables, tablePrefix, packageName, projectPath, excludes.get("formpage"));
   }
 
   public static void generateLocal(String jdbcDriver, String jdbcUrl, String jdbcUsername, String jdbcPassword,
@@ -383,6 +425,7 @@ public class JpaCodeUtil {
       generateController(module.getValue(), module.getKey() + "_", packageBase + "." + module.getKey(), localProjectPath, excludes.get("controller"));
       generateEndpoint(module.getValue(), module.getKey() + "_", packageBase + "." + module.getKey(), localProjectPath, excludes.get("endpoint"));
       generateListPage(module.getValue(), module.getKey() + "_", packageBase + "." + module.getKey(), localProjectPath, excludes.get("listpage"));
+      generateFormPage(module.getValue(), module.getKey() + "_", packageBase + "." + module.getKey(), localProjectPath, excludes.get("formpage"));
       System.out.println("========== 结束生成Module(" + module + ") ==========");
     }
   }
@@ -402,6 +445,7 @@ public class JpaCodeUtil {
     String excludeDto = resource.getString("exclude.dto");
     String excludeEntity = resource.getString("exclude.entity");
     String excludeListPage = resource.getString("exclude.listpage");
+    String excludeFormPage = resource.getString("exclude.formpage");
     Map<String, List<String>> excludes = MapUtil.newHashMap();
     excludes.put("controller", ListUtil.newArrayList(StringUtils.split(excludeController, ", ")));
     excludes.put("endpoint", ListUtil.newArrayList(StringUtils.split(excludeEndpoint, ", ")));
@@ -410,8 +454,11 @@ public class JpaCodeUtil {
     excludes.put("dto", ListUtil.newArrayList(StringUtils.split(excludeDto, ", ")));
     excludes.put("entity", ListUtil.newArrayList(StringUtils.split(excludeEntity, ", ")));
     excludes.put("listpage", ListUtil.newArrayList(StringUtils.split(excludeListPage, ", ")));
+    excludes.put("formpage", ListUtil.newArrayList(StringUtils.split(excludeFormPage, ", ")));
     generateLocal(jdbcDriver, jdbcUrl, jdbcUsername, jdbcPassword, database, packageBase, excludes);
   }
+
+
 
   public static void main(String[] args) throws Exception {
     generateLocal("com.foomei");
@@ -550,6 +597,34 @@ public class JpaCodeUtil {
     return fields;
   }
 
+  public static Map<String, String> toFieldNotBlanks(List<Map<String, String>> columnDefines) {
+    Map<String, String> fields = Maps.newLinkedHashMap();
+    for (Map<String, String> columnDefine : columnDefines) {
+      String columnName = columnDefine.get("column");
+      String comment = StringUtils.substringBefore(columnDefine.get("comment"), "(");
+      String dataType = columnDefine.get("type");
+      String isNull = columnDefine.get("isNull");
+      if (!StringUtils.equalsIgnoreCase(columnName, "id") && StringUtils.equalsIgnoreCase(isNull, "NO")) {
+        fields.put(toField(columnName), comment);
+      }
+    }
+    return fields;
+  }
+
+  public static Map<String, Pair<String, String>> toFieldSizes(List<Map<String, String>> columnDefines) {
+    Map<String, Pair<String, String>> fields = Maps.newLinkedHashMap();
+    for (Map<String, String> columnDefine : columnDefines) {
+      String columnName = columnDefine.get("column");
+      String comment = StringUtils.substringBefore(columnDefine.get("comment"), "(");
+      String dataType = columnDefine.get("type");
+      String stringLength = columnDefine.get("stringLength");
+      if (!StringUtils.equalsIgnoreCase(columnName, "id") && StringUtils.isNotEmpty(stringLength)) {
+        fields.put(toField(columnName), new Pair(stringLength, comment));
+      }
+    }
+    return fields;
+  }
+
   public static String toModel(String tableName, String tablePrefix) {
     return StringUtils.capitalize(toCamel(StringUtils.substring(tableName, tablePrefix.length())));
   }
@@ -577,8 +652,11 @@ public class JpaCodeUtil {
         type = "java.math.BigDecimal";
         break;
       case "date":
+        type = "java.time.LocalDate";
+        break;
       case "datetime":
-        type = "java.util.Date";
+      case "timestamp":
+          type = "java.time.LocalDateTime";
         break;
       case "varchar":
       case "text":
