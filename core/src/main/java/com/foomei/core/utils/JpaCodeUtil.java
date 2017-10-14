@@ -332,6 +332,7 @@ public class JpaCodeUtil {
           params.put("comment", StringUtils.isNotEmpty(tableComment) ? tableComment : toModel(tableName, tablePrefix));
           params.put("variable", toVariable(tableName, tablePrefix));
           params.put("fields", toFieldLists(columns));
+          params.put("consts", toFieldConsts(columns));
           String content = FreeMarkerUtil.renderString(FileUtil.toString(new File(localProjectPath, VM_LIST_PAGE)), params);
           FileUtil.write(content, listPageFile);
           System.out.println(listPage);
@@ -515,12 +516,35 @@ public class JpaCodeUtil {
     Map<String, Pair<String, String>> fields = Maps.newLinkedHashMap();
     for (Map<String, String> columnDefine : columnDefines) {
       String columnName = columnDefine.get("column");
-      String comment = columnDefine.get("comment");
+      String comment = StringUtils.substringBefore(columnDefine.get("comment"), "(");
       String dataType = columnDefine.get("type");
       if (!StringUtils.equalsIgnoreCase(columnName, "id") && !StringUtils.equalsIgnoreCase(columnName, "del_flag")
         && !StringUtils.equalsIgnoreCase(columnName, "creator") && !StringUtils.equalsIgnoreCase(columnName, "create_time")
         && !StringUtils.equalsIgnoreCase(columnName, "updator") && !StringUtils.equalsIgnoreCase(columnName, "update_time")) {
         fields.put(toField(columnName), new Pair(toType(dataType), comment));
+      }
+    }
+    return fields;
+  }
+
+  public static Map<String, List<Pair<String, String>>> toFieldConsts(List<Map<String, String>> columnDefines) {
+    Map<String, List<Pair<String, String>>> fields = Maps.newLinkedHashMap();
+    for (Map<String, String> columnDefine : columnDefines) {
+      String columnName = columnDefine.get("column");
+      String consts = StringUtils.substringBetween(columnDefine.get("comment"), "(", ")");
+      String dataType = toType(columnDefine.get("type"));
+      if (!StringUtils.equalsIgnoreCase(columnName, "id") && !StringUtils.equalsIgnoreCase(columnName, "del_flag") && StringUtils.isNotEmpty(consts)) {
+        String[] temp = StringUtils.split(consts, ", ");
+        for (int i = 0; i < temp.length; i++) {
+          String[] values = StringUtils.split(temp[i], ":");
+          if(values.length == 2) {
+            if(fields.containsKey(toField(columnName))) {
+              fields.get(toField(columnName)).add(new Pair<String, String>(values[0], values[1]));
+            } else {
+              fields.put(toField(columnName), ListUtil.newArrayList(new Pair<String, String>(values[0], values[1])));
+            }
+          }
+        }
       }
     }
     return fields;
