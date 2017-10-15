@@ -10,7 +10,6 @@
 <pluginCss>
   <!-- page specific plugin styles -->
   <link rel="stylesheet" href="${ctx}/static/css/chosen.min.css"/>
-  <link rel="stylesheet" href="${ctx}/static/js/smartselect/smartselect.min.css"/>
   <link rel="stylesheet" href="${ctx}/static/js/zTree/metroStyle/metroStyle.css">
   <link rel="stylesheet" href="${ctx}/static/css/datepicker.min.css" />
 </pluginCss>
@@ -78,8 +77,7 @@
     <div class="breadcrumbs" id="breadcrumbs">
       <script type="text/javascript">
         try {
-          ace.settings.check('breadcrumbs',
-            'fixed')
+          ace.settings.check('breadcrumbs', 'fixed')
         } catch (e) {
         }
       </script>
@@ -360,10 +358,9 @@
   <script src="${ctx}/static/js/jquery.validate-methods.me.js"></script>
   <script src="${ctx}/static/js/messages_zh.min.js"></script>
   <script src="${ctx}/static/js/chosen.jquery.min.js"></script>
-  <script src="${ctx}/static/js/smartselect/jquery.smartselect.min.js"></script>
   <script src="${ctx}/static/js/zTree/jquery.ztree.core.min.js"></script>
   <script src="${ctx}/static/js/zTree/jquery.ztree.excheck.min.js"></script>
-  <script src="${ctx}/static/js/date-time/bootstrap-datepicker.me.js"></script>
+  <script src="${ctx}/static/js/date-time/bootstrap-datepicker.min.js"></script>
 </pluginJs>
 <pageJs>
   <!-- inline scripts related to this page -->

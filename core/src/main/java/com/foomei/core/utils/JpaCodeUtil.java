@@ -337,7 +337,7 @@ public class JpaCodeUtil {
           params.put("comment", StringUtils.isNotEmpty(tableComment) ? tableComment : toModel(tableName, tablePrefix));
           params.put("variable", toVariable(tableName, tablePrefix));
           params.put("fields", toFieldLists(columns));
-          params.put("consts", toFieldConsts(columns));
+          params.put("fieldConsts", toFieldConsts(columns));
           String content = FreeMarkerUtil.renderString(FileUtil.toString(new File(localProjectPath, VM_LIST_PAGE)), params);
           FileUtil.write(content, listPageFile);
           System.out.println(listPage);
@@ -373,6 +373,10 @@ public class JpaCodeUtil {
           params.put("comment", StringUtils.isNotEmpty(tableComment) ? tableComment : toModel(tableName, tablePrefix));
           params.put("variable", toVariable(tableName, tablePrefix));
           params.put("fields", toFieldLists(columns));
+          params.put("fieldNotBlanks", toFieldNotBlanks(columns));
+          params.put("fieldSizes", toFieldSizes(columns));
+          params.put("fieldConsts", toFieldConsts(columns));
+          params.put("fieldRules", toFieldRules(columns));
           params.put("consts", toFieldConsts(columns));
           String content = FreeMarkerUtil.renderString(FileUtil.toString(new File(localProjectPath, VM_FORM_PAGE)), params);
           FileUtil.write(content, formPageFile);
@@ -579,7 +583,6 @@ public class JpaCodeUtil {
     for (Map<String, String> columnDefine : columnDefines) {
       String columnName = columnDefine.get("column");
       String consts = StringUtils.substringBetween(columnDefine.get("comment"), "(", ")");
-      String dataType = toType(columnDefine.get("type"));
       if (!StringUtils.equalsIgnoreCase(columnName, "id") && !StringUtils.equalsIgnoreCase(columnName, "del_flag") && StringUtils.isNotEmpty(consts)) {
         String[] temp = StringUtils.split(consts, ", ");
         for (int i = 0; i < temp.length; i++) {
@@ -602,7 +605,6 @@ public class JpaCodeUtil {
     for (Map<String, String> columnDefine : columnDefines) {
       String columnName = columnDefine.get("column");
       String comment = StringUtils.substringBefore(columnDefine.get("comment"), "(");
-      String dataType = columnDefine.get("type");
       String isNull = columnDefine.get("isNull");
       if (!StringUtils.equalsIgnoreCase(columnName, "id") && StringUtils.equalsIgnoreCase(isNull, "NO")) {
         fields.put(toField(columnName), comment);
@@ -616,10 +618,46 @@ public class JpaCodeUtil {
     for (Map<String, String> columnDefine : columnDefines) {
       String columnName = columnDefine.get("column");
       String comment = StringUtils.substringBefore(columnDefine.get("comment"), "(");
-      String dataType = columnDefine.get("type");
       String stringLength = columnDefine.get("stringLength");
       if (!StringUtils.equalsIgnoreCase(columnName, "id") && StringUtils.isNotEmpty(stringLength)) {
         fields.put(toField(columnName), new Pair(stringLength, comment));
+      }
+    }
+    return fields;
+  }
+
+  public static Map<String, List<String>> toFieldRules(List<Map<String, String>> columnDefines) {
+    Map<String, List<String>> fields = Maps.newLinkedHashMap();
+    for (Map<String, String> columnDefine : columnDefines) {
+      String columnName = columnDefine.get("column");
+      String consts = StringUtils.substringBetween(columnDefine.get("comment"), "(", ")");
+      String dataType = toType(columnDefine.get("type"));
+      String isNull = columnDefine.get("isNull");
+      String stringLength = columnDefine.get("stringLength");
+      if (!StringUtils.equalsIgnoreCase(columnName, "id")) {
+        if (StringUtils.equalsIgnoreCase(isNull, "NO")) {
+          if(fields.containsKey(toField(columnName))) {
+            fields.get(toField(columnName)).add("required: true");
+          } else {
+            fields.put(toField(columnName), ListUtil.newArrayList("required: true"));
+          }
+        }
+
+        if(StringUtils.isNotEmpty(stringLength)) {
+          if(fields.containsKey(toField(columnName))) {
+            fields.get(toField(columnName)).add("maxlength: " + stringLength);
+          } else {
+            fields.put(toField(columnName), ListUtil.newArrayList("maxlength: " + stringLength));
+          }
+        }
+
+        if((StringUtils.equals(dataType, "Long") || StringUtils.equals(dataType, "Integer")) && StringUtils.isEmpty(consts)) {
+          if(fields.containsKey(toField(columnName))) {
+            fields.get(toField(columnName)).add("digits: true");
+          } else {
+            fields.put(toField(columnName), ListUtil.newArrayList("digits: true"));
+          }
+        }
       }
     }
     return fields;

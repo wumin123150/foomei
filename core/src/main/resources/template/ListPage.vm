@@ -137,10 +137,9 @@
             }
           }
           <#list fields?keys as k>
-          <#if consts?keys?seq_contains(k)>
+          <#if fieldConsts?keys?seq_contains(k)>
           ,{name: '${k}', index: '${k}', width: 100, formatter: function (value, options, rowObject) {
-          <#assign values=consts[k]/>
-          <#list values as value>
+          <#list fieldConsts[k] as value>
           <#if fields[k].first == 'String'>
             if(value == '${value.first}') {return '${value.second}'};
           <#else>

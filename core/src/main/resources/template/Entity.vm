@@ -32,7 +32,11 @@ public class ${model} extends ${idStrategy}Entity<#if hasImplement> implements $
 	
   <#list fields?keys as k>
   <#if fieldNotBlanks?keys?seq_contains(k)>
+  <#if fields[k].first == 'String'>
   @NotBlank(message = "${fieldNotBlanks[k]}不能为空")
+  <#else>
+  @NotNull(message = "${fieldNotBlanks[k]}不能为空")
+  </#if>
   </#if>
   <#if fieldSizes?keys?seq_contains(k)>
   @Size(max = ${fieldSizes[k].first}, message = "${fieldSizes[k].second}最大长度为${fieldSizes[k].first}位")
@@ -42,6 +46,7 @@ public class ${model} extends ${idStrategy}Entity<#if hasImplement> implements $
   @Temporal(TemporalType.DATE)
   private java.util.Date ${k};//${fields[k].second}
   <#elseif fields[k].first == 'java.time.LocalDateTime'>
+  @org.springframework.format.annotation.DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
   private java.util.Date ${k};//${fields[k].second}
   <#else>
   private ${fields[k].first} ${k};//${fields[k].second}
