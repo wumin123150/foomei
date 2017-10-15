@@ -36,7 +36,7 @@ public class NoticeReceiveService extends JpaServiceImpl<NoticeReceive, String> 
   @Transactional(readOnly = false)
   public void read(String id) {
     NoticeReceive noticeReceive = get(id);
-    noticeReceive.setStatus(NoticeReceive.STATUS_READED);
+    noticeReceive.setReadStatus(NoticeReceive.STATUS_READED);
     noticeReceive.setReadTime(new Date());
     save(noticeReceive);
   }

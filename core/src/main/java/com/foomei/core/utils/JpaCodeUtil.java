@@ -59,7 +59,7 @@ public class JpaCodeUtil {
                   dataType, columnComment, stringLength, isNull, columnKey}));
         }
 
-        tables.put(new Pair(tableName, tableComment), columns);
+        tables.put(new Pair<String, String>(tableName, tableComment), columns);
       }
       jdbcUtil.release();
     } catch (Exception e) {
@@ -531,10 +531,10 @@ public class JpaCodeUtil {
       String comment = columnDefine.get("comment");
       String dataType = columnDefine.get("type");
       if (!StringUtils.equalsIgnoreCase(columnName, "id")) {
-        fields.put(toField(columnName), new Pair(toType(dataType), comment));
+        fields.put(toField(columnName), new Pair<String, String>(toType(dataType), comment));
       }
       if (StringUtils.equalsIgnoreCase(columnName, "del_flag")) {
-        fields.put(toField(columnName), new Pair("Boolean", comment));
+        fields.put(toField(columnName), new Pair<String, String>("Boolean", comment));
       }
     }
     return fields;
@@ -549,7 +549,7 @@ public class JpaCodeUtil {
       if (!StringUtils.equalsIgnoreCase(columnName, "del_flag")
         && !StringUtils.equalsIgnoreCase(columnName, "creator") && !StringUtils.equalsIgnoreCase(columnName, "create_time")
         && !StringUtils.equalsIgnoreCase(columnName, "updator") && !StringUtils.equalsIgnoreCase(columnName, "update_time")) {
-        fields.put(toField(columnName), new Pair(toType(dataType), comment));
+        fields.put(toField(columnName), new Pair<String, String>(toType(dataType), comment));
       }
     }
     return fields;
@@ -564,7 +564,7 @@ public class JpaCodeUtil {
       if (!StringUtils.equalsIgnoreCase(columnName, "id") && !StringUtils.equalsIgnoreCase(columnName, "del_flag")
         && !StringUtils.equalsIgnoreCase(columnName, "creator") && !StringUtils.equalsIgnoreCase(columnName, "create_time")
         && !StringUtils.equalsIgnoreCase(columnName, "updator") && !StringUtils.equalsIgnoreCase(columnName, "update_time")) {
-        fields.put(toField(columnName), new Pair(toType(dataType), comment));
+        fields.put(toField(columnName), new Pair<String, String>(toType(dataType), comment));
       }
     }
     return fields;
@@ -612,7 +612,7 @@ public class JpaCodeUtil {
       String comment = StringUtils.substringBefore(columnDefine.get("comment"), "(");
       String stringLength = columnDefine.get("stringLength");
       if (!StringUtils.equalsIgnoreCase(columnName, "id") && StringUtils.isNotEmpty(stringLength)) {
-        fields.put(toField(columnName), new Pair(stringLength, comment));
+        fields.put(toField(columnName), new Pair<String, String>(stringLength, comment));
       }
     }
     return fields;

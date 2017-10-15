@@ -41,7 +41,7 @@ public class DataDictionary extends IdEntity {
   public static final String PROP_CODE = "code";
   public static final String PROP_NAME = "name";
   public static final String PROP_PRIORITY = "priority";
-  public static final String PROP_LEVEL = "level";
+  public static final String PROP_GRADE = "grade";
   public static final String PROP_ITEM = "item";
   public static final String PROP_PARENT_ID = "parentId";
   public static final String PROP_REMARK = "remark";
@@ -49,22 +49,22 @@ public class DataDictionary extends IdEntity {
   @NotNull(message = "数据类型不能为空")
   @ManyToOne
   @JoinColumn(name = "type_id")
-  private DataType type;
-  @NotBlank(message = "编码不能为空")
-  @Size(max = 64, message = "编码长度必须在1到64位之间")
-  private String code;
+  private DataType type;//类型
+  @NotBlank(message = "代码不能为空")
+  @Size(max = 64, message = "代码最大长度为64位")
+  private String code;//代码
   @NotBlank(message = "名称不能为空")
-  @Size(max = 64, message = "名称长度必须在1到64位之间")
-  private String name;
+  @Size(max = 64, message = "名称最大长度为64位")
+  private String name;//名称
   @NotNull(message = "序号不能为空")
   @Range(min = 0, max = 10000, message = "序号必须在0到10000之间")
-  private Integer priority;
-  private Integer level;
-  @NotNull(message = "类型不能为空")
+  private Integer priority;//序号
+  private Integer grade;//层级
+  @NotNull(message = "节点类型不能为空")
   @Column(name = "is_item")
-  private Boolean item;
-  private Long parentId;
-  @Size(max = 128, message = "描述长度必须在0到128位之间")
-  private String remark;
+  private Boolean item;//节点类型(0:父节点,1:叶子节点)
+  private Long parentId;//父ID
+  @Size(max = 128, message = "备注最大长度为128位")
+  private String remark;//备注
 
 }

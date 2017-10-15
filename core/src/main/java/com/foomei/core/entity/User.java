@@ -68,32 +68,32 @@ public class User extends IdEntity {
   public static final String USER_ANNEX_PATH = "/avatar";
   public static final String USER_ANNEX_TYPE = "user";
 
-  @NotBlank(message = "用户名不能为空")
-  @Size(max = 64, message = "用户名长度必须在1到64位之间")
-  private String loginName;
-  private String password;
-  private String salt;
+  @NotBlank(message = "账号不能为空")
+  @Size(max = 64, message = "账号最大长度为64位")
+  private String loginName;//账号
+  private String password;//密码
+  private String salt;//散列
   @NotBlank(message = "姓名不能为空")
-  @Size(max = 64, message = "姓名长度必须在1到64位之间")
-  private String name;
-  private String question;
-  private String answer;
-  private Integer sex;
+  @Size(max = 64, message = "姓名最大长度为64位")
+  private String name;//姓名
+  private String question;//问题
+  private String answer;//答案
+  private Integer sex;//性别(0:未知,1:男,2:女)
   @DateTimeFormat(pattern="yyyy-MM-dd")
   @Temporal(TemporalType.DATE)
-  private Date birthday;
-  @Size(max = 16, message = "手机长度必须在1到16位之间")
-  private String mobile;
-  @Size(max = 64, message = "邮箱长度必须在1到64位之间")
-  private String email;
-  private String avatar;
-  private String openId;
-  private Date registerTime;
-  private String registerIp;
-  private Date lastLoginTime;
-  private String lastLoginIp;
-  private Integer loginCount;
-  private String status;
+  private Date birthday;//出生日期
+  @Size(max = 16, message = "手机最大长度为16位")
+  private String mobile;//手机
+  @Size(max = 64, message = "邮箱最大长度为64位")
+  private String email;//邮箱
+  private String avatar;//头像
+  private String openId;//微信身份ID
+  private Date registerTime;//注册时间
+  private String registerIp;//注册IP
+  private Date lastLoginTime;//最后登录时间
+  private String lastLoginIp;//最后登录IP
+  private Integer loginCount;//登录次数
+  private String status;//状态(I:未激活,A:正常,E:过期,L:锁定,T:终止)
 
   // 多对多定义
   @ManyToMany

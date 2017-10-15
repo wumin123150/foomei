@@ -85,11 +85,11 @@
               <div class="col-xs-12 col-sm-6">
                 <div class="form-group">
                   <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-code">
-                    编码<span class="input-required">*</span>
+                    代码<span class="input-required">*</span>
                   </label>
                   <div class="col-xs-12 col-sm-8">
                     <div class="clearfix">
-                      <input type="text" name="code" value="${dataType.code}" id="form-code" placeholder="编码"
+                      <input type="text" name="code" value="${dataType.code}" id="form-code" placeholder="代码"
                              class="form-control"/>
                     </div>
                   </div>
@@ -112,12 +112,12 @@
             <div class="row">
               <div class="col-xs-12 col-sm-6">
                 <div class="form-group">
-                  <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-level">
+                  <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-grade">
                     层级<span class="input-required">*</span>
                   </label>
                   <div class="col-xs-12 col-sm-8">
                     <div class="clearfix">
-                      <input type="text" name="level" value="${dataType.level}" id="form-level" placeholder="层级"
+                      <input type="text" name="grade" value="${dataType.grade}" id="form-grade" placeholder="层级"
                              class="form-control"/>
                     </div>
                   </div>
@@ -219,7 +219,7 @@
             required: true,
             maxlength: 64
           },
-          level: {
+          grade: {
             required: true,
             digits: true
           },
@@ -229,7 +229,7 @@
         },
         messages: {
           code: {
-            remote: '编码已经被使用'
+            remote: '代码已经被使用'
           }
         },
         highlight: function (e) {

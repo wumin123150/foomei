@@ -117,11 +117,11 @@
                 <input type="hidden" name="parentId" id="parentId"/>
                 <input type="hidden" name="item"/>
                 <div class="form-group">
-                  <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-code"> 编码<span
+                  <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-code"> 代码<span
                     class="input-required">*</span> </label>
                   <div class="col-xs-12 col-sm-8">
                     <div class="clearfix">
-                      <input type="text" name="code" id="form-code" placeholder="编码" class="form-control"/>
+                      <input type="text" name="code" id="form-code" placeholder="代码" class="form-control"/>
                     </div>
                   </div>
                 </div>
@@ -259,7 +259,7 @@
         },
         messages: {
           code: {
-            remote: '编码已经被使用'
+            remote: '代码已经被使用'
           }
         },
         highlight: function (e) {
@@ -308,8 +308,8 @@
         $("#parentId").val(treeNode.id);
       }
 
-      var level = treeNode ? (treeNode.level + 2) : 1;
-      if (level > ${type.level}) {
+      var grade = treeNode ? (treeNode.grade + 2) : 1;
+      if (grade > ${type.grade}) {
         BootstrapDialog.alert('已达到规定层级，不能再创建子节点');
         return;
       }
@@ -318,7 +318,7 @@
       $("#form-code").val("");
       $("#form-name").val("");
       $("#form-priority").val("");
-      if (level == ${type.level}) {
+      if (grade == ${type.grade}) {
         $("input[name='item']").val(true);
         $("#form-item").prop("checked", true);
       } else {

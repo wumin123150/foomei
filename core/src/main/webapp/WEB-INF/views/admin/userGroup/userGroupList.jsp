@@ -185,11 +185,11 @@
                 <input type="hidden" name="parentId" id="form-parentId"/>
                 <div class="form-group">
                   <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-code">
-                    机构编码<span class="input-required">*</span>
+                    机构代码<span class="input-required">*</span>
                   </label>
                   <div class="col-xs-12 col-sm-8">
                     <div class="clearfix">
-                      <input type="text" name="code" id="form-code" placeholder="机构编码" class="form-control"/>
+                      <input type="text" name="code" id="form-code" placeholder="机构代码" class="form-control"/>
                     </div>
                   </div>
                 </div>
@@ -685,7 +685,7 @@
         },
         messages: {
           code: {
-            remote: '编码已经被使用'
+            remote: '代码已经被使用'
           }
         },
         highlight: function (e) {
@@ -727,7 +727,7 @@
         },
         messages: {
           code: {
-            remote: '编码已经被使用'
+            remote: '代码已经被使用'
           }
         },
         highlight: function (e) {
@@ -759,7 +759,7 @@
 
       $(grid_selector).foomei_JqGrid({
         url: grid_page_url,
-        colNames: ['操作', '机构编码', '机构名称', '机构类型'],
+        colNames: ['操作', '机构代码', '机构名称', '机构类型'],
         colModel: [
           //{name:'myac',index:'', width:80, fixed:true, sortable:false, resize:false,
           //formatter:'actions',

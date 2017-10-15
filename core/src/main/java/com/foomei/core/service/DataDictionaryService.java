@@ -31,8 +31,8 @@ public class DataDictionaryService extends JpaServiceImpl<DataDictionary, Long> 
     return dataDictionaryDao.findByTypeCode(typeCode);
   }
 
-  public List<DataDictionary> findByTypeAndLevel(String typeCode, Integer level) {
-    return dataDictionaryDao.findByTypeAndLevel(typeCode, level);
+  public List<DataDictionary> findByTypeAndGrade(String typeCode, Integer grade) {
+    return dataDictionaryDao.findByTypeAndGrade(typeCode, grade);
   }
 
   public List<DataDictionary> findChildrenByTypeAndParent(String typeCode, Long id) {

@@ -34,15 +34,15 @@ public class Message extends UuidEntity {
   public static final String PROP_PARENT_ID = "parentId";
 
   @ManyToOne
-  private BaseUser sender;
-  private Integer senderStatus;
-  private Date sendTime;
+  private BaseUser sender;//发件人
+  private Integer senderStatus;//发件人状态(0:草稿箱,1:发件箱,3:收藏箱,4:垃圾箱,5:已删除)
+  private Date sendTime;//发送时间
   @ManyToOne
-  private BaseUser receiver;
-  private Integer receiverStatus;
-  private String title;
-  private Boolean isRead;
-  private Boolean isReply;
-  private String parentId;
+  private BaseUser receiver;//收件人
+  private Integer receiverStatus;//收件人状态(2:收件箱,3:收藏箱,4:垃圾箱,5:已删除)
+  private String title;//标题
+  private Boolean isRead;//是否已读
+  private Boolean isReply;//是否已回复
+  private String parentId;//父ID
 
 }

@@ -65,10 +65,10 @@ public class DataDictionaryEndpoint {
     if (dataDictionary.getParentId() != null) {
       DataDictionary parent = dataDictionaryService.get(dataDictionary.getParentId());
       if (parent != null) {
-        dataDictionary.setLevel(parent.getLevel() + 1);
+        dataDictionary.setGrade(parent.getGrade() + 1);
       }
     } else {
-      dataDictionary.setLevel(1);
+      dataDictionary.setGrade(1);
     }
 
     ComplexResult result = validate(dataDictionary, dictionary.getTypeCode());
@@ -117,12 +117,12 @@ public class DataDictionaryEndpoint {
   }
 
   /**
-   * 判断编码的唯一性
+   * 判断代码的唯一性
    */
-  @ApiOperation(value = "检查数据字典编码是否存在", httpMethod = "GET")
+  @ApiOperation(value = "检查数据字典代码是否存在", httpMethod = "GET")
   @ApiImplicitParams({
-    @ApiImplicitParam(name = "typeCode", value = "数据类型编码", required = true, dataType = "string", paramType = "query"),
-    @ApiImplicitParam(name = "code", value = "数据字典编码", required = true, dataType = "string", paramType = "query")
+    @ApiImplicitParam(name = "typeCode", value = "数据类型代码", required = true, dataType = "string", paramType = "query"),
+    @ApiImplicitParam(name = "code", value = "数据字典代码", required = true, dataType = "string", paramType = "query")
   })
   @RequestMapping("checkCode")
   public boolean checkCode(Long id, String typeCode, String code) {

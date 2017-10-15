@@ -83,10 +83,10 @@ public class UserGroupEndpoint {
     if (userGroup.getParentId() != null) {
       parent = userGroupService.get(userGroup.getParentId());
       if (parent != null) {
-        userGroup.setLevel(parent.getLevel() + 1);
+        userGroup.setGrade(parent.getGrade() + 1);
       }
     } else {
-      userGroup.setLevel(1);
+      userGroup.setGrade(1);
     }
 
     if (parent != null) {
@@ -143,11 +143,11 @@ public class UserGroupEndpoint {
   }
 
   /**
-   * 判断编码的唯一性
+   * 判断代码的唯一性
    */
-  @ApiOperation(value = "检查机构编码是否存在", httpMethod = "GET")
+  @ApiOperation(value = "检查机构代码是否存在", httpMethod = "GET")
   @ApiImplicitParams({
-    @ApiImplicitParam(name = "code", value = "编码", required = true, dataType = "string", paramType = "query")
+    @ApiImplicitParam(name = "code", value = "代码", required = true, dataType = "string", paramType = "query")
   })
   @RequestMapping("checkCode")
   public boolean checkCode(Long id, String code) {

@@ -16,7 +16,7 @@ public class NoticeDto {
   private String title;
   @ApiModelProperty(value = "内容")
   private String content;
-  @ApiModelProperty(value = "状态")
+  @ApiModelProperty(value = "状态(0:草稿,1:发布)")
   private Integer status;
   @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
   @ApiModelProperty(value = "更新时间")

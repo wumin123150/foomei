@@ -47,11 +47,11 @@ public class BaseUser extends IdEntity {
   //public static final String STATUS_SUSPENDED = "S";
   public static final String STATUS_TERMINATED = "T";
 
-  @ApiModelProperty(value = "用户名")
+  @ApiModelProperty(value = "账号")
   private String loginName;
   @ApiModelProperty(value = "姓名")
   private String name;
-  @ApiModelProperty(value = "性别")
+  @ApiModelProperty(value = "性别(0:未知,1:男,2:女)")
   private Integer sex;
   @ApiModelProperty(value = "出生日期")
   private Date birthday;
@@ -61,9 +61,9 @@ public class BaseUser extends IdEntity {
   private String email;
   @ApiModelProperty(value = "头像")
   private String avatar;
-  @ApiModelProperty(value = "微信openId")
+  @ApiModelProperty(value = "微信身份ID")
   private String openId;
-  @ApiModelProperty(value = "状态")
+  @ApiModelProperty(value = "状态(I:未激活,A:正常,E:过期,L:锁定,T:终止)")
   private String status;
 
   public BaseUser(Long id) {

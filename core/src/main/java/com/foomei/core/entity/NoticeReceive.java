@@ -13,7 +13,7 @@ import javax.persistence.Table;
 import java.util.Date;
 
 /**
- * 通知接收
+ * 用户通知
  *
  * @author walker
  */
@@ -36,17 +36,18 @@ public class NoticeReceive extends UuidEntity {
 
   @ManyToOne
   @JoinColumn(name = "notice_id")
-  private Notice notice;
+  private Notice notice;//通知
   @ManyToOne
   @JoinColumn(name = "user_id")
-  private BaseUser user;
-  private Integer status;
-  private Date readTime;
+  private BaseUser user;//用户
+  private Integer sendStatus;//发送状态(0:发送中,1:已发送,2:发送失败)
+  private Integer readStatus;//阅读状态(0:未读,1:已读)
+  private Date readTime;//阅读时间
 
   public NoticeReceive(Notice notice, BaseUser user) {
     this.notice = notice;
     this.user = user;
-    this.status = STATUS_UNREAD;
+    this.readStatus = STATUS_UNREAD;
   }
 
 

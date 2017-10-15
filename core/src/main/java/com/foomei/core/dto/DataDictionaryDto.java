@@ -19,7 +19,7 @@ public class DataDictionaryDto {
   private String name;
   @ApiModelProperty(value = "序号", required = true)
   private Integer priority;
-  @ApiModelProperty(value = "节点类型", required = true)
+  @ApiModelProperty(value = "节点类型(0:父节点,1:叶子节点)", required = true)
   private Boolean item;
   @ApiModelProperty(value = "父ID")
   private Long parentId;

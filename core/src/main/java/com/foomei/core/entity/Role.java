@@ -43,12 +43,12 @@ public class Role extends IdEntity {
   public static final String PROP_NAME = "name";
   public static final String PROP_PERMISSION_LIST = "permissionList";
 
-  @NotBlank(message = "编码不能为空")
-  @Size(max = 64, message = "编码长度必须在1到64位之间")
-  private String code;
+  @NotBlank(message = "代码不能为空")
+  @Size(max = 64, message = "代码长度必须在1到64位之间")
+  private String code;//代码
   @NotBlank(message = "名称不能为空")
   @Size(max = 64, message = "名称长度必须在1到64位之间")
-  private String name;
+  private String name;//名称
 
   @ManyToMany
   @JoinTable(name = "Core_Role_Permission", joinColumns = {@JoinColumn(name = "roleId")}, inverseJoinColumns = {@JoinColumn(name = "permissionId")})

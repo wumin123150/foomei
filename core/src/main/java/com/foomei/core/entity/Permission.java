@@ -32,10 +32,10 @@ public class Permission extends IdEntity {
   public static final String PROP_NAME = "name";
   public static final String PROP_PRIORITY = "priority";
 
-  private String code;
-  private String name;
+  private String code;//代码
+  private String name;//名称
   @Range(min = 0, max = 10000, message = "序号必须在0到10000之间")
-  private Integer priority;
+  private Integer priority;//序号
 
   public Permission(Long id) {
     this.id = id;

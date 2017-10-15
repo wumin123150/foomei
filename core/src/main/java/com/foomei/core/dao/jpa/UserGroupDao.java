@@ -16,7 +16,7 @@ public interface UserGroupDao extends JpaDao<UserGroup, Long> {
   @Query("FROM UserGroup entity WHERE entity.delFlag = false ORDER BY entity.path ASC")
   List<UserGroup> findAll();
 
-  @Query("SELECT entity FROM UserGroup entity WHERE entity.level=1 AND entity.delFlag = false ORDER BY entity.code ASC")
+  @Query("SELECT entity FROM UserGroup entity WHERE entity.grade=1 AND entity.delFlag = false ORDER BY entity.code ASC")
   List<UserGroup> findTop();
 
   @Query("SELECT entity FROM UserGroup entity WHERE entity.path LIKE :path AND entity.delFlag = false ORDER BY entity.path ASC")

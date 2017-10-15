@@ -86,11 +86,11 @@
               <div class="col-xs-12 col-sm-6">
                 <div class="form-group">
                   <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-code">
-                    编码<span class="input-required">*</span>
+                    代码<span class="input-required">*</span>
                   </label>
                   <div class="col-xs-12 col-sm-8">
                     <div class="clearfix">
-                      <input type="text" name="code" value="${role.code}" id="form-code" placeholder="编码"
+                      <input type="text" name="code" value="${role.code}" id="form-code" placeholder="代码"
                              class="form-control"/>
                     </div>
                   </div>
@@ -217,7 +217,7 @@
         },
         messages: {
           code: {
-            remote: '编码已经被使用'
+            remote: '代码已经被使用'
           }
         },
         highlight: function (e) {

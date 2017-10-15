@@ -142,10 +142,10 @@
                   <div class="profile-info-name">访问方式</div><div class="profile-info-value"><div class="break-content" id="form-userAgent"></div></div>
                 </div>
                 <div class="profile-info-row">
-                  <div class="profile-info-name">输入参数</div><div class="profile-info-value"><div class="break-content" id="form-parameter"></div></div>
+                  <div class="profile-info-name">请求参数</div><div class="profile-info-value"><div class="break-content" id="form-parameter"></div></div>
                 </div>
                 <div class="profile-info-row">
-                  <div class="profile-info-name">返回结果</div><div class="profile-info-value"><div class="break-content" id="form-result"></div></div>
+                  <div class="profile-info-name">响应结果</div><div class="profile-info-value"><div class="break-content" id="form-result"></div></div>
                 </div>
               </div>
             </div>

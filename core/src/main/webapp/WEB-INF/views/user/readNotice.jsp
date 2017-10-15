@@ -139,7 +139,7 @@
           },
           {name: 'notice.title', index: 'notice.title', width: 100},
           {name: 'notice.content', index: 'notice.content'},
-          {name: 'status', index: 'status', width: 40, formatter: function (cellvalue, options, rowObject) {
+          {name: 'readStatus', index: 'readStatus', width: 40, formatter: function (cellvalue, options, rowObject) {
             if (cellvalue == 1) {
               return '<span class="label label-sm label-success">已读</span>';
             } else {

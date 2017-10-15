@@ -141,7 +141,7 @@
               <div class="col-xs-12 col-sm-6">
                 <div class="form-group">
                   <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-loginName">
-                    用户名<span class="input-required">*</span>
+                    账号<span class="input-required">*</span>
                   </label>
                   <div class="col-xs-12 col-sm-8">
                     <div class="clearfix">
@@ -544,7 +544,7 @@
         },
         messages: {
           loginName: {
-            remote: '用户名已经被使用'
+            remote: '账号已经被使用'
           },
           plainPassword: {
             rangelength: '密码长度应为{0}~{1}个字符'

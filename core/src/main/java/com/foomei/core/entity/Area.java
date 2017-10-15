@@ -33,7 +33,7 @@ public class Area implements Serializable {
   public static final String PROP_CODE = "code";
   public static final String PROP_NAME = "name";
   public static final String PROP_FULL_NAME = "fullName";
-  public static final String PROP_LEVEL = "level";
+  public static final String PROP_GRADE = "grade";
   public static final String PROP_TYPE = "type";
   public static final String PROP_ROOT_ID = "rootId";
   public static final String PROP_PARENT_ID = "parentId";
@@ -54,8 +54,8 @@ public class Area implements Serializable {
   @ApiModelProperty(value = "全称")
   private String fullName;
   @ApiModelProperty(value = "层级")
-  private Short level;
-  @ApiModelProperty(value = "类型")
+  private Integer grade;
+  @ApiModelProperty(value = "类型(1:省,2:直辖市,3:地级市,4:县级市,5:县,6:区)")
   private String type;
   @ApiModelProperty(value = "根ID")
   private String rootId;

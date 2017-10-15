@@ -16,8 +16,8 @@ public interface DataDictionaryDao extends JpaDao<DataDictionary, Long> {
   @Query("SELECT entity FROM DataDictionary entity WHERE entity.type.code=:typeCode ORDER BY entity.priority ASC")
   List<DataDictionary> findByTypeCode(@Param("typeCode") String typeCode);
 
-  @Query("SELECT entity FROM DataDictionary entity WHERE entity.type.code=:typeCode AND entity.level=:level ORDER BY entity.priority ASC")
-  List<DataDictionary> findByTypeAndLevel(@Param("typeCode") String typeCode, @Param("level") Integer level);
+  @Query("SELECT entity FROM DataDictionary entity WHERE entity.type.code=:typeCode AND entity.grade=:grade ORDER BY entity.priority ASC")
+  List<DataDictionary> findByTypeAndGrade(@Param("typeCode") String typeCode, @Param("grade") Integer grade);
 
   @Query("SELECT entity FROM DataDictionary entity WHERE entity.type.code=:typeCode AND entity.parentId=:parentId ORDER BY entity.priority ASC")
   List<DataDictionary> findChildrenByTypeAndParent(@Param("typeCode") String typeCode, @Param("parentId") Long parentId);

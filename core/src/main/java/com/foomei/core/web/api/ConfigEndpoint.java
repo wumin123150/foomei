@@ -91,7 +91,7 @@ public class ConfigEndpoint {
   }
 
   /**
-   * 判断编码的唯一性
+   * 判断代码的唯一性
    */
   @ApiOperation(value = "检查配置键是否存在", httpMethod = "GET")
   @ApiImplicitParams({

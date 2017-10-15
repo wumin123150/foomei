@@ -13,7 +13,7 @@ public class UserDto {
   private Long id;
   @ApiModelProperty(value = "名称")
   private String name;
-  @ApiModelProperty(value = "性别")
+  @ApiModelProperty(value = "性别(0:未知,1:男,2:女)")
   private Integer sex;
   @ApiModelProperty(value = "出生日期")
   private Date birthday;

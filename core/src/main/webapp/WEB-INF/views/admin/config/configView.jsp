@@ -68,7 +68,7 @@
                           <div class="col-xs-12 col-sm-12">
                             <div class="form-group">
                               <label class="col-xs-12 col-sm-12" for="form-${config.code}">
-                                  ${config.name}（编码：${config.code}）
+                                  ${config.name}（代码：${config.code}）
                                 <c:if test="${fn:length(config.remark)>1}">
                                   <span class="help-button" data-rel="popover" data-trigger="hover"
                                         data-placement="bottom" data-content="${config.remark}" title="参数说明">?</span>

@@ -45,7 +45,7 @@ public class UserGroup extends IdEntity implements DeleteRecord {
   public static final String PROP_CODE = "code";
   public static final String PROP_NAME = "name";
   public static final String PROP_TYPE = "type";
-  public static final String PROP_LEVEL = "level";
+  public static final String PROP_GRADE = "grade";
   public static final String PROP_PATH = "path";
   public static final String PROP_PARENT_ID = "parentId";
   public static final String PROP_REMARK = "remark";
@@ -58,19 +58,19 @@ public class UserGroup extends IdEntity implements DeleteRecord {
 
   public static final String PATH_SPLIT = "/";
 
-  @Size(max = 64, message = "编码长度必须在1到64位之间")
-  private String code;
+  @Size(max = 64, message = "代码最大长度为64位")
+  private String code;//代码
   @NotBlank(message = "名称不能为空")
-  @Size(max = 64, message = "名称长度必须在1到64位之间")
-  private String name;
-  private Integer type;
-  @ApiModelProperty(value = "级别")
-  private Integer level;
-  private String path;
-  private Long parentId;
-  @Size(max = 128, message = "描述长度必须在0到128位之间")
-  private String remark;
-  private Boolean delFlag;
+  @Size(max = 64, message = "名称最大长度为64位")
+  private String name;//名称
+  private Integer type;//类型(0:公司,1:部门,2:小组,3:其他)
+  private Integer grade;//层级
+  private BaseUser director;//负责人
+  private String path;//路径
+  private Long parentId;//父ID
+  @Size(max = 128, message = "备注最大长度为128位")
+  private String remark;//备注
+  private Boolean delFlag;//删除标志(0:正常,1:停用)
 
   public UserGroup(Long id) {
     this.id = id;

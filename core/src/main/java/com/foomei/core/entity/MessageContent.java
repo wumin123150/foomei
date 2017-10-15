@@ -25,6 +25,6 @@ public class MessageContent implements Serializable {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private String id;
-  private String content;
+  private String content;//内容
 
 }

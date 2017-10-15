@@ -31,13 +31,13 @@ public class Annex extends UuidEntity implements CreateRecord {
   public static final String PROP_CREATE_TIME = "createTime";
   public static final String PROP_CREATOR = "creator";
 
-  private String objectId;
-  private String objectType;
-  private String path;
-  private String name;
-  private String type;
-  private Date createTime;
-  private Long creator;
+  private String objectId;//对象ID
+  private String objectType;//对象类型
+  private String path;//存储路径
+  private String name;//文件名称
+  private String type;//文件类型
+  private Date createTime;//创建时间
+  private Long creator;//创建人
 
   public boolean isCreated() {
     return id != null;

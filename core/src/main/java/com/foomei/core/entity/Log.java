@@ -35,15 +35,15 @@ public class Log extends UuidEntity {
   public static final String PROP_PARAMETER = "parameter";
   public static final String PROP_RESULT = "result";
 
-  private String description;
-  private String username;
-  private Date logTime;
-  private Integer spendTime;
-  private String ip;
-  private String url;
-  private String method;
-  private String userAgent;
-  private String parameter;
-  private String result;
+  private String description;//操作描述
+  private String username;//操作用户
+  private Date logTime;//操作时间
+  private Integer spendTime;//消耗时间
+  private String ip;//IP地址
+  private String url;//URL
+  private String method;//请求类型
+  private String userAgent;//用户标识
+  private String parameter;//请求参数
+  private String result;//响应结果
 
 }

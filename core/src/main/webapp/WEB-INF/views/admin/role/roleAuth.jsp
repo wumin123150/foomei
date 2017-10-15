@@ -332,7 +332,7 @@
         },
         messages: {
           code: {
-            remote: '编码已经被使用'
+            remote: '代码已经被使用'
           }
         },
         highlight: function (e) {
