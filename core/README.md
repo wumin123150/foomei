@@ -14,15 +14,13 @@ b)重启eclipse/myeclipse
     3.tree结构
     4.move结构
     5.加速spring启动
-    6.接口测试补全
-    7.主从数据库
-    8.shiro多系统单点登录
-    9.ui http://www.layui.com/demo/tab.html  INSPINIA - Responsive Admin Theme
-    10.代码生成前端
-    11.com.googlecode maven-db-plugin
-    12.SpringWebSocket
-    13.util整理(持续改进)
-    14.SearchRequest的优化(持续改进)
-    15 监控管理（待考虑）日志 在线用户
+    6.主从数据库
+    7.shiro多系统单点登录
+    8.ui http://www.layui.com/demo/tab.html  INSPINIA - Responsive Admin Theme
+    9.com.googlecode maven-db-plugin
+    10.SpringWebSocket
+    11.util整理(持续改进)
+    12.SearchRequest的优化(持续改进)
+    13 监控管理（待考虑）日志 在线用户
 
 
