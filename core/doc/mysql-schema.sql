@@ -1,7 +1,8 @@
 /*==============================================================*/
 /* DBMS name:      MySQL 5.0                                    */
-/* Created on:     2017/10/12 21:10:15                          */
+/* Created on:     2017/10/15 13:50:36                          */
 /*==============================================================*/
+
 
 drop table if exists core_annex;
 
@@ -36,6 +37,8 @@ drop table if exists core_role;
 drop table if exists core_role_permission;
 
 drop table if exists core_token;
+
+drop index idx_user_name on core_user;
 
 drop table if exists core_user;
 
@@ -108,7 +111,7 @@ create table core_data_dictionary
    name                 varchar(64) comment '名称',
    priority             int comment '序号',
    grade                smallint(6) comment '层级',
-   is_item              tinyint(1) comment '叶子节点(0:父节点,1:叶子节点)',
+   is_item              tinyint(1) comment '节点类型(0:父节点,1:叶子节点)',
    parent_id            bigint comment '父ID',
    remark               varchar(128) comment '备注',
    primary key (id)
@@ -328,7 +331,7 @@ create table core_user
    answer               varchar(255) comment '答案',
    sex                  tinyint(1) comment '性别(0:未知,1:男,2:女)',
    birthday             date comment '出生日期',
-   mobile               varchar(16) comment '电话',
+   mobile               varchar(16) comment '手机',
    email                varchar(32) comment '邮箱',
    avatar               varchar(255) comment '头像',
    open_id              varchar(32) comment '微信身份ID',
@@ -344,6 +347,14 @@ create table core_user
 alter table core_user comment '系统用户';
 
 /*==============================================================*/
+/* Index: idx_user_name                                         */
+/*==============================================================*/
+create unique index idx_user_name on core_user
+(
+   login_name
+);
+
+/*==============================================================*/
 /* Table: core_user_group                                       */
 /*==============================================================*/
 create table core_user_group
@@ -354,7 +365,6 @@ create table core_user_group
    type                 tinyint(1) comment '类型(0:公司,1:部门,2:小组,3:其他)',
    grade                tinyint(1) comment '层级',
    director             bigint comment '负责人',
-   priority             int comment '序号',
    path                 varchar(512) comment '路径',
    parent_id            bigint comment '父ID',
    remark               varchar(128) comment '备注',
