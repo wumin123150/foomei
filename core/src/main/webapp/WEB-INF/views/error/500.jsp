@@ -63,14 +63,7 @@
               <h4 class="lighter smaller">错误提示：${error}</h4>
             </c:if>
             <c:if test="${exception != null}">
-              <h4 class="lighter smaller">错误信息：${exception.message}</h4>
-              <%
-                java.io.StringWriter sw = new java.io.StringWriter();
-                java.io.PrintWriter pw = new java.io.PrintWriter(sw);
-                Exception ex = (Exception) request.getAttribute("exception");
-                ex.printStackTrace(pw);
-                out.print(sw);
-              %>
+              <h4 class="lighter smaller">错误信息：${exception}(${exception.stackTrace[0]})</h4>
             </c:if>
             <div class="center" style="padding-top: 200px;">
               <a href="javascript:history.back()" class="btn btn-grey"> <i class="ace-icon fa fa-arrow-left"></i> 返回

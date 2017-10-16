@@ -21,9 +21,7 @@
 	<!-- project default level -->
 	<logger name="com.foomei" level="INFO" />
 	
-	<!-- 
 	<logger name="org.springframework" level="INFO" />
-	 -->
 
 	<!--log4jdbc -->
 	<logger name="jdbc.sqltiming" level="INFO"/>
