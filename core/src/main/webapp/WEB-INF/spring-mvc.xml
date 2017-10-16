@@ -65,6 +65,7 @@
 	<!-- 定义无需Controller的url<->view直接映射 -->
 	<mvc:view-controller path="/" view-name="index" />
 	<mvc:view-controller path="/index" view-name="index" />
+	<mvc:view-controller path="/lay/index" view-name="layui/index" />
 	
 	<!-- 将Controller抛出的异常转到特定View, 保持SiteMesh的装饰效果 -->
 	<bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
