@@ -38,13 +38,13 @@
     padding: 0;
     background: none;
   }
+
   .user-photo {
     width: 200px;
     height: 120px;
     padding-top: 15px;
     padding-bottom: 5px;
   }
-
   .user-photo a.img {
     display: block;
     width: 76px;
@@ -52,7 +52,6 @@
     margin: 0 auto;
     margin-bottom: 15px;
   }
-
   .user-photo a.img img {
     display: block;
     border: none;
@@ -62,6 +61,128 @@
     -webkit-border-radius: 50%;
     -moz-border-radius: 50%;
     border: 4px solid #44576b;
+  }
+  .user-photo p {
+    text-align: center;
+  }
+
+  .layui-body .layui-tab {
+    margin: 0px;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .layui-body .layui-tab>.layui-tab-title .layui-this {
+    background-color: #fff;
+    border-bottom-color: #fff;
+  }
+
+
+  ul.layui-tab-title {
+    max-width: calc(100% - 160px);
+    height: 40px;
+    position: absolute;
+    top: 0px;
+    left: 41px;
+    background: #fafafa;
+    z-index: 1000;
+    overflow-y: hidden;
+  }
+
+  .layui-tab .larry-title-box {
+    width: 100%;
+    height: 40px;
+    background: #fafafa;
+    position: relative;
+    border-bottom: 1px solid #e2e2e2;
+  }
+
+  .layui-tab .larry-title-box .go-left {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    z-index: 1005;
+    line-height: 40px;
+  }
+
+  .layui-tab .larry-title-box .title-right {
+    width: 230px;
+    height: 40px;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    z-index: 1005;
+    background: #ffffff;
+    border-left: 1px solid #e2e2e2;
+  }
+
+  .layui-tab .larry-title-box .key-press {
+    width: 40px;
+    height: 40px;
+    background: #ffffff;
+    border-right: 1px solid #e2e2e2;
+    cursor: pointer;
+    text-align: center;
+  }
+
+  .layui-tab .larry-title-box .title-right .go-right {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    line-height: 40px;
+  }
+
+  .layui-tab .larry-title-box .title-right .refresh {
+    width: 67px;
+    position: absolute;
+    top: 0px;
+    left: 41px;
+    background: #fafafa;
+    line-height: 40px;
+  }
+
+  .layui-tab .larry-title-box .title-right .often {
+    width: 120px;
+    position: absolute;
+    top: 0px;
+    left: 109px;
+    background: #fafafa;
+    cursor: pointer;
+  }
+
+  .layui-tab .larry-title-box .title-right .often ul.layui-nav {
+    display: block;
+    width: 120px;
+    height: 100%;
+    border: none;
+    margin: 0px;
+    padding: 0px;
+    background: none;
+  }
+
+  .layui-tab .larry-title-box .title-right .often ul.layui-nav li.layui-nav-item a.top {
+    width: 100%;
+    height: 100%;
+    padding: 0px;
+    margin: 0px;
+    line-height: 40px;
+    text-align: center;
+    color: #000;
+  }
+  .often ul.layui-nav li.layui-nav-item dl.layui-nav-child {
+    width: 145px;
+    text-align: center;
+    position: absolute;
+    top: 42px;
+    left: -68px;
+    background: #ffffff;
+  }
+
+  .layui-tab-content .layui-tab-item iframe {
+    width: 100%;
+    border: 0;
+    height: 100%;
   }
 </style>
 <body class="kit-theme">
@@ -138,25 +259,23 @@
     </div>
   </div>
   <div class="layui-body" id="container">
-    <!-- 内容主体区域 -->
-    <div style="padding: 15px;"><i class="layui-icon layui-anim layui-anim-rotate layui-anim-loop">&#xe63e;</i> 请稍等...</div>
-
-    <div class="layui-tab layui-tab-card marg0" id="larry-tab" lay-filter="bodyTab">
+    <div class="layui-tab" id="larry-tab" lay-filter="bodyTab">
       <! -- 选项卡-->
       <ul class="layui-tab-title top_tab" id="top_tabs">
-        <li class="layui-this" lay-id=""><i class="layui-icon">&#xe68e;</i> <cite>后台首页</cite></li>
+        <li class="layui-this" lay-id=""><i class="layui-icon"></i> 后台首页</li>
+        <li lay-id="2"><i class="layui-icon"></i> 后台1</li>
       </ul>
-      <div class="larry-title-box" style="height: 41px;" >
-        <div class="go-left key-press pressKey" id="titleLeft" title="滚动至最右侧"><i class="larry-icon larry-weibiaoti6-copy"></i> </div>
+      <div class="larry-title-box">
+        <div class="go-left key-press pressKey" id="titleLeft" title="滚动至最右侧"><i class="layui-icon">&#xe603;</i></div>
         <div class="title-right" id="titleRbox">
-          <div class="go-right key-press pressKey" id="titleRight" title="滚动至最左侧"><i class="larry-icon larry-right"></i></div>
-          <div class="refresh key-press" id="refresh_iframe"><i class="larry-icon larry-shuaxin2"></i><cite>刷新</cite></div>
+          <div class="go-right key-press pressKey" id="titleRight" title="滚动至最左侧"><i class="layui-icon">&#xe602;</i></div>
+          <div class="refresh key-press" id="refresh_iframe"><i class="layui-icon">&#x1002;</i>刷新</div>
 
           <div class="often key-press">
-            <ul class="layui-nav posr">
-              <li class="layui-nav-item posb">
-                <a class="top"><i class="larry-icon larry-caozuo"></i><cite>常用操作</cite><span class="layui-nav-more"></span></a>
-                <dl class="layui-nav-child">
+            <ul class="layui-nav">
+              <li class="layui-nav-item layui-this">
+                <a class="top">常用操作</a>
+                <dl class="layui-nav-child layui-show">
                   <dd>
                     <a href="javascript:;" class="closeCurrent"><i class="larry-icon larry-guanbidangqianye"></i>关闭当前选项卡</a>
                   </dd>
@@ -172,9 +291,9 @@
           </div>
         </div>
       </div>
-      <div class="layui-tab-content clildFrame" style="height:793px;">
+      <div class="layui-tab-content" style="height:793px;">
         <div class="layui-tab-item layui-show layui-anim layui-anim-upbit">
-          <iframe src="${ctx}/main/home.do" data-id="0" name="ifr_0" id="ifr_0"></iframe>
+          <iframe src="${ctx}/index" data-id="0" name="ifr_0" id="ifr_0"></iframe>
         </div>
       </div>
     </div>
