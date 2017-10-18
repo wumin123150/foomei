@@ -4,7 +4,7 @@ import com.foomei.common.base.annotation.LogIgnore;
 import com.foomei.core.entity.Annex;
 import com.foomei.core.entity.User;
 import com.foomei.core.service.AnnexService;
-import com.foomei.core.service.NoticeReceiveService;
+import com.foomei.core.service.MessageService;
 import com.foomei.core.service.UserService;
 import com.foomei.core.web.CoreThreadContext;
 import io.swagger.annotations.Api;
@@ -32,7 +32,7 @@ public class AccountController {
   @Autowired
   private AnnexService annexService;
   @Autowired
-  private NoticeReceiveService noticeReceiveService;
+  private MessageService messageService;
 
   @ApiOperation(value = "修改账户页面", httpMethod = "GET")
   @RequestMapping(value = "/{action}/changeAccount", method = RequestMethod.GET)
@@ -118,18 +118,18 @@ public class AccountController {
     return "redirect:/" + action + "/index";
   }
 
-  @ApiOperation(value = "我的通知账户页面", httpMethod = "GET")
-  @RequestMapping(value = "/{action}/readNotice", method = RequestMethod.GET)
-  public String noticeForm(@PathVariable("action") String action, Model model) {
+  @ApiOperation(value = "我的消息账户页面", httpMethod = "GET")
+  @RequestMapping(value = "/{action}/readMessage", method = RequestMethod.GET)
+  public String messageForm(@PathVariable("action") String action, Model model) {
     model.addAttribute("action", action);
-    return "user/readNotice";
+    return "user/readMessage";
   }
 
-  @ApiOperation(value = "我的通知账户页面", httpMethod = "GET")
-  @RequestMapping(value = "/{action}/notice/read/{id}")
-  public String notice(@PathVariable("action") String action, @PathVariable("id") String id, Model model) {
-    noticeReceiveService.read(id);
-    return "redirect:/"+action+"/readNotice";
+  @ApiOperation(value = "我的消息账户页面", httpMethod = "GET")
+  @RequestMapping(value = "/{action}/message/read/{id}")
+  public String message(@PathVariable("action") String action, @PathVariable("id") String id, Model model) {
+    messageService.read(id);
+    return "redirect:/"+action+"/readMessage";
   }
 
 }

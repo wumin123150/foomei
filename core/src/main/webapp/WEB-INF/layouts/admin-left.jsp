@@ -102,10 +102,10 @@
 
       <b class="arrow"></b>
     </li>
-    <li class="<c:if test='${menu == "notice"}'>active</c:if>">
-      <a href="${ctx}/admin/notice">
-        <i class="menu-icon fa fa-bell"></i>
-        <span class="menu-text"> 通知 </span>
+    <li class="<c:if test='${menu == "message"}'>active</c:if>">
+      <a href="${ctx}/admin/message">
+        <i class="menu-icon fa fa-envelope"></i>
+        <span class="menu-text"> 消息 </span>
       </a>
 
       <b class="arrow"></b>

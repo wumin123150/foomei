@@ -64,9 +64,9 @@
               </a>
             </li>
             <li>
-              <a href="${ctx}/admin/readNotice">
-                <i class="ace-icon fa fa-cog"></i>
-                通知
+              <a href="${ctx}/admin/readMessage">
+                <i class="ace-icon fa fa-envelope"></i>
+                我的消息
               </a>
             </li>
 

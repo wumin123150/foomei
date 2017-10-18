@@ -4,7 +4,7 @@
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 <html>
 <head>
-  <title>通知管理</title>
+  <title>消息管理</title>
 </head>
 <pluginCss>
   <!-- page specific plugin styles -->
@@ -48,10 +48,10 @@
           <a href="${ctx}/admin/index">首页</a>
         </li>
         <li>
-          <a href="${ctx}/admin/notice">通知管理</a>
+          <a href="${ctx}/admin/message">消息管理</a>
         </li>
-        <li class="active"><c:choose><c:when test='${action == "create"}'>新增通知</c:when><c:when
-          test='${action == "update"}'>修改通知</c:when></c:choose></li>
+        <li class="active"><c:choose><c:when test='${action == "create"}'>新增消息</c:when><c:when
+          test='${action == "update"}'>修改消息</c:when></c:choose></li>
       </ul><!-- /.breadcrumb -->
     </div>
 
@@ -59,7 +59,7 @@
     <div class="page-content">
       <div class="page-header">
         <h1>
-          <c:choose><c:when test='${action == "create"}'>新增通知</c:when><c:when test='${action == "update"}'>修改通知</c:when></c:choose>
+          <c:choose><c:when test='${action == "create"}'>新增消息</c:when><c:when test='${action == "update"}'>修改消息</c:when></c:choose>
         </h1>
       </div><!-- /.page-header -->
 
@@ -88,60 +88,24 @@
               </div>
             </c:forEach>
           </c:if>
-          <form class="form-horizontal" id="validation-form" action="${ctx}/admin/notice/${action}" method="post"
+          <form class="form-horizontal" id="validation-form" action="${ctx}/admin/message/${action}" method="post"
                 role="form">
-            <input type="hidden" name="id" id="id" value="${notice.id}"/>
+            <input type="hidden" name="id" id="id" value="${message.id}"/>
             <!-- #section:elements.form -->
             <div class="row">
-              <div class="col-xs-12 col-sm-6">
-                <div class="form-group">
-                  <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-title">
-                    标题<span class="input-required">*</span>
-                  </label>
-                  <div class="col-xs-12 col-sm-8">
-                    <div class="clearfix">
-                      <input type="text" name="title" value="${notice.title}" id="form-title" placeholder="标题"
-                             class="form-control"/>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-xs-12 col-sm-6">
-                <div class="form-group">
-                  <label class="col-xs-12 col-sm-3 control-label no-padding-right">
-                    状态<span class="input-required">*</span>
-                  </label>
-                  <div class="col-xs-12 col-sm-8">
-                    <div class="clearfix">
-                      <div class="radio">
-                        <label>
-                          <input type="radio" name="status" class="ace" value="0" <c:if test="${notice.status ne 1}"> checked</c:if>>
-                          <span class="lbl">草稿</span>
-                        </label>
-                        <label>
-                          <input type="radio" name="status" class="ace" value="1" <c:if test="${notice.status eq 1}"> checked</c:if>>
-                          <span class="lbl">发布</span>
-                        </label>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-xs-12 col-sm-6">
+              <div class="col-xs-12 col-sm-12">
                 <div class="form-group">
                   <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-content">
                     内容<span class="input-required">*</span>
                   </label>
                   <div class="col-xs-12 col-sm-8">
                     <div class="clearfix">
-                      <textarea name="content" id="form-content" placeholder="内容" class="form-control" rows="5">${notice.content}</textarea>
+                      <textarea name="content" id="form-content" placeholder="内容" class="form-control" rows="5">${message.content}</textarea>
                     </div>
                   </div>
                 </div>
               </div>
-              <div class="col-xs-12 col-sm-6">
+              <div class="col-xs-12 col-sm-12">
                 <div class="form-group">
                   <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-receiver">
                     接收人<span class="input-required">*</span>
@@ -223,6 +187,7 @@
               }
             }
           }
+          debugger;
           $("#form-receiver").val(names.join(','));
           $("#users").val(ids.join(','));
         }
@@ -276,13 +241,6 @@
         focusInvalid: false,
         ignore: "",
         rules: {
-          title: {
-            required: true,
-            maxlength: 32
-          },
-          status: {
-            required: true
-          },
           content: {
             required: true,
             maxlength: 200

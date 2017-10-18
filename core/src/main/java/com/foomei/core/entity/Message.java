@@ -2,10 +2,12 @@ package com.foomei.core.entity;
 
 import com.foomei.common.entity.UuidEntity;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.util.Date;
@@ -18,31 +20,41 @@ import java.util.Date;
 @Getter
 @Setter
 @ToString(callSuper = true)
+@NoArgsConstructor
 @Entity
 @Table(name = "Core_Message")
 @SuppressWarnings("serial")
 public class Message extends UuidEntity {
 
-  public static final String PROP_SENDER = "sender";
-  public static final String PROP_SENDER_STATUS = "senderStatus";
-  public static final String PROP_SEND_TIME = "sendTime";
+  public static final String PROP_TEXT = "text";
   public static final String PROP_RECEIVER = "receiver";
-  public static final String PROP_RECEIVER_STATUS = "receiverStatus";
-  public static final String PROP_TITLE = "title";
-  public static final String PROP_IS_READ = "isRead";
-  public static final String PROP_IS_REPLY = "isReply";
-  public static final String PROP_PARENT_ID = "parentId";
+  public static final String PROP_SEND_STATUS = "sendStatus";
+  public static final String PROP_SEND_TIME = "sendTime";
+  public static final String PROP_READ_STATUS = "readStatus";
+  public static final String PROP_READ_TIME = "readTime";
+
+  public static final Integer SEND_STATUS_SENDING = 0;
+  public static final Integer SEND_STATUS_SENT = 1;
+  public static final Integer SEND_STATUS_FAIL = 2;
+
+  public static final Integer READ_STATUS_UNREAD = 0;
+  public static final Integer READ_STATUS_READED = 1;
 
   @ManyToOne
-  private BaseUser sender;//发件人
-  private Integer senderStatus;//发件人状态(0:草稿箱,1:发件箱,3:收藏箱,4:垃圾箱,5:已删除)
-  private Date sendTime;//发送时间
+  @JoinColumn(name = "text_id")
+  private MessageText text;//内容
   @ManyToOne
-  private BaseUser receiver;//收件人
-  private Integer receiverStatus;//收件人状态(2:收件箱,3:收藏箱,4:垃圾箱,5:已删除)
-  private String title;//标题
-  private Boolean isRead;//是否已读
-  private Boolean isReply;//是否已回复
-  private String parentId;//父ID
+  private BaseUser receiver;//接收人
+  private Integer sendStatus;//发送状态(0:发送中,1:已发送,2:发送失败)
+  private Date sendTime;//发送时间
+  private Integer readStatus;//阅读状态(0:未读,1:已读)
+  private Date readTime;//阅读时间
+
+  public Message(MessageText text, BaseUser receiver) {
+    this.text = text;
+    this.receiver = receiver;
+    this.sendStatus = SEND_STATUS_SENDING;
+    this.readStatus = READ_STATUS_UNREAD;
+  }
 
 }

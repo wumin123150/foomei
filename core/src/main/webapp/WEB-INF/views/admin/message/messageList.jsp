@@ -4,7 +4,7 @@
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 <html>
 <head>
-  <title>我的通知</title>
+  <title>消息管理</title>
 </head>
 <pluginCss>
   <!-- page specific plugin styles -->
@@ -53,9 +53,9 @@
       <ul class="breadcrumb">
         <li>
           <i class="ace-icon fa fa-home home-icon"></i>
-          <a href="${ctx}/${action}/index">首页</a>
+          <a href="${ctx}/admin/index">首页</a>
         </li>
-        <li class="active">我的通知</li>
+        <li class="active">消息管理</li>
       </ul><!-- /.breadcrumb -->
     </div>
 
@@ -63,7 +63,7 @@
     <div class="page-content">
       <div class="page-header">
         <h1>
-          我的通知
+          消息管理
         </h1>
       </div><!-- /.page-header -->
 
@@ -113,13 +113,15 @@
   <!-- inline scripts related to this page -->
   <script type="text/javascript">
     var grid_selector = "#grid-table";
-    var grid_page_url = "${ctx}/api/notice/myPage";
-    var grid_read_url = "${ctx}/${action}/notice/read/";
+    var grid_page_url = "${ctx}/api/messageText/page";
+    var grid_add_url = "${ctx}/admin/message/create";
+    var grid_edit_url = "${ctx}/admin/message/update/";
+    var grid_del_url = "${ctx}/api/messageText/delete/";
 
     jQuery(function ($) {
       $(grid_selector).foomei_JqGrid({
         url: grid_page_url,
-        colNames: ['操作', '标题', '内容', '状态', '阅读时间'],
+        colNames: ['操作', '内容', '发送人', '更新时间'],
         colModel: [
           //{name:'myac',index:'', width:80, fixed:true, sortable:false, resize:false,
           //formatter:'actions',
@@ -133,32 +135,30 @@
             name: 'myop', index: '', width: 80, fixed: true, sortable: false, resize: false, search: false,
             formatter: function (cellvalue, options, rowObject) {
               return '<div class="action-buttons">'
-                + '<div title="标记已读" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" onmouseover="$(this).addClass(\'ui-state-hover\');" onmouseout="$(this).removeClass(\'ui-state-hover\')"><a class="green" href="' + grid_read_url + rowObject.id + '"><i class="ace-icon fa fa-eye-slash bigger-140"></i></a></div>'
+                + '<div title="删除" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" onmouseover="$(this).addClass(\'ui-state-hover\');" onmouseout="$(this).removeClass(\'ui-state-hover\')"><a class="red btn-del" href="javascript:void(0);" data-id="' + rowObject.id + '"><i class="ace-icon fa fa-trash-o bigger-140"></i></a></div>'
                 + '</div>';
             }
           },
-          {name: 'notice.title', index: 'notice.title', width: 100},
-          {name: 'notice.content', index: 'notice.content'},
-          {name: 'readStatus', index: 'readStatus', width: 40, formatter: function (cellvalue, options, rowObject) {
-            if (cellvalue == 1) {
-              return '<span class="label label-sm label-success">已读</span>';
-            } else {
-              return '<span class="label label-sm">未读</span>';
-            }
-          }},
+          {name: 'content', index: 'content'},
+          {name: 'sender', index: 'sender.name', width: 100},
           {
-            name: 'readTime',
-            index: 'readTime',
+            name: 'createTime',
+            index: 'createTime',
             formatter: 'date',
             formatoptions: {srcformat: 'Y-m-d H:i:s', newformat: 'Y-m-d H:i:s'},
             width: 80
           }
         ],
-        nav: {
-          view: false
-        },
         navAdd: [
-
+          {
+            caption: '',
+            title: '添加',
+            buttonicon: 'ace-icon fa fa-plus-circle purple',
+            onClickButton: function () {
+              window.location.href = grid_add_url;
+            },
+            position: 'first'
+          }
         ]
       });
 
@@ -182,7 +182,23 @@
         var id = $(this).attr("data-id");
         BootstrapDialog.confirm('你确定要删除吗？', function (result) {
           if (result) {
-            window.location.href = grid_del_url + id;
+            $.ajax({
+              url: grid_del_url + id,
+              type: 'GET',
+              cache: false,
+              dataType: 'json',
+              success: function (result) {
+                if (result.success) {
+                  toastr.success('删除成功');
+                  $(grid_selector).foomei_JqGrid('reload');
+                } else {
+                  toastr.error(result.message);
+                }
+              },
+              error: function () {
+                toastr.error('未知错误，请联系管理员');
+              }
+            });
           }
         });
       });
