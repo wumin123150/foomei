@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="shiro" uri="http://www.foomei.com/tags/shiro" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 
 <!DOCTYPE html>
@@ -142,6 +143,20 @@
     showMethod: "fadeIn",
     hideMethod: "fadeOut"
   };
+</script>
+<script src="${ctx}/static/js/sockjs.min.js"></script>
+<script src="${ctx}/static/js/stomp.min.js"></script>
+<script>
+  $(document).ready(function(){
+    var socket = new SockJS("${ctx}/socket");
+    var stompClient = Stomp.over(socket);
+    stompClient.connect({}, function(frame) {
+      console.log('Connected: ' + frame);
+      stompClient.subscribe('${ctx}/user/<shiro:principal property="id"/>/message',function(greeting){
+        alert(greeting);
+      });
+    });
+  })
 </script>
 
 <sitemesh:write property='pluginJs'/>

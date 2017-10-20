@@ -1,5 +1,6 @@
 package com.foomei.core.web.controller;
 
+import com.foomei.core.entity.Message;
 import com.foomei.core.entity.MessageText;
 import com.foomei.core.service.MessageService;
 import com.foomei.core.service.MessageTextService;
@@ -8,6 +9,7 @@ import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BeanPropertyBindingResult;
@@ -30,9 +32,9 @@ public class MessageController {
   private static final String ACTION_UPDATE = "update";
 
   @Autowired
-  private MessageService messageService;
+  private SimpMessagingTemplate simpMessagingTemplate;
   @Autowired
-  private MessageTextService messageTextService;
+  private MessageService messageService;
 
   @ApiOperation(value = "消息列表页面", httpMethod = "GET")
   @RequiresRoles("admin")
@@ -65,8 +67,12 @@ public class MessageController {
 
       model.addAttribute("errors", result);
       return "admin/message/messageForm";
-    } else
-      messageService.save(text.getContent(), null, checkedUsers);
+    } else {
+      List<Message> messages = messageService.save(text.getContent(), null, checkedUsers);
+      for (Message message : messages) {
+        simpMessagingTemplate.convertAndSendToUser(String.valueOf(message.getReceiver().getId()), "/message", message);
+      }
+    }
 
     redirectAttributes.addFlashAttribute("message", "新增消息成功");
     return "redirect:/admin/message";

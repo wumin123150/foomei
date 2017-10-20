@@ -118,14 +118,14 @@ public class AccountController {
     return "redirect:/" + action + "/index";
   }
 
-  @ApiOperation(value = "我的消息账户页面", httpMethod = "GET")
+  @ApiOperation(value = "我的消息页面", httpMethod = "GET")
   @RequestMapping(value = "/{action}/readMessage", method = RequestMethod.GET)
   public String messageForm(@PathVariable("action") String action, Model model) {
     model.addAttribute("action", action);
     return "user/readMessage";
   }
 
-  @ApiOperation(value = "我的消息账户页面", httpMethod = "GET")
+  @ApiOperation(value = "我的消息页面", httpMethod = "GET")
   @RequestMapping(value = "/{action}/message/read/{id}")
   public String message(@PathVariable("action") String action, @PathVariable("id") String id, Model model) {
     messageService.read(id);

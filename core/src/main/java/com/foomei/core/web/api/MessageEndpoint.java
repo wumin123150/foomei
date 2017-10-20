@@ -37,8 +37,8 @@ public class MessageEndpoint {
 
   @ApiOperation(value = "我的消息分页列表", httpMethod = "GET", produces = "application/json")
   @RequestMapping(value = "myPage", method = RequestMethod.GET)
-  public ResponseResult<Page<MessageDto>> myPage(PageQuery pageQuery, HttpServletRequest request) {
-    Page<Message> page = messageService.getMyPage(pageQuery.getSearchKey(), pageQuery.buildPageRequest());
+  public ResponseResult<Page<MessageDto>> myPage(PageQuery pageQuery, Integer readStatus, HttpServletRequest request) {
+    Page<Message> page = messageService.getMyPage(pageQuery.getSearchKey(), readStatus, pageQuery.buildPageRequest());
     return ResponseResult.createSuccess(page, Message.class, MessageDto.class);
   }
 

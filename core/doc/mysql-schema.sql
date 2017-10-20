@@ -24,10 +24,6 @@ drop table if exists core_message;
 
 drop table if exists core_message_content;
 
-drop table if exists core_notice;
-
-drop table if exists core_notice_receive;
-
 drop table if exists core_permission;
 
 drop table if exists core_relationship;
@@ -186,70 +182,30 @@ alter table core_membership comment '用户和用户组';
 create table core_message
 (
    id                   varchar(36) not null comment '编号',
-   sender               bigint comment '发件人',
-   sender_status        tinyint(1) comment '发件人状态(0:草稿箱,1:发件箱,2:收件箱,3:收藏箱,4:垃圾箱,5:已删除)
-            在收件箱\发件箱,365天后状态改成垃圾箱
-            在收藏箱,不允许删除
-            在垃圾箱,30天后状态改成已删除
-            在草稿箱,永久不删除
-            邮件删除了，只有收件人和发件人都删除了，才能真正删除',
-   send_time            datetime comment '发送时间',
-   receiver             bigint comment '收件人',
-   receiver_status      tinyint(1) comment '收件人状态',
-   title                varchar(32) comment '标题',
-   is_read              tinyint(1) comment '是否已读',
-   is_reply             tinyint(1) comment '是否已回复',
-   parent_id            varchar(36) comment '父ID',
-   primary key (id)
-);
-
-alter table core_message comment '消息';
-
-/*==============================================================*/
-/* Table: core_message_content                                  */
-/*==============================================================*/
-create table core_message_content
-(
-   id                   varchar(36) not null comment '编号',
-   content              longtext comment '内容',
-   primary key (id)
-);
-
-alter table core_message_content comment '消息内容';
-
-/*==============================================================*/
-/* Table: core_notice                                           */
-/*==============================================================*/
-create table core_notice
-(
-   id                   varchar(36) not null comment '编号',
-   title                varchar(32) comment '标题',
-   content              varchar(255) comment '内容',
-   status               tinyint(1) comment '状态(0:草稿,1:发布)',
-   create_time          datetime comment '创建时间',
-   creator              bigint comment '创建人',
-   update_time          datetime comment '更新时间',
-   updator              bigint comment '更新人',
-   primary key (id)
-);
-
-alter table core_notice comment '通知';
-
-/*==============================================================*/
-/* Table: core_notice_receive                                   */
-/*==============================================================*/
-create table core_notice_receive
-(
-   id                   varchar(36) not null comment '编号',
-   notice_id            varchar(36) comment '通知ID',
-   user_id              bigint comment '用户ID',
+   text_id              varchar(36) comment '内容ID',
+   receiver             bigint comment '接收人',
    send_status          tinyint(1) comment '发送状态(0:发送中,1:已发送,2:发送失败)',
    read_status          tinyint(1) comment '阅读状态(0:未读,1:已读)',
    read_time            datetime comment '阅读时间',
    primary key (id)
 );
 
-alter table core_notice_receive comment '用户通知';
+alter table core_message comment '消息';
+
+/*==============================================================*/
+/* Table: core_message_text                                     */
+/*==============================================================*/
+create table core_message_text
+(
+   id                   varchar(36) not null comment '编号',
+   content              text comment '内容',
+   sender               bigint comment '发送人',
+   create_time          datetime comment '创建时间',
+   creator              bigint comment '创建人',
+   primary key (id)
+);
+
+alter table core_message_text comment '消息内容';
 
 /*==============================================================*/
 /* Table: core_permission                                       */
