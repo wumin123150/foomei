@@ -7,8 +7,7 @@ b)重启eclipse/myeclipse
 3.druid监控访问路径/druid，用户名/密码：druid/druid
 
 4.改进任务
-    1.timeago jquery的日期格式化（特定场景使用，建议消息）
-    2.webjars https://yq.aliyun.com/articles/90994?t=t1  https://spring.io/guides/gs/messaging-stomp-websocket/
+    1.webjars https://yq.aliyun.com/articles/90994?t=t1
     2.加速spring启动
     3.主从数据库 http://blog.csdn.net/jack85986370/article/details/51559232
     4.shiro多系统单点登录
