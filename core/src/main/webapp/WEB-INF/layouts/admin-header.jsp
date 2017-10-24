@@ -41,6 +41,37 @@
     <!-- #section:basics/navbar.dropdown -->
     <div class="navbar-buttons navbar-header pull-right" role="navigation">
       <ul class="nav ace-nav">
+        <li class="green" id="mesage-container">
+          <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+            <i class="ace-icon fa fa-envelope icon-animated-vertical"></i>
+            <span class="badge badge-success">0</span>
+          </a>
+
+          <ul class="dropdown-menu-right dropdown-navbar dropdown-menu dropdown-caret dropdown-close">
+            <li class="dropdown-header">
+              <i class="ace-icon fa fa-envelope-o"></i>
+              您有0条未读消息
+            </li>
+
+            <li class="dropdown-content ace-scroll" style="position: relative;">
+              <div class="scroll-track" style="display: none;">
+                <div class="scroll-bar"></div>
+              </div>
+              <div class="scroll-content" style="max-height: 200px;">
+              <ul class="dropdown-menu dropdown-navbar">
+
+              </ul>
+              </div>
+            </li>
+
+            <li class="dropdown-footer">
+              <a href="${ctx}/admin/readMessage">
+                查看所有
+                <i class="ace-icon fa fa-arrow-right"></i>
+              </a>
+            </li>
+          </ul>
+        </li>
         <!-- #section:basics/navbar.user_menu -->
         <li class="light-blue">
           <a data-toggle="dropdown" href="javascript:void(0);" class="dropdown-toggle">

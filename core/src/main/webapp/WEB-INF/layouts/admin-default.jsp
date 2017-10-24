@@ -44,6 +44,10 @@
   <![endif]-->
 
   <style>
+    .dropdown-navbar .msg-body {
+      margin-left: 5px;
+    }
+
     .modal-content {
       border-radius: 6px;
       -webkit-box-shadow: 0 3px 9px rgba(0, 0, 0, .5);
@@ -144,16 +148,48 @@
     hideMethod: "fadeOut"
   };
 </script>
+<script src="${ctx}/static/js/timeago.min.js"></script>
+<script src="${ctx}/static/js/timeago.locales.min.js"></script>
 <script src="${ctx}/static/js/sockjs.min.js"></script>
 <script src="${ctx}/static/js/stomp.min.js"></script>
 <script>
+  function message() {
+    $.ajax({
+      url: "${ctx}/api/message/myPage",
+      type: 'GET',
+      cache: false,
+      dataType: 'json',
+      success: function (result) {
+        if (result.success) {
+          $('#mesage-container .badge-success').text(result.data.totalElements);
+          $('#mesage-container .dropdown-header').text('您有'+result.data.totalElements+'条未读消息');
+
+          $('#mesage-container .dropdown-content .dropdown-menu').empty();
+          for(var i=0;i<result.data.content.length;i++) {
+            var entity = result.data.content[i];
+            var li = '<li><a href="#" class="clearfix"><span class="msg-body">'
+              +'<span class="msg-title"><span class="blue">' + (entity.sender == null ? '系统' : entity.sender.name) + ':</span>' + entity.content + '</span>'
+              +'<span class="msg-time"><i class="ace-icon fa fa-clock-o"></i><time class="timeago" datetime="' + entity.createTime + '"></time></span>'
+              +'</span></a></li>';
+            $('#mesage-container .dropdown-content .dropdown-menu').append(li);
+            timeago().render($(".timeago"), 'zh_CN');
+          }
+        }
+      },
+      error: function () {
+        toastr.error('未知错误，请联系管理员');
+      }
+    });
+  }
+
   $(document).ready(function(){
+    message();
+
     var socket = new SockJS("${ctx}/socket");
     var stompClient = Stomp.over(socket);
     stompClient.connect({}, function(frame) {
-      console.log('Connected: ' + frame);
-      stompClient.subscribe('${ctx}/user/<shiro:principal property="id"/>/message',function(greeting){
-        alert(greeting);
+      stompClient.subscribe('/user/<shiro:principal property="id"/>/message',function(message){
+        message();
       });
     });
   })

@@ -88,8 +88,6 @@
 
 	<context:property-placeholder ignore-resource-not-found="true" location="classpath*:/application.properties" />
 
-	<bean class="com.foomei.core.web.WebSocketConfig" />
-
 	<beans profile="dev,svr">
 		<bean class="com.foomei.core.web.SwaggerConfig" />
 	</beans>

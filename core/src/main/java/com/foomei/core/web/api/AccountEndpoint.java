@@ -2,15 +2,10 @@ package com.foomei.core.web.api;
 
 import com.foomei.common.base.annotation.LogIgnore;
 import com.foomei.common.dto.ErrorCodeFactory;
-import com.foomei.common.dto.PageQuery;
 import com.foomei.common.dto.ResponseResult;
-import com.foomei.core.dto.MessageDto;
 import com.foomei.core.entity.Annex;
-import com.foomei.core.entity.Message;
-import com.foomei.core.entity.MessageText;
 import com.foomei.core.entity.User;
 import com.foomei.core.service.AnnexService;
-import com.foomei.core.service.MessageService;
 import com.foomei.core.service.UserService;
 import com.foomei.core.web.CoreThreadContext;
 import io.swagger.annotations.Api;
@@ -19,12 +14,7 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -41,8 +31,6 @@ public class AccountEndpoint {
   private UserService userService;
   @Autowired
   private AnnexService annexService;
-  @Autowired
-  private MessageService messageService;
 
   @ApiOperation(value = "保存头像", notes = "图片转成base64编码", httpMethod = "POST", produces = "application/json")
   @ApiImplicitParams({
@@ -96,14 +84,6 @@ public class AccountEndpoint {
     user.setEmail(email);
     userService.save(user);
     return ResponseResult.SUCCEED;
-  }
-
-  @MessageMapping("/message")
-  @SendToUser("/message")
-  public ResponseResult<Page<MessageDto>> message(Message message) {
-    Page<Message> messages = messageService.getMyPage(null, Message.READ_STATUS_UNREAD,
-      new PageQuery().buildPageRequest(1, 5, new Sort(Sort.Direction.DESC, Message.PROP_TEXT + "." + MessageText.PROP_CREATE_TIME)));
-    return ResponseResult.createSuccess(messages, Message.class, MessageDto.class);
   }
 
 }

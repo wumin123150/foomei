@@ -16,6 +16,7 @@
 		<import resource="cache/applicationContext-guava-cache.xml" />
 		<import resource="schedule/applicationContext-spring-scheduler.xml" />
 		<import resource="monitor/applicationContext-profiler.xml" />
+		<import resource="websocket/applicationContext-websocket.xml" />
 	</beans>
 
 	<beans profile="test">

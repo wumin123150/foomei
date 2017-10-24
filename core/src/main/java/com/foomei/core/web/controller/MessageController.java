@@ -3,16 +3,12 @@ package com.foomei.core.web.controller;
 import com.foomei.core.entity.Message;
 import com.foomei.core.entity.MessageText;
 import com.foomei.core.service.MessageService;
-import com.foomei.core.service.MessageTextService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -31,8 +27,6 @@ public class MessageController {
   private static final String ACTION_CREATE = "create";
   private static final String ACTION_UPDATE = "update";
 
-  @Autowired
-  private SimpMessagingTemplate simpMessagingTemplate;
   @Autowired
   private MessageService messageService;
 
@@ -69,9 +63,6 @@ public class MessageController {
       return "admin/message/messageForm";
     } else {
       List<Message> messages = messageService.save(text.getContent(), null, checkedUsers);
-      for (Message message : messages) {
-        simpMessagingTemplate.convertAndSendToUser(String.valueOf(message.getReceiver().getId()), "/message", message);
-      }
     }
 
     redirectAttributes.addFlashAttribute("message", "新增消息成功");
