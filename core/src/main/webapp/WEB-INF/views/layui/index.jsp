@@ -71,105 +71,72 @@
     width: 100%;
     height: 100%;
     overflow: hidden;
+    border: 0;
   }
-
-  .layui-body .layui-tab>.layui-tab-title .layui-this {
-    background-color: #fff;
-    border-bottom-color: #fff;
-  }
-
 
   ul.layui-tab-title {
-    max-width: calc(100% - 160px);
-    height: 40px;
+    width: calc(100% - 180px);
     position: absolute;
-    top: 0px;
-    left: 41px;
-    background: #fafafa;
-    z-index: 1000;
-    overflow-y: hidden;
+    z-index: 2;
   }
 
-  .layui-tab .larry-title-box {
-    width: 100%;
-    height: 40px;
-    background: #fafafa;
+  .layui-body .layui-tab-content {
+    padding: 0;
     position: relative;
+    top: 41px;
+    overflow-y: auto;
+  }
+
+  .layui-tab .kit-tab-tool {
+    position: absolute;
+    width: 180px;
+    height: 40px;
+    top: 0;
+    right: 0;
+    background: #f2f2f2;
     border-bottom: 1px solid #e2e2e2;
   }
 
-  .layui-tab .larry-title-box .go-left {
+  .layui-tab .kit-tab-tool .refresh {
+    width: 66px;
     position: absolute;
     top: 0px;
     left: 0px;
-    z-index: 1005;
-    line-height: 40px;
-  }
-
-  .layui-tab .larry-title-box .title-right {
-    width: 230px;
-    height: 40px;
-    position: absolute;
-    top: 0px;
-    right: 0px;
-    z-index: 1005;
     background: #ffffff;
+    line-height: 39px;
     border-left: 1px solid #e2e2e2;
-  }
-
-  .layui-tab .larry-title-box .key-press {
-    width: 40px;
-    height: 40px;
-    background: #ffffff;
     border-right: 1px solid #e2e2e2;
     cursor: pointer;
     text-align: center;
   }
 
-  .layui-tab .larry-title-box .title-right .go-right {
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    line-height: 40px;
-  }
-
-  .layui-tab .larry-title-box .title-right .refresh {
-    width: 67px;
-    position: absolute;
-    top: 0px;
-    left: 41px;
-    background: #fafafa;
-    line-height: 40px;
-  }
-
-  .layui-tab .larry-title-box .title-right .often {
+  .layui-tab .kit-tab-tool .often {
     width: 120px;
     position: absolute;
     top: 0px;
-    left: 109px;
-    background: #fafafa;
+    left: 68px;
+    background: #ffffff;
     cursor: pointer;
+    text-align: center;
   }
 
-  .layui-tab .larry-title-box .title-right .often ul.layui-nav {
-    display: block;
+  .layui-tab .kit-tab-tool .often ul.layui-nav {
     width: 120px;
-    height: 100%;
-    border: none;
-    margin: 0px;
     padding: 0px;
     background: none;
   }
 
-  .layui-tab .larry-title-box .title-right .often ul.layui-nav li.layui-nav-item a.top {
-    width: 100%;
-    height: 100%;
+  .layui-tab .kit-tab-tool .often ul.layui-nav li.layui-nav-item a.top {
     padding: 0px;
-    margin: 0px;
     line-height: 40px;
     text-align: center;
     color: #000;
   }
+
+  .often ul.layui-nav .layui-nav-bar {
+    background: none;
+  }
+
   .often ul.layui-nav li.layui-nav-item dl.layui-nav-child {
     width: 145px;
     text-align: center;
@@ -259,37 +226,35 @@
     </div>
   </div>
   <div class="layui-body" id="container">
-    <div class="layui-tab" id="larry-tab" lay-filter="bodyTab">
+    <div class="layui-tab layui-tab-card" id="larry-tab" lay-filter="bodyTab">
       <! -- 选项卡-->
       <ul class="layui-tab-title top_tab" id="top_tabs">
         <li class="layui-this" lay-id=""><i class="layui-icon"></i> 后台首页</li>
         <li lay-id="2"><i class="layui-icon"></i> 后台1</li>
       </ul>
-      <div class="larry-title-box">
-        <div class="go-left key-press pressKey" id="titleLeft" title="滚动至最右侧"><i class="layui-icon">&#xe603;</i></div>
-        <div class="title-right" id="titleRbox">
-          <div class="go-right key-press pressKey" id="titleRight" title="滚动至最左侧"><i class="layui-icon">&#xe602;</i></div>
-          <div class="refresh key-press" id="refresh_iframe"><i class="layui-icon">&#x1002;</i>刷新</div>
+      <div class="kit-tab-tool">
 
-          <div class="often key-press">
-            <ul class="layui-nav">
-              <li class="layui-nav-item layui-this">
-                <a class="top">常用操作</a>
-                <dl class="layui-nav-child layui-show">
-                  <dd>
-                    <a href="javascript:;" class="closeCurrent"><i class="larry-icon larry-guanbidangqianye"></i>关闭当前选项卡</a>
-                  </dd>
-                  <dd>
-                    <a href="javascript:;" class="closeOther"><i class="larry-icon larry-guanbiqita"></i>关闭其他选项卡</a>
-                  </dd>
-                  <dd>
-                    <a href="javascript:;" class="closeAll"><i class="larry-icon larry-guanbiquanbufenzu"></i>关闭全部选项卡</a>
-                  </dd>
-                </dl>
-              </li>
-            </ul>
-          </div>
+        <div class="refresh key-press" id="refresh_iframe"><i class="layui-icon">&#x1002;</i>刷新</div>
+
+        <div class="often key-press">
+          <ul class="layui-nav">
+            <li class="layui-nav-item">
+              <a class="top">常用操作</a>
+              <dl class="layui-nav-child">
+                <dd>
+                  <a href="javascript:;" class="closeCurrent"><i class="larry-icon larry-guanbidangqianye"></i>关闭当前选项卡</a>
+                </dd>
+                <dd>
+                  <a href="javascript:;" class="closeOther"><i class="larry-icon larry-guanbiqita"></i>关闭其他选项卡</a>
+                </dd>
+                <dd>
+                  <a href="javascript:;" class="closeAll"><i class="larry-icon larry-guanbiquanbufenzu"></i>关闭全部选项卡</a>
+                </dd>
+              </dl>
+            </li>
+          </ul>
         </div>
+
       </div>
       <div class="layui-tab-content" style="height:793px;">
         <div class="layui-tab-item layui-show layui-anim layui-anim-upbit">
