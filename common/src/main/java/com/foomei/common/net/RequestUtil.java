@@ -1,15 +1,12 @@
 package com.foomei.common.net;
 
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
+import com.foomei.common.collection.ListUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +35,31 @@ public class RequestUtil {
    * cookie中的JSESSIONID名称
    */
   public static final String JSESSION_COOKIE = "JSESSIONID";
+
+  public static String getHeader(HttpServletRequest request, String name) {
+    if (StringUtils.isBlank(name)) {
+      return null;
+    }
+    return request.getHeader(name);
+  }
+
+  public static Map<String, Object> getHeaders(HttpServletRequest request) {
+    Enumeration headerNames = request.getHeaderNames();
+    Map<String, Object> headers = new HashMap<String, Object>();
+    while (headerNames.hasMoreElements()) {
+      String headerName = (String) headerNames.nextElement();
+      request.getHeaders(headerName);
+      List<String> values = Collections.list(request.getHeaders(headerName));
+      if(!values.isEmpty()) {
+        if(values.size() == 1) {
+          headers.put(headerName, values.get(0));
+        } else {
+          headers.put(headerName, values.toArray(new String[values.size()]));
+        }
+      }
+    }
+    return headers;
+  }
 
   public static Map<String, Object> getParameters(HttpServletRequest request) {
     Enumeration paramNames = request.getParameterNames();
@@ -134,7 +156,7 @@ public class RequestUtil {
   /**
    * 组合Parameters生成Query String的Parameter部分, 并在paramter name上加上prefix.
    *
-   * @see #getParametersStartingWith
+   * @see #getParametersWithPrefix
    */
   public static String encodeParametersWithPrefix(Map<String, Object> params, String prefix) {
     if (MapUtil.isEmpty(params)) {
@@ -223,7 +245,7 @@ public class RequestUtil {
 
   public static boolean isAjaxRequest(HttpServletRequest request) {
     return "XMLHttpRequest".equalsIgnoreCase(request.getHeader("X-Requested-With"))
-      || (request.getHeader("Accept") != null && request.getHeader("Accept").endsWith("q=0.01"));
+      || (request.getHeader("Accept") != null && request.getHeader("Accept").contains("application/json"));
   }
 
   public static void main(String[] args) {

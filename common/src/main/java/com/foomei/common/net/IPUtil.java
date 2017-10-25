@@ -8,6 +8,9 @@ import java.util.List;
 import com.foomei.common.number.NumberUtil;
 import com.foomei.common.text.MoreStringUtil;
 import com.google.common.net.InetAddresses;
+import org.apache.commons.lang3.StringUtils;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * InetAddress工具类，基于Guava的InetAddresses.
@@ -21,6 +24,40 @@ import com.google.common.net.InetAddresses;
  * @author walker
  */
 public class IPUtil {
+
+	/**
+	 * 获取客户端IP地址.
+	 */
+	public static String getIp(HttpServletRequest request) {
+		String ip = null;
+		ip = request.getHeader("x-forwarded-for");
+		if (StringUtils.isBlank(ip) || "unknown".equalsIgnoreCase(ip)) {
+			ip = request.getHeader("Proxy-Client-IP");
+		}
+		if (StringUtils.isBlank(ip) || "unknown".equalsIgnoreCase(ip)) {
+			ip = request.getHeader("WL-Proxy-Client-IP");
+		}
+		if (StringUtils.isBlank(ip) || "unknown".equalsIgnoreCase(ip)) {
+			ip = request.getRemoteAddr();
+			if (ip.equals("127.0.0.1")) {
+				// 根据网卡取本机配置的IP
+				try {
+					InetAddress inet = InetAddress.getLocalHost();
+					ip = inet.getHostAddress();
+				} catch (UnknownHostException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
+		// 对于通过多个代理的情况，第一个IP为客户端真实IP,多个IP按照','分割
+		if (ip != null && ip.length() > 15) { // "***.***.***.***".length() = 15
+			if (ip.indexOf(",") > 0) {
+				ip = ip.substring(0, ip.indexOf(","));
+			}
+		}
+		return ip;
+	}
 
 	/**
 	 * 从InetAddress转化到int, 传输和存储时, 用int代表InetAddress是最小的开销.
