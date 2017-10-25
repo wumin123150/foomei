@@ -1,9 +1,8 @@
 package com.foomei.core.web.controller;
 
-import java.util.Date;
-
-import javax.servlet.http.HttpServletRequest;
-
+import com.foomei.common.net.IPUtil;
+import com.foomei.core.entity.User;
+import com.foomei.core.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,9 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.foomei.common.web.Servlets;
-import com.foomei.core.entity.User;
-import com.foomei.core.service.UserService;
+import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 
 @Controller
 public class RegisterController {
@@ -41,7 +39,7 @@ public class RegisterController {
     user.setPlainPassword(password);
     user.setMobile(mobile);
     user.setRegisterTime(new Date());
-    user.setRegisterIp(Servlets.getIpAddress(request));
+    user.setRegisterIp(IPUtil.getIp(request));
     user.setStatus(User.STATUS_ACTIVE);
 
     userService.save(user);

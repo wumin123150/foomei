@@ -1,22 +1,19 @@
 package com.foomei.core.web.filter;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.shiro.subject.Subject;
-import org.apache.shiro.web.filter.authz.RolesAuthorizationFilter;
-
 import com.foomei.common.dto.ErrorCodeFactory;
 import com.foomei.common.dto.ResponseResult;
 import com.foomei.common.mapper.JsonMapper;
 import com.foomei.common.net.RequestUtil;
 import com.foomei.common.web.Servlets;
+import org.apache.shiro.subject.Subject;
+import org.apache.shiro.web.filter.authz.RolesAuthorizationFilter;
+
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 public class ShiroRoleFilter extends RolesAuthorizationFilter {
-
-  private JsonMapper jsonMapper = new JsonMapper();
 
   public boolean onAccessDenied(ServletRequest request, ServletResponse response, Object mappedValue)
     throws Exception {
@@ -33,7 +30,7 @@ public class ShiroRoleFilter extends RolesAuthorizationFilter {
   }
 
   private void renderJson(final ServletResponse response, final ResponseResult json, final String... headers) {
-    Servlets.renderJson((HttpServletResponse) response, jsonMapper.toJson(json), headers);
+    Servlets.renderJson((HttpServletResponse) response, JsonMapper.INSTANCE.toJson(json), headers);
   }
 
 }

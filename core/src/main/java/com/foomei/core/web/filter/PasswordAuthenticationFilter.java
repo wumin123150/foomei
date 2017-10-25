@@ -1,25 +1,21 @@
 package com.foomei.core.web.filter;
 
-import java.io.IOException;
-import java.util.Date;
-
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.foomei.common.base.ObjectUtil;
+import com.foomei.common.dto.ErrorCodeFactory;
+import com.foomei.common.dto.ResponseResult;
+import com.foomei.common.mapper.JsonMapper;
+import com.foomei.common.net.IPUtil;
+import com.foomei.common.net.RequestUtil;
+import com.foomei.common.security.shiro.CaptchaException;
+import com.foomei.common.security.shiro.InactiveAccountException;
 import com.foomei.common.security.shiro.ShiroUser;
+import com.foomei.common.web.Servlets;
+import com.foomei.core.entity.Log;
+import com.foomei.core.service.LogService;
+import com.foomei.core.service.UserService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.AccountException;
-import org.apache.shiro.authc.AuthenticationException;
-import org.apache.shiro.authc.AuthenticationToken;
-import org.apache.shiro.authc.DisabledAccountException;
-import org.apache.shiro.authc.ExcessiveAttemptsException;
-import org.apache.shiro.authc.ExpiredCredentialsException;
-import org.apache.shiro.authc.IncorrectCredentialsException;
-import org.apache.shiro.authc.LockedAccountException;
-import org.apache.shiro.authc.UnknownAccountException;
+import org.apache.shiro.authc.*;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.filter.authc.FormAuthenticationFilter;
@@ -29,17 +25,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.foomei.common.base.ObjectUtil;
-import com.foomei.common.dto.ErrorCodeFactory;
-import com.foomei.common.dto.ResponseResult;
-import com.foomei.common.mapper.JsonMapper;
-import com.foomei.common.net.RequestUtil;
-import com.foomei.common.security.shiro.CaptchaException;
-import com.foomei.common.security.shiro.InactiveAccountException;
-import com.foomei.common.web.Servlets;
-import com.foomei.core.entity.Log;
-import com.foomei.core.service.LogService;
-import com.foomei.core.service.UserService;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Date;
 
 /**
  * 自定义登录认证filter
@@ -108,7 +99,7 @@ public class PasswordAuthenticationFilter extends FormAuthenticationFilter {
   public boolean onLoginSuccess(AuthenticationToken token, Subject subject, ServletRequest request,
                                 ServletResponse response) throws Exception {
     ShiroUser user = (ShiroUser) subject.getPrincipal();
-    userService.loginSuccess(user.getLoginName(), Servlets.getIpAddress(WebUtils.toHttp(request)));
+    userService.loginSuccess(user.getLoginName(), IPUtil.getIp(WebUtils.toHttp(request)));
 
     log((HttpServletRequest) request, getUsername(request), "success");
 
@@ -174,7 +165,7 @@ public class PasswordAuthenticationFilter extends FormAuthenticationFilter {
       logger.debug("登录耗时：{}", endTime - startTime);
     }
 
-    log.setIp(Servlets.getIpAddress(request));
+    log.setIp(IPUtil.getIp(request));
     log.setUrl(ObjectUtil.toPrettyString(request.getRequestURL()));
     log.setMethod(request.getMethod());
     log.setUserAgent(request.getHeader("User-Agent"));

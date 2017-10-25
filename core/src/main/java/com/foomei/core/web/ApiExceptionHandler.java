@@ -1,9 +1,11 @@
 package com.foomei.core.web;
 
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
+import com.foomei.common.dto.ResponseResult;
+import com.foomei.common.mapper.JsonMapper;
+import com.foomei.common.net.IPUtil;
+import com.foomei.common.net.RequestUtil;
+import com.foomei.common.web.MediaTypes;
+import com.google.common.collect.Maps;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -14,12 +16,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.foomei.common.dto.ResponseResult;
-import com.foomei.common.mapper.JsonMapper;
-import com.foomei.common.net.RequestUtil;
-import com.foomei.common.web.MediaTypes;
-import com.foomei.common.web.Servlets;
-import com.google.common.collect.Maps;
+import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 @ControllerAdvice(annotations = {RestController.class})
 public class ApiExceptionHandler {
@@ -48,7 +46,7 @@ public class ApiExceptionHandler {
   public void logError(Exception ex, HttpServletRequest request) {
     Map<String, String> map = Maps.newHashMap();
     map.put("message", ex.getMessage());
-    map.put("from", Servlets.getIpAddress(request));
+    map.put("from", IPUtil.getIp(request));
     map.put("path", RequestUtil.getLocation(request));
     logger.error(jsonMapper.toJson(map), ex);
   }

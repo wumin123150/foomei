@@ -5,6 +5,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.foomei.common.net.RequestUtil;
 import com.foomei.common.security.shiro.ShiroUser;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authc.AuthenticationException;
@@ -56,7 +57,7 @@ public class AccessAuthenticationFilter extends PasswordAuthenticationFilter {
   }
 
   protected String getToken(ServletRequest request) {
-    return org.apache.shiro.util.StringUtils.clean(((HttpServletRequest) request).getHeader(getTokenParam()));
+    return org.apache.shiro.util.StringUtils.clean(RequestUtil.getHeader((HttpServletRequest)request, getTokenParam()));
   }
 
 }

@@ -3,6 +3,7 @@ package com.foomei.core.web;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.foomei.common.net.IPUtil;
 import com.foomei.common.security.shiro.ShiroUser;
 import com.foomei.core.entity.BaseUser;
 import org.apache.shiro.SecurityUtils;
@@ -35,7 +36,7 @@ public class ContextInterceptor extends HandlerInterceptorAdapter {
       CoreThreadContext.setUser(baseUser);
     }
 
-    CoreThreadContext.setIp(Servlets.getIpAddress(request));
+    CoreThreadContext.setIp(IPUtil.getIp(request));
     CoreThreadContext.setUrl(RequestUtil.getLocation(request));
     CoreThreadContext.setUploadPath(uploadPath);
 

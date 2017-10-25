@@ -1,14 +1,16 @@
 package com.foomei.core.web.controller;
 
+import com.foomei.common.net.IPUtil;
+import com.foomei.core.entity.Annex;
+import com.foomei.core.entity.Role;
+import com.foomei.core.entity.User;
+import com.foomei.core.entity.UserGroup;
+import com.foomei.core.service.AnnexService;
+import com.foomei.core.service.RoleService;
+import com.foomei.core.service.UserGroupService;
+import com.foomei.core.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-
-import java.util.Date;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.slf4j.Logger;
@@ -21,25 +23,14 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.foomei.common.web.Servlets;
-import com.foomei.core.entity.Annex;
-import com.foomei.core.entity.Role;
-import com.foomei.core.entity.User;
-import com.foomei.core.entity.UserGroup;
-import com.foomei.core.service.AnnexService;
-import com.foomei.core.service.DataDictionaryService;
-import com.foomei.core.service.RoleService;
-import com.foomei.core.service.UserGroupService;
-import com.foomei.core.service.UserService;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+import java.util.Date;
+import java.util.List;
 
 /**
  * 管理员管理用户的Controller.
@@ -129,7 +120,7 @@ public class UserController {
     }
 
     user.setRegisterTime(new Date());
-    user.setRegisterIp(Servlets.getIpAddress(request));
+    user.setRegisterIp(IPUtil.getIp(request));
 
     userService.save(user);
 
