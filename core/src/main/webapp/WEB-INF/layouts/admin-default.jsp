@@ -22,7 +22,7 @@
   <link type="image/x-icon" href="${ctx}/static/images/favicon.ico" rel="shortcut icon">
 
   <!-- bootstrap & fontawesome -->
-  <link rel="stylesheet" href="${ctx}/static/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="${ctx}/webjars/bootstrap/css/bootstrap.min.css"/>
   <link rel="stylesheet" href="${ctx}/static/css/bootstrap-dialog.min.css"/>
   <link rel="stylesheet" href="${ctx}/static/css/toastr.min.css"/>
   <link rel="stylesheet" href="${ctx}/static/css/font-awesome.min.css"/>
@@ -103,22 +103,8 @@
 </div><!-- /.main-container -->
 
 <!-- basic scripts -->
-
-<!--[if !IE]> -->
-<script type="text/javascript">
-  window.jQuery || document.write("<script src='${ctx}/static/js/jquery.min.js'>" + "<" + "/script>");
-</script>
-<!-- <![endif]-->
-
-<!--[if IE]>
-<script type="text/javascript">
-  window.jQuery || document.write("<script src='${ctx}/static/js/jquery1x.min.js'>" + "<" + "/script>");
-</script>
-<![endif]-->
-<script type="text/javascript">
-  if ('ontouchstart' in document.documentElement) document.write("<script src='${ctx}/static/js/jquery.mobile.custom.min.js'>" + "<" + "/script>");
-</script>
-<script src="${ctx}/static/js/bootstrap.min.js"></script>
+<script src="${ctx}/webjars/jquery/jquery.min.js"></script>
+<script src="${ctx}/webjars/bootstrap/js/bootstrap.min.js"></script>
 <script src="${ctx}/static/js/bootstrap-dialog.min.js"></script>
 <script src="${ctx}/static/js/toastr.min.js"></script>
 <script>
