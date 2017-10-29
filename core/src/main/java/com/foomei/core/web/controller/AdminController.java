@@ -4,6 +4,7 @@ import io.swagger.annotations.Api;
 
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -20,6 +21,16 @@ public class AdminController {
   @RequestMapping(value = "/admin/index", method = RequestMethod.GET)
   public String index() {
     return "admin/index";
+  }
+
+  @RequestMapping(value = "/lay/home", method = RequestMethod.GET)
+  public String home() {
+    return "layui/home";
+  }
+
+  @RequestMapping(value = "/lay/user", method = RequestMethod.GET)
+  public String list(Model model) {
+    return "layui/user/userList";
   }
 
 }
