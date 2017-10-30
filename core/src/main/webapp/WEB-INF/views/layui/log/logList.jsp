@@ -50,6 +50,7 @@
     line-height: 30px;
     width: 200px;
     padding-right: 32px;
+    display: inline-block;
   }
 
   .kit-table .kit-table-header .kit-search-inputs .kit-search-keyword button {
@@ -113,6 +114,7 @@
         <a href="javascript:;" data-action="batchDel" class="layui-btn layui-btn-small layui-btn-danger"><i class="layui-icon">&#xe640;</i>删除所选</a>
       </div>
       <div class="kit-search-inputs">
+
         <div class="kit-search-keyword">
           <input type="text" class="layui-input" name="timeRange" id="timeRange" placeholder="时间范围">
           <input type="text" class="layui-input" name="searchKey" placeholder="搜索关键字.." />
@@ -172,8 +174,8 @@
       ],
       even: true,
       page: true,
-      limits: [2, 20, 50, 100],
-      limit: 2,
+      limits: [10, 20, 50, 100],
+      limit: 10,
       request: {
         pageName: 'pageNo',
         limitName: 'pageSize'

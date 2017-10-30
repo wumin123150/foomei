@@ -261,8 +261,6 @@
           layer.full(index);
           break;
         case 'batchDel':
-
-
           break;
       }
     });

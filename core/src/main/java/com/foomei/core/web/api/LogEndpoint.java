@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
+import java.util.List;
 
 @Api(description = "日志接口")
 @RestController
@@ -54,6 +55,21 @@ public class LogEndpoint {
       page = logService.getPage(pageQuery.getSearchKey(), startTime, endTime, pageQuery.buildPageRequest(new Sort(Sort.Direction.DESC, Log.PROP_LOG_TIME)));
     }
     return ResponseResult.createSuccess(page, Log.class, LogDto.class);
+  }
+
+  @ApiOperation(value = "日志分页列表", httpMethod = "GET", produces = "application/json")
+  @ApiImplicitParams({
+    @ApiImplicitParam(name = "startTime", value = "开始时间(yyyy-MM-dd HH:mm)", dataType = "date", paramType = "query"),
+    @ApiImplicitParam(name = "endTime", value = "结束时间(yyyy-MM-dd HH:mm)", dataType = "date", paramType = "query")
+  })
+  @LogIgnore
+  @RequiresRoles("admin")
+  @RequestMapping(value = "list")
+  public ResponseResult<List<LogDto>> list(PageQuery pageQuery,
+                                           @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm") Date startTime, @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm") Date endTime,
+                                           HttpServletRequest request) {
+    Page<Log> page = logService.getPage(pageQuery.getSearchKey(), startTime, endTime, pageQuery.buildPageRequest(new Sort(Sort.Direction.DESC, Log.PROP_LOG_TIME)));
+    return ResponseResult.createSuccess(page.getContent(), page.getTotalElements(), Log.class, LogDto.class);
   }
 
   @ApiOperation(value = "日志获取", httpMethod = "GET", produces = "application/json")

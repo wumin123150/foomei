@@ -38,6 +38,11 @@ public class AdminController {
     return "layui/role/roleList";
   }
 
+  @RequestMapping(value = "/layui/role/create", method = RequestMethod.GET)
+  public String roleCreate(Model model) {
+    return "layui/role/roleForm";
+  }
+
   @RequestMapping(value = "/layui/log", method = RequestMethod.GET)
   public String log(Model model) {
     return "layui/log/logList";
