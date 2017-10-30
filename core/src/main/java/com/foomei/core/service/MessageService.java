@@ -34,8 +34,8 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class MessageService extends JpaServiceImpl<Message, String> {
 
-  @Autowired
-  private SimpMessagingTemplate simpMessagingTemplate;
+//  @Autowired
+//  private SimpMessagingTemplate simpMessagingTemplate;
   @Autowired
   private MessageTextService messageTextService;
   @Autowired
@@ -49,7 +49,7 @@ public class MessageService extends JpaServiceImpl<Message, String> {
     for(Long receiver : receivers) {
       Message message = save(new Message(text, new BaseUser(receiver)));
       messages.add(message);
-      simpMessagingTemplate.convertAndSendToUser(String.valueOf(message.getReceiver().getId()), "/message", message);
+//      simpMessagingTemplate.convertAndSendToUser(String.valueOf(message.getReceiver().getId()), "/message", message);
     }
 
     return messages;

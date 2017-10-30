@@ -136,8 +136,6 @@
 </script>
 <script src="${ctx}/static/js/timeago.min.js"></script>
 <script src="${ctx}/static/js/timeago.locales.min.js"></script>
-<script src="${ctx}/static/js/sockjs.min.js"></script>
-<script src="${ctx}/static/js/stomp.min.js"></script>
 <script>
   function message() {
     $.ajax({
@@ -167,7 +165,11 @@
       }
     });
   }
-
+</script>
+<!--
+<script src="${ctx}/static/js/sockjs.min.js"></script>
+<script src="${ctx}/static/js/stomp.min.js"></script>
+<script>
   $(document).ready(function(){
     message();
 
@@ -180,6 +182,7 @@
     });
   })
 </script>
+-->
 
 <sitemesh:write property='pluginJs'/>
 
