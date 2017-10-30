@@ -100,7 +100,7 @@
                   <div class="col-xs-8">
                     <div class="input-daterange input-group">
                       <label>操作时间范围:</label>
-                      <input type="text" name="plantRange" id="timeRange" style="width:245px" class="input-sm"
+                      <input type="text" name="timeRange" id="timeRange" style="width:245px" class="input-sm"
                              placeholder="按时间范围查询" aria-controls="datatables">
                       <input type="hidden" name="startTime" id="startTime"/>
                       <input type="hidden" name="endTime" id="endTime"/>

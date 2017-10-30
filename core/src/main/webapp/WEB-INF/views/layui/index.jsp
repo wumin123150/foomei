@@ -86,6 +86,9 @@
             <dd>
               <a href="javascript:;" data-url="${ctx}/layui/role"><i class="layui-icon" data-icon=""></i><cite>角色管理</cite></a>
             </dd>
+            <dd>
+              <a href="javascript:;" data-url="${ctx}/layui/log"><i class="layui-icon" data-icon=""></i><cite>日志管理</cite></a>
+            </dd>
           </dl>
         </li>
         <li class="layui-nav-item layui-nav-itemed">
