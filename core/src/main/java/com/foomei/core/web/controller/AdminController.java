@@ -23,14 +23,19 @@ public class AdminController {
     return "admin/index";
   }
 
-  @RequestMapping(value = "/lay/home", method = RequestMethod.GET)
+  @RequestMapping(value = "/layui/home", method = RequestMethod.GET)
   public String home() {
     return "layui/home";
   }
 
-  @RequestMapping(value = "/lay/user", method = RequestMethod.GET)
-  public String list(Model model) {
+  @RequestMapping(value = "/layui/user", method = RequestMethod.GET)
+  public String user(Model model) {
     return "layui/user/userList";
+  }
+
+  @RequestMapping(value = "/layui/role", method = RequestMethod.GET)
+  public String role(Model model) {
+    return "layui/role/roleList";
   }
 
 }

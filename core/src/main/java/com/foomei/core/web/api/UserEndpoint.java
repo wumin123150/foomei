@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @Api(description = "用户接口")
 @RestController
@@ -53,6 +54,14 @@ public class UserEndpoint {
       page = baseUserService.getPage(new SearchRequest(pageQuery, BaseUser.PROP_NAME, BaseUser.PROP_LOGIN_NAME, BaseUser.PROP_MOBILE));
     }
     return ResponseResult.createSuccess(page);
+  }
+
+  @ApiOperation(value = "用户分页列表", httpMethod = "GET", produces = "application/json")
+  @RequiresRoles("admin")
+  @RequestMapping(value = "list")
+  public ResponseResult<List<BaseUser>> list(PageQuery pageQuery, HttpServletRequest request) {
+    Page<BaseUser> page = baseUserService.getPage(new SearchRequest(pageQuery, BaseUser.PROP_NAME, BaseUser.PROP_LOGIN_NAME, BaseUser.PROP_MOBILE));
+    return ResponseResult.createSuccess(page.getContent(), page.getTotalElements());
   }
 
   @ApiOperation(value = "用户获取", httpMethod = "GET", produces = "application/json")

@@ -4,6 +4,9 @@ import java.util.List;
 
 import com.baidu.unbiz.fluentvalidator.ComplexResult;
 import com.baidu.unbiz.fluentvalidator.ValidationError;
+import com.baidu.unbiz.fluentvalidator.util.CollectionUtil;
+import com.foomei.common.collection.CommonCollections;
+import com.foomei.common.collection.ListUtil;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -27,8 +30,9 @@ public class ResponseResult<T> {
   public final static ResponseResult FORBIDDEN = createError(ErrorCodeFactory.FORBIDDEN);//403
 
   private boolean success;
-  private int errorCode;
+  private int code;
   private String message;
+  private long total;
   private T data;
 
   public ResponseResult() {
@@ -40,9 +44,15 @@ public class ResponseResult<T> {
     setData(data);
   }
 
+  public ResponseResult(T data, Long total) {
+    this();
+    setData(data);
+    setTotal(total);
+  }
+
   public ResponseResult(String message) {
     this.success = true;
-    this.errorCode = SUCCESS_CODE;
+    this.code = SUCCESS_CODE;
     this.message = message;
   }
 
@@ -50,12 +60,24 @@ public class ResponseResult<T> {
     return new ResponseResult(data);
   }
 
+  public static <T> ResponseResult<List<T>> createSuccess(List<T> sourceList) {
+    return new ResponseResult(sourceList, Long.valueOf(sourceList.size()));
+  }
+
+  public static <T> ResponseResult<List<T>> createSuccess(List<T> sourceList, Long total) {
+    return new ResponseResult(sourceList, total);
+  }
+
   public static <S, T> ResponseResult<T> createSuccess(S data, Class<T> targetClass) {
     return new ResponseResult(BeanMapper.map(data, targetClass));
   }
 
-  public static <S, T> ResponseResult<List<T>> createSuccess(Iterable<S> sourceList, Class<S> sourceClass, Class<T> targetClass) {
-    return new ResponseResult(BeanMapper.mapList(sourceList, sourceClass, targetClass));
+  public static <S, T> ResponseResult<List<T>> createSuccess(List<S> sourceList, Class<S> sourceClass, Class<T> targetClass) {
+    return new ResponseResult(BeanMapper.mapList(sourceList, sourceClass, targetClass), Long.valueOf(sourceList.size()));
+  }
+
+  public static <S, T> ResponseResult<List<T>> createSuccess(List<S> sourceList, Long total, Class<S> sourceClass, Class<T> targetClass) {
+    return new ResponseResult(BeanMapper.mapList(sourceList, sourceClass, targetClass), total);
   }
 
   public static <S, T> ResponseResult<Page<T>> createSuccess(Page<S> sourcePage, Class<S> sourceClass, Class<T> targetClass) {
@@ -65,13 +87,13 @@ public class ResponseResult<T> {
 
   public ResponseResult(ErrorCode errorCode) {
     this.success = false;
-    this.errorCode = errorCode.getCode();
+    this.code = errorCode.getCode();
     this.message = errorCode.getMessage();
   }
 
   public ResponseResult(ErrorCode errorCode, String message) {
     this.success = false;
-    this.errorCode = errorCode.getCode();
+    this.code = errorCode.getCode();
     this.message = message;
   }
 
@@ -131,12 +153,12 @@ public class ResponseResult<T> {
     return success;
   }
 
-  public int getErrorCode() {
-    return errorCode;
+  public int getCode() {
+    return code;
   }
 
-  public void setErrorCode(int errorCode) {
-    this.errorCode = errorCode;
+  public void setCode(int code) {
+    this.code = code;
   }
 
   public String getMessage() {
@@ -145,6 +167,14 @@ public class ResponseResult<T> {
 
   public void setMessage(String message) {
     this.message = message;
+  }
+
+  public long getTotal() {
+    return total;
+  }
+
+  public void setTotal(long total) {
+    this.total = total;
   }
 
   public T getData() {

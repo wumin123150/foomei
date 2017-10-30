@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @Api(description = "角色接口")
 @RestController
@@ -43,6 +44,14 @@ public class RoleEndpoint {
       page = roleService.getPage(new SearchRequest(pageQuery, Role.PROP_CODE, Role.PROP_NAME));
     }
     return ResponseResult.createSuccess(page, Role.class, RoleDto.class);
+  }
+
+  @ApiOperation(value = "角色分页列表", httpMethod = "GET", produces = "application/json")
+  @RequiresRoles("admin")
+  @RequestMapping(value = "list")
+  public ResponseResult<List<RoleDto>> list(PageQuery pageQuery, Boolean advance, HttpServletRequest request) {
+    Page<Role> page = roleService.getPage(new SearchRequest(pageQuery, Role.PROP_CODE, Role.PROP_NAME));
+    return ResponseResult.createSuccess(page.getContent(), page.getTotalElements(), Role.class, RoleDto.class);
   }
 
   @ApiOperation(value = "角色删除", httpMethod = "GET")

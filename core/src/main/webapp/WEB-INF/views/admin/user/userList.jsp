@@ -80,13 +80,13 @@
             <div class="col-xs-12">
               <form class="form-search" action="">
                 <div class="dataTables_filter input-group">
-                  <input type="text" id="searchKey" name="searchKey" value="${searchKey}" class="input-sm"
-                         placeholder="" aria-controls="datatables"> <input style="display:none"/> <span
-                  class="input-group-btn">
-											<button id="btn-search" class="btn btn-xs btn-purple" type="button">
-												<i class="fa fa-search"></i>查询
-											</button>
-										</span>
+                  <input type="text" id="searchKey" name="searchKey" value="${searchKey}" class="input-sm" placeholder="" aria-controls="datatables">
+                  <input style="display:none"/>
+                  <span class="input-group-btn">
+                    <button id="btn-search" class="btn btn-xs btn-purple" type="button">
+                      <i class="fa fa-search"></i>查询
+                    </button>
+                  </span>
                 </div>
               </form>
             </div>

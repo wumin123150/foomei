@@ -21,7 +21,7 @@
   <link rel="icon" href="favicon.ico">
   <link rel="stylesheet" href="${ctx}/static/js/layui/css/layui.css" media="all"/>
   <link rel="stylesheet" href="//at.alicdn.com/t/font_tnyc012u2rlwstt9.css" media="all" />
-  <link rel="stylesheet" href="${ctx}/static/js/layui/layui-main.css" media="all"/>
+  <link rel="stylesheet" href="${ctx}/static/js/layui/main.css" media="all"/>
 </head>
 <style>
 
@@ -54,7 +54,7 @@
         </li>
         <li class="layui-nav-item" pc>
           <a href="javascript:;">
-            <img src="images/face.jpg" class="layui-circle" width="35" height="35">
+            <img src="http://m.zhengjinfan.cn/images/0.jpg" class="layui-circle" width="35" height="35">
             <cite>吴旻</cite>
           </a>
           <dl class="layui-nav-child">
@@ -81,19 +81,10 @@
           <a class="" href="javascript:;"><i class="fa fa-plug" aria-hidden="true"></i><span> 基本元素</span></a>
           <dl class="layui-nav-child">
             <dd>
-              <a href="javascript:;" data-url="${ctx}/lay/user"><i class="layui-icon" data-icon=""></i><cite>用户管理</cite></a>
+              <a href="javascript:;" data-url="${ctx}/layui/user"><i class="layui-icon" data-icon=""></i><cite>用户管理</cite></a>
             </dd>
             <dd>
-              <a href="javascript:;" data-url="form.html" data-icon="fa-user" data-title="表单" kit-target data-id='2'><i class="fa fa-user" aria-hidden="true"></i><span> 表单</span></a>
-            </dd>
-            <dd>
-              <a href="javascript:;" data-url="nav.html" data-icon="&#xe628;" data-title="导航栏" kit-target data-id='3'><i class="layui-icon">&#xe628;</i><span> 导航栏</span></a>
-            </dd>
-            <dd>
-              <a href="javascript:;" data-url="list4.html" data-icon="&#xe614;" data-title="列表四" kit-target data-id='4'><i class="layui-icon">&#xe614;</i><span> 列表四</span></a>
-            </dd>
-            <dd>
-              <a href="javascript:;" kit-target data-options="{url:'https://www.baidu.com',icon:'&#xe658;',title:'百度一下',id:'5'}"><i class="layui-icon">&#xe658;</i><span> 百度一下</span></a>
+              <a href="javascript:;" data-url="${ctx}/layui/role"><i class="layui-icon" data-icon=""></i><cite>角色管理</cite></a>
             </dd>
           </dl>
         </li>
@@ -131,7 +122,7 @@
       </ul>
       <div class="layui-tab-content clildFrame">
         <div class="layui-tab-item layui-show layui-anim layui-anim-upbit">
-          <iframe src="${ctx}/lay/home"></iframe>
+          <iframe src="${ctx}/layui/home"></iframe>
         </div>
       </div>
     </div>

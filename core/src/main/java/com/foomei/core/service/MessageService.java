@@ -45,7 +45,7 @@ public class MessageService extends JpaServiceImpl<Message, String> {
   public List<Message> save(String content, Long sender, List<Long> receivers) {
     MessageText text = messageTextService.save(new MessageText(content, sender != null ? new BaseUser(sender) : null));
 
-    List messages = Lists.newArrayList();
+    List<Message> messages = Lists.newArrayList();
     for(Long receiver : receivers) {
       Message message = save(new Message(text, new BaseUser(receiver)));
       messages.add(message);

@@ -78,8 +78,7 @@
               </div>
             </c:forEach>
           </c:if>
-          <form class="form-horizontal" id="validation-form" action="${ctx}/admin/role/${action}" method="post"
-                role="form">
+          <form class="form-horizontal" id="validation-form" action="${ctx}/admin/role/${action}" method="post" role="form">
             <input type="hidden" name="id" id="id" value="${role.id}"/>
             <!-- #section:elements.form -->
             <div class="row">
@@ -90,8 +89,7 @@
                   </label>
                   <div class="col-xs-12 col-sm-8">
                     <div class="clearfix">
-                      <input type="text" name="code" value="${role.code}" id="form-code" placeholder="代码"
-                             class="form-control"/>
+                      <input type="text" name="code" value="${role.code}" id="form-code" placeholder="代码" class="form-control"/>
                     </div>
                   </div>
                 </div>
@@ -103,8 +101,7 @@
                   </label>
                   <div class="col-xs-12 col-sm-8">
                     <div class="clearfix">
-                      <input type="text" name="name" value="${role.name}" id="form-name" placeholder="名称"
-                             class="form-control"/>
+                      <input type="text" name="name" value="${role.name}" id="form-name" placeholder="名称" class="form-control"/>
                     </div>
                   </div>
                 </div>
@@ -136,9 +133,7 @@
                             <c:set var="selectedPermission" value="true"/>
                           </c:if>
                         </c:forEach>
-                        <option value="${permission.id}"
-                                <c:if test="${selectedPermission}">selected</c:if>>${permission.name}(${permission.code})
-                        </option>
+                        <option value="${permission.id}" <c:if test="${selectedPermission}">selected</c:if>>${permission.name}(${permission.code})</option>
                       </c:forEach>
                     </select>
                     <!-- /section:plugins/input.duallist -->

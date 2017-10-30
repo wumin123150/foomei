@@ -23,7 +23,7 @@
 	<mapping path="/druid/*" exclue="true"/>
 	<mapping path="/swagger-*.*" exclue="true"/>
 	<mapping path="/error/*" exclue="true"/>
-	<mapping path="/lay/*" exclue="true"/>
+	<mapping path="/layui/*" exclue="true"/>
 
 	<!-- 自定义 tag 规则 -->
  	<content-processor>

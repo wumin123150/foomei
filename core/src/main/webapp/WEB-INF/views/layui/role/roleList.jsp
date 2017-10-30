@@ -6,7 +6,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>用户管理</title>
+  <title>角色管理</title>
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -110,101 +110,33 @@
   <form class="layui-form" lay-filter="kit-search-form">
     <div class="kit-table-header">
       <div class="kit-search-btns">
-        <a href="javascript:;" data-action="create" class="layui-btn layui-btn-small"><i class="layui-icon">&#xe608;</i>新增</a>
-        <a href="javascript:;" data-action="delSelector" class="layui-btn layui-btn-small layui-btn-danger"><i class="layui-icon">&#xe640;</i>删除所选</a>
+        <a href="javascript:;" data-action="add" class="layui-btn layui-btn-small"><i class="layui-icon">&#xe608;</i>新增</a>
+        <a href="javascript:;" data-action="batchDel" class="layui-btn layui-btn-small layui-btn-danger"><i class="layui-icon">&#xe640;</i>删除所选</a>
       </div>
       <div class="kit-search-inputs">
         <div class="kit-search-keyword">
           <input type="text" class="layui-input" name="searchKey" placeholder="搜索关键字.." />
           <button lay-submit lay-filter="search"><i class="layui-icon">&#xe615;</i></button>
         </div>
-        <div class="kit-search-more" id="kit-search-more">更多筛选<i class="layui-icon">&#xe61a;</i></div>
-      </div>
-    </div>
-    <div class="kit-search-mored layui-anim layui-anim-upbit">
-      <div class="kit-search-body">
-        <div class="layui-form-item">
-          <label class="layui-form-label">输入框</label>
-          <div class="layui-input-block">
-            <input type="text" name="title" placeholder="请输入标题" autocomplete="off" class="layui-input">
-          </div>
-        </div>
-        <div class="layui-form-item">
-          <div class="layui-inline">
-            <label class="layui-form-label">验证手机</label>
-            <div class="layui-input-inline">
-              <input type="tel" name="phone" autocomplete="off" class="layui-input">
-            </div>
-          </div>
-          <div class="layui-inline">
-            <label class="layui-form-label">验证邮箱</label>
-            <div class="layui-input-inline">
-              <input type="text" name="email" autocomplete="off" class="layui-input">
-            </div>
-          </div>
-        </div>
-        <div class="layui-form-item">
-          <div class="layui-inline">
-            <label class="layui-form-label">范围</label>
-            <div class="layui-input-inline" style="width: 100px;">
-              <input type="text" name="price_min" placeholder="￥" autocomplete="off" class="layui-input">
-            </div>
-            <div class="layui-form-mid">-</div>
-            <div class="layui-input-inline" style="width: 100px;">
-              <input type="text" name="price_max" placeholder="￥" autocomplete="off" class="layui-input">
-            </div>
-          </div>
-        </div>
-        <div class="layui-form-item">
-          <label class="layui-form-label">单行选择框</label>
-          <div class="layui-input-block">
-            <select name="interest" lay-filter="aihao">
-              <option value=""></option>
-              <option value="0">写作</option>
-              <option value="1" selected="">阅读</option>
-              <option value="2">游戏</option>
-              <option value="3">音乐</option>
-              <option value="4">旅行</option>
-            </select>
-          </div>
-        </div>
-      </div>
-      <div class="kit-search-footer">
-        <button type="reset" class="layui-btn layui-btn-small layui-btn-primary kit-btn">重置</button>
-        <button lay-submit lay-filter="search" class="layui-btn layui-btn-small kit-btn">确定</button>
       </div>
     </div>
   </form>
   <div class="kit-table-body">
     <table id="kit-table" lay-filter="kit-table"></table>
     <script type="text/html" id="kit-table-bar">
-      <a class="layui-btn layui-btn-mini" lay-event="detail">查看</a>
       <a class="layui-btn layui-btn-mini" lay-event="edit">编辑</a>
       <a class="layui-btn layui-btn-danger layui-btn-mini" lay-event="del">删除</a>
-    </script>
-    <script type="text/html" id="statusTpl">
-      {{#  if(d.status == 'A'){ }}
-      <span class="layui-badge layui-bg-green">正常</span>
-      {{#  } else if(d.status == 'E') { }}
-      <span class="layui-badge layui-bg-orange">过期</span>
-      {{#  } else if(d.status == 'L') { }}
-      <span class="layui-badge layui-bg-cyan">锁定</span>
-      {{#  } else if(d.status == 'T') { }}
-      <span class="layui-badge">停用</span>
-      {{#  } else if(d.status == 'I') { }}
-      <span class="layui-badge layui-bg-gray">未激活</span>
-      {{#  } else { }}
-      <span class="layui-badge layui-bg-gray">未知</span>
-      {{#  } }}
     </script>
   </div>
 </div>
 <script src="${ctx}/static/js/layui/layui.js"></script>
 </body>
 <script>
+  var idx;
   var tableId = 'kit-table';
   var tableFilter = 'kit-table';
-  var table_page_url = "${ctx}/api/user/list";
+  var table_page_url = "${ctx}/api/role/list";
+  var table_del_url = "${ctx}/api/role/delete/";
   layui.use('table', function () {
     var table = layui.table,
       layer = layui.layer,
@@ -220,18 +152,15 @@
         [
           { checkbox: true, fixed: true },
           { field: 'id', title: 'ID', width: 80 },
-          { field: 'loginName', title: '账号', width: 100, sort: true },
-          { field: 'name', title: '姓名', width: 150 },
-          { field: 'mobile', title: '手机号', width: 150 },
-          { field: 'email', title: '邮箱', width: 150 },
-          { field: 'status', title: '状态', width: 80, templet: '#statusTpl' },
+          { field: 'code', title: '代码', width: 100, sort: true },
+          { field: 'name', title: '名称', width: 150 },
           { fixed: 'right', title: '操作', width: 180, align: 'center', toolbar: '#kit-table-bar' }
         ]
       ],
       even: true,
       page: true,
-      limits: [10, 20, 50, 100],
-      limit: 10,
+      limits: [2, 20, 50, 100],
+      limit: 2,
       request: {
         pageName: 'pageNo',
         limitName: 'pageSize'
@@ -248,9 +177,6 @@
     form.render(null, 'kit-search-form');
     //监听搜索表单提交
     form.on('submit(search)', function (data) {
-      console.log(data.field);
-      //layer.msg(JSON.stringify(data.field));
-      //带条件查询
       kitTable.reload({
         where: data.field
       });
@@ -273,22 +199,28 @@
       var tr = obj.tr; //获得当前行 tr 的DOM对象
       //console.log(obj);
 
-      if (layEvent === 'detail') { //查看
+      if (layEvent === 'view') { //查看
         //do somehing
       } else if (layEvent === 'del') { //删除
-        // var htm = [
-        //     '<p>确定要删除吗?</p>',
-        //     '<button class="layui-btn layui-btn-mini layui-btn-primary">取消</button>',
-        //     '<button class="layui-btn layui-btn-mini">确定</button>'
-        // ];
-        // layer.tips(htm.join(''), this, {
-        //     time: 0,
-        //     skin: 'kit-table'
-        // });
-        layer.confirm('真的删除行么', function (index) {
-          obj.del(); //删除对应行（tr）的DOM结构
+        layer.confirm('你确定要删除吗？', function (index) {
           layer.close(index);
-          //向服务端发送删除指令
+          $.ajax({
+            url: table_del_url + data.id,
+            type: 'GET',
+            cache: false,
+            dataType: 'json',
+            success: function (result) {
+              if (result.success) {
+                layer.msg('删除成功', {icon: 1});
+                kitTable.reload();
+              } else {
+                layer.msg(result.message, {icon: 5});
+              }
+            },
+            error: function () {
+              layer.msg('未知错误，请联系管理员', {icon: 5});
+            }
+          });
         });
       } else if (layEvent === 'edit') { //编辑
         //do something
@@ -309,17 +241,17 @@
       var $that = $(this),
         action = $that.data('action');
       switch (action) {
-        case 'create':
+        case 'add':
           var index = layer.open({
-            title : "添加会员",
+            title : "添加角色",
             type : 2,
-            content : "addUser.html",
+            content : "${ctx}/layui/role/create",
             success : function(layero, index){
               setTimeout(function(){
                 layui.layer.tips('点击此处列表', '.layui-layer-setwin .layui-layer-close', {
                   tips: 3
                 });
-              },50000)
+              },500000)
             }
           })
           //改变窗口大小时，重置弹窗的高度，防止超出可视区域（如F12调出debug的操作）
@@ -328,7 +260,9 @@
           })
           layer.full(index);
           break;
-        case 'delSelector':
+        case 'batchDel':
+
+
           break;
       }
     });

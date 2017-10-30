@@ -18,7 +18,7 @@
   <meta name="format-detection" content="telephone=no">
   <link rel="stylesheet" href="${ctx}/static/js/layui/css/layui.css" media="all"/>
   <link rel="stylesheet" href="//at.alicdn.com/t/font_tnyc012u2rlwstt9.css" media="all" />
-  <link rel="stylesheet" href="${ctx}/static/js/layui/layui-main.css" media="all"/>
+  <link rel="stylesheet" href="${ctx}/static/js/layui/main.css" media="all"/>
 </head>
 <body class="childrenBody">
 <div class="panel_box row">
