@@ -15,98 +15,11 @@
   <meta name="format-detection" content="telephone=no">
   <link rel="stylesheet" href="${ctx}/static/js/layui/css/layui.css" media="all"/>
   <link rel="stylesheet" href="//at.alicdn.com/t/font_tnyc012u2rlwstt9.css" media="all" />
+  <link rel="stylesheet" href="${ctx}/static/js/layui/page.css" media="all"/>
+  <style type="text/css">
+  </style>
 </head>
-<style>
-  .kit-table, .kit-table .kit-table-header {
-    position: relative;
-    box-shadow: 0 1px 7px 0 #ccc;
-  }
-
-  .kit-table .kit-table-header {
-    height: 50px;
-  }
-
-  .kit-table .kit-table-header .kit-search-btns {
-    padding: 10px;
-    position: absolute;
-  }
-
-  .kit-table .kit-table-header .kit-search-inputs {
-    position: absolute;
-    right: 0px;
-    top: 0;
-    padding: 10px 25px 10px 10px;
-    display: inline;
-  }
-
-  .kit-table .kit-table-header .kit-search-inputs .kit-search-keyword {
-    margin-right: 10px;
-    position: relative;
-    display: inline-block;
-  }
-
-  .kit-table .kit-table-header .kit-search-inputs .kit-search-keyword input {
-    height: 30px;
-    line-height: 30px;
-    width: 200px;
-    padding-right: 32px;
-    display: inline-block;
-  }
-
-  .kit-table .kit-table-header .kit-search-inputs .kit-search-keyword button {
-    position: absolute;
-    right: 0;
-    top: 0;
-    width: 30px;
-    height: 30px;
-    border: 0;
-    cursor: pointer;
-    background-color: #009688;
-    color: #fff;
-  }
-
-  .kit-table .kit-table-header .kit-search-inputs .kit-search-more {
-    cursor: pointer;
-    color: #009688;
-    display: inline-block;
-  }
-
-  .kit-table .kit-search-mored {
-    width: 100%;
-    height: auto;
-    top: 51px;
-    background-color: #fff;
-    z-index: 5;
-    box-shadow: 0 4px 7px -3px #ccc;
-    position: absolute;
-    margin-bottom: 10px;
-    display: none;
-  }
-
-  .kit-table .kit-search-mored .kit-search-body {
-    padding: 10px 10px 45px;
-  }
-
-  .kit-table .kit-search-mored .kit-search-footer {
-    height: 50px;
-    bottom: 0;
-    left: 0;
-    position: absolute;
-    width: 100%;
-    border-top: 1px solid #e2e2e2;
-    text-align: right;
-  }
-
-  .kit-table .kit-search-mored .kit-search-footer .kit-btn {
-    margin: 10px 5px;
-    padding: 0 15px;
-  }
-
-  .kit-table .kit-table-body .layui-table-view {
-    margin: 0;
-  }
-</style>
-<body class="childrenBody">
+<body>
 <div class="kit-table">
   <form class="layui-form" lay-filter="kit-search-form">
     <div class="kit-table-header">
@@ -117,6 +30,8 @@
 
         <div class="kit-search-keyword">
           <input type="text" class="layui-input" name="timeRange" id="timeRange" placeholder="时间范围">
+          <input type="hidden" name="startTime" id="startTime"/>
+          <input type="hidden" name="endTime" id="endTime"/>
           <input type="text" class="layui-input" name="searchKey" placeholder="搜索关键字.." />
           <button lay-submit lay-filter="search"><i class="layui-icon">&#xe615;</i></button>
         </div>
@@ -126,6 +41,7 @@
   <div class="kit-table-body">
     <table id="kit-table" lay-filter="kit-table"></table>
     <script type="text/html" id="kit-table-bar">
+      <a class="layui-btn layui-btn-mini" lay-event="view">查看</a>
       <a class="layui-btn layui-btn-danger layui-btn-mini" lay-event="del">删除</a>
     </script>
   </div>
@@ -137,6 +53,7 @@
   var tableFilter = 'kit-table';
   var table_page_url = "${ctx}/api/log/list";
   var table_del_url = "${ctx}/api/log/delete/";
+  var table_view_url = "${ctx}/layui/log/view/";
   var table_batch_del_url = "${ctx}/api/log/batch/delete";
   layui.use(['table', 'laydate'], function () {
     var table = layui.table,
@@ -148,9 +65,17 @@
     laydate.render({
       elem: '#timeRange'
       ,type: 'datetime'
-      ,range: true
+      ,range: '到'
+      ,format: 'yyyy-MM-dd HH:mm'
       ,done: function(value, date){
-        layer.alert('你选择的日期是：' + value + '<br>获得的对象是' + JSON.stringify(date));
+        var idx = value.indexOf(' 到 ');
+        if(idx > 0) {
+          $('#startTime').val(value.substring(0,idx));
+          $('#endTime').val(value.substring(idx+3));
+        } else {
+          $('#startTime').val('');
+          $('#endTime').val('');
+        }
       }
     });
 
@@ -162,14 +87,13 @@
       cols: [
         [
           { checkbox: true, fixed: true },
-          { field: 'id', title: 'ID', width: 80 },
           { field: 'username', title: '操作用户', width: 100, sort: true },
           { field: 'description', title: '操作描述', width: 150 },
-          { field: 'url', title: 'URL', width: 150 },
-          { field: 'ip', title: 'IP', width: 150 },
-          { field: 'logTime', title: '操作日期', width: 150 },
-          { field: 'spendTime', title: '消耗时间', width: 100 },
-          { fixed: 'right', title: '操作', width: 180, align: 'center', toolbar: '#kit-table-bar' }
+          { field: 'url', title: 'URL', width: 350 },
+          { field: 'ip', title: 'IP', width: 120 },
+          { field: 'logTime', title: '操作日期', width: 160, sort: true },
+          { field: 'spendTime', title: '消耗时间', width: 90 },
+          { fixed: 'right', title: '操作', width: 120, align: 'center', toolbar: '#kit-table-bar' }
         ]
       ],
       even: true,
@@ -210,9 +134,26 @@
     //监听工具条
     table.on('tool(' + tableFilter + ')', function (obj) {
       var data = obj.data;
+      var layEvent = obj.event;
 
       if (layEvent === 'view') { //查看
-        //do somehing
+        var index = layer.open({
+          title : "查看日志",
+          type : 2,
+          content : table_view_url + data.id,
+          success : function(layero, index){
+            setTimeout(function(){
+              layui.layer.tips('点击此处返回日志列表', '.layui-layer-setwin .layui-layer-close', {
+                tips: 3
+              });
+            },500)
+          }
+        })
+        //改变窗口大小时，重置弹窗的高度，防止超出可视区域（如F12调出debug的操作）
+        $(window).resize(function(){
+          layer.full(index);
+        })
+        layer.full(index);
       } else if (layEvent === 'del') { //删除
         layer.confirm('你确定要删除吗？', function (index) {
           layer.close(index);
@@ -226,7 +167,7 @@
                 layer.msg('删除成功', {icon: 1});
                 kitTable.reload();
               } else {
-                layer.msg(result.message, {icon: 5});
+                layer.msg(result.message, {icon: 2});
               }
             },
             error: function () {
@@ -271,7 +212,7 @@
                   layer.msg('删除成功', {icon: 1});
                   kitTable.reload();
                 } else {
-                  layer.msg(result.message, {icon: 5});
+                  layer.msg(result.message, {icon: 2});
                 }
               },
               error: function () {

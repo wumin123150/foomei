@@ -133,8 +133,7 @@
               </div>
             </c:forEach>
           </c:if>
-          <form class="form-horizontal" id="validation-form" action="${ctx}/admin/user/${action}" method="post"
-                role="form" enctype="multipart/form-data">
+          <form class="form-horizontal" id="validation-form" action="${ctx}/admin/user/${action}" method="post" role="form">
             <input type="hidden" name="id" id="id" value="${user.id}"/>
             <!-- #section:elements.form -->
             <div class="row">
@@ -206,7 +205,7 @@
                       <div class="radio">
                         <label>
                           <input type="radio" name="sex" class="ace" value="0" <c:if test="${user.sex eq 0}"> checked</c:if>>
-                          <span class="lbl">未知</span>
+                          <span class="lbl">保密</span>
                         </label>
                         <label>
                           <input type="radio" name="sex" class="ace" value="1" <c:if test="${user.sex eq 1}"> checked</c:if>>

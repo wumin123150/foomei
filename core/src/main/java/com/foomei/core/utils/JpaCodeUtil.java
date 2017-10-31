@@ -626,7 +626,9 @@ public class JpaCodeUtil {
       String dataType = toType(columnDefine.get("type"));
       String isNull = columnDefine.get("isNull");
       String stringLength = columnDefine.get("stringLength");
-      if (!StringUtils.equalsIgnoreCase(columnName, "id")) {
+      if (!StringUtils.equalsIgnoreCase(columnName, "id") && !StringUtils.equalsIgnoreCase(columnName, "del_flag")
+        && !StringUtils.equalsIgnoreCase(columnName, "creator") && !StringUtils.equalsIgnoreCase(columnName, "create_time")
+        && !StringUtils.equalsIgnoreCase(columnName, "updator") && !StringUtils.equalsIgnoreCase(columnName, "update_time")) {
         if (StringUtils.equalsIgnoreCase(isNull, "NO")) {
           if(fields.containsKey(toField(columnName))) {
             fields.get(toField(columnName)).add("required: true");
@@ -643,7 +645,7 @@ public class JpaCodeUtil {
           }
         }
 
-        if((StringUtils.equals(dataType, "Long") || StringUtils.equals(dataType, "Integer")) && StringUtils.isEmpty(consts)) {
+        if((StringUtils.equals(dataType, "Long") || StringUtils.equals(dataType, "Integer")) && StringUtils.isEmpty(consts) && !StringUtils.endsWith(columnName, "_id")) {
           if(fields.containsKey(toField(columnName))) {
             fields.get(toField(columnName)).add("digits: true");
           } else {

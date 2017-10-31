@@ -7,6 +7,7 @@ import com.foomei.common.persistence.JqGridFilter;
 import com.foomei.common.persistence.search.SearchRequest;
 import com.foomei.core.dto.AnnexDto;
 import com.foomei.core.entity.Annex;
+import com.foomei.core.entity.User;
 import com.foomei.core.service.AnnexService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -22,9 +23,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 
 @Api(description = "附件接口")
 @RestController
@@ -52,6 +56,16 @@ public class AnnexEndpoint {
       page = annexService.getPage(pageQuery.getSearchKey(), startTime, endTime, pageQuery.buildPageRequest(new Sort(Sort.Direction.DESC, Annex.PROP_CREATE_TIME)));
     }
     return ResponseResult.createSuccess(page, Annex.class, AnnexDto.class);
+  }
+
+  @ApiOperation(value = "附件保存", httpMethod = "POST")
+  @RequestMapping(value = "save")
+  public ResponseResult save(@RequestParam MultipartFile file) throws IOException {
+    if (file != null && !file.isEmpty()) {
+      Annex annex = annexService.save(file.getBytes(), file.getOriginalFilename(), Annex.PATH_TEMP, null, Annex.OBJECT_TYPE_TEMP);
+      return ResponseResult.createSuccess(annex, AnnexDto.class);
+    }
+    return ResponseResult.createParamError("请上传文件");
   }
 
   @ApiOperation(value = "附件删除", httpMethod = "GET")

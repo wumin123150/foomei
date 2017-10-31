@@ -1,0 +1,97 @@
+.kit-main {
+    margin: 10px 10px 0;
+}
+
+.kit-table, .kit-table .kit-table-header {
+    position: relative;
+    box-shadow: 0 1px 7px 0 #ccc;
+}
+
+.kit-table .kit-table-header {
+    height: 50px;
+}
+
+.kit-table .kit-table-header .kit-search-btns {
+    padding: 10px;
+    position: absolute;
+}
+
+.kit-table .kit-table-header .kit-search-inputs {
+    position: absolute;
+    right: 0px;
+    top: 0;
+    padding: 10px 25px 10px 10px;
+    display: inline;
+}
+
+.kit-table .kit-table-header .kit-search-inputs .kit-search-keyword {
+    margin-right: 10px;
+    position: relative;
+    display: inline-block;
+}
+
+.kit-table .kit-table-header .kit-search-inputs .kit-search-keyword input {
+    height: 30px;
+    line-height: 30px;
+    width: 200px;
+    padding-right: 32px;
+    display: inline-block;
+}
+
+.kit-table .kit-table-header .kit-search-inputs .kit-search-keyword button {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 30px;
+    height: 30px;
+    border: 0;
+    cursor: pointer;
+    background-color: #009688;
+    color: #fff;
+}
+
+.kit-table .kit-table-header .kit-search-inputs .kit-search-more {
+    cursor: pointer;
+    color: #009688;
+    display: inline-block;
+}
+
+.kit-table .kit-search-mored {
+    width: 100%;
+    height: auto;
+    top: 51px;
+    background-color: #fff;
+    z-index: 5;
+    box-shadow: 0 4px 7px -3px #ccc;
+    position: absolute;
+    margin-bottom: 10px;
+    display: none;
+}
+
+.kit-table .kit-search-mored .kit-search-body {
+    padding: 10px 10px 45px;
+}
+
+.kit-table .kit-search-mored .kit-search-footer {
+    height: 50px;
+    bottom: 0;
+    left: 0;
+    position: absolute;
+    width: 100%;
+    border-top: 1px solid #e2e2e2;
+    text-align: right;
+}
+
+.kit-table .kit-search-mored .kit-search-footer .kit-btn {
+    margin: 10px 5px;
+    padding: 0 15px;
+}
+
+.kit-table .kit-table-body .layui-table-view {
+    margin: 0;
+}
+
+.layui-form-item .layui-inline{ width:33.333%; float:left; margin-right:0; }
+@media(max-width:1240px){
+    .layui-form-item .layui-inline{ width:100%; float:none; }
+}

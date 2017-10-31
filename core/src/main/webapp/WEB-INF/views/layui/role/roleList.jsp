@@ -111,7 +111,6 @@
     <div class="kit-table-header">
       <div class="kit-search-btns">
         <a href="javascript:;" data-action="add" class="layui-btn layui-btn-small"><i class="layui-icon">&#xe608;</i>新增</a>
-        <a href="javascript:;" data-action="batchDel" class="layui-btn layui-btn-small layui-btn-danger"><i class="layui-icon">&#xe640;</i>删除所选</a>
       </div>
       <div class="kit-search-inputs">
         <div class="kit-search-keyword">
@@ -132,10 +131,11 @@
 <script src="${ctx}/static/js/layui/layui.js"></script>
 </body>
 <script>
-  var idx;
   var tableId = 'kit-table';
   var tableFilter = 'kit-table';
   var table_page_url = "${ctx}/api/role/list";
+  var table_add_url = "${ctx}/layui/role/create";
+  var table_edit_url = "${ctx}/layui/role/update/";
   var table_del_url = "${ctx}/api/role/delete/";
   layui.use('table', function () {
     var table = layui.table,
@@ -159,8 +159,8 @@
       ],
       even: true,
       page: true,
-      limits: [2, 20, 50, 100],
-      limit: 2,
+      limits: [10, 20, 50, 100],
+      limit: 10,
       request: {
         pageName: 'pageNo',
         limitName: 'pageSize'
@@ -223,13 +223,23 @@
           });
         });
       } else if (layEvent === 'edit') { //编辑
-        //do something
-
-        //同步更新缓存对应的值
-        obj.update({
-          username: '123',
-          title: 'xxx'
-        });
+        var index = layer.open({
+          title : "修改角色",
+          type : 2,
+          content : table_edit_url + data.id,
+          success : function(layero, index){
+            setTimeout(function(){
+              layui.layer.tips('点击此处返回角色列表', '.layui-layer-setwin .layui-layer-close', {
+                tips: 3
+              });
+            },500)
+          }
+        })
+        //改变窗口大小时，重置弹窗的高度，防止超出可视区域（如F12调出debug的操作）
+        $(window).resize(function(){
+          layer.full(index);
+        })
+        layer.full(index);
       }
     });
     $('#kit-search-more').on('click', function () {
@@ -243,15 +253,15 @@
       switch (action) {
         case 'add':
           var index = layer.open({
-            title : "添加角色",
+            title : "新增角色",
             type : 2,
-            content : "${ctx}/layui/role/create",
+            content : table_add_url,
             success : function(layero, index){
               setTimeout(function(){
-                layui.layer.tips('点击此处列表', '.layui-layer-setwin .layui-layer-close', {
+                layui.layer.tips('点击此处返回角色列表', '.layui-layer-setwin .layui-layer-close', {
                   tips: 3
                 });
-              },500000)
+              },500)
             }
           })
           //改变窗口大小时，重置弹窗的高度，防止超出可视区域（如F12调出debug的操作）

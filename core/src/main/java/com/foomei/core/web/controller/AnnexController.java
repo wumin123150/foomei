@@ -1,6 +1,7 @@
 package com.foomei.core.web.controller;
 
 import com.foomei.common.io.ImageUtil;
+import com.foomei.common.web.FileRepository;
 import com.foomei.core.entity.Annex;
 import com.foomei.core.entity.User;
 import com.foomei.core.service.AnnexService;
@@ -11,7 +12,6 @@ import io.swagger.annotations.ApiOperation;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,10 +33,10 @@ public class AnnexController {
 
   private static final String MENU = "annex";
 
-  @Value("${upload.folder:/opt/upload/}")
-  private String root;
   @Autowired
   private AnnexService annexService;
+  @Autowired
+  private FileRepository fileRepository;
   @Autowired
   private UserService userService;
 
@@ -53,7 +53,7 @@ public class AnnexController {
   @RequestMapping(value = "/admin/annex/download/{id}")
   public void download(@PathVariable("id") String id, HttpServletRequest request, HttpServletResponse response) throws Exception {
     Annex attachment = annexService.get(id);
-    File file = new File(root + attachment.getPath());
+    File file = fileRepository.retrieve(attachment.getPath());
 
     if ((!file.exists() || file.length() == 0) && ImageUtil.isScale(file)) {
       String scaleRange = ImageUtil.getScaleRange(file);
@@ -89,7 +89,7 @@ public class AnnexController {
   }
 
   private void handle(String path, HttpServletRequest request, HttpServletResponse response) throws Exception {
-    File file = new File(root + path);
+    File file = fileRepository.retrieve(path);
     String fileName = FilenameUtils.getName(file.getName());
 
     Annex attachment = annexService.getByPath(path);

@@ -5,6 +5,7 @@ import io.swagger.annotations.Api;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -43,9 +44,21 @@ public class AdminController {
     return "layui/role/roleForm";
   }
 
+  @RequestMapping(value = "/layui/role/update/{id}", method = RequestMethod.GET)
+  public String roleUpdate(@PathVariable("id") Long id, Model model) {
+    model.addAttribute("id", id);
+    return "layui/role/roleForm";
+  }
+
   @RequestMapping(value = "/layui/log", method = RequestMethod.GET)
   public String log(Model model) {
     return "layui/log/logList";
+  }
+
+  @RequestMapping(value = "/layui/log/view/{id}", method = RequestMethod.GET)
+  public String log(@PathVariable("id") String id, Model model) {
+    model.addAttribute("id", id);
+    return "layui/log/logView";
   }
 
 }

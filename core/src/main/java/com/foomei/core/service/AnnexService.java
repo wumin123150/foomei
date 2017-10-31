@@ -1,6 +1,7 @@
 package com.foomei.core.service;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -139,6 +140,19 @@ public class AnnexService extends JpaServiceImpl<Annex, String> {
     entity.setPath(filePath);
     entity.setName(FilenameUtils.getName(fileName));
     entity.setType(FilenameUtils.getExtension(fileName).toLowerCase(Locale.ENGLISH));
+    save(entity);
+
+    return entity;
+  }
+
+  @Transactional(readOnly = false)
+  public Annex move(String id, String objectId, String objectType, String path) throws IOException {
+    Annex entity = get(id);
+    String filePath = fileRepository.moveByPath(entity.getPath(), path);
+
+    entity.setObjectId(objectId);
+    entity.setObjectType(objectType);
+    entity.setPath(filePath);
     save(entity);
 
     return entity;
