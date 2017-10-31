@@ -391,7 +391,7 @@
   <!-- page specific plugin scripts -->
   <script src="${ctx}/static/js/jquery.validate.min.js"></script>
   <script src="${ctx}/static/js/additional-methods.min.js"></script>
-  <script src="${ctx}/static/js/jquery.validate-methods.me.js"></script>
+  <script src="${ctx}/static/js/jquery.validate.foomei.js"></script>
   <script src="${ctx}/static/js/messages_zh.min.js"></script>
   <script src="${ctx}/static/js/date-time/bootstrap-datepicker.min.js"></script>
 </pluginJs>

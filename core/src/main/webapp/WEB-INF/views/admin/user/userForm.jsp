@@ -133,7 +133,7 @@
               </div>
             </c:forEach>
           </c:if>
-          <form class="form-horizontal" id="validation-form" action="${ctx}/admin/user/${action}" method="post" role="form">
+          <form class="form-horizontal" id="validation-form" action="${ctx}/api/user/${action}" method="post" role="form">
             <input type="hidden" name="id" id="id" value="${user.id}"/>
             <!-- #section:elements.form -->
             <div class="row">
@@ -174,7 +174,7 @@
                     </label>
                     <div class="col-xs-12 col-sm-8">
                       <div class="input-group">
-                        <input type="password" name="plainPassword" id="form-password" placeholder="6~16个字符，区分大小写"
+                        <input type="password" name="password" id="form-password" placeholder="6~16个字符，区分大小写"
                                class="form-control"/>
                         <span class="input-group-addon pswState"> &nbsp;&nbsp;&nbsp; </span>
                       </div>
@@ -316,16 +316,6 @@
                   </div>
                 </div>
               </div>
-              <div class="col-xs-12 col-sm-6">
-                <div class="form-group">
-                  <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-file"> 头像 </label>
-                  <div class="col-xs-12 col-sm-8">
-                    <div class="clearfix">
-                      <input type="file" name="file" id="form-file" placeholder="头像"/>
-                    </div>
-                  </div>
-                </div>
-              </div>
             </div>
             <div class="clearfix form-actions">
               <div class="col-sm-offset-4 col-sm-8 col-xs-offset-3 col-xs-9">
@@ -354,8 +344,9 @@
   <!-- page specific plugin scripts -->
   <script src="${ctx}/static/js/jquery.validate.min.js"></script>
   <script src="${ctx}/static/js/additional-methods.min.js"></script>
-  <script src="${ctx}/static/js/jquery.validate-methods.me.js"></script>
+  <script src="${ctx}/static/js/jquery.validate.foomei.js"></script>
   <script src="${ctx}/static/js/messages_zh.min.js"></script>
+  <script src="${ctx}/static/js/jquery.form.min.js"></script>
   <script src="${ctx}/static/js/chosen.jquery.min.js"></script>
   <script src="${ctx}/static/js/zTree/jquery.ztree.core.min.js"></script>
   <script src="${ctx}/static/js/zTree/jquery.ztree.excheck.min.js"></script>
@@ -486,17 +477,6 @@
         }
       });
 
-      $('#form-file').ace_file_input({
-        style: 'well',
-        btn_choose: '点击选择头像',
-        btn_change: null,
-        no_icon: 'ace-icon fa fa-picture-o',
-        droppable: true,
-        thumbnail: 'small',
-        //large | fit
-        whitelist: 'gif|png|jpg|jpeg'
-      });
-
       $('#validation-form').validate({
         errorElement: 'div',
         errorClass: 'help-block',
@@ -523,7 +503,7 @@
             required: true,
             maxlength: 64
           },
-          plainPassword: {
+          password: {
             required: true,
             rangelength: [6, 16],
             pass: true
@@ -577,7 +557,9 @@
           else error.insertAfter(element.parent());
         },
         submitHandler: function (form) {
-          form.submit();
+          //form.submit();
+          $('#validation-form').ajaxForm();
+          return false;
         },
         invalidHandler: function (form) {
         }

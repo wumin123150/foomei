@@ -10,6 +10,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import com.foomei.common.web.ThreadContext;
+import com.foomei.core.web.CoreThreadContext;
 import com.google.common.base.Charsets;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,6 +90,11 @@ public class UserService extends JpaServiceImpl<User, Long> {
    */
   @Transactional(readOnly = false)
   public User save(User user) {
+    if(user.getId() == null) {
+      user.setRegisterTime(new Date());
+      user.setRegisterIp(CoreThreadContext.getIp());
+    }
+
     if (isSupervisor(user)) {
       logger.warn("操作员{}尝试修改超级管理员用户", ThreadContext.getUserName());
       throw new ServiceException("不能修改超级管理员用户");
