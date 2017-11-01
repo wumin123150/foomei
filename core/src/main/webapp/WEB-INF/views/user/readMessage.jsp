@@ -70,16 +70,6 @@
       <div class="row">
         <div class="col-xs-12">
           <!-- PAGE CONTENT BEGINS -->
-          <c:if test="${not empty message}">
-            <div class="alert alert-block alert-success">
-              <button type="button" class="close" data-dismiss="alert">
-                <i class="ace-icon fa fa-times"></i>
-              </button>
-
-              <i class="ace-icon fa fa-check green"></i>
-                ${message}
-            </div>
-          </c:if>
           <div class="row">
             <div class="col-xs-12">
               <form class="form-search" action="">
@@ -174,15 +164,6 @@
       $("#btn-search").click(function () {
         $(grid_selector).foomei_JqGrid('search', {
           "searchKey": $('#searchKey').val()
-        });
-      });
-
-      $(document).on('click', ".btn-del", function () {
-        var id = $(this).attr("data-id");
-        BootstrapDialog.confirm('你确定要删除吗？', function (result) {
-          if (result) {
-            window.location.href = grid_del_url + id;
-          }
         });
       });
     })

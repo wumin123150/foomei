@@ -1,16 +1,13 @@
 package com.foomei.core.web.controller;
 
+import com.foomei.core.service.DataTypeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import com.foomei.core.service.DataDictionaryService;
-import com.foomei.core.service.DataTypeService;
 
 @Api(description = "数据字典管理")
 @Controller
@@ -21,8 +18,6 @@ public class DataDictionaryController {
 
   @Autowired
   private DataTypeService dataTypeService;
-  @Autowired
-  private DataDictionaryService dataDictionaryService;
 
   @ApiOperation(value = "数据字典页面", httpMethod = "GET")
   @RequiresRoles("admin")

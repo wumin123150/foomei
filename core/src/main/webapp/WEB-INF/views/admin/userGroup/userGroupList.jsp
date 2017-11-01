@@ -118,16 +118,6 @@
         </div>
         <div class="col-xs-9">
           <!-- PAGE CONTENT BEGINS -->
-          <c:if test="${not empty message}">
-            <div class="alert alert-block alert-success">
-              <button type="button" class="close" data-dismiss="alert">
-                <i class="ace-icon fa fa-times"></i>
-              </button>
-
-              <i class="ace-icon fa fa-check green"></i>
-                ${message}
-            </div>
-          </c:if>
           <ul class="nav nav-tabs" id="myTab">
             <li class="active">
               <a data-toggle="tab" href="#home" aria-expanded="true">
@@ -333,6 +323,7 @@
                 success: function (result) {
                   if (result.success) {
                     $(grid_selector).foomei_JqGrid('reload');
+                    toastr.success('保存成功');
                     reloadTree();
                     dialogRef.close();
                   } else {
@@ -394,6 +385,7 @@
                     success: function (result) {
                       if (result.success) {
                         $(grid_selector).foomei_JqGrid('reload');
+                        toastr.success('保存成功');
                         reloadTree();
                         dialogRef.close();
                       } else {
@@ -477,6 +469,7 @@
                 success: function (result) {
                   if (result.success) {
                     $(auth_selector).foomei_JqGrid('reload');
+                    toastr.success('保存成功');
                     dialogRef.close();
                   } else {
                     var error = $('<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert"><i class="ace-icon fa fa-times"></i></button><i class="ace-icon fa fa-times"></i>' + result.message + '</div>');
@@ -514,8 +507,8 @@
             dataType: 'json',
             success: function (result) {
               if (result.success) {
-                toastr.success('删除成功');
                 $(auth_selector).foomei_JqGrid('reload');
+                toastr.success('删除成功');
               } else {
                 toastr.error(result.message);
               }

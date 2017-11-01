@@ -55,30 +55,7 @@
       <div class="row">
         <div class="col-xs-12">
           <!-- PAGE CONTENT BEGINS -->
-          <c:if test="${not empty errors}">
-            <c:forEach items="${errors.fieldErrors}" var="error">
-              <div class="alert alert-danger">
-                <button type="button" class="close" data-dismiss="alert">
-                  <i class="ace-icon fa fa-times"></i>
-                </button>
-
-                <i class="ace-icon fa fa-times"></i>
-                  ${error.defaultMessage}
-              </div>
-            </c:forEach>
-            <c:forEach items="${errors.globalErrors}" var="error">
-              <div class="alert alert-danger">
-                <button type="button" class="close" data-dismiss="alert">
-                  <i class="ace-icon fa fa-times"></i>
-                </button>
-
-                <i class="ace-icon fa fa-times"></i>
-                  ${error.defaultMessage}
-              </div>
-            </c:forEach>
-          </c:if>
-          <form class="form-horizontal" id="validation-form" action="${ctx}/admin/dataType/${action}" method="post"
-                role="form">
+          <form class="form-horizontal" id="validation-form" action="" method="post" role="form">
             <input type="hidden" name="id" id="id" value="${dataType.id}"/>
             <!-- #section:elements.form -->
             <div class="row">
@@ -89,8 +66,7 @@
                   </label>
                   <div class="col-xs-12 col-sm-8">
                     <div class="clearfix">
-                      <input type="text" name="code" value="${dataType.code}" id="form-code" placeholder="代码"
-                             class="form-control"/>
+                      <input type="text" name="code" value="${dataType.code}" id="form-code" placeholder="代码" class="form-control"/>
                     </div>
                   </div>
                 </div>
@@ -102,8 +78,7 @@
                   </label>
                   <div class="col-xs-12 col-sm-8">
                     <div class="clearfix">
-                      <input type="text" name="name" value="${dataType.name}" id="form-name" placeholder="名称"
-                             class="form-control"/>
+                      <input type="text" name="name" value="${dataType.name}" id="form-name" placeholder="名称" class="form-control"/>
                     </div>
                   </div>
                 </div>
@@ -117,8 +92,7 @@
                   </label>
                   <div class="col-xs-12 col-sm-8">
                     <div class="clearfix">
-                      <input type="text" name="grade" value="${dataType.grade}" id="form-grade" placeholder="层级"
-                             class="form-control"/>
+                      <input type="text" name="grade" value="${dataType.grade}" id="form-grade" placeholder="层级" class="form-control"/>
                     </div>
                   </div>
                 </div>
@@ -130,10 +104,8 @@
                   </label>
                   <div class="col-xs-12 col-sm-8">
                     <div class="clearfix" style="padding-top: 7px;">
-                      <input type="hidden" name="editable" value="${dataType.editable}" placeholder="数据可修改"
-                             class="form-control"/>
-                      <input type="checkbox" id="form-editable" class="ace ace-switch ace-switch-6"
-                             <c:if test="${dataType.editable}">checked</c:if> />
+                      <input type="hidden" name="editable" value="${dataType.editable}" placeholder="数据可修改" class="form-control"/>
+                      <input type="checkbox" id="form-editable" class="ace ace-switch ace-switch-6" <c:if test="${dataType.editable}">checked</c:if> />
                       <span class="lbl"></span>
                     </div>
                   </div>
@@ -146,8 +118,7 @@
                   <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-remark">备注</label>
                   <div class="col-xs-12 col-sm-8">
                     <div class="clearfix">
-                      <textarea name="remark" id="form-remark" placeholder="备注"
-                                class="form-control">${dataType.remark}</textarea>
+                      <textarea name="remark" id="form-remark" placeholder="备注" class="form-control">${dataType.remark}</textarea>
                     </div>
                   </div>
                 </div>
@@ -254,7 +225,29 @@
           else error.insertAfter(element.parent());
         },
         submitHandler: function (form) {
-          form.submit();
+          //form.submit();
+          var data = $('#validation-form').serialize();
+          $.ajax({
+            url: '${ctx}/api/dataType/save',
+            type: 'POST',
+            cache: false,
+            data: data,
+            dataType: 'json',
+            success: function (result) {
+              if (result.success) {
+                toastr.success('保存成功');
+                setTimeout(function(){
+                  history.back();
+                },1000);
+              } else {
+                toastr.error(result.message);
+              }
+            },
+            error: function () {
+              toastr.error('未知错误，请联系管理员');
+            }
+          });
+          return false;
         },
         invalidHandler: function (form) {
         }

@@ -6,42 +6,33 @@ import com.foomei.common.dto.PageQuery;
 import com.foomei.common.dto.ResponseResult;
 import com.foomei.common.mapper.BeanMapper;
 import com.foomei.common.mapper.JsonMapper;
-import com.foomei.common.net.IPUtil;
 import com.foomei.common.persistence.JqGridFilter;
 import com.foomei.common.persistence.search.SearchRequest;
-import com.foomei.core.dto.DataDictionaryDto;
-import com.foomei.core.dto.MessageDto;
-import com.foomei.core.dto.UserDto;
-import com.foomei.core.entity.*;
+import com.foomei.core.entity.Annex;
+import com.foomei.core.entity.BaseUser;
+import com.foomei.core.entity.User;
+import com.foomei.core.service.AnnexService;
 import com.foomei.core.service.BaseUserService;
 import com.foomei.core.service.UserService;
 import com.foomei.core.vo.UserVo;
-import com.foomei.core.web.CoreThreadContext;
 import com.google.common.collect.Maps;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 import javax.validation.Validation;
-import java.util.Date;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-
-import static org.apache.shiro.web.filter.mgt.DefaultFilter.user;
 
 @Api(description = "用户接口")
 @RestController
@@ -52,12 +43,14 @@ public class UserEndpoint {
   private UserService userService;
   @Autowired
   private BaseUserService baseUserService;
+  @Autowired
+  private AnnexService annexService;
 
   static {
     Map<String, String> mapFields = Maps.newHashMap();
     mapFields.put("plainPassword", "password");
-    mapFields.put("roleList.id", "roles");
-    mapFields.put("groupList.id", "groups");
+    mapFields.put("roleList{id}", "roles{}");
+    mapFields.put("groupList{id}", "groups{}");
     BeanMapper.registerClassMap(User.class, UserVo.class, mapFields);
   }
 
@@ -103,8 +96,38 @@ public class UserEndpoint {
   @ApiOperation(value = "用户新增", httpMethod = "POST")
   @RequiresRoles("admin")
   @RequestMapping(value = "create", method = RequestMethod.POST)
-  public ResponseResult create(@RequestBody UserVo vo) {
-    User user = BeanMapper.map(vo, User.class);
+  public ResponseResult create(@RequestBody UserVo userVo) throws IOException {
+    User user = BeanMapper.map(userVo, User.class);
+
+    ComplexResult result = validate(user);
+    if (!result.isSuccess()) {
+      return ResponseResult.createParamError(result);
+    }
+
+    user = userService.save(user);
+
+    if(StringUtils.isNotEmpty(userVo.getAvatarId())) {
+      Annex annex = annexService.move(userVo.getAvatarId(), User.USER_ANNEX_PATH, String.valueOf(user.getId()), User.USER_ANNEX_TYPE);
+      user.setAvatar(annex.getPath());
+      userService.save(user);
+    }
+
+    return ResponseResult.SUCCEED;
+  }
+
+  @ApiOperation(value = "用户修改", httpMethod = "POST")
+  @RequiresRoles("admin")
+  @RequestMapping(value = "update", method = RequestMethod.POST)
+  public ResponseResult update(@RequestBody UserVo userVo) throws IOException {
+    User user = userService.get(userVo.getId());
+    user = BeanMapper.map(userVo, user, UserVo.class, User.class);
+    user.setPlainPassword(null);//修改不能设置密码
+
+    if(StringUtils.isNotEmpty(userVo.getAvatarId())) {
+      Annex annex = annexService.move(userVo.getAvatarId(), User.USER_ANNEX_PATH, String.valueOf(user.getId()), User.USER_ANNEX_TYPE);
+      user.setAvatar(annex.getPath());
+      userService.save(user);
+    }
 
     ComplexResult result = validate(user);
     if (!result.isSuccess()) {
@@ -115,19 +138,31 @@ public class UserEndpoint {
     return ResponseResult.SUCCEED;
   }
 
-  @ApiOperation(value = "用户修改", httpMethod = "POST")
+  @ApiOperation(value = "密码重置", httpMethod = "POST")
   @RequiresRoles("admin")
-  @RequestMapping(value = "update", method = RequestMethod.POST)
-  public ResponseResult update(@RequestBody UserVo vo) {
-    User user = userService.get(vo.getId());
-    user = BeanMapper.map(vo, user, UserVo.class, User.class);
-
-    ComplexResult result = validate(user);
-    if (!result.isSuccess()) {
-      return ResponseResult.createParamError(result);
+  @RequestMapping(value = "reset", method = RequestMethod.POST)
+  public ResponseResult reset(String loginName, String plainPassword) {
+    if (StringUtils.isEmpty(plainPassword)) {
+      return ResponseResult.createParamError("密码不能为空");
     }
 
-    userService.save(user);
+    userService.changePassword(loginName, plainPassword);
+    return ResponseResult.SUCCEED;
+  }
+
+  @ApiOperation(value = "用户停用", httpMethod = "GET")
+  @RequiresRoles("admin")
+  @RequestMapping(value = "delete/{id}")
+  public ResponseResult delete(@PathVariable("id") Long id) {
+    userService.delete(id);
+    return ResponseResult.SUCCEED;
+  }
+
+  @ApiOperation(value = "用户启用", httpMethod = "GET")
+  @RequiresRoles("admin")
+  @RequestMapping(value = "start/{id}")
+  public ResponseResult start(@PathVariable("id") Long id) {
+    userService.start(id);
     return ResponseResult.SUCCEED;
   }
 

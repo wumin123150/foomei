@@ -80,7 +80,7 @@
                 ${error.defaultMessage}
             </div>
           </c:if>
-          <form class="form-horizontal" id="validation-form" action="${ctx}/admin/user/reset" method="post" role="form">
+          <form class="form-horizontal" id="validation-form" action="" method="post" role="form">
             <input type="hidden" name="id" id="id" value="${user.id}"/>
             <!-- #section:elements.form -->
             <div class="row">
@@ -91,8 +91,7 @@
                   </label>
                   <div class="col-xs-12 col-sm-8">
                     <div class="clearfix">
-                      <input type="text" name="loginName" value="${user.loginName}" id="form-loginName"
-                             placeholder="用户名" class="form-control" readonly/>
+                      <input type="text" name="loginName" value="${user.loginName}" id="form-loginName" placeholder="用户名" class="form-control" readonly/>
                     </div>
                   </div>
                 </div>
@@ -104,8 +103,7 @@
                   </label>
                   <div class="col-xs-12 col-sm-8">
                     <div class="clearfix">
-                      <input type="text" name="name" value="${user.name}" id="form-name" placeholder="姓名"
-                             class="form-control" disabled/>
+                      <input type="text" name="name" value="${user.name}" id="form-name" placeholder="姓名" class="form-control" disabled/>
                     </div>
                   </div>
                 </div>
@@ -119,8 +117,7 @@
                   </label>
                   <div class="col-xs-12 col-sm-8">
                     <div class="input-group">
-                      <input type="password" name="plainPassword" id="form-password" placeholder="6~16个字符，区分大小写"
-                             class="form-control"/>
+                      <input type="password" name="plainPassword" id="form-password" placeholder="6~16个字符，区分大小写" class="form-control"/>
                       <span class="input-group-addon pswState">&nbsp;&nbsp;&nbsp;</span>
                     </div>
                   </div>
@@ -133,8 +130,7 @@
                   </label>
                   <div class="col-xs-12 col-sm-8">
                     <div class="clearfix">
-                      <input type="password" name="repassword" id="form-repassword" placeholder="请再次填写密码"
-                             class="form-control"/>
+                      <input type="password" name="repassword" id="form-repassword" placeholder="请再次填写密码" class="form-control"/>
                     </div>
                   </div>
                 </div>
@@ -233,7 +229,29 @@
           else error.insertAfter(element.parent());
         },
         submitHandler: function (form) {
-          form.submit();
+          //form.submit();
+          var data = $('#validation-form').serialize();
+          $.ajax({
+            url: '${ctx}/api/user/reset',
+            type: 'POST',
+            cache: false,
+            data: data,
+            dataType: 'json',
+            success: function (result) {
+              if (result.success) {
+                toastr.success('保存成功');
+                setTimeout(function(){
+                  history.back();
+                },1000);
+              } else {
+                toastr.error(result.message);
+              }
+            },
+            error: function () {
+              toastr.error('未知错误，请联系管理员');
+            }
+          });
+          return false;
         },
         invalidHandler: function (form) {
         }

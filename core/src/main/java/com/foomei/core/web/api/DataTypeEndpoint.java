@@ -1,11 +1,15 @@
 package com.foomei.core.web.api;
 
+import com.baidu.unbiz.fluentvalidator.*;
+import com.baidu.unbiz.fluentvalidator.jsr303.HibernateSupportedValidator;
 import com.foomei.common.dto.PageQuery;
 import com.foomei.common.dto.ResponseResult;
+import com.foomei.common.mapper.BeanMapper;
 import com.foomei.common.mapper.JsonMapper;
 import com.foomei.common.persistence.JqGridFilter;
 import com.foomei.common.persistence.search.SearchRequest;
 import com.foomei.core.dto.DataTypeDto;
+import com.foomei.core.entity.Config;
 import com.foomei.core.entity.DataType;
 import com.foomei.core.service.DataTypeService;
 import io.swagger.annotations.Api;
@@ -22,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Validation;
 
 @Api(description = "数据类型接口")
 @RestController
@@ -46,6 +51,27 @@ public class DataTypeEndpoint {
     return ResponseResult.createSuccess(page, DataType.class, DataTypeDto.class);
   }
 
+  @ApiOperation(value = "数据类型保存", httpMethod = "POST")
+  @RequiresRoles("admin")
+  @RequestMapping(value = "save", method = RequestMethod.POST)
+  public ResponseResult save(DataTypeDto dataTypeDto) {
+    DataType dataType = null;
+    if(dataTypeDto.getId() == null) {
+      dataType = BeanMapper.map(dataTypeDto, DataType.class);;
+    } else {
+      dataType = dataTypeService.get(dataTypeDto.getId());
+      BeanMapper.map(dataTypeDto, dataType, DataTypeDto.class, DataType.class);
+    }
+
+    ComplexResult result = validate(dataType);
+    if (!result.isSuccess()) {
+      return ResponseResult.createParamError(result);
+    }
+
+    dataTypeService.save(dataType);
+    return ResponseResult.SUCCEED;
+  }
+
   @ApiOperation(value = "数据类型删除", httpMethod = "GET")
   @RequiresRoles("admin")
   @RequestMapping(value = "delete/{id}")
@@ -66,4 +92,20 @@ public class DataTypeEndpoint {
     return !dataTypeService.existCode(id, code);
   }
 
+  private ComplexResult validate(DataType dataType) {
+    ComplexResult result = FluentValidator.checkAll()
+      .on(dataType, new HibernateSupportedValidator<DataType>().setHiberanteValidator(Validation.buildDefaultValidatorFactory().getValidator()))
+      .on(dataType, new ValidatorHandler<DataType>() {
+        public boolean validate(ValidatorContext context, Config t) {
+          if (dataTypeService.existCode(t.getId(), t.getCode())) {
+            context.addErrorMsg("编码已经被使用");
+            return false;
+          }
+          return true;
+        }
+      })
+      .doValidate()
+      .result(ResultCollectors.toComplex());
+    return result;
+  }
 }

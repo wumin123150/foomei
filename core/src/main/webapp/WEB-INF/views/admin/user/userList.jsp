@@ -67,15 +67,6 @@
       <div class="row">
         <div class="col-xs-12">
           <!-- PAGE CONTENT BEGINS -->
-          <c:if test="${not empty message}">
-            <div class="alert alert-block alert-success">
-              <button type="button" class="close" data-dismiss="alert">
-                <i class="ace-icon fa fa-times"></i>
-              </button>
-
-              <i class="ace-icon fa fa-check green"></i> ${message}
-            </div>
-          </c:if>
           <div class="row">
             <div class="col-xs-12">
               <form class="form-search" action="">
@@ -120,8 +111,8 @@
     var grid_page_url = "${ctx}/api/user/page";
     var grid_add_url = "${ctx}/admin/user/create";
     var grid_edit_url = "${ctx}/admin/user/update/";
-    var grid_start_url = "${ctx}/admin/user/start/";
-    var grid_del_url = "${ctx}/admin/user/delete/";
+    var grid_start_url = "${ctx}/api/user/start/";
+    var grid_del_url = "${ctx}/api/user/delete/";
     var grid_reset_url = "${ctx}/admin/user/reset/";
 
     jQuery(function ($) {
@@ -153,7 +144,7 @@
                 return '<div class="action-buttons">'
                   + '<div title="编辑" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" onmouseover="$(this).addClass(\'ui-state-hover\');" onmouseout="$(this).removeClass(\'ui-state-hover\')"><a class="blue" href="' + grid_edit_url + rowObject.id + '"><i class="ace-icon fa fa-pencil bigger-140"></i></a></div>'
                   + '<div title="重置密码" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" onmouseover="$(this).addClass(\'ui-state-hover\');" onmouseout="$(this).removeClass(\'ui-state-hover\')"><a class="orange" href="' + grid_reset_url + rowObject.id + '"><i class="ace-icon fa fa-key bigger-140"></i></a></div>'
-                  + (rowObject.status == 'T' ? '<div title="启用" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" onmouseover="$(this).addClass(\'ui-state-hover\');" onmouseout="$(this).removeClass(\'ui-state-hover\')"><a class="green btn-start" href="#" data-id="' + value.id + '"><i class="ace-icon fa fa-unlock bigger-140"></i></a></div>' :
+                  + (rowObject.status == 'T' ? '<div title="启用" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" onmouseover="$(this).addClass(\'ui-state-hover\');" onmouseout="$(this).removeClass(\'ui-state-hover\')"><a class="green btn-start" href="#" data-id="' + rowObject.id + '"><i class="ace-icon fa fa-unlock bigger-140"></i></a></div>' :
                   '<div title="停用" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" onmouseover="$(this).addClass(\'ui-state-hover\');" onmouseout="$(this).removeClass(\'ui-state-hover\')"><a class="red btn-del" href="#" data-id="' + rowObject.id + '"><i class="ace-icon fa fa-lock bigger-140"></i></a></div>')
                   + '</div>';
               }
@@ -235,7 +226,23 @@
         var id = $(this).attr("data-id");
         BootstrapDialog.confirm('你确定要停用吗？', function (result) {
           if (result) {
-            window.location.href = grid_del_url + id;
+            $.ajax({
+              url: grid_del_url + id,
+              type: 'GET',
+              cache: false,
+              dataType: 'json',
+              success: function (result) {
+                if (result.success) {
+                  toastr.success('删除成功');
+                  $(grid_selector).foomei_JqGrid('reload');
+                } else {
+                  toastr.error(result.message);
+                }
+              },
+              error: function () {
+                toastr.error('未知错误，请联系管理员');
+              }
+            });
           }
         });
       });
@@ -244,7 +251,23 @@
         var id = $(this).attr("data-id");
         BootstrapDialog.confirm('你确定要启用吗？', function (result) {
           if (result) {
-            window.location.href = grid_start_url + id;
+            $.ajax({
+              url: grid_start_url + id,
+              type: 'GET',
+              cache: false,
+              dataType: 'json',
+              success: function (result) {
+                if (result.success) {
+                  toastr.success('启用成功');
+                  $(grid_selector).foomei_JqGrid('reload');
+                } else {
+                  toastr.error(result.message);
+                }
+              },
+              error: function () {
+                toastr.error('未知错误，请联系管理员');
+              }
+            });
           }
         });
       });

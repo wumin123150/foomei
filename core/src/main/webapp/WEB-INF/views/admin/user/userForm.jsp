@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="${ctx}/static/css/chosen.min.css"/>
   <link rel="stylesheet" href="${ctx}/static/js/zTree/metroStyle/metroStyle.css">
   <link rel="stylesheet" href="${ctx}/static/css/datepicker.min.css" />
+  <link rel="stylesheet" href="${ctx}/static/js/webuploader/webuploader.css" />
 </pluginCss>
 <pageCss>
   <!-- inline styles related to this page -->
@@ -67,6 +68,11 @@
       overflow-y: scroll;
       overflow-x: auto;
     }
+
+    .imgWrap img {
+      width: 110px;
+      height: 110px;
+    }
   </style>
 </pageCss>
 <body>
@@ -115,24 +121,6 @@
       <div class="row">
         <div class="col-xs-12">
           <!-- PAGE CONTENT BEGINS -->
-          <c:if test="${not empty errors}">
-            <c:forEach items="${errors.fieldErrors}" var="error">
-              <div class="alert alert-danger">
-                <button type="button" class="close" data-dismiss="alert"><i class="ace-icon fa fa-times"></i></button>
-
-                <i class="ace-icon fa fa-times"></i>
-                  ${error.defaultMessage}
-              </div>
-            </c:forEach>
-            <c:forEach items="${errors.globalErrors}" var="error">
-              <div class="alert alert-danger">
-                <button type="button" class="close" data-dismiss="alert"><i class="ace-icon fa fa-times"></i></button>
-
-                <i class="ace-icon fa fa-times"></i>
-                  ${error.defaultMessage}
-              </div>
-            </c:forEach>
-          </c:if>
           <form class="form-horizontal" id="validation-form" action="${ctx}/api/user/${action}" method="post" role="form">
             <input type="hidden" name="id" id="id" value="${user.id}"/>
             <!-- #section:elements.form -->
@@ -144,9 +132,8 @@
                   </label>
                   <div class="col-xs-12 col-sm-8">
                     <div class="clearfix">
-                      <input type="text" name="loginName" value="${user.loginName}" id="form-loginName"
-                             placeholder="建议用手机/邮箱注册" class="form-control"
-                             <c:if test='${action == "update"}'>disabled</c:if> />
+                      <input type="text" name="loginName" value="${user.loginName}" id="form-loginName" placeholder="建议用手机/邮箱注册" class="form-control"
+                         <c:if test='${action == "update"}'>disabled</c:if> />
                     </div>
                   </div>
                 </div>
@@ -158,8 +145,7 @@
                   </label>
                   <div class="col-xs-12 col-sm-8">
                     <div class="clearfix">
-                      <input type="text" name="name" value="${user.name}" id="form-name" placeholder="姓名"
-                             class="form-control"/>
+                      <input type="text" name="name" value="${user.name}" id="form-name" placeholder="姓名" class="form-control"/>
                     </div>
                   </div>
                 </div>
@@ -174,8 +160,7 @@
                     </label>
                     <div class="col-xs-12 col-sm-8">
                       <div class="input-group">
-                        <input type="password" name="password" id="form-password" placeholder="6~16个字符，区分大小写"
-                               class="form-control"/>
+                        <input type="password" name="password" id="form-password" placeholder="6~16个字符，区分大小写" class="form-control"/>
                         <span class="input-group-addon pswState"> &nbsp;&nbsp;&nbsp; </span>
                       </div>
                     </div>
@@ -188,8 +173,7 @@
                     </label>
                     <div class="col-xs-12 col-sm-8">
                       <div class="clearfix">
-                        <input type="password" name="repassword" id="form-repassword" placeholder="请再次填写密码"
-                               class="form-control"/>
+                        <input type="password" name="repassword" id="form-repassword" placeholder="请再次填写密码" class="form-control"/>
                       </div>
                     </div>
                   </div>
@@ -224,8 +208,7 @@
                 <div class="form-group">
                   <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-birthday"> 出生日期 </label>
                   <div class="col-xs-12 col-sm-8">
-                    <input type="text" name="birthday" value="<fmt:formatDate value='${user.birthday}'/>" id="form-birthday" placeholder="出生日期"
-                           class="form-control date-picker"/>
+                    <input type="text" name="birthday" value="<fmt:formatDate value='${user.birthday}'/>" id="form-birthday" placeholder="出生日期" class="form-control date-picker"/>
                   </div>
                 </div>
               </div>
@@ -238,8 +221,7 @@
                     <div class="input-group">
                         <span class="input-group-addon"> <i class="ace-icon fa fa-phone"></i>
                         </span>
-                      <input type="text" name="mobile" value="${user.mobile}" id="form-mobile" placeholder="手机"
-                             class="form-control input-mask-phone"/>
+                      <input type="text" name="mobile" value="${user.mobile}" id="form-mobile" placeholder="手机" class="form-control input-mask-phone"/>
                     </div>
                   </div>
                 </div>
@@ -251,8 +233,7 @@
                     <div class="input-group">
                         <span class="input-group-addon"> <i class="ace-icon fa fa-envelope"></i>
                         </span>
-                      <input type="text" name="email" value="${user.email}" id="form-email" placeholder="邮箱"
-                             class="form-control"/>
+                      <input type="text" name="email" value="${user.email}" id="form-email" placeholder="邮箱" class="form-control"/>
                     </div>
                   </div>
                 </div>
@@ -264,10 +245,13 @@
                   <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-group"> 归属部门 </label>
                   <div class="col-xs-12 col-sm-8">
                     <div class="clearfix">
-                      <input type="hidden" name="groups" id="groups"/>
+                      <select name="groups" id="groups" multiple="" style="display: none;">
+                        <c:forEach items="${user.groupList}" var="group">
+                          <option value="${group.id}" selected>${group.name}</option>
+                        </c:forEach>
+                      </select>
                       <input type="text" name="groupNames" value="${user.groupNames}" id="form-group" readonly
-                             data-placeholder="归属部门" class="form-control" style="background: #fff!important;"
-                             onclick="showMenu();"/>
+                             data-placeholder="归属部门" class="form-control" style="background: #fff!important;" onclick="showMenu();"/>
                       <div id="menuContent" class="menuContent" style="display:none; position: absolute; z-index: 1;">
                         <ul id="tree" class="ztree"></ul>
                       </div>
@@ -280,8 +264,7 @@
                   <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-role"> 角色 </label>
                   <div class="col-xs-12 col-sm-8">
                     <div class="clearfix">
-                      <select name="roles" id="form-role" class="form-control chosen-select tag-input-style"
-                              data-placeholder="角色" multiple="">
+                      <select name="roles" id="form-role" class="form-control chosen-select tag-input-style" data-placeholder="角色" multiple="">
                         <c:forEach items="${roles}" var="role">
                           <c:set var="selectedRole" value="false"/>
                           <c:forEach items="${user.roleList}" var="ownRole">
@@ -316,6 +299,25 @@
                   </div>
                 </div>
               </div>
+              <div class="col-xs-12 col-sm-6">
+                <div class="form-group" style="text-align: center;">
+                  <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-status">
+                    头像
+                  </label>
+                  <div class="col-xs-12 col-sm-8">
+                    <p class="imgWrap">
+                      <c:if test="${not empty user.avatar}">
+                        <img src="${ctx}/avatar/${user.id}" onerror="this.src='${ctx}/static/avatars/avatar6.jpg'"/>
+                      </c:if>
+                      <c:if test="${empty user.avatar}">
+                        <img src="${ctx}/static/avatars/avatar6.jpg"/>
+                      </c:if>
+                    </p>
+                    <div id="picker">选择头像</div>
+                    <input type="hidden" name="avatarId" id="avatarId"/>
+                  </div>
+                </div>
+              </div>
             </div>
             <div class="clearfix form-actions">
               <div class="col-sm-offset-4 col-sm-8 col-xs-offset-3 col-xs-9">
@@ -346,11 +348,12 @@
   <script src="${ctx}/static/js/additional-methods.min.js"></script>
   <script src="${ctx}/static/js/jquery.validate.foomei.js"></script>
   <script src="${ctx}/static/js/messages_zh.min.js"></script>
-  <script src="${ctx}/static/js/jquery.form.min.js"></script>
+  <script src="${ctx}/static/js/jsonform.min.js"></script>
   <script src="${ctx}/static/js/chosen.jquery.min.js"></script>
   <script src="${ctx}/static/js/zTree/jquery.ztree.core.min.js"></script>
   <script src="${ctx}/static/js/zTree/jquery.ztree.excheck.min.js"></script>
   <script src="${ctx}/static/js/date-time/bootstrap-datepicker.min.js"></script>
+  <script src="${ctx}/static/js/webuploader/webuploader.min.js"></script>
 </pluginJs>
 <pageJs>
   <!-- inline scripts related to this page -->
@@ -383,14 +386,17 @@
           var zTree = $.fn.zTree.getZTreeObj("tree"),
             nodes = zTree.getCheckedNodes(true),
             names = "", ids = "";
+
+          $("#groups").empty();
           for (var i = 0, l = nodes.length; i < l; i++) {
             names += nodes[i].name + ", ";
             ids += nodes[i].id + ",";
+            $("#groups").append('<option value="'+nodes[i].id+'" selected>'+nodes[i].name+'</option>');
           }
           if (names.length > 0) names = names.substring(0, names.length - 2);
           if (ids.length > 0) ids = ids.substring(0, ids.length - 1);
           $("#form-group").val(names);
-          $("#groups").val(ids);
+          //$("#groups").val(ids);
         }
       }
     };
@@ -477,6 +483,29 @@
         }
       });
 
+      var uploader = WebUploader.create({
+        swf : '${ctx}/static/js/webuploader/Uploader.swf',
+        pick : "#picker",
+        auto : true,
+        disableGlobalDnd : true,
+        chunked : true,
+        server : '${ctx}/api/annex/save',
+        accept : {
+          title : 'Images',
+          extensions : 'gif,jpg,jpeg,bmp,png',
+          mimeTypes : 'image/*'
+        },
+        fileNumLimit : 1,
+        fileSingleSizeLimit : 5 * 1024 * 1024
+      });
+
+      uploader.on("uploadSuccess", function(file, response) {
+        var path = "${ctx}" + response.data.requestURI;
+        $('.imgWrap img').prop('src', path);
+        $('#avatarId').val(response.data.id);
+        uploader.reset();
+      });
+
       $('#validation-form').validate({
         errorElement: 'div',
         errorClass: 'help-block',
@@ -505,8 +534,7 @@
           },
           password: {
             required: true,
-            rangelength: [6, 16],
-            pass: true
+            rangelength: [6, 16]
           },
           repassword: {
             equalTo: '#form-password'
@@ -558,7 +586,28 @@
         },
         submitHandler: function (form) {
           //form.submit();
-          $('#validation-form').ajaxForm();
+          var data = $('#validation-form').getJSON();
+          $.ajax({
+            url: '${ctx}/api/user/${action}',
+            type: 'POST',
+            cache: false,
+            data: JSON.stringify(data),
+            contentType: 'application/json;charset=UTF-8',
+            dataType: 'json',
+            success: function (result) {
+              if (result.success) {
+                toastr.success('保存成功');
+                setTimeout(function(){
+                  history.back();
+                },500);
+              } else {
+                toastr.error(result.message);
+              }
+            },
+            error: function () {
+              toastr.error('未知错误，请联系管理员');
+            }
+          });
           return false;
         },
         invalidHandler: function (form) {

@@ -56,28 +56,6 @@
       <div class="row">
         <div class="col-xs-12">
           <!-- PAGE CONTENT BEGINS -->
-          <c:if test="${not empty errors}">
-            <c:forEach items="${errors.fieldErrors}" var="error">
-              <div class="alert alert-danger">
-                <button type="button" class="close" data-dismiss="alert">
-                  <i class="ace-icon fa fa-times"></i>
-                </button>
-
-                <i class="ace-icon fa fa-times"></i>
-                  ${error.defaultMessage}
-              </div>
-            </c:forEach>
-            <c:forEach items="${errors.globalErrors}" var="error">
-              <div class="alert alert-danger">
-                <button type="button" class="close" data-dismiss="alert">
-                  <i class="ace-icon fa fa-times"></i>
-                </button>
-
-                <i class="ace-icon fa fa-times"></i>
-                  ${error.defaultMessage}
-              </div>
-            </c:forEach>
-          </c:if>
           <form class="form-horizontal" id="validation-form" action="${ctx}/admin/role/${action}" method="post" role="form">
             <input type="hidden" name="id" id="id" value="${role.id}"/>
             <!-- #section:elements.form -->

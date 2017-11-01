@@ -12,7 +12,7 @@ import java.util.List;
 public class UserVo {
 
   private Long id;
-  @ApiModelProperty(value = "账号")
+  @ApiModelProperty(value = "账号", required = true)
   private String loginName;
   @ApiModelProperty(value = "密码")
   private String password;
@@ -26,9 +26,13 @@ public class UserVo {
   private String mobile;
   @ApiModelProperty(value = "邮箱")
   private String email;
+  @ApiModelProperty(value = "状态(I:未激活,A:正常,E:过期,L:锁定,T:终止)", required = true)
+  private String status;
+  @ApiModelProperty(value = "头像ID")
+  private String avatarId;
   @ApiModelProperty(value = "角色")
-  List<Long> roles;
+  private List<Long> roles;
   @ApiModelProperty(value = "机构")
-  List<Long> groups;
+  private List<Long> groups;
 
 }

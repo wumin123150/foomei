@@ -9,7 +9,6 @@ import com.foomei.core.dto.TreeNodeDto;
 import com.foomei.core.entity.DataDictionary;
 import com.foomei.core.entity.DataType;
 import com.foomei.core.service.DataDictionaryService;
-import com.foomei.core.service.DataTypeService;
 import com.google.common.collect.Lists;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -31,8 +30,6 @@ import java.util.List;
 public class DataDictionaryEndpoint {
 
   @Autowired
-  private DataTypeService dataTypeService;
-  @Autowired
   private DataDictionaryService dataDictionaryService;
 
   @ApiOperation(value = "根据数据类型和父节点获取数据字典列表", notes = "父节点为空时，获取数据类型下的所有内容", httpMethod = "POST", produces = "application/json")
@@ -53,9 +50,6 @@ public class DataDictionaryEndpoint {
   }
 
   @ApiOperation(value = "数据字典新增", httpMethod = "POST", produces = "application/json")
-  @ApiImplicitParams({
-    @ApiImplicitParam(name = "typeCode", value = "数据类型编码", required = true, dataType = "string", paramType = "form")
-  })
   @RequiresRoles("admin")
   @RequestMapping(value = "create", method = RequestMethod.POST)
   public ResponseResult<TreeNodeDto> create(DataDictionaryDto dictionary) {
@@ -82,9 +76,6 @@ public class DataDictionaryEndpoint {
   }
 
   @ApiOperation(value = "数据字典修改", httpMethod = "POST", produces = "application/json")
-  @ApiImplicitParams({
-    @ApiImplicitParam(name = "typeCode", value = "数据类型编码", required = true, dataType = "string", paramType = "form")
-  })
   @RequiresRoles("admin")
   @RequestMapping(value = "update", method = RequestMethod.POST)
   public ResponseResult<TreeNodeDto> update(DataDictionaryDto dictionary) {

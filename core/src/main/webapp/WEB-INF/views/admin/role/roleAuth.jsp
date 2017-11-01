@@ -100,16 +100,6 @@
       <div class="row">
         <div class="col-xs-12">
           <!-- PAGE CONTENT BEGINS -->
-          <c:if test="${not empty message}">
-            <div class="alert alert-block alert-success">
-              <button type="button" class="close" data-dismiss="alert">
-                <i class="ace-icon fa fa-times"></i>
-              </button>
-
-              <i class="ace-icon fa fa-check green"></i>
-                ${message}
-            </div>
-          </c:if>
           <div class="row">
             <div class="col-xs-12 right-content">
               <form class="form-search" action="">
@@ -207,6 +197,7 @@
                 success: function (result) {
                   if (result.success) {
                     $(grid_selector).trigger('reloadGrid');
+                    toastr.success('保存成功');
                     dialogRef.close();
                   } else {
                     var error = $('<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert"><i class="ace-icon fa fa-times"></i></button><i class="ace-icon fa fa-times"></i>' + result.message + '</div>');
@@ -240,6 +231,7 @@
             success: function (result) {
               if (result.success) {
                 $(grid_selector).trigger('reloadGrid');
+                toastr.success('删除成功');
               } else {
                 toastr.error(result.message);
               }

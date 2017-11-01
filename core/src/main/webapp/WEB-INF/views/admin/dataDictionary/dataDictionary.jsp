@@ -117,8 +117,9 @@
                 <input type="hidden" name="parentId" id="parentId"/>
                 <input type="hidden" name="item"/>
                 <div class="form-group">
-                  <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-code"> 代码<span
-                    class="input-required">*</span> </label>
+                  <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-code">
+                    代码<span class="input-required">*</span>
+                  </label>
                   <div class="col-xs-12 col-sm-8">
                     <div class="clearfix">
                       <input type="text" name="code" id="form-code" placeholder="代码" class="form-control"/>
@@ -126,8 +127,9 @@
                   </div>
                 </div>
                 <div class="form-group">
-                  <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-name"> 名称<span
-                    class="input-required">*</span> </label>
+                  <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-name">
+                    名称<span class="input-required">*</span>
+                  </label>
                   <div class="col-xs-12 col-sm-8">
                     <div class="clearfix">
                       <input type="text" name="name" id="form-name" placeholder="名称" class="form-control"/>
@@ -135,8 +137,9 @@
                   </div>
                 </div>
                 <div class="form-group">
-                  <label class="col-xs-12 col-sm-3 control-label no-padding-right"
-                         for="form-priority"> 序号<span class="input-required">*</span> </label>
+                  <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-priority">
+                    序号<span class="input-required">*</span>
+                  </label>
                   <div class="col-xs-12 col-sm-8">
                     <div class="clearfix">
                       <input type="text" name="priority" id="form-priority" placeholder="序号" class="form-control"/>
@@ -145,7 +148,8 @@
                 </div>
                 <div class="form-group">
                   <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-item">
-                    无子节点<span class="input-required">*</span> </label>
+                    无子节点<span class="input-required">*</span>
+                  </label>
                   <div class="col-xs-12 col-sm-8">
                     <div class="clearfix" style="padding-top: 7px;">
                       <input type="hidden" name="item" placeholder="可修改" class="form-control"/>
@@ -155,8 +159,7 @@
                   </div>
                 </div>
                 <div class="form-group">
-                  <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-remark">
-                    备注 </label>
+                  <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-remark"> 备注 </label>
                   <div class="col-xs-12 col-sm-8">
                     <div class="clearfix">
                       <textarea name="remark" id="form-remark" placeholder="备注" class="form-control"></textarea>
@@ -356,6 +359,7 @@
                       isParent: result.data.isParent,
                       name: result.data.name
                     });
+                    toastr.success('保存成功');
                     dialogRef.close();
                   } else {
                     var error = $('<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert"><i class="ace-icon fa fa-times"></i></button><i class="ace-icon fa fa-times"></i>' + result.message + '</div>');
@@ -427,6 +431,7 @@
                         treeNode.name = result.data.name;
                         treeNode.isParent = result.data.isParent;
                         treeObj.updateNode(treeNode);
+                        toastr.success('保存成功');
                         dialogRef.close();
                       } else {
                         var error = $('<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert"><i class="ace-icon fa fa-times"></i></button><i class="ace-icon fa fa-times"></i>' + result.message + '</div>');
@@ -470,6 +475,7 @@
             success: function (result) {
               if (result.success) {
                 treeObj.removeNode(treeNode);
+                toastr.success('删除成功');
               } else {
                 toastr.error(result.message);
               }
