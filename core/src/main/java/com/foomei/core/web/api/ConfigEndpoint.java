@@ -1,5 +1,7 @@
 package com.foomei.core.web.api;
 
+import com.baidu.unbiz.fluentvalidator.*;
+import com.baidu.unbiz.fluentvalidator.jsr303.HibernateSupportedValidator;
 import com.foomei.common.dto.PageQuery;
 import com.foomei.common.dto.ResponseResult;
 import com.foomei.common.mapper.BeanMapper;
@@ -7,8 +9,10 @@ import com.foomei.common.mapper.JsonMapper;
 import com.foomei.common.persistence.JqGridFilter;
 import com.foomei.common.persistence.search.SearchRequest;
 import com.foomei.core.dto.ConfigDto;
+import com.foomei.core.dto.ConfigListDto;
 import com.foomei.core.entity.Config;
 import com.foomei.core.service.ConfigService;
+import com.foomei.core.vo.ConfigVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -23,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Validation;
 import java.util.List;
 
 @Api(description = "系统配置接口")
@@ -75,10 +80,40 @@ public class ConfigEndpoint {
 
   @ApiOperation(value = "配置保存", httpMethod = "POST")
   @RequiresRoles("admin")
-  @RequestMapping("save")
-  private ResponseResult save(ConfigDto configDto) {
-    Config config = resolve(configDto);
+  @RequestMapping(value = "save", method = RequestMethod.POST)
+  public ResponseResult save(ConfigVo configVo) {
+    Config config = null;
+    if(configVo.getId() == null) {
+      config = BeanMapper.map(configVo, Config.class);;
+    } else {
+      config = configService.get(configVo.getId());
+      BeanMapper.map(configVo, config, ConfigVo.class, Config.class);
+    }
+
+    ComplexResult result = validate(config);
+    if (!result.isSuccess()) {
+      return ResponseResult.createParamError(result);
+    }
+
     configService.save(config);
+    return ResponseResult.SUCCEED;
+  }
+
+  @ApiOperation(value = "参数修改", httpMethod = "POST")
+  @RequiresRoles("admin")
+  @RequestMapping(value = "updateAll", method = RequestMethod.POST)
+  public ResponseResult updateAll(ConfigListDto configList) {
+    List<ConfigDto> configs = configList.getConfigs();
+    if (configs != null) {
+      for (ConfigDto configDto : configs) {
+        Config config = configService.get(configDto.getId());
+        if (config != null) {
+          config.setValue(configDto.getValue());
+          configService.save(config);
+        }
+      }
+    }
+
     return ResponseResult.SUCCEED;
   }
 
@@ -102,10 +137,20 @@ public class ConfigEndpoint {
     return !configService.existCode(id, code);
   }
 
-  private Config resolve(ConfigDto configDto) {
-    Config config = configService.get(configDto.getId());
-    BeanMapper.map(configDto, config, ConfigDto.class, Config.class);
-    return config;
+  private ComplexResult validate(Config config) {
+    ComplexResult result = FluentValidator.checkAll()
+      .on(config, new HibernateSupportedValidator<Config>().setHiberanteValidator(Validation.buildDefaultValidatorFactory().getValidator()))
+      .on(config, new ValidatorHandler<Config>() {
+        public boolean validate(ValidatorContext context, Config t) {
+          if (configService.existCode(t.getId(), t.getCode())) {
+            context.addErrorMsg("键已经被使用");
+            return false;
+          }
+          return true;
+        }
+      })
+      .doValidate()
+      .result(ResultCollectors.toComplex());
+    return result;
   }
-
 }

@@ -2,6 +2,7 @@ package com.foomei.core.web.api;
 
 import com.foomei.common.dto.PageQuery;
 import com.foomei.common.dto.ResponseResult;
+import com.foomei.common.mapper.BeanMapper;
 import com.foomei.common.mapper.JsonMapper;
 import com.foomei.common.persistence.JqGridFilter;
 import com.foomei.common.persistence.search.SearchRequest;
@@ -9,6 +10,10 @@ import com.foomei.core.dto.AnnexDto;
 import com.foomei.core.entity.Annex;
 import com.foomei.core.entity.User;
 import com.foomei.core.service.AnnexService;
+import com.foomei.core.vo.AnnexVo;
+import com.foomei.core.vo.UserVo;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -29,6 +34,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Api(description = "附件接口")
 @RestController
@@ -58,18 +64,31 @@ public class AnnexEndpoint {
     return ResponseResult.createSuccess(page, Annex.class, AnnexDto.class);
   }
 
-  @ApiOperation(value = "附件保存", httpMethod = "POST")
+  @ApiOperation(value = "单附件保存", httpMethod = "POST")
   @RequestMapping(value = "save")
-  public ResponseResult save(@RequestParam MultipartFile file) throws IOException {
+  public ResponseResult<AnnexVo> save(@RequestParam MultipartFile file) throws IOException {
     if (file != null && !file.isEmpty()) {
       Annex annex = annexService.save(file.getBytes(), file.getOriginalFilename(), Annex.PATH_TEMP, null, Annex.OBJECT_TYPE_TEMP);
-      return ResponseResult.createSuccess(annex, AnnexDto.class);
+      return ResponseResult.createSuccess(annex, AnnexVo.class);
+    }
+    return ResponseResult.createParamError("请上传文件");
+  }
+
+  @ApiOperation(value = "多附件保存", httpMethod = "POST")
+  @RequestMapping(value = "batch/save")
+  public ResponseResult<List<AnnexVo>> saveInBatch(@RequestParam MultipartFile[] files) throws IOException {
+    List<Annex> annexs = Lists.newArrayList();
+    if (files != null) {
+      for (int i = 0; i < files.length; i++) {
+        Annex annex = annexService.save(files[i].getBytes(), files[i].getOriginalFilename(), Annex.PATH_TEMP, null, Annex.OBJECT_TYPE_TEMP);
+        annexs.add(annex);
+      }
+      return ResponseResult.createSuccess(annexs, Annex.class, AnnexVo.class);
     }
     return ResponseResult.createParamError("请上传文件");
   }
 
   @ApiOperation(value = "附件删除", httpMethod = "GET")
-  @RequiresRoles("admin")
   @RequestMapping(value = "delete/{id}")
   public ResponseResult delete(@PathVariable("id") String id) {
     annexService.delete(id);

@@ -60,8 +60,7 @@
 
                 <div class="widget-body">
                   <div class="widget-main padding-8">
-                    <form class="form-horizontal" id="validation-form" action="${ctx}/admin/config/updateAll"
-                          method="post" role="form">
+                    <form class="form-horizontal" id="validation-form" action="" method="post" role="form">
                       <!-- #section:elements.form -->
                       <c:forEach var="config" items="${configs}" varStatus="status">
                         <div class="row">
@@ -70,8 +69,7 @@
                               <label class="col-xs-12 col-sm-12" for="form-${config.code}">
                                   ${config.name}（代码：${config.code}）
                                 <c:if test="${fn:length(config.remark)>1}">
-                                  <span class="help-button" data-rel="popover" data-trigger="hover"
-                                        data-placement="bottom" data-content="${config.remark}" title="参数说明">?</span>
+                                  <span class="help-button" data-rel="popover" data-trigger="hover" data-placement="bottom" data-content="${config.remark}" title="参数说明">?</span>
                                 </c:if>
                               </label>
                               <div class="col-xs-12 col-sm-12">
@@ -79,23 +77,20 @@
                                 <c:choose>
                                   <c:when test="${config.type eq 0}">
                                     <input type="text" name="configs[${status.index}].value" id="form-${config.code}"
-                                           class="form-control" value="${config.value}" <c:if
-                                      test="${not config.editable}"> readonly="true"</c:if>
+                                           class="form-control" value="${config.value}" <c:if test="${not config.editable}"> readonly="true"</c:if>
                                     />
                                   </c:when>
                                   <c:when test="${config.type eq 1}">
                                     <textarea name="configs[${status.index}].value" id="form-${config.code}"
-                                              class="form-control" rows="5" <c:if
-                                      test="${not config.editable}"> readonly="true"</c:if>>${config.value}</textarea>
+                                              class="form-control" rows="5" <c:if test="${not config.editable}"> readonly="true"</c:if>>${config.value}</textarea>
                                   </c:when>
                                   <c:when test="${config.type eq 2}">
                                     <div class="radio">
                                       <c:forEach items="${config.options}" var="option">
                                         <label>
-                                          <input type="radio" name="configs[${status.index}].value" class="ace"
-                                                 value="${option.key}"
-                                          <c:if test="${config.value eq option.key}"> checked</c:if>
-                                          <c:if test="${not config.editable}"> readonly="true"</c:if>>
+                                          <input type="radio" name="configs[${status.index}].value" class="ace" value="${option.key}"
+                                            <c:if test="${config.value eq option.key}"> checked</c:if>
+                                            <c:if test="${not config.editable}"> readonly="true"</c:if>>
                                           <span class="lbl">${option.value}</span>
                                         </label>
                                       </c:forEach>
@@ -112,30 +107,26 @@
                                           </c:if>
                                         </c:forEach>
                                         <label>
-                                          <input type="checkbox" name="configs[${status.index}].value" class="ace"
-                                                 value="${option.key}"
-                                          <c:if test="${selectedConfig}"> checked</c:if>
-                                          <c:if test="${not config.editable}"> readonly="true"</c:if>>
+                                          <input type="checkbox" name="configs[${status.index}].value" class="ace" value="${option.key}"
+                                            <c:if test="${selectedConfig}"> checked</c:if>
+                                            <c:if test="${not config.editable}"> readonly="true"</c:if>>
                                           <span class="lbl">${option.value}</span>
                                         </label>
                                       </c:forEach>
                                     </div>
                                   </c:when>
                                   <c:when test="${config.type eq 4}">
-                                    <select name="configs[${status.index}].value" id="form-${config.code}"
-                                            class="form-control"<c:if
-                                      test="${not config.editable}"> readonly="true"</c:if>>
+                                    <select name="configs[${status.index}].value" id="form-${config.code}" class="form-control"
+                                      <c:if test="${not config.editable}"> readonly="true"</c:if>>
                                       <c:forEach items="${config.options}" var="option">
-                                        <option value="${option.key}"<c:if
-                                          test="${config.value eq option.key}"> selected</c:if>>${option.value}</option>
+                                        <option value="${option.key}" <c:if test="${config.value eq option.key}"> selected</c:if>>${option.value}</option>
                                       </c:forEach>
                                     </select>
                                   </c:when>
                                   <c:when test="${config.type eq 5}">
                                     <c:set value="${fn:split(config.value, ',')}" var="values"/>
-                                    <select name="configs[${status.index}].value" id="form-${config.code}"
-                                            class="form-control" multiple<c:if
-                                      test="${not config.editable}"> readonly="true"</c:if>>
+                                    <select name="configs[${status.index}].value" id="form-${config.code}" class="form-control" multiple
+                                      <c:if test="${not config.editable}"> readonly="true"</c:if>>
                                       <c:forEach items="${config.options}" var="option">
                                         <c:set value="false" var="selectedConfig"/>
                                         <c:forEach items="${values}" var="value">
@@ -143,8 +134,7 @@
                                             <c:set value="true" var="selectedConfig"/>
                                           </c:if>
                                         </c:forEach>
-                                        <option value="${option.key}"<c:if
-                                          test="${selectedConfig}"> selected</c:if>>${option.value}</option>
+                                        <option value="${option.key}" <c:if test="${selectedConfig}"> selected</c:if>>${option.value}</option>
                                       </c:forEach>
                                     </select>
                                   </c:when>
@@ -223,7 +213,26 @@
           else error.insertAfter(element.parent());
         },
         submitHandler: function (form) {
-          form.submit();
+          //form.submit();
+          var data = $('#validation-form').serialize();
+          $.ajax({
+            url: '${ctx}/api/config/updateAll',
+            type: 'POST',
+            cache: false,
+            data: data,
+            dataType: 'json',
+            success: function (result) {
+              if (result.success) {
+                toastr.success('保存成功');
+              } else {
+                toastr.error(result.message);
+              }
+            },
+            error: function () {
+              toastr.error('未知错误，请联系管理员');
+            }
+          });
+          return false;
         },
         invalidHandler: function (form) {
         }

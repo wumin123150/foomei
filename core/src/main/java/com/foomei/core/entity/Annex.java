@@ -46,4 +46,8 @@ public class Annex extends UuidEntity implements CreateRecord {
     return id != null;
   }
 
+  public String getRequestURI() {
+    return "/annex" + path;
+  }
+
 }
