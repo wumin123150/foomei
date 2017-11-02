@@ -9,7 +9,6 @@ import com.foomei.common.mapper.JsonMapper;
 import com.foomei.common.persistence.JqGridFilter;
 import com.foomei.common.persistence.search.SearchRequest;
 import com.foomei.core.dto.DataTypeDto;
-import com.foomei.core.entity.Config;
 import com.foomei.core.entity.DataType;
 import com.foomei.core.service.DataTypeService;
 import io.swagger.annotations.Api;
@@ -96,9 +95,9 @@ public class DataTypeEndpoint {
     ComplexResult result = FluentValidator.checkAll()
       .on(dataType, new HibernateSupportedValidator<DataType>().setHiberanteValidator(Validation.buildDefaultValidatorFactory().getValidator()))
       .on(dataType, new ValidatorHandler<DataType>() {
-        public boolean validate(ValidatorContext context, Config t) {
+        public boolean validate(ValidatorContext context, DataType t) {
           if (dataTypeService.existCode(t.getId(), t.getCode())) {
-            context.addErrorMsg("编码已经被使用");
+            context.addErrorMsg("代码已经被使用");
             return false;
           }
           return true;

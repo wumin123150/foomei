@@ -133,9 +133,9 @@
 <script>
   var tableId = 'kit-table';
   var tableFilter = 'kit-table';
-  var table_page_url = "${ctx}/api/role/list";
-  var table_add_url = "${ctx}/layui/role/create";
-  var table_edit_url = "${ctx}/layui/role/update/";
+  var table_page_url = "${ctx}/api/role/page2";
+  var table_add_url = "${ctx}/admin/role/create";
+  var table_edit_url = "${ctx}/admin/role/update/";
   var table_del_url = "${ctx}/api/role/delete/";
   layui.use('table', function () {
     var table = layui.table,
@@ -194,10 +194,8 @@
     });
     //监听工具条
     table.on('tool(' + tableFilter + ')', function (obj) {
-      var data = obj.data; //获得当前行数据
-      var layEvent = obj.event; //获得 lay-event 对应的值
-      var tr = obj.tr; //获得当前行 tr 的DOM对象
-      //console.log(obj);
+      var data = obj.data;
+      var layEvent = obj.event;
 
       if (layEvent === 'view') { //查看
         //do somehing

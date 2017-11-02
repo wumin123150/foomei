@@ -58,7 +58,7 @@ public class UserGroupEndpoint {
     }
   }
 
-  @ApiOperation(value = "机构列表", httpMethod = "", produces = "application/json")
+  @ApiOperation(value = "机构列表", httpMethod = "GET", produces = "application/json")
   @RequiresRoles("admin")
   @RequestMapping(value = "list")
   public ResponseResult<List<UserGroupDto>> list() {

@@ -44,7 +44,7 @@
           </dl>
         </li>
         <li class="layui-nav-item" mobile>
-          <a href="javascript:;" class="mobileAddTab" data-url="page/user/changePwd.html"><i class="iconfont icon-shezhi1" data-icon="icon-shezhi1"></i><cite>设置</cite></a>
+          <a href="javascript:;" class="mobileAddTab" data-url="${ctx}/admin/changeAccount"><i class="iconfont icon-shezhi1" data-icon="icon-shezhi1"></i><cite>设置</cite></a>
         </li>
         <li class="layui-nav-item" mobile>
           <a href="page/login/login.html" class="signOut"><i class="iconfont icon-loginout"></i> 退出</a>
@@ -54,14 +54,13 @@
         </li>
         <li class="layui-nav-item" pc>
           <a href="javascript:;">
-            <img src="http://m.zhengjinfan.cn/images/0.jpg" class="layui-circle" width="35" height="35">
-            <cite>吴旻</cite>
+            <img src="${ctx}/avatar/<shiro:principal property="id"/>" onerror="this.src='${ctx}/static/avatars/avatar6.jpg'" class="layui-circle" width="35" height="35">
+            <cite><shiro:principal property="name"/></cite>
           </a>
           <dl class="layui-nav-child">
-            <dd><a href="javascript:;" data-url="page/user/userInfo.html"><i class="iconfont icon-zhanghu" data-icon="icon-zhanghu"></i><cite>个人资料</cite></a></dd>
-            <dd><a href="javascript:;" data-url="page/user/changePwd.html"><i class="iconfont icon-shezhi1" data-icon="icon-shezhi1"></i><cite>修改密码</cite></a></dd>
+            <dd><a href="javascript:;" data-url="${ctx}/admin/changeAccount"><i class="iconfont icon-zhanghu" data-icon="icon-zhanghu"></i><cite>个人资料</cite></a></dd>
             <dd><a href="javascript:;" class="changeSkin"><i class="iconfont icon-huanfu"></i><cite>更换皮肤</cite></a></dd>
-            <dd><a href="page/login/login.html" class="signOut"><i class="iconfont icon-loginout"></i><cite>退出</cite></a></dd>
+            <dd><a href="${ctx}/logout" class="signOut"><i class="iconfont icon-loginout"></i><cite>退出</cite></a></dd>
           </dl>
         </li>
       </ul>
@@ -72,8 +71,8 @@
   <div class="layui-side layui-bg-black">
     <div class="layui-side-scroll">
       <div class="user-photo">
-        <a class="img" title="我的头像" ><img src="http://m.zhengjinfan.cn/images/0.jpg"></a>
-        <p>你好！<span class="userName">吴旻</span></p>
+        <a class="img" title="我的头像" ><img src="${ctx}/avatar/<shiro:principal property="id"/>" onerror="this.src='${ctx}/static/avatars/avatar6.jpg'"></a>
+        <p>您好！<span class="userName"><shiro:principal property="name"/></span></p>
       </div>
       <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
       <ul class="layui-nav layui-nav-tree" lay-filter="kitNavbar" kit-navbar>
@@ -84,7 +83,7 @@
               <a href="javascript:;" data-url="${ctx}/layui/user"><i class="layui-icon" data-icon=""></i><cite>用户管理</cite></a>
             </dd>
             <dd>
-              <a href="javascript:;" data-url="${ctx}/layui/role"><i class="layui-icon" data-icon=""></i><cite>角色管理</cite></a>
+              <a href="javascript:;" data-url="${ctx}/admin/role"><i class="layui-icon" data-icon=""></i><cite>角色管理</cite></a>
             </dd>
             <dd>
               <a href="javascript:;" data-url="${ctx}/layui/log"><i class="layui-icon" data-icon=""></i><cite>日志管理</cite></a>
@@ -125,7 +124,7 @@
       </ul>
       <div class="layui-tab-content clildFrame">
         <div class="layui-tab-item layui-show layui-anim layui-anim-upbit">
-          <iframe src="${ctx}/layui/home"></iframe>
+          <iframe src="${ctx}/admin/home"></iframe>
         </div>
       </div>
     </div>
@@ -289,7 +288,7 @@
         type : 1,
         content : '	<div class="admin-header-lock" id="lock-box">'+
         '<div class="admin-header-lock-img"><img src="images/face.jpg"/></div>'+
-        '<div class="admin-header-lock-name" id="lockUserName">请叫我马哥</div>'+
+        '<div class="admin-header-lock-name" id="lockUserName"><shiro:principal property="name"/></div>'+
         '<div class="input_btn">'+
         '<input type="password" class="admin-header-lock-input layui-input" autocomplete="off" placeholder="请输入密码解锁.." name="lockPwd" id="lockPwd" />'+
         '<button class="layui-btn" id="unlock">解锁</button>'+

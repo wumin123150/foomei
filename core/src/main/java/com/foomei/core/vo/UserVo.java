@@ -3,6 +3,7 @@ package com.foomei.core.vo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 import java.util.List;
@@ -21,6 +22,7 @@ public class UserVo {
   @ApiModelProperty(value = "性别(0:保密,1:男,2:女)")
   private Integer sex;
   @ApiModelProperty(value = "出生日期")
+  @DateTimeFormat(pattern="yyyy-MM-dd")
   private Date birthday;
   @ApiModelProperty(value = "手机")
   private String mobile;

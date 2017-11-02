@@ -32,13 +32,13 @@ public class DataDictionaryEndpoint {
   @Autowired
   private DataDictionaryService dataDictionaryService;
 
-  @ApiOperation(value = "根据数据类型和父节点获取数据字典列表", notes = "父节点为空时，获取数据类型下的所有内容", httpMethod = "POST", produces = "application/json")
+  @ApiOperation(value = "根据数据类型和父节点获取数据字典列表", notes = "父节点为空时，获取数据类型下的所有内容", httpMethod = "GET", produces = "application/json")
   @ApiImplicitParams({
     @ApiImplicitParam(name = "typeCode", value = "数据类型编码", required = true, dataType = "string", paramType = "query"),
     @ApiImplicitParam(name = "id", value = "父节点ID", dataType = "long", paramType = "query")
   })
   @RequiresRoles("admin")
-  @RequestMapping(value = "tree", method = RequestMethod.POST)
+  @RequestMapping(value = "tree")
   public List<TreeNodeDto> tree(String typeCode, Long id) {
     if (id != null) {
       List<DataDictionary> dataDictionarys = dataDictionaryService.findChildrenByTypeAndParent(typeCode, id);
@@ -126,7 +126,7 @@ public class DataDictionaryEndpoint {
       .on(dataDictionary, new ValidatorHandler<DataDictionary>() {
         public boolean validate(ValidatorContext context, DataDictionary t) {
           if (dataDictionaryService.existCode(t.getId(), typeCode, t.getCode())) {
-            context.addErrorMsg("编码已经被使用");
+            context.addErrorMsg("代码已经被使用");
             return false;
           }
           return true;

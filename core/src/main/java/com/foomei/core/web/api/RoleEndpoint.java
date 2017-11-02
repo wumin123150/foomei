@@ -1,13 +1,18 @@
 package com.foomei.core.web.api;
 
+import com.baidu.unbiz.fluentvalidator.*;
+import com.baidu.unbiz.fluentvalidator.jsr303.HibernateSupportedValidator;
 import com.foomei.common.dto.PageQuery;
 import com.foomei.common.dto.ResponseResult;
+import com.foomei.common.mapper.BeanMapper;
 import com.foomei.common.mapper.JsonMapper;
 import com.foomei.common.persistence.JqGridFilter;
 import com.foomei.common.persistence.search.SearchRequest;
 import com.foomei.core.dto.RoleDto;
 import com.foomei.core.entity.Role;
 import com.foomei.core.service.RoleService;
+import com.foomei.core.vo.RoleVo;
+import com.google.common.collect.Maps;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -18,11 +23,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Validation;
 import java.util.List;
+import java.util.Map;
 
 @Api(description = "角色接口")
 @RestController
@@ -31,6 +38,12 @@ public class RoleEndpoint {
 
   @Autowired
   private RoleService roleService;
+
+  static {
+    Map<String, String> mapFields = Maps.newHashMap();
+    mapFields.put("permissionList{id}", "permissions{}");
+    BeanMapper.registerClassMap(Role.class, RoleVo.class, mapFields);
+  }
 
   @ApiOperation(value = "角色分页列表", httpMethod = "GET", produces = "application/json")
   @RequiresRoles("admin")
@@ -46,12 +59,33 @@ public class RoleEndpoint {
     return ResponseResult.createSuccess(page, Role.class, RoleDto.class);
   }
 
-  @ApiOperation(value = "角色分页列表", httpMethod = "GET", produces = "application/json")
+  @ApiOperation(value = "角色简单分页列表", httpMethod = "GET", produces = "application/json")
   @RequiresRoles("admin")
-  @RequestMapping(value = "list")
-  public ResponseResult<List<RoleDto>> list(PageQuery pageQuery, Boolean advance, HttpServletRequest request) {
+  @RequestMapping(value = "page2")
+  public ResponseResult<List<RoleDto>> page2(PageQuery pageQuery) {
     Page<Role> page = roleService.getPage(new SearchRequest(pageQuery, Role.PROP_CODE, Role.PROP_NAME));
     return ResponseResult.createSuccess(page.getContent(), page.getTotalElements(), Role.class, RoleDto.class);
+  }
+
+  @ApiOperation(value = "数据类型保存", httpMethod = "POST")
+  @RequiresRoles("admin")
+  @RequestMapping(value = "save", method = RequestMethod.POST)
+  public ResponseResult save(RoleVo roleVo) {
+    Role role = null;
+    if(roleVo.getId() == null) {
+      role = BeanMapper.map(roleVo, Role.class);;
+    } else {
+      role = roleService.get(roleVo.getId());
+      BeanMapper.map(roleVo, role, RoleVo.class, Role.class);
+    }
+
+    ComplexResult result = validate(role);
+    if (!result.isSuccess()) {
+      return ResponseResult.createParamError(result);
+    }
+
+    roleService.save(role);
+    return ResponseResult.SUCCEED;
   }
 
   @ApiOperation(value = "角色删除", httpMethod = "GET")
@@ -72,6 +106,23 @@ public class RoleEndpoint {
   @RequestMapping("checkCode")
   public boolean checkCode(Long id, String code) {
     return !roleService.existCode(id, code);
+  }
+
+  private ComplexResult validate(Role role) {
+    ComplexResult result = FluentValidator.checkAll()
+      .on(role, new HibernateSupportedValidator<Role>().setHiberanteValidator(Validation.buildDefaultValidatorFactory().getValidator()))
+      .on(role, new ValidatorHandler<Role>() {
+        public boolean validate(ValidatorContext context, Role t) {
+          if (roleService.existCode(t.getId(), t.getCode())) {
+            context.addErrorMsg("代码已经被使用");
+            return false;
+          }
+          return true;
+        }
+      })
+      .doValidate()
+      .result(ResultCollectors.toComplex());
+    return result;
   }
 
 }

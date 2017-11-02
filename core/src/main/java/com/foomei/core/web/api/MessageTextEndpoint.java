@@ -1,5 +1,6 @@
 package com.foomei.core.web.api;
 
+import com.foomei.common.collection.ListUtil;
 import com.foomei.common.dto.PageQuery;
 import com.foomei.common.dto.ResponseResult;
 import com.foomei.common.persistence.search.SearchRequest;
@@ -9,7 +10,10 @@ import com.foomei.core.entity.MessageText;
 import com.foomei.core.service.MessageService;
 import com.foomei.core.service.MessageTextService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -45,6 +49,25 @@ public class MessageTextEndpoint {
   public ResponseResult<Page<MessageTextDto>> myPage(PageQuery pageQuery, HttpServletRequest request) {
     Page<MessageText> page = messageTextService.getMyPage(pageQuery.getSearchKey(), pageQuery.buildPageRequest(new Sort(Sort.Direction.DESC, MessageText.PROP_CREATE_TIME)));
     return ResponseResult.createSuccess(page, MessageText.class, MessageTextDto.class);
+  }
+
+  @ApiOperation(value = "消息新增", httpMethod = "POST")
+  @RequiresRoles("admin")
+  @ApiImplicitParams({
+    @ApiImplicitParam(name = "content", value = "内容", required = true, dataType = "string", paramType = "form"),
+    @ApiImplicitParam(name = "users", value = "接收人数组", required = true, dataType = "list", paramType = "form")
+  })
+  @RequestMapping(value = "create", method = RequestMethod.POST)
+  public ResponseResult create(String content, List<Long> users) {
+    if(StringUtils.isEmpty(content)) {
+      return ResponseResult.createParamError("内容不能为空");
+    }
+    if(ListUtil.isEmpty(users)) {
+      return ResponseResult.createParamError("接收人不能为空");
+    }
+
+    List<Message> messages = messageService.save(content, null, users);
+    return ResponseResult.SUCCEED;
   }
 
   @ApiOperation(value = "消息内容删除", httpMethod = "GET")

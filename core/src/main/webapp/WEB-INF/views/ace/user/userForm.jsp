@@ -300,7 +300,7 @@
                 </div>
               </div>
               <div class="col-xs-12 col-sm-6">
-                <div class="form-group" style="text-align: center;">
+                <div class="form-group center">
                   <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-status">
                     头像
                   </label>
@@ -586,13 +586,12 @@
         },
         submitHandler: function (form) {
           //form.submit();
-          var data = $('#validation-form').getJSON();
+          var data = $('#validation-form').serialize();
           $.ajax({
             url: '${ctx}/api/user/${action}',
             type: 'POST',
             cache: false,
-            data: JSON.stringify(data),
-            contentType: 'application/json;charset=UTF-8',
+            data: data,
             dataType: 'json',
             success: function (result) {
               if (result.success) {

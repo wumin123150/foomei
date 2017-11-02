@@ -8,6 +8,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -32,12 +33,15 @@ public class RoleController {
   @Autowired
   private PermissionService permissionService;
 
+  @Value("${system.theme:ace}")
+  private String theme;
+
   @ApiOperation(value = "角色列表页面", httpMethod = "GET")
   @RequiresRoles("admin")
   @RequestMapping
   public String list(Model model) {
     model.addAttribute("menu", MENU);
-    return "admin/role/roleList";
+    return theme + "/role/roleList";
   }
 
   @ApiOperation(value = "角色新增页面", httpMethod = "GET")
@@ -49,7 +53,7 @@ public class RoleController {
 
     model.addAttribute("role", new Role());
     model.addAttribute("permissions", permissionService.getAll());
-    return "admin/role/roleForm";
+    return theme + "/role/roleForm";
   }
 
   @ApiOperation(value = "角色新增", httpMethod = "POST")
@@ -77,7 +81,7 @@ public class RoleController {
       model.addAttribute("permissions", permissionService.getAll());
 
       model.addAttribute("errors", result);
-      return "admin/role/roleForm";
+      return theme + "/role/roleForm";
     } else
       roleService.save(role);
 
@@ -94,7 +98,7 @@ public class RoleController {
 
     model.addAttribute("role", roleService.get(id));
     model.addAttribute("permissions", permissionService.getAll());
-    return "admin/role/roleForm";
+    return theme + "/role/roleForm";
   }
 
   /**
@@ -127,7 +131,7 @@ public class RoleController {
       model.addAttribute("permissions", permissionService.getAll());
 
       model.addAttribute("errors", result);
-      return "admin/role/roleForm";
+      return theme + "/role/roleForm";
     } else
       roleService.save(role);
 
@@ -142,7 +146,7 @@ public class RoleController {
     model.addAttribute("menu", MENU);
     model.addAttribute("roleId", id);
     model.addAttribute("roles", roleService.getAll());
-    return "admin/role/roleAuth";
+    return theme + "/role/roleAuth";
   }
 
   /**

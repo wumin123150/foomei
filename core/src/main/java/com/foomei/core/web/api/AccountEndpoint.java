@@ -13,6 +13,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,7 +35,7 @@ public class AccountEndpoint {
 
   @ApiOperation(value = "保存头像", notes = "图片转成base64编码", httpMethod = "POST", produces = "application/json")
   @ApiImplicitParams({
-    @ApiImplicitParam(name = "avatar", value = "base64编码的图片", required = true, dataType = "string", paramType = "query")
+    @ApiImplicitParam(name = "avatar", value = "base64编码的图片", required = true, dataType = "string", paramType = "form")
   })
   @RequestMapping(value = "saveAvatar", method = RequestMethod.POST)
   public ResponseResult saveAvatar(String avatar) throws IOException {
@@ -48,17 +49,34 @@ public class AccountEndpoint {
     return ResponseResult.createSuccess(annex.getPath());
   }
 
+  @ApiOperation(value = "设置头像", httpMethod = "POST", produces = "application/json")
+  @ApiImplicitParams({
+    @ApiImplicitParam(name = "avatarId", value = "图片ID", required = true, dataType = "string", paramType = "form")
+  })
+  @RequestMapping(value = "setAvatar", method = RequestMethod.POST)
+  public ResponseResult setAvatar(String avatarId) throws IOException {
+    Long id = CoreThreadContext.getUserId();
+    if(StringUtils.isNotEmpty(avatarId)) {
+      User user = userService.get(id);
+      Annex annex = annexService.move(avatarId, User.USER_ANNEX_PATH, String.valueOf(user.getId()), User.USER_ANNEX_TYPE);
+      user.setAvatar(annex.getPath());
+      userService.save(user);
+    }
+
+    return ResponseResult.SUCCEED;
+  }
+
   @ApiOperation(value = "密码修改", httpMethod = "POST", produces = "application/json")
   @ApiImplicitParams({
     @ApiImplicitParam(name = "password", value = "原密码", required = true, dataType = "string", paramType = "form"),
-    @ApiImplicitParam(name = "plainPassword", value = "新密码", required = true, dataType = "string", paramType = "form")
+    @ApiImplicitParam(name = "newPassword", value = "新密码", required = true, dataType = "string", paramType = "form")
   })
-  @LogIgnore(value = "field", excludes = {"password", "plainPassword"})
+  @LogIgnore(value = "field", excludes = {"password", "newPassword"})
   @RequestMapping(value = "/changePwd", method = RequestMethod.POST)
-  public ResponseResult changePassword(String password, String plainPassword) {
+  public ResponseResult changePassword(String password, String newPassword) {
     Long id = CoreThreadContext.getUserId();
     if (userService.checkPassword(id, password)) {
-      userService.changePassword(id, plainPassword);
+      userService.changePassword(id, newPassword);
       return ResponseResult.SUCCEED;
     } else {
       return ResponseResult.createError(ErrorCodeFactory.BAD_REQUEST, "原密码错误");
@@ -71,7 +89,7 @@ public class AccountEndpoint {
     @ApiImplicitParam(name = "sex", value = "性别", dataType = "int", paramType = "form"),
     @ApiImplicitParam(name = "birthday", value = "出生日期", dataType = "date", paramType = "form"),
     @ApiImplicitParam(name = "mobile", value = "手机", dataType = "string", paramType = "form"),
-    @ApiImplicitParam(name = "email", value = "电子邮件", dataType = "string", paramType = "form")
+    @ApiImplicitParam(name = "email", value = "邮箱", dataType = "string", paramType = "form")
   })
   @RequestMapping(value = "change", method = RequestMethod.POST)
   public ResponseResult change(String name, Integer sex, @DateTimeFormat(pattern = "yyyy-MM-dd") Date birthday, String mobile, String email) {

@@ -66,30 +66,7 @@
       <div class="row">
         <div class="col-xs-12">
           <!-- PAGE CONTENT BEGINS -->
-          <c:if test="${not empty errors}">
-            <c:forEach items="${errors.fieldErrors}" var="error">
-              <div class="alert alert-danger">
-                <button type="button" class="close" data-dismiss="alert">
-                  <i class="ace-icon fa fa-times"></i>
-                </button>
-
-                <i class="ace-icon fa fa-times"></i>
-                  ${error.defaultMessage}
-              </div>
-            </c:forEach>
-            <c:forEach items="${errors.globalErrors}" var="error">
-              <div class="alert alert-danger">
-                <button type="button" class="close" data-dismiss="alert">
-                  <i class="ace-icon fa fa-times"></i>
-                </button>
-
-                <i class="ace-icon fa fa-times"></i>
-                  ${error.defaultMessage}
-              </div>
-            </c:forEach>
-          </c:if>
-          <form class="form-horizontal" id="validation-form" action="${ctx}/admin/message/${action}" method="post"
-                role="form">
+          <form class="form-horizontal" id="validation-form" action="" method="post" role="form">
             <input type="hidden" name="id" id="id" value="${message.id}"/>
             <!-- #section:elements.form -->
             <div class="row">
@@ -112,7 +89,8 @@
                   </label>
                   <div class="col-xs-12 col-sm-8">
                     <div class="clearfix">
-                      <input type="hidden" name="users" value="${userIds}" id="users"/>
+                      <select name="users" id="users" multiple="" style="display: none;">
+                      </select>
                       <input type="text" name="userNames" value="${userNames}" id="form-receiver" readonly
                              data-placeholder="接收人" class="form-control" style="background: #fff!important;"
                              onclick="showMenu();"/>
@@ -178,16 +156,18 @@
           var zTree = $.fn.zTree.getZTreeObj("tree");
           var nodes = zTree.getCheckedNodes(true);
           var names = new Array(), ids = new Array();
+
+          $("#users").empty();
           for (var i = 0, l = nodes.length; i < l; i++) {
             if(!nodes[i].isParent) {
-              let id = nodes[i].id.substr(nodes[i].id.indexOf('_') + 1);
+              var id = nodes[i].id.substr(nodes[i].id.indexOf('_') + 1);
               if(ids.indexOf(id) == -1) {
                 names.push(nodes[i].name);
                 ids.push(id);
+                $("#users").append('<option value="'+id+'" selected>'+nodes[i].name+'</option>');
               }
             }
           }
-          debugger;
           $("#form-receiver").val(names.join(','));
           $("#users").val(ids.join(','));
         }
@@ -274,7 +254,29 @@
           else error.insertAfter(element.parent());
         },
         submitHandler: function (form) {
-          form.submit();
+          //form.submit();
+          var data = $('#validation-form').serialize();
+          $.ajax({
+            url: '${ctx}/api/messageText/${action}',
+            type: 'POST',
+            cache: false,
+            data: data,
+            dataType: 'json',
+            success: function (result) {
+              if (result.success) {
+                toastr.success('保存成功');
+                setTimeout(function(){
+                  history.back();
+                },500);
+              } else {
+                toastr.error(result.message);
+              }
+            },
+            error: function () {
+              toastr.error('未知错误，请联系管理员');
+            }
+          });
+          return false;
         },
         invalidHandler: function (form) {
         }

@@ -79,7 +79,6 @@ public class User extends IdEntity {
   private String question;//问题
   private String answer;//答案
   private Integer sex;//性别(0:未知,1:男,2:女)
-  @DateTimeFormat(pattern="yyyy-MM-dd")
   @Temporal(TemporalType.DATE)
   private Date birthday;//出生日期
   @Size(max = 16, message = "手机最大长度为16位")

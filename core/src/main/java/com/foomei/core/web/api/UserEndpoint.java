@@ -78,10 +78,10 @@ public class UserEndpoint {
     return ResponseResult.createSuccess(page);
   }
 
-  @ApiOperation(value = "用户分页列表", httpMethod = "GET", produces = "application/json")
+  @ApiOperation(value = "用户简单分页列表", httpMethod = "GET", produces = "application/json")
   @RequiresRoles("admin")
-  @RequestMapping(value = "list")
-  public ResponseResult<List<BaseUser>> list(PageQuery pageQuery, HttpServletRequest request) {
+  @RequestMapping(value = "page2")
+  public ResponseResult<List<BaseUser>> page2(PageQuery pageQuery) {
     Page<BaseUser> page = baseUserService.getPage(new SearchRequest(pageQuery, BaseUser.PROP_NAME, BaseUser.PROP_LOGIN_NAME, BaseUser.PROP_MOBILE));
     return ResponseResult.createSuccess(page.getContent(), page.getTotalElements());
   }
@@ -96,7 +96,7 @@ public class UserEndpoint {
   @ApiOperation(value = "用户新增", httpMethod = "POST")
   @RequiresRoles("admin")
   @RequestMapping(value = "create", method = RequestMethod.POST)
-  public ResponseResult create(@RequestBody UserVo userVo) throws IOException {
+  public ResponseResult create(UserVo userVo) throws IOException {
     User user = BeanMapper.map(userVo, User.class);
 
     ComplexResult result = validate(user);
@@ -118,10 +118,11 @@ public class UserEndpoint {
   @ApiOperation(value = "用户修改", httpMethod = "POST")
   @RequiresRoles("admin")
   @RequestMapping(value = "update", method = RequestMethod.POST)
-  public ResponseResult update(@RequestBody UserVo userVo) throws IOException {
+  public ResponseResult update(UserVo userVo) throws IOException {
     User user = userService.get(userVo.getId());
+    userVo.setLoginName(user.getLoginName());//修改不能设置账号
+    userVo.setPassword(null);//修改不能设置密码
     user = BeanMapper.map(userVo, user, UserVo.class, User.class);
-    user.setPlainPassword(null);//修改不能设置密码
 
     if(StringUtils.isNotEmpty(userVo.getAvatarId())) {
       Annex annex = annexService.move(userVo.getAvatarId(), User.USER_ANNEX_PATH, String.valueOf(user.getId()), User.USER_ANNEX_TYPE);

@@ -11,6 +11,7 @@
   <!-- page specific plugin styles -->
   <link rel="stylesheet" href="${ctx}/static/css/chosen.min.css"/>
   <link rel="stylesheet" href="${ctx}/static/css/datepicker.min.css" />
+  <link rel="stylesheet" href="${ctx}/static/js/webuploader/webuploader.css" />
 </pluginCss>
 <pageCss>
   <!-- inline styles related to this page -->
@@ -99,6 +100,11 @@
       color: #000000;
       width: 68px;
     }
+
+    .img-responsive {
+      width: 200px;
+      height: 200px;
+    }
   </style>
 </pageCss>
 <body>
@@ -133,28 +139,6 @@
       <div class="row">
         <div class="col-xs-12">
           <!-- PAGE CONTENT BEGINS -->
-          <c:if test="${not empty errors}">
-            <c:forEach items="${errors.fieldErrors}" var="error">
-              <div class="alert alert-danger">
-                <button type="button" class="close" data-dismiss="alert">
-                  <i class="ace-icon fa fa-times"></i>
-                </button>
-
-                <i class="ace-icon fa fa-times"></i>
-                  ${error.defaultMessage}
-              </div>
-            </c:forEach>
-            <c:forEach items="${errors.globalErrors}" var="error">
-              <div class="alert alert-danger">
-                <button type="button" class="close" data-dismiss="alert">
-                  <i class="ace-icon fa fa-times"></i>
-                </button>
-
-                <i class="ace-icon fa fa-times"></i>
-                  ${error.defaultMessage}
-              </div>
-            </c:forEach>
-          </c:if>
           <ul class="nav nav-tabs padding-16">
             <li class="active">
               <a data-toggle="tab" href="#edit-basic">
@@ -163,7 +147,7 @@
               </a>
             </li>
             <li>
-              <a data-toggle="tab" href="#edit-avatar">
+              <a data-toggle="tab" href="#edit-avatar" id="avatar-tab">
                 <i class="blue ace-icon fa fa-photo bigger-125"></i>
                 修改头像
               </a>
@@ -178,31 +162,30 @@
           <div class="tab-content profile-edit-tab-content">
             <div id="edit-basic" class="tab-pane in active">
               <div class="space-10"></div>
-              <form class="form-horizontal" id="basic-form" action="${ctx}/${action}/changeAccount" method="post"
-                           role="form">
+              <form class="form-horizontal" id="basic-form" action="" method="post" role="form">
               <input type="hidden" name="id" id="id" value="${user.id}"/>
               <!-- #section:elements.form -->
               <div class="row">
                 <div class="col-xs-12 col-sm-6">
                   <div class="form-group">
-                    <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-loginName"> 用户名<span
-                      class="input-required">*</span> </label>
+                    <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-loginName"> 用户名
+                      <span class="input-required">*</span>
+                    </label>
                     <div class="col-xs-12 col-sm-8">
                       <div class="clearfix">
-                        <input type="text" name="loginName" value="${user.loginName}" id="form-loginName"
-                               placeholder="建议用手机/邮箱注册" class="form-control" disabled/>
+                        <input type="text" name="loginName" value="${user.loginName}" id="form-loginName" placeholder="建议用手机/邮箱注册" class="form-control" disabled/>
                       </div>
                     </div>
                   </div>
                 </div>
                 <div class="col-xs-12 col-sm-6">
                   <div class="form-group">
-                    <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-name"> 姓名<span
-                      class="input-required">*</span> </label>
+                    <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-name">
+                      姓名<span class="input-required">*</span>
+                    </label>
                     <div class="col-xs-12 col-sm-8">
                       <div class="clearfix">
-                        <input type="text" name="name" value="${user.name}" id="form-name" placeholder="姓名"
-                               class="form-control"/>
+                        <input type="text" name="name" value="${user.name}" id="form-name" placeholder="姓名" class="form-control"/>
                       </div>
                     </div>
                   </div>
@@ -236,8 +219,7 @@
                   <div class="form-group">
                     <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-birthday"> 出生日期 </label>
                     <div class="col-xs-12 col-sm-8">
-                      <input type="text" name="birthday" value="<fmt:formatDate value='${user.birthday}'/>" id="form-birthday" placeholder="出生日期"
-                             class="form-control date-picker"/>
+                      <input type="text" name="birthday" value="<fmt:formatDate value='${user.birthday}'/>" id="form-birthday" placeholder="出生日期" class="form-control date-picker"/>
                     </div>
                   </div>
                 </div>
@@ -245,31 +227,31 @@
               <div class="row">
                 <div class="col-xs-12 col-sm-6">
                   <div class="form-group">
-                    <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-mobile"> 手机<span
-                      class="input-required">*</span> </label>
+                    <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-mobile">
+                      手机<span class="input-required">*</span>
+                    </label>
                     <div class="col-xs-12 col-sm-8">
                       <div class="input-group">
-                              <span class="input-group-addon">
-                                <i class="ace-icon fa fa-phone"></i>
-                              </span>
+                        <span class="input-group-addon">
+                          <i class="ace-icon fa fa-phone"></i>
+                        </span>
 
-                        <input type="text" name="mobile" value="${user.mobile}" id="form-mobile" placeholder="手机"
-                               class="form-control input-mask-phone"/>
+                        <input type="text" name="mobile" value="${user.mobile}" id="form-mobile" placeholder="手机" class="form-control input-mask-phone"/>
                       </div>
                     </div>
                   </div>
                 </div>
                 <div class="col-xs-12 col-sm-6">
                   <div class="form-group">
-                    <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-email"> 邮箱<span
-                      class="input-required">*</span> </label>
+                    <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-email">
+                      邮箱<span class="input-required">*</span>
+                    </label>
                     <div class="col-xs-12 col-sm-8">
                       <div class="input-group">
-                              <span class="input-group-addon">
-                                <i class="ace-icon fa fa-envelope"></i>
-                              </span>
-                        <input type="text" name="email" value="${user.email}" id="form-email" placeholder="邮箱"
-                               class="form-control"/>
+                        <span class="input-group-addon">
+                          <i class="ace-icon fa fa-envelope"></i>
+                        </span>
+                        <input type="text" name="email" value="${user.email}" id="form-email" placeholder="邮箱" class="form-control"/>
                       </div>
                     </div>
                   </div>
@@ -293,20 +275,21 @@
             </div>
             <div id="edit-avatar" class="tab-pane">
               <div class="space-10"></div>
-              <form class="form-horizontal" id="avatar-form" action="${ctx}/${action}/changeAvatar" method="post" enctype="multipart/form-data"
-                    role="form">
+              <form class="form-horizontal" id="avatar-form" action="" method="post" role="form">
                 <input type="hidden" name="id" value="${user.id}"/>
                 <!-- #section:elements.form -->
                 <div class="row">
-                  <div class="col-xs-12 col-sm-6 center">
+                  <div class="col-xs-12 col-sm-12 center">
                     <span class="profile-picture">
-                      <img class="img-responsive" id="avatar" src="${ctx}/avatar/<shiro:principal property="id"/>" onerror="this.src='${ctx}/static/avatars/avatar6.jpg'">
+                      <c:if test="${not empty user.avatar}">
+                        <img class="img-responsive" src="${ctx}/avatar/${user.id}" onerror="this.src='${ctx}/static/avatars/avatar6.jpg'"/>
+                      </c:if>
+                      <c:if test="${empty user.avatar}">
+                        <img class="img-responsive" src="${ctx}/static/avatars/avatar6.jpg"/>
+                      </c:if>
                     </span>
-                  </div>
-                  <div class="col-xs-12 col-sm-6">
-                    <div class="clearfix">
-                      <input type="file" name="file" id="form-file" placeholder="头像"/>
-                    </div>
+                    <div id="picker">选择头像</div>
+                    <input type="hidden" name="avatarId" id="avatarId"/>
                   </div>
                 </div>
                 <div class="clearfix form-actions">
@@ -327,19 +310,32 @@
             </div>
             <div id="edit-password" class="tab-pane">
               <div class="space-10"></div>
-              <form class="form-horizontal" id="passwrd-form" action="${ctx}/${action}/changePwd" method="post"
-                    role="form">
+              <form class="form-horizontal" id="password-form" action="" method="post" role="form">
                 <input type="hidden" name="id" value="${user.id}"/>
                 <!-- #section:elements.form -->
                 <div class="row">
                   <div class="col-xs-12 col-sm-6">
                     <div class="form-group">
-                      <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-password"> 密码<span
-                        class="input-required">*</span> </label>
+                      <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-password">
+                        原密码<span class="input-required">*</span>
+                      </label>
                       <div class="col-xs-12 col-sm-8">
                         <div class="clearfix">
-                          <input type="password" name="plainPassword" id="form-password" placeholder="6~16个字符，区分大小写"
-                                 class="form-control"/>
+                          <input type="password" name="password" id="form-password" placeholder="原密码" class="form-control"/>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-12 col-sm-6">
+                    <div class="form-group">
+                      <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-newPassword">
+                        新密码<span class="input-required">*</span>
+                      </label>
+                      <div class="col-xs-12 col-sm-8">
+                        <div class="clearfix">
+                          <input type="password" name="newPassword" id="form-newPassword" placeholder="6~16个字符，区分大小写" class="form-control"/>
                         </div>
                         <div class="pswState">
                           <span class="t1">密码强度：</span>
@@ -352,12 +348,12 @@
                   </div>
                   <div class="col-xs-12 col-sm-6">
                     <div class="form-group">
-                      <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-repassword"> 确认密码<span
-                        class="input-required">*</span> </label>
+                      <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-repassword">
+                        确认密码<span class="input-required">*</span>
+                      </label>
                       <div class="col-xs-12 col-sm-8">
                         <div class="clearfix">
-                          <input type="password" name="repassword" id="form-repassword" placeholder="请再次填写密码"
-                                 class="form-control"/>
+                          <input type="password" name="repassword" id="form-repassword" placeholder="请再次填写密码" class="form-control"/>
                         </div>
                       </div>
                     </div>
@@ -394,20 +390,41 @@
   <script src="${ctx}/static/js/jquery.validate.foomei.js"></script>
   <script src="${ctx}/static/js/messages_zh.min.js"></script>
   <script src="${ctx}/static/js/date-time/bootstrap-datepicker.min.js"></script>
+  <script src="${ctx}/static/js/webuploader/webuploader.min.js"></script>
 </pluginJs>
 <pageJs>
   <!-- inline scripts related to this page -->
   <script type="text/javascript">
+    var activeUploader = false;
     jQuery(function ($) {
-      $('#form-file').ace_file_input({
-        style: 'well',
-        btn_choose: '点击选择头像',
-        btn_change: null,
-        no_icon: 'ace-icon fa fa-picture-o',
-        droppable: true,
-        thumbnail: 'large',
-        //large | fit
-        whitelist: 'gif|png|jpg|jpeg'
+      $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+        var activeTab = $(e.target).prop('id');
+        if(activeTab == 'avatar-tab' && !activeUploader) {
+          activeUploader = true;
+
+          var uploader = WebUploader.create({
+            swf : '${ctx}/static/js/webuploader/Uploader.swf',
+            pick : "#picker",
+            auto : true,
+            disableGlobalDnd : true,
+            chunked : true,
+            server : '${ctx}/api/annex/save',
+            accept : {
+              title : 'Images',
+              extensions : 'gif,jpg,jpeg,bmp,png',
+              mimeTypes : 'image/*'
+            },
+            fileNumLimit : 1,
+            fileSingleSizeLimit : 5 * 1024 * 1024
+          });
+
+          uploader.on("uploadSuccess", function(file, response) {
+            var path = "${ctx}" + response.data.requestURI;
+            $('.img-responsive').prop('src', path);
+            $('#avatarId').val(response.data.id);
+            uploader.reset();
+          });
+        }
       });
 
       $('.date-picker').datepicker({
@@ -475,10 +492,56 @@
           else error.insertAfter(element.parent());
         },
         submitHandler: function (form) {
-          form.submit();
+          //form.submit();
+          var data = $('#basic-form').serialize();
+          $.ajax({
+            url: '${ctx}/api/account/change',
+            type: 'POST',
+            cache: false,
+            data: data,
+            dataType: 'json',
+            success: function (result) {
+              if (result.success) {
+                toastr.success('保存成功');
+              } else {
+                toastr.error(result.message);
+              }
+            },
+            error: function () {
+              toastr.error('未知错误，请联系管理员');
+            }
+          });
+          return false;
         },
         invalidHandler: function (form) {
         }
+      });
+
+      $('#avatar-form').submit(function(){
+        var avatarId = $('#avatarId').val();
+        if(avatarId == '') {
+          toastr.error('请选择头像');
+          return false;
+        }
+
+        $.ajax({
+          url: '${ctx}/api/account/setAvatar',
+          type: 'POST',
+          cache: false,
+          data: {avatarId: avatarId},
+          dataType: 'json',
+          success: function (result) {
+            if (result.success) {
+              toastr.success('保存成功');
+            } else {
+              toastr.error(result.message);
+            }
+          },
+          error: function () {
+            toastr.error('未知错误，请联系管理员');
+          }
+        });
+        return false;
       });
 
       $('#password-form').validate({
@@ -487,16 +550,19 @@
         focusInvalid: false,
         ignore: "",
         rules: {
-          plainPassword: {
+          password: {
+            required: true
+          },
+          newPassword: {
             required: true,
             rangelength: [6, 16]
           },
           repassword: {
-            equalTo: '#form-password'
+            equalTo: '#form-newPassword'
           }
         },
         messages: {
-          plainPassword: {
+          newPassword: {
             rangelength: '密码长度应为{0}~{1}个字符'
           },
           repassword: {
@@ -525,7 +591,26 @@
           else error.insertAfter(element.parent());
         },
         submitHandler: function (form) {
-          form.submit();
+          //form.submit();
+          var data = $('#password-form').serialize();
+          $.ajax({
+            url: '${ctx}/api/account/changePwd',
+            type: 'POST',
+            cache: false,
+            data: data,
+            dataType: 'json',
+            success: function (result) {
+              if (result.success) {
+                toastr.success('保存成功');
+              } else {
+                toastr.error(result.message);
+              }
+            },
+            error: function () {
+              toastr.error('未知错误，请联系管理员');
+            }
+          });
+          return false;
         },
         invalidHandler: function (form) {
         }

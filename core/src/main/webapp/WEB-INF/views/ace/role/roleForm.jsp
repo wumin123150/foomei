@@ -215,7 +215,29 @@
           else error.insertAfter(element.parent());
         },
         submitHandler: function (form) {
-          form.submit();
+          //form.submit();
+          var data = $('#validation-form').serialize();
+          $.ajax({
+            url: '${ctx}/api/role/save',
+            type: 'POST',
+            cache: false,
+            data: data,
+            dataType: 'json',
+            success: function (result) {
+              if (result.success) {
+                toastr.success('保存成功');
+                setTimeout(function(){
+                  history.back();
+                },1000);
+              } else {
+                toastr.error(result.message);
+              }
+            },
+            error: function () {
+              toastr.error('未知错误，请联系管理员');
+            }
+          });
+          return false;
         },
         invalidHandler: function (form) {
         }
