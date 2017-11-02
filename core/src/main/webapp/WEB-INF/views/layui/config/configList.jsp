@@ -6,7 +6,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>角色管理</title>
+  <title>系统配置管理</title>
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -47,10 +47,10 @@
 <script>
   var tableId = 'kit-table';
   var tableFilter = 'kit-table';
-  var table_page_url = "${ctx}/api/role/page2";
-  var table_add_url = "${ctx}/admin/role/create";
-  var table_edit_url = "${ctx}/admin/role/update/";
-  var table_del_url = "${ctx}/api/role/delete/";
+  var table_page_url = "${ctx}/api/config/page2";
+  var table_add_url = "${ctx}/admin/config/create";
+  var table_edit_url = "${ctx}/admin/config/update/";
+  var table_del_url = "${ctx}/api/config/delete/";
   layui.use('table', function () {
     var table = layui.table,
       layer = layui.layer,
@@ -66,8 +66,11 @@
         [
           { checkbox: true, fixed: true },
           { field: 'id', title: 'ID', width: 80 },
-          { field: 'code', title: '代码', width: 100, sort: true },
-          { field: 'name', title: '名称', width: 150 },
+          { field: 'name', title: '名称', width: 100 },
+          { field: 'code', title: '键', width: 150, sort: true },
+          { field: 'value', title: '值', width: 150 },
+          { field: 'remark', title: '备注', width: 200 },
+          { field: 'editable', title: '值可修改', width: 100, templet: '<div>{{#  if(d.editable){ }} <span class="layui-badge layui-bg-green">是</span> {{#  } else { }} <span class="layui-badge layui-bg-orange">否</span> {{#  } }}</div>' },
           { fixed: 'right', title: '操作', width: 180, align: 'center', toolbar: '#kit-table-bar' }
         ]
       ],
@@ -136,12 +139,12 @@
         });
       } else if (layEvent === 'edit') { //编辑
         var index = layer.open({
-          title : "修改角色",
+          title : "修改配置",
           type : 2,
           content : table_edit_url + data.id,
           success : function(layero, index){
             setTimeout(function(){
-              layui.layer.tips('点击此处返回角色列表', '.layui-layer-setwin .layui-layer-close', {
+              layui.layer.tips('点击此处返回配置列表', '.layui-layer-setwin .layui-layer-close', {
                 tips: 3
               });
             },1000)
@@ -165,12 +168,12 @@
       switch (action) {
         case 'add':
           var index = layer.open({
-            title : "新增角色",
+            title : "新增配置",
             type : 2,
             content : table_add_url,
             success : function(layero, index){
               setTimeout(function(){
-                layui.layer.tips('点击此处返回角色列表', '.layui-layer-setwin .layui-layer-close', {
+                layui.layer.tips('点击此处返回配置列表', '.layui-layer-setwin .layui-layer-close', {
                   tips: 3
                 });
               },1000)

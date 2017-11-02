@@ -77,31 +77,24 @@
       <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
       <ul class="layui-nav layui-nav-tree" lay-filter="kitNavbar" kit-navbar>
         <li class="layui-nav-item layui-nav-itemed">
-          <a class="" href="javascript:;"><i class="fa fa-plug" aria-hidden="true"></i><span> 基本元素</span></a>
+          <a class="" href="javascript:;"><i class="layui-icon">&#xe613;</i><span>人员管理</span></a>
           <dl class="layui-nav-child">
             <dd>
-              <a href="javascript:;" data-url="${ctx}/layui/user"><i class="layui-icon" data-icon=""></i><cite>用户管理</cite></a>
+              <a href="javascript:;" data-url="${ctx}/admin/user"><i class="layui-icon" data-icon="&#xe612;">&#xe612;</i><cite>用户管理</cite></a>
             </dd>
             <dd>
               <a href="javascript:;" data-url="${ctx}/admin/role"><i class="layui-icon" data-icon=""></i><cite>角色管理</cite></a>
             </dd>
             <dd>
-              <a href="javascript:;" data-url="${ctx}/layui/log"><i class="layui-icon" data-icon=""></i><cite>日志管理</cite></a>
+              <a href="javascript:;" data-url="${ctx}/admin/log"><i class="layui-icon" data-icon=""></i><cite>日志管理</cite></a>
             </dd>
           </dl>
         </li>
         <li class="layui-nav-item layui-nav-itemed">
-          <a href="javascript:;"><i class="fa fa-plug" aria-hidden="true"></i><span> 组件</span></a>
-          <dl class="layui-nav-child">
-            <dd><a href="javascript:;" kit-target data-options="{url:'navbar.html',icon:'&#xe658;',title:'Navbar',id:'6'}"><i class="layui-icon">&#xe658;</i><span> Navbar</span></a></dd>
-            <dd><a href="javascript:;" kit-target data-options="{url:'tab.html',icon:'&#xe658;',title:'TAB',id:'7'}"><i class="layui-icon">&#xe658;</i><span> Tab</span></a></dd>
-            <dd><a href="javascript:;" kit-target data-options="{url:'onelevel.html',icon:'&#xe658;',title:'OneLevel',id:'50'}"><i class="layui-icon">&#xe658;</i><span> OneLevel</span></a></dd>
-            <dd><a href="javascript:;" kit-target data-options="{url:'app.html',icon:'&#xe658;',title:'App',id:'8'}"><i class="layui-icon">&#xe658;</i><span> app.js主入口</span></a></dd>
-            <dd><a href="javascript:;" kit-target data-options="{url:'navbar.html',icon:'&#xe658;',title:'Navbar',id:'6'}"><i class="layui-icon">&#xe658;</i><span> Navbar</span></a></dd>
-            <dd><a href="javascript:;" kit-target data-options="{url:'tab.html',icon:'&#xe658;',title:'TAB',id:'7'}"><i class="layui-icon">&#xe658;</i><span> Tab</span></a></dd>
-            <dd><a href="javascript:;" kit-target data-options="{url:'onelevel.html',icon:'&#xe658;',title:'OneLevel',id:'50'}"><i class="layui-icon">&#xe658;</i><span> OneLevel</span></a></dd>
-            <dd><a href="javascript:;" kit-target data-options="{url:'app.html',icon:'&#xe658;',title:'App',id:'8'}"><i class="layui-icon">&#xe658;</i><span> app.js主入口</span></a></dd>
-          </dl>
+          <a href="javascript:;" data-url="${ctx}/admin/config"><i class="layui-icon">&#xe614;</i><cite>系统配置</cite></a>
+        </li>
+        <li class="layui-nav-item layui-nav-itemed">
+          <a href="javascript:;" data-url="${ctx}/admin/log"><i class="layui-icon">&#xe705;</i><cite>日志配置</cite></a>
         </li>
       </ul>
     </div>

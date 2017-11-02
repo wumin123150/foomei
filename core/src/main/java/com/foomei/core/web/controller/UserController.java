@@ -35,6 +35,8 @@ public class UserController {
 
   @Value("${upload.folder:/opt/upload/}")
   private String root;
+  @Value("${system.theme:ace}")
+  private String theme;
 
   @Autowired
   private UserService userService;
@@ -48,7 +50,7 @@ public class UserController {
   @RequestMapping
   public String list(Model model) {
     model.addAttribute("menu", MENU);
-    return "admin/user/userList";
+    return theme + "/user/userList";
   }
 
   @ApiOperation(value = "用户新增页面", httpMethod = "GET")
@@ -60,7 +62,7 @@ public class UserController {
 
     model.addAttribute("user", new User());
     model.addAttribute("roles", roleService.getAll());
-    return "admin/user/userForm";
+    return theme + "/user/userForm";
   }
 
   @ApiOperation(value = "用户修改页面", httpMethod = "GET")
@@ -72,7 +74,7 @@ public class UserController {
 
     model.addAttribute("user", userService.get(id));
     model.addAttribute("roles", roleService.getAll());
-    return "admin/user/userForm";
+    return theme + "/user/userForm";
   }
 
   @ApiOperation(value = "重置密码页面", httpMethod = "GET")
@@ -82,7 +84,7 @@ public class UserController {
     model.addAttribute("menu", MENU);
 
     model.addAttribute("user", userService.get(id));
-    return "admin/user/resetPassword";
+    return theme + "/user/resetPassword";
   }
 
 }

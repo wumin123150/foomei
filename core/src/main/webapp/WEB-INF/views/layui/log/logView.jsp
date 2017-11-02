@@ -51,7 +51,7 @@
   </div>
   <div class="layui-form-item">
     <div class="layui-input-block">
-      <button class="layui-btn layui-btn-primary" lay-submit lay-filter="close">关闭</button>
+      <button class="layui-btn layui-btn-primary btn-close">关闭</button>
     </div>
   </div>
 </form>
@@ -87,8 +87,7 @@
       }
     });
 
-    //监听提交
-    form.on('submit(close)', function (data) {
+    $('.btn-close').on('click', function(){
       parent.layer.closeAll("iframe");
       return false;
     });

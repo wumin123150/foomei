@@ -204,7 +204,7 @@
 <script>
   var tableId = 'kit-table';
   var tableFilter = 'kit-table';
-  var table_page_url = "${ctx}/api/user/list";
+  var table_page_url = "${ctx}/api/user/page2";
   layui.use('table', function () {
     var table = layui.table,
       layer = layui.layer,
@@ -268,36 +268,50 @@
     });
     //监听工具条
     table.on('tool(' + tableFilter + ')', function (obj) {
-      var data = obj.data; //获得当前行数据
-      var layEvent = obj.event; //获得 lay-event 对应的值
-      var tr = obj.tr; //获得当前行 tr 的DOM对象
-      //console.log(obj);
+      var data = obj.data;
+      var layEvent = obj.event;
 
-      if (layEvent === 'detail') { //查看
+      if (layEvent === 'view') { //查看
         //do somehing
       } else if (layEvent === 'del') { //删除
-        // var htm = [
-        //     '<p>确定要删除吗?</p>',
-        //     '<button class="layui-btn layui-btn-mini layui-btn-primary">取消</button>',
-        //     '<button class="layui-btn layui-btn-mini">确定</button>'
-        // ];
-        // layer.tips(htm.join(''), this, {
-        //     time: 0,
-        //     skin: 'kit-table'
-        // });
-        layer.confirm('真的删除行么', function (index) {
-          obj.del(); //删除对应行（tr）的DOM结构
+        layer.confirm('你确定要删除吗？', function (index) {
           layer.close(index);
-          //向服务端发送删除指令
+          $.ajax({
+            url: table_del_url + data.id,
+            type: 'GET',
+            cache: false,
+            dataType: 'json',
+            success: function (result) {
+              if (result.success) {
+                layer.msg('删除成功', {icon: 1});
+                kitTable.reload();
+              } else {
+                layer.msg(result.message, {icon: 5});
+              }
+            },
+            error: function () {
+              layer.msg('未知错误，请联系管理员', {icon: 5});
+            }
+          });
         });
       } else if (layEvent === 'edit') { //编辑
-        //do something
-
-        //同步更新缓存对应的值
-        obj.update({
-          username: '123',
-          title: 'xxx'
-        });
+        var index = layer.open({
+          title : "修改用户",
+          type : 2,
+          content : table_edit_url + data.id,
+          success : function(layero, index){
+            setTimeout(function(){
+              layui.layer.tips('点击此处返回用户列表', '.layui-layer-setwin .layui-layer-close', {
+                tips: 3
+              });
+            },1000)
+          }
+        })
+        //改变窗口大小时，重置弹窗的高度，防止超出可视区域（如F12调出debug的操作）
+        $(window).resize(function(){
+          layer.full(index);
+        })
+        layer.full(index);
       }
     });
     $('#kit-search-more').on('click', function () {
@@ -309,17 +323,17 @@
       var $that = $(this),
         action = $that.data('action');
       switch (action) {
-        case 'create':
+        case 'add':
           var index = layer.open({
-            title : "添加会员",
+            title : "新增用户",
             type : 2,
-            content : "addUser.html",
+            content : table_add_url,
             success : function(layero, index){
               setTimeout(function(){
-                layui.layer.tips('点击此处列表', '.layui-layer-setwin .layui-layer-close', {
+                layui.layer.tips('点击此处返回用户列表', '.layui-layer-setwin .layui-layer-close', {
                   tips: 3
                 });
-              },50000)
+              },1000)
             }
           })
           //改变窗口大小时，重置弹窗的高度，防止超出可视区域（如F12调出debug的操作）
@@ -328,7 +342,7 @@
           })
           layer.full(index);
           break;
-        case 'delSelector':
+        case 'batchDel':
           break;
       }
     });

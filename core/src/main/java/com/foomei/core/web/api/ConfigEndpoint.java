@@ -57,6 +57,14 @@ public class ConfigEndpoint {
     return ResponseResult.createSuccess(page);
   }
 
+  @ApiOperation(value = "系统配置简单分页列表", httpMethod = "GET", produces = "application/json")
+  @RequiresRoles("admin")
+  @RequestMapping(value = "page2", method = RequestMethod.GET)
+  public ResponseResult<List<Config>> page2(PageQuery pageQuery) {
+    Page<Config> page = configService.getPage(new SearchRequest(pageQuery, Config.PROP_CODE, Config.PROP_NAME));
+    return ResponseResult.createSuccess(page.getContent(), page.getTotalElements());
+  }
+
   @ApiOperation(value = "单配置获取", httpMethod = "GET")
   @ApiImplicitParams({
     @ApiImplicitParam(name = "code", value = "键", required = true, dataType = "string", paramType = "path")

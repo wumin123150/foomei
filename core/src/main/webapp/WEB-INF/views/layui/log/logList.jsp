@@ -53,7 +53,7 @@
   var tableFilter = 'kit-table';
   var table_page_url = "${ctx}/api/log/list";
   var table_del_url = "${ctx}/api/log/delete/";
-  var table_view_url = "${ctx}/layui/log/view/";
+  var table_view_url = "${ctx}/admin/log/view/";
   var table_batch_del_url = "${ctx}/api/log/batch/delete";
   layui.use(['table', 'laydate'], function () {
     var table = layui.table,
@@ -146,7 +146,7 @@
               layui.layer.tips('点击此处返回日志列表', '.layui-layer-setwin .layui-layer-close', {
                 tips: 3
               });
-            },500)
+            },1000)
           }
         })
         //改变窗口大小时，重置弹窗的高度，防止超出可视区域（如F12调出debug的操作）

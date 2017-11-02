@@ -1,14 +1,15 @@
 package com.foomei.core.web.controller;
 
 import com.foomei.common.base.annotation.LogIgnore;
-import com.foomei.core.service.LogService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.authz.annotation.RequiresRoles;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 @Api(description = "日志管理")
 @Controller
@@ -17,8 +18,8 @@ public class LogController {
 
   private static final String MENU = "log";
 
-  @Autowired
-  private LogService logService;
+  @Value("${system.theme:ace}")
+  private String theme;
 
   @ApiOperation(value = "日志列表页面", httpMethod = "GET")
   @LogIgnore
@@ -26,7 +27,15 @@ public class LogController {
   @RequestMapping
   public String list(Model model) {
     model.addAttribute("menu", MENU);
-    return "admin/log/logList";
+    return theme + "/log/logList";
+  }
+
+  @ApiOperation(value = "日志查看页面", httpMethod = "GET")
+  @LogIgnore
+  @RequiresRoles("admin")
+  @RequestMapping(value = "view/{id}", method = RequestMethod.GET)
+  public String view(@PathVariable("id") String id) {
+    return theme + "/log/logView";
   }
 
 }

@@ -6,7 +6,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>角色管理</title>
+  <title>配置管理</title>
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -24,18 +24,52 @@
   </style>
 </head>
 <body class="kit-main">
-<form class="layui-form layui-form-pane" action="${ctx}/api/role/save" method="post" style="width:80%;">
-  <input type="hidden" name="id" id="id" value="${role.id}"/>
-  <div class="layui-form-item">
-    <label class="layui-form-label">代码<span class="input-required">*</span></label>
-    <div class="layui-input-block">
-      <input type="text" name="code" value="${role.code}" lay-verify="required" placeholder="代码" autocomplete="off" class="layui-input">
-    </div>
-  </div>
+<form class="layui-form layui-form-pane" action="${ctx}/api/config/save" method="post" style="width:80%;">
+  <input type="hidden" name="id" id="id" value="${config.id}"/>
   <div class="layui-form-item">
     <label class="layui-form-label">名称<span class="input-required">*</span></label>
     <div class="layui-input-block">
-      <input type="text" name="name" value="${role.name}" lay-verify="required" placeholder="名称" autocomplete="off" class="layui-input">
+      <input type="text" name="name" value="${config.name}" lay-verify="required" placeholder="名称" autocomplete="off" class="layui-input">
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">键<span class="input-required">*</span></label>
+    <div class="layui-input-block">
+      <input type="text" name="code" value="${config.code}" lay-verify="required" placeholder="键" autocomplete="off" class="layui-input">
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">值<span class="input-required">*</span></label>
+    <div class="layui-input-inline">
+      <input type="text" name="value" value="${config.value}" lay-verify="required" placeholder="值" autocomplete="off" class="layui-input">
+    </div>
+    <div class="layui-input-inline">
+      <input type="checkbox" name="editable" value="${config.editable}" <c:if test="${config.editable}">checked</c:if> title="可修改">
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">类型<span class="input-required">*</span></label>
+    <div class="layui-input-block">
+      <select name="type" data-placeholder="类型">
+        <option value="0" <c:if test="${config.type eq 0}">selected</c:if>>Input输入框</option>
+        <option value="1" <c:if test="${config.type eq 1}">selected</c:if>>Textarea文本框</option>
+        <option value="2" <c:if test="${config.type eq 2}">selected</c:if>>Radio单选框</option>
+        <option value="3" <c:if test="${config.type eq 3}">selected</c:if>>Checkbox多选框</option>
+        <option value="4" <c:if test="${config.type eq 4}">selected</c:if>>Select单选框</option>
+        <option value="5" <c:if test="${config.type eq 5}">selected</c:if>>Select多选框</option>
+      </select>
+    </div>
+  </div>
+  <div class="layui-form-item layui-form-text">
+    <label class="layui-form-label">参数</label>
+    <div class="layui-input-block">
+      <textarea name="params" placeholder='类型为选择时使用，json格式（例如：{"1":"男","2":"女"}）' class="layui-textarea">${config.params}</textarea>
+    </div>
+  </div>
+  <div class="layui-form-item layui-form-text">
+    <label class="layui-form-label">备注</label>
+    <div class="layui-input-block">
+      <textarea name="remark" placeholder='备注' class="layui-textarea">${config.remark}</textarea>
     </div>
   </div>
   <div class="layui-form-item">

@@ -28,13 +28,13 @@ public class RoleController {
   private static final String ACTION_CREATE = "create";
   private static final String ACTION_UPDATE = "update";
 
+  @Value("${system.theme:ace}")
+  private String theme;
+
   @Autowired
   private RoleService roleService;
   @Autowired
   private PermissionService permissionService;
-
-  @Value("${system.theme:ace}")
-  private String theme;
 
   @ApiOperation(value = "角色列表页面", httpMethod = "GET")
   @RequiresRoles("admin")
