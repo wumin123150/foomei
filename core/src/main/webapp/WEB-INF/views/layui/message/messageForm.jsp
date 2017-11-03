@@ -40,7 +40,7 @@
   <div class="layui-form-item layui-form-text">
     <label class="layui-form-label">内容<span class="input-required">*</span></label>
     <div class="layui-input-block">
-      <textarea name="remark" placeholder='内容' class="layui-textarea">${message.content}</textarea>
+      <textarea name="content" placeholder='内容' class="layui-textarea">${message.content}</textarea>
     </div>
   </div>
   <div class="layui-form-item">

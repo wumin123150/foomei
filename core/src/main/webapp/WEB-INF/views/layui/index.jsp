@@ -80,13 +80,13 @@
           <a class="" href="javascript:;"><i class="layui-icon">&#xe613;</i><span>人员管理</span></a>
           <dl class="layui-nav-child">
             <dd>
-              <a href="javascript:;" data-url="${ctx}/admin/user"><i class="layui-icon" data-icon="&#xe612;">&#xe612;</i><cite>用户管理</cite></a>
+              <a href="javascript:;" data-url="${ctx}/admin/user"><i class="layui-icon" data-icon="&#xe612;">&#xe612;</i><cite>用户</cite></a>
             </dd>
             <dd>
-              <a href="javascript:;" data-url="${ctx}/admin/role"><cite>角色管理</cite></a>
+              <a href="javascript:;" data-url="${ctx}/admin/userGroup"><cite>机构</cite></a>
             </dd>
             <dd>
-              <a href="javascript:;" data-url="${ctx}/admin/log"><i class="layui-icon" data-icon=""></i><cite>日志管理</cite></a>
+              <a href="javascript:;" data-url="${ctx}/admin/role"><cite>角色</cite></a>
             </dd>
           </dl>
         </li>
