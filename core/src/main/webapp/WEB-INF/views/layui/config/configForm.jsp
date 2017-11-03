@@ -24,6 +24,7 @@
   </style>
 </head>
 <body class="kit-main">
+<blockquote class="layui-elem-quote">请注意Select多选框暂不支持，请使用Checkbox多选框</blockquote>
 <form class="layui-form layui-form-pane" action="${ctx}/api/config/save" method="post" style="width:80%;">
   <input type="hidden" name="id" id="id" value="${config.id}"/>
   <div class="layui-form-item">
@@ -56,7 +57,7 @@
         <option value="2" <c:if test="${config.type eq 2}">selected</c:if>>Radio单选框</option>
         <option value="3" <c:if test="${config.type eq 3}">selected</c:if>>Checkbox多选框</option>
         <option value="4" <c:if test="${config.type eq 4}">selected</c:if>>Select单选框</option>
-        <option value="5" <c:if test="${config.type eq 5}">selected</c:if>>Select多选框</option>
+        <option value="5" <c:if test="${config.type eq 5}">selected</c:if> disabled>Select多选框</option>
       </select>
     </div>
   </div>

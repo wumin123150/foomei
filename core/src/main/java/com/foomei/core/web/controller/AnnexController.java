@@ -12,6 +12,7 @@ import io.swagger.annotations.ApiOperation;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,6 +34,9 @@ public class AnnexController {
 
   private static final String MENU = "annex";
 
+  @Value("${system.theme:ace}")
+  private String theme;
+
   @Autowired
   private AnnexService annexService;
   @Autowired
@@ -45,7 +49,7 @@ public class AnnexController {
   @RequestMapping(value = "/admin/annex")
   public String list(Model model) {
     model.addAttribute("menu", MENU);
-    return "admin/annex/annexList";
+    return theme + "/annex/annexList";
   }
 
   @ApiOperation(value = "附件下载", httpMethod = "GET")

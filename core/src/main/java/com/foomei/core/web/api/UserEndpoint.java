@@ -107,7 +107,7 @@ public class UserEndpoint {
     user = userService.save(user);
 
     if(StringUtils.isNotEmpty(userVo.getAvatarId())) {
-      Annex annex = annexService.move(userVo.getAvatarId(), User.USER_ANNEX_PATH, String.valueOf(user.getId()), User.USER_ANNEX_TYPE);
+      Annex annex = annexService.move(userVo.getAvatarId(), String.valueOf(user.getId()), User.USER_ANNEX_TYPE, User.USER_ANNEX_PATH);
       user.setAvatar(annex.getPath());
       userService.save(user);
     }
@@ -125,7 +125,7 @@ public class UserEndpoint {
     user = BeanMapper.map(userVo, user, UserVo.class, User.class);
 
     if(StringUtils.isNotEmpty(userVo.getAvatarId())) {
-      Annex annex = annexService.move(userVo.getAvatarId(), User.USER_ANNEX_PATH, String.valueOf(user.getId()), User.USER_ANNEX_TYPE);
+      Annex annex = annexService.move(userVo.getAvatarId(), String.valueOf(user.getId()), User.USER_ANNEX_TYPE, User.USER_ANNEX_PATH);
       user.setAvatar(annex.getPath());
       userService.save(user);
     }

@@ -58,7 +58,7 @@ public class AccountEndpoint {
     Long id = CoreThreadContext.getUserId();
     if(StringUtils.isNotEmpty(avatarId)) {
       User user = userService.get(id);
-      Annex annex = annexService.move(avatarId, User.USER_ANNEX_PATH, String.valueOf(user.getId()), User.USER_ANNEX_TYPE);
+      Annex annex = annexService.move(avatarId, String.valueOf(user.getId()), User.USER_ANNEX_TYPE, User.USER_ANNEX_PATH);
       user.setAvatar(annex.getPath());
       userService.save(user);
     }

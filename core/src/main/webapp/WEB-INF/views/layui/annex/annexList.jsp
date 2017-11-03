@@ -6,7 +6,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>系统配置管理</title>
+  <title>附件管理</title>
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -24,11 +24,14 @@
   <form class="layui-form" lay-filter="kit-search-form">
     <div class="kit-table-header">
       <div class="kit-search-btns">
-        <a href="javascript:;" data-action="add" class="layui-btn layui-btn-small"><i class="layui-icon">&#xe608;</i>新增</a>
-        <a href="javascript:;" data-action="view" class="layui-btn layui-btn-small layui-btn-danger"><i class="layui-icon">&#xe620;</i>参数设置</a>
+        <a href="javascript:;" data-action="batchDel" class="layui-btn layui-btn-small layui-btn-danger"><i class="layui-icon">&#xe640;</i>删除所选</a>
       </div>
       <div class="kit-search-inputs">
+
         <div class="kit-search-keyword">
+          <input type="text" class="layui-input" name="timeRange" id="timeRange" placeholder="时间范围">
+          <input type="hidden" name="startTime" id="startTime"/>
+          <input type="hidden" name="endTime" id="endTime"/>
           <input type="text" class="layui-input" name="searchKey" placeholder="搜索关键字.." />
           <button lay-submit lay-filter="search"><i class="layui-icon">&#xe615;</i></button>
         </div>
@@ -38,7 +41,7 @@
   <div class="kit-table-body">
     <table id="kit-table" lay-filter="kit-table"></table>
     <script type="text/html" id="kit-table-bar">
-      <a class="layui-btn layui-btn-mini" lay-event="edit">编辑</a>
+      <a class="layui-btn layui-btn-mini" lay-event="download">下载</a>
       <a class="layui-btn layui-btn-danger layui-btn-mini" lay-event="del">删除</a>
     </script>
   </div>
@@ -48,16 +51,33 @@
 <script>
   var tableId = 'kit-table';
   var tableFilter = 'kit-table';
-  var table_page_url = "${ctx}/api/config/page2";
-  var table_add_url = "${ctx}/admin/config/create";
-  var table_edit_url = "${ctx}/admin/config/update/";
-  var table_view_url = "${ctx}/admin/config/view";
-  var table_del_url = "${ctx}/api/config/delete/";
-  layui.use('table', function () {
+  var table_page_url = "${ctx}/api/annex/page2";
+  var table_del_url = "${ctx}/api/annex/delete/";
+  var table_download_url = "${ctx}/admin/annex/download/";
+  var table_batch_del_url = "${ctx}/api/annex/batch/delete";
+  layui.use(['table', 'laydate'], function () {
     var table = layui.table,
       layer = layui.layer,
       $ = layui.jquery,
-      form = layui.form;
+      form = layui.form,
+      laydate = layui.laydate;
+
+    laydate.render({
+      elem: '#timeRange'
+      ,type: 'datetime'
+      ,range: '到'
+      ,format: 'yyyy-MM-dd HH:mm'
+      ,done: function(value, date){
+        var idx = value.indexOf(' 到 ');
+        if(idx > 0) {
+          $('#startTime').val(value.substring(0,idx));
+          $('#endTime').val(value.substring(idx+3));
+        } else {
+          $('#startTime').val('');
+          $('#endTime').val('');
+        }
+      }
+    });
 
     var kitTable = table.render({
       elem: '#' + tableId,
@@ -67,13 +87,12 @@
       cols: [
         [
           { checkbox: true, fixed: true },
-          { field: 'id', title: 'ID', width: 80 },
-          { field: 'name', title: '名称', width: 100 },
-          { field: 'code', title: '键', width: 150, sort: true },
-          { field: 'value', title: '值', width: 150 },
-          { field: 'remark', title: '备注', width: 200 },
-          { field: 'editable', title: '值可修改', width: 100, templet: '<div>{{#  if(d.editable){ }} <span class="layui-badge layui-bg-green">是</span> {{#  } else { }} <span class="layui-badge layui-bg-orange">否</span> {{#  } }}</div>' },
-          { fixed: 'right', title: '操作', width: 180, align: 'center', toolbar: '#kit-table-bar' }
+          { field: 'name', title: '文件名称', width: 150, sort: true, templet: '<div>{{d.name}}{{#  if(d.type == "jpg" || d.type == "peg" || d.type == "png" || d.type == "gif"){ }} <i class="layui-icon">&#xe64a;</i> {{#  } }}</div>' },
+          { field: 'path', title: '存储路径', width: 300 },
+          { field: 'objectType', title: '对象类型', width: 90 },
+          { field: 'objectId', title: '对象ID', width: 300 },
+          { field: 'createTime', title: '创建日期', width: 160, sort: true },
+          { fixed: 'right', title: '操作', width: 120, align: 'center', toolbar: '#kit-table-bar' }
         ]
       ],
       even: true,
@@ -116,8 +135,8 @@
       var data = obj.data;
       var layEvent = obj.event;
 
-      if (layEvent === 'view') { //查看
-        //do somehing
+      if (layEvent === 'download') { //下载
+        window.location.href = table_download_url + data.id;
       } else if (layEvent === 'del') { //删除
         layer.confirm('你确定要删除吗？', function (index) {
           layer.close(index);
@@ -131,7 +150,7 @@
                 layer.msg('删除成功', {icon: 1});
                 kitTable.reload();
               } else {
-                layer.msg(result.message, {icon: 5});
+                layer.msg(result.message, {icon: 2});
               }
             },
             error: function () {
@@ -140,23 +159,7 @@
           });
         });
       } else if (layEvent === 'edit') { //编辑
-        var index = layer.open({
-          title : "修改配置",
-          type : 2,
-          content : table_edit_url + data.id,
-          success : function(layero, index){
-            setTimeout(function(){
-              layui.layer.tips('点击此处返回配置列表', '.layui-layer-setwin .layui-layer-close', {
-                tips: 3
-              });
-            },1000)
-          }
-        })
-        //改变窗口大小时，重置弹窗的高度，防止超出可视区域（如F12调出debug的操作）
-        $(window).resize(function(){
-          layer.full(index);
-        })
-        layer.full(index);
+        //do something
       }
     });
     $('#kit-search-more').on('click', function () {
@@ -168,46 +171,39 @@
       var $that = $(this),
         action = $that.data('action');
       switch (action) {
-        case 'add':
-          var index = layer.open({
-            title : "新增配置",
-            type : 2,
-            content : table_add_url,
-            success : function(layero, index){
-              setTimeout(function(){
-                layui.layer.tips('点击此处返回配置列表', '.layui-layer-setwin .layui-layer-close', {
-                  tips: 3
-                });
-              },1000)
-            }
-          })
-          //改变窗口大小时，重置弹窗的高度，防止超出可视区域（如F12调出debug的操作）
-          $(window).resize(function(){
-            layer.full(index);
-          })
-          layer.full(index);
-          break;
-        case 'view':
-          var index = layer.open({
-            title : "参数设置",
-            type : 2,
-            content : table_view_url,
-            success : function(layero, index){
-              setTimeout(function(){
-                layui.layer.tips('点击此处返回配置列表', '.layui-layer-setwin .layui-layer-close', {
-                  tips: 3
-                });
-              },1000)
-            }
-          })
-          //改变窗口大小时，重置弹窗的高度，防止超出可视区域（如F12调出debug的操作）
-          $(window).resize(function(){
-            layer.full(index);
-          })
-          layer.full(index);
-          break;
         case 'batchDel':
-          break;
+          var checkStatus = table.checkStatus(tableId)
+            ,data = checkStatus.data;
+          var ids = '';
+          for(var i=0;i<data.length;i++) {
+            if(i == 0) {
+              ids = data[i].id;
+            } else {
+              ids += ',' + data[i].id;
+            }
+          }
+
+          if(ids.length > 0) {
+            $.ajax({
+              url: table_batch_del_url,
+              data: {ids: ids},
+              type: 'POST',
+              cache: false,
+              dataType: 'json',
+              success: function (result) {
+                if (result.success) {
+                  layer.msg('删除成功', {icon: 1});
+                  kitTable.reload();
+                } else {
+                  layer.msg(result.message, {icon: 2});
+                }
+              },
+              error: function () {
+                layer.msg('未知错误，请联系管理员', {icon: 5});
+              }
+            });
+          }
+        break;
       }
     });
   });

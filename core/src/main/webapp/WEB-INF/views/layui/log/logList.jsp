@@ -51,7 +51,7 @@
 <script>
   var tableId = 'kit-table';
   var tableFilter = 'kit-table';
-  var table_page_url = "${ctx}/api/log/list";
+  var table_page_url = "${ctx}/api/log/page2";
   var table_del_url = "${ctx}/api/log/delete/";
   var table_view_url = "${ctx}/admin/log/view/";
   var table_batch_del_url = "${ctx}/api/log/batch/delete";

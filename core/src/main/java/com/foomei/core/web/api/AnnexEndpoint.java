@@ -64,6 +64,19 @@ public class AnnexEndpoint {
     return ResponseResult.createSuccess(page, Annex.class, AnnexDto.class);
   }
 
+  @ApiOperation(value = "附件简单分页列表", httpMethod = "GET", produces = "application/json")
+  @ApiImplicitParams({
+    @ApiImplicitParam(name = "startTime", value = "开始时间(yyyy-MM-dd HH:mm)", dataType = "date", paramType = "query"),
+    @ApiImplicitParam(name = "endTime", value = "结束时间(yyyy-MM-dd HH:mm)", dataType = "date", paramType = "query")
+  })
+  @RequiresRoles("admin")
+  @RequestMapping(value = "page2")
+  public ResponseResult<List<AnnexDto>> page2(PageQuery pageQuery,
+                                             @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm") Date startTime, @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm") Date endTime) {
+    Page<Annex> page = annexService.getPage(pageQuery.getSearchKey(), startTime, endTime, pageQuery.buildPageRequest(new Sort(Sort.Direction.DESC, Annex.PROP_CREATE_TIME)));
+    return ResponseResult.createSuccess(page.getContent(), page.getTotalElements(), Annex.class, AnnexDto.class);
+  }
+
   @ApiOperation(value = "单附件保存", httpMethod = "POST")
   @RequestMapping(value = "save")
   public ResponseResult<AnnexVo> save(@RequestParam MultipartFile file) throws IOException {

@@ -1,9 +1,11 @@
 package com.foomei.core.web.controller;
 
 import com.foomei.common.base.annotation.LogIgnore;
+import com.foomei.core.service.LogService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.authz.annotation.RequiresRoles;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,6 +23,9 @@ public class LogController {
   @Value("${system.theme:ace}")
   private String theme;
 
+  @Autowired
+  private LogService logService;
+
   @ApiOperation(value = "日志列表页面", httpMethod = "GET")
   @LogIgnore
   @RequiresRoles("admin")
@@ -34,7 +39,8 @@ public class LogController {
   @LogIgnore
   @RequiresRoles("admin")
   @RequestMapping(value = "view/{id}", method = RequestMethod.GET)
-  public String view(@PathVariable("id") String id) {
+  public String view(@PathVariable("id") String id, Model model) {
+    model.addAttribute("log", logService.get(id));
     return theme + "/log/logView";
   }
 

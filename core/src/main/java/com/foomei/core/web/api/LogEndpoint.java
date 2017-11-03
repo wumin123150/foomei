@@ -57,17 +57,16 @@ public class LogEndpoint {
     return ResponseResult.createSuccess(page, Log.class, LogDto.class);
   }
 
-  @ApiOperation(value = "日志分页列表", httpMethod = "GET", produces = "application/json")
+  @ApiOperation(value = "日志简单分页列表", httpMethod = "GET", produces = "application/json")
   @ApiImplicitParams({
     @ApiImplicitParam(name = "startTime", value = "开始时间(yyyy-MM-dd HH:mm)", dataType = "date", paramType = "query"),
     @ApiImplicitParam(name = "endTime", value = "结束时间(yyyy-MM-dd HH:mm)", dataType = "date", paramType = "query")
   })
   @LogIgnore
   @RequiresRoles("admin")
-  @RequestMapping(value = "list")
-  public ResponseResult<List<LogDto>> list(PageQuery pageQuery,
-                                           @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm") Date startTime, @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm") Date endTime,
-                                           HttpServletRequest request) {
+  @RequestMapping(value = "page2")
+  public ResponseResult<List<LogDto>> page2(PageQuery pageQuery,
+                                           @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm") Date startTime, @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm") Date endTime) {
     Page<Log> page = logService.getPage(pageQuery.getSearchKey(), startTime, endTime, pageQuery.buildPageRequest(new Sort(Sort.Direction.DESC, Log.PROP_LOG_TIME)));
     return ResponseResult.createSuccess(page.getContent(), page.getTotalElements(), Log.class, LogDto.class);
   }
