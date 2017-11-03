@@ -95,3 +95,7 @@
 @media(max-width:1240px){
     .layui-form-item .layui-inline{ width:100%; float:none; }
 }
+
+.hide {
+    display: none;
+}

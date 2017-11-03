@@ -105,7 +105,14 @@
             parent.location.reload();
           } else {
             loadIndex && layer.close(loadIndex);
-            layer.msg(result.message, {icon: 2});
+            if(result.data) {
+              var message = '';
+              for(var i=0;i<result.data.length;i++) {
+                message += result.data[i].errorMsg + '<br>';
+              }
+              layer.msg(message, {icon: 2});
+            } else
+              layer.msg(result.message, {icon: 2});
           }
         },
         error: function () {

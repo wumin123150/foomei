@@ -1,5 +1,6 @@
 package com.foomei.core.web.api;
 
+import com.foomei.common.collection.ArrayUtil;
 import com.foomei.common.collection.ListUtil;
 import com.foomei.common.dto.PageQuery;
 import com.foomei.common.dto.ResponseResult;
@@ -44,6 +45,14 @@ public class MessageTextEndpoint {
     return ResponseResult.createSuccess(page, MessageText.class, MessageTextDto.class);
   }
 
+  @ApiOperation(value = "消息内容简单分页列表", httpMethod = "GET", produces = "application/json")
+  @RequiresRoles("admin")
+  @RequestMapping(value = "page2", method = RequestMethod.GET)
+  public ResponseResult<List<MessageTextDto>> page2(PageQuery pageQuery) {
+    Page<MessageText> page = messageTextService.getPage(new SearchRequest(pageQuery, new Sort(Sort.Direction.DESC, MessageText.PROP_CREATE_TIME), MessageText.PROP_CONTENT));
+    return ResponseResult.createSuccess(page.getContent(), page.getTotalElements(), MessageText.class, MessageTextDto.class);
+  }
+
   @ApiOperation(value = "我的消息内容分页列表", httpMethod = "GET", produces = "application/json")
   @RequestMapping(value = "myPage", method = RequestMethod.GET)
   public ResponseResult<Page<MessageTextDto>> myPage(PageQuery pageQuery, HttpServletRequest request) {
@@ -58,15 +67,15 @@ public class MessageTextEndpoint {
     @ApiImplicitParam(name = "users", value = "接收人数组", required = true, dataType = "list", paramType = "form")
   })
   @RequestMapping(value = "create", method = RequestMethod.POST)
-  public ResponseResult create(String content, List<Long> users) {
+  public ResponseResult create(String content, Long[] users) {
     if(StringUtils.isEmpty(content)) {
       return ResponseResult.createParamError("内容不能为空");
     }
-    if(ListUtil.isEmpty(users)) {
+    if(users == null && users.length == 0) {
       return ResponseResult.createParamError("接收人不能为空");
     }
 
-    List<Message> messages = messageService.save(content, null, users);
+    List<Message> messages = messageService.save(content, null, ListUtil.newArrayList(users));
     return ResponseResult.SUCCEED;
   }
 

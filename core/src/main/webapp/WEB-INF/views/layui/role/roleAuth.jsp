@@ -6,7 +6,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>角色管理</title>
+  <title>分配用户</title>
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -16,6 +16,7 @@
   <link rel="stylesheet" href="${ctx}/static/js/layui/css/layui.css" media="all"/>
   <link rel="stylesheet" href="//at.alicdn.com/t/font_tnyc012u2rlwstt9.css" media="all" />
   <link rel="stylesheet" href="${ctx}/static/js/layui/page.css" media="all"/>
+  <link rel="stylesheet" href="${ctx}/static/css/select2.min.css" media="all"/>
   <style type="text/css">
   </style>
 </head>
@@ -24,7 +25,7 @@
   <form class="layui-form" lay-filter="kit-search-form">
     <div class="kit-table-header">
       <div class="kit-search-btns">
-        <a href="javascript:;" data-action="add" class="layui-btn layui-btn-small"><i class="layui-icon">&#xe608;</i>新增</a>
+        <a href="javascript:;" data-action="add" class="layui-btn layui-btn-small"><i class="layui-icon">&#xe608;</i>添加</a>
       </div>
       <div class="kit-search-inputs">
         <div class="kit-search-keyword">
@@ -37,22 +38,37 @@
   <div class="kit-table-body">
     <table id="kit-table" lay-filter="kit-table"></table>
     <script type="text/html" id="kit-table-bar">
-      <a class="layui-btn layui-btn-mini" lay-event="edit">编辑</a>
-      <a class="layui-btn layui-btn-danger layui-btn-mini" lay-event="del">删除</a>
-      <a class="layui-btn layui-btn-warm layui-btn-mini" lay-event="auth">分配用户</a>
+      <a class="layui-btn layui-btn-danger layui-btn-mini" lay-event="del">移除</a>
     </script>
   </div>
 </div>
+<div id="dialog-container" class="hide">
+  <form id="form" class="layui-form layui-form-pane" action="${ctx}/api/role/save" method="post">
+    <input type="hidden" name="id" id="id" value="${role.id}"/>
+    <div class="layui-form-item">
+      <label class="layui-form-label">用户<span class="input-required">*</span></label>
+      <div class="layui-input-block">
+        <input type="text" name="userId" class="select2"/>
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <div class="layui-input-block">
+        <button class="layui-btn" lay-submit lay-filter="save">保存</button>
+        <button class="layui-btn layui-btn-primary btn-close">关闭</button>
+      </div>
+    </div>
+  </form>
+</div>
 <script src="${ctx}/static/js/layui/layui.js"></script>
+<script src="${ctx}/webjars/jquery/jquery.min.js"></script>
+<script src="${ctx}/static/js/select2.min.js"></script>
 </body>
 <script>
   var tableId = 'kit-table';
   var tableFilter = 'kit-table';
-  var table_page_url = "${ctx}/api/role/page2";
-  var table_add_url = "${ctx}/admin/role/create";
-  var table_edit_url = "${ctx}/admin/role/update/";
-  var table_del_url = "${ctx}/api/role/delete/";
-  var table_auth_url = "${ctx}/admin/role/auth/";
+  var table_page_url = "${ctx}/api/userRole/page2?roleId=${roleId}";
+  var table_add_url = "${ctx}/admin/userRole/create";
+  var table_del_url = "${ctx}/api/userRole/delete";
   layui.use('table', function () {
     var table = layui.table,
       layer = layui.layer,
@@ -68,8 +84,10 @@
         [
           { checkbox: true, fixed: true },
           { field: 'id', title: 'ID', width: 80 },
-          { field: 'code', title: '代码', width: 100, sort: true },
+          { field: 'loginName', title: '账号', width: 100, sort: true },
           { field: 'name', title: '名称', width: 150 },
+          { field: 'mobile', title: '手机', width: 150 },
+          { field: 'email', title: '邮箱', width: 150 },
           { fixed: 'right', title: '操作', width: 180, align: 'center', toolbar: '#kit-table-bar' }
         ]
       ],
@@ -116,16 +134,20 @@
       if (layEvent === 'view') { //查看
         //do somehing
       } else if (layEvent === 'del') { //删除
-        layer.confirm('你确定要删除吗？', function (index) {
+        layer.confirm('你确定要移除吗？', function (index) {
           layer.close(index);
           $.ajax({
-            url: table_del_url + data.id,
-            type: 'GET',
+            url: table_del_url,
+            type: 'POST',
+            data: {
+              userId: data.id,
+              roleId: ${roleId}
+            },
             cache: false,
             dataType: 'json',
             success: function (result) {
               if (result.success) {
-                layer.msg('删除成功', {icon: 1});
+                layer.msg('移除成功', {icon: 1});
                 kitTable.reload();
               } else {
                 layer.msg(result.message, {icon: 5});
@@ -137,31 +159,7 @@
           });
         });
       } else if (layEvent === 'edit') { //编辑
-        var index = layer.open({
-          title : "修改角色",
-          type : 2,
-          content : table_edit_url + data.id,
-          success : function(layero, index){
-            setTimeout(function(){
-              layui.layer.tips('点击此处返回角色列表', '.layui-layer-setwin .layui-layer-close', {
-                tips: 3
-              });
-            },1000)
-          }
-        })
-        //改变窗口大小时，重置弹窗的高度，防止超出可视区域（如F12调出debug的操作）
-        $(window).resize(function(){
-          layer.full(index);
-        })
-        layer.full(index);
-      } else if (layEvent === 'auth') { //分配
-        top.layer.open({
-          title : "分配用户",
-          type : 2,
-          maxmin: true,
-          area: ['893px', '600px'],
-          content : table_auth_url + data.id
-        })
+        //do somehing
       }
     });
     $('#kit-search-more').on('click', function () {
@@ -174,28 +172,56 @@
         action = $that.data('action');
       switch (action) {
         case 'add':
-          var index = layer.open({
-            title : "新增角色",
-            type : 2,
-            content : table_add_url,
-            success : function(layero, index){
-              setTimeout(function(){
-                layui.layer.tips('点击此处返回角色列表', '.layui-layer-setwin .layui-layer-close', {
-                  tips: 3
-                });
-              },1000)
-            }
+          layer.open({
+            title : "分配用户",
+            type : 1,
+            skin: 'layui-layer-rim',
+            area: ['420px', '240px'],
+            content: $('#form').html()
           })
-          //改变窗口大小时，重置弹窗的高度，防止超出可视区域（如F12调出debug的操作）
-          $(window).resize(function(){
-            layer.full(index);
-          })
-          layer.full(index);
           break;
         case 'batchDel':
           break;
       }
     });
   });
+
+  jQuery(function ($) {
+    $('.select2').css('width', '100%').select2({
+      placeholder: "用户",
+      minimumInputLength: 1,
+      ajax: {
+        url: "${ctx}/api/user/search",
+        dataType: 'json',
+        delay: 250,
+        data: function (term, pageNo) {
+          return {
+            q: $.trim(term),	//联动查询的字符
+            pageSize: 15,    	//一次性加载的数据条数
+            pageNo: pageNo,  	//页码
+            time: new Date()  	//测试
+          }
+        },
+        results: function (result, pageNo) {
+          var more = (pageNo * 15) < result.data.totalElements; //用来判断是否还有更多数据可以加载
+          return {
+            results: result.data.content, more: more
+          };
+        },
+        cache: false
+      },
+      escapeMarkup: function (markup) {
+        return markup;
+      }, // let our custom formatter work
+      formatResult: function (repo) {
+        if (repo.loading) return repo.text;
+
+        return repo.name + "(" + repo.loginName + ")";
+      },
+      formatSelection: function (repo) {
+        return repo.name || repo.text;
+      }
+    });
+  })
 </script>
 </html>

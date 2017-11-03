@@ -89,14 +89,13 @@
                   </label>
                   <div class="col-xs-12 col-sm-8">
                     <div class="clearfix">
-                      <select name="users" id="users" multiple="" style="display: none;">
-                      </select>
                       <input type="text" name="userNames" value="${userNames}" id="form-receiver" readonly
                              data-placeholder="接收人" class="form-control" style="background: #fff!important;"
                              onclick="showMenu();"/>
                       <div id="menuContent" class="menuContent" style="display:none; position: absolute; z-index: 1;">
                         <ul id="tree" class="ztree"></ul>
                       </div>
+                      <input type="text" name="users" id="users" class="hide"/>
                     </div>
                   </div>
                 </div>
@@ -157,14 +156,13 @@
           var nodes = zTree.getCheckedNodes(true);
           var names = new Array(), ids = new Array();
 
-          $("#users").empty();
+          $("#users").val('');
           for (var i = 0, l = nodes.length; i < l; i++) {
             if(!nodes[i].isParent) {
               var id = nodes[i].id.substr(nodes[i].id.indexOf('_') + 1);
               if(ids.indexOf(id) == -1) {
                 names.push(nodes[i].name);
                 ids.push(id);
-                $("#users").append('<option value="'+id+'" selected>'+nodes[i].name+'</option>');
               }
             }
           }

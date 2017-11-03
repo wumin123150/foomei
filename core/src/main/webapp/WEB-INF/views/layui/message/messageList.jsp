@@ -6,7 +6,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>角色管理</title>
+  <title>消息管理</title>
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -37,9 +37,7 @@
   <div class="kit-table-body">
     <table id="kit-table" lay-filter="kit-table"></table>
     <script type="text/html" id="kit-table-bar">
-      <a class="layui-btn layui-btn-mini" lay-event="edit">编辑</a>
       <a class="layui-btn layui-btn-danger layui-btn-mini" lay-event="del">删除</a>
-      <a class="layui-btn layui-btn-warm layui-btn-mini" lay-event="auth">分配用户</a>
     </script>
   </div>
 </div>
@@ -48,11 +46,10 @@
 <script>
   var tableId = 'kit-table';
   var tableFilter = 'kit-table';
-  var table_page_url = "${ctx}/api/role/page2";
-  var table_add_url = "${ctx}/admin/role/create";
-  var table_edit_url = "${ctx}/admin/role/update/";
-  var table_del_url = "${ctx}/api/role/delete/";
-  var table_auth_url = "${ctx}/admin/role/auth/";
+  var table_page_url = "${ctx}/api/messageText/page2";
+  var table_add_url = "${ctx}/admin/message/create";
+  var table_edit_url = "${ctx}/admin/message/update/";
+  var table_del_url = "${ctx}/api/messageText/delete/";
   layui.use('table', function () {
     var table = layui.table,
       layer = layui.layer,
@@ -67,9 +64,9 @@
       cols: [
         [
           { checkbox: true, fixed: true },
-          { field: 'id', title: 'ID', width: 80 },
-          { field: 'code', title: '代码', width: 100, sort: true },
-          { field: 'name', title: '名称', width: 150 },
+          { field: 'content', title: '内容', width: 400 },
+          { field: 'sender', title: '发送人', width: 150, templet: '<div>{{#  if(d.sender != null){ }} {{d.sender.name}} {{#  } else { }} 系统 {{#  } }}</div>' },
+          { field: 'createTime', title: '更新时间', width: 160 },
           { fixed: 'right', title: '操作', width: 180, align: 'center', toolbar: '#kit-table-bar' }
         ]
       ],
@@ -137,31 +134,7 @@
           });
         });
       } else if (layEvent === 'edit') { //编辑
-        var index = layer.open({
-          title : "修改角色",
-          type : 2,
-          content : table_edit_url + data.id,
-          success : function(layero, index){
-            setTimeout(function(){
-              layui.layer.tips('点击此处返回角色列表', '.layui-layer-setwin .layui-layer-close', {
-                tips: 3
-              });
-            },1000)
-          }
-        })
-        //改变窗口大小时，重置弹窗的高度，防止超出可视区域（如F12调出debug的操作）
-        $(window).resize(function(){
-          layer.full(index);
-        })
-        layer.full(index);
-      } else if (layEvent === 'auth') { //分配
-        top.layer.open({
-          title : "分配用户",
-          type : 2,
-          maxmin: true,
-          area: ['893px', '600px'],
-          content : table_auth_url + data.id
-        })
+        //do somehing
       }
     });
     $('#kit-search-more').on('click', function () {
@@ -175,12 +148,12 @@
       switch (action) {
         case 'add':
           var index = layer.open({
-            title : "新增角色",
+            title : "新增消息",
             type : 2,
             content : table_add_url,
             success : function(layero, index){
               setTimeout(function(){
-                layui.layer.tips('点击此处返回角色列表', '.layui-layer-setwin .layui-layer-close', {
+                layui.layer.tips('点击此处返回消息列表', '.layui-layer-setwin .layui-layer-close', {
                   tips: 3
                 });
               },1000)

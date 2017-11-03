@@ -75,6 +75,10 @@
 <script src="${ctx}/static/js/layui/layui.js"></script>
 </body>
 <script>
+  if (window.top !== window.self) {
+    window.top.location = window.location;
+  }
+
   layui.use(['form','layer'],function(){
     var form = layui.form,
       layer = layui.layer,
@@ -85,7 +89,7 @@
     });
 
     form.on("submit(login)",function(data){
-      var loadIndex = layer.load();
+      var loadIndex = layer.load(0, { shade: [0.1,'#000'] });
       $.ajax({
         url: data.form.action,
         type: 'POST',

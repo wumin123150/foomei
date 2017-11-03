@@ -6,7 +6,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>角色管理</title>
+  <title>数据类型管理</title>
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -24,18 +24,33 @@
   </style>
 </head>
 <body class="kit-main">
-<form class="layui-form layui-form-pane" action="${ctx}/api/role/save" method="post" style="width:80%;">
-  <input type="hidden" name="id" id="id" value="${role.id}"/>
+<form class="layui-form layui-form-pane" action="${ctx}/api/dataType/save" method="post" style="width:80%;">
+  <input type="hidden" name="id" id="id" value="${dataType.id}"/>
   <div class="layui-form-item">
     <label class="layui-form-label">代码<span class="input-required">*</span></label>
     <div class="layui-input-block">
-      <input type="text" name="code" value="${role.code}" lay-verify="required" placeholder="代码" autocomplete="off" class="layui-input">
+      <input type="text" name="code" value="${dataType.code}" lay-verify="required" placeholder="代码" autocomplete="off" class="layui-input">
     </div>
   </div>
   <div class="layui-form-item">
     <label class="layui-form-label">名称<span class="input-required">*</span></label>
     <div class="layui-input-block">
-      <input type="text" name="name" value="${role.name}" lay-verify="required" placeholder="名称" autocomplete="off" class="layui-input">
+      <input type="text" name="name" value="${dataType.name}" lay-verify="required" placeholder="名称" autocomplete="off" class="layui-input">
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">数据层级<span class="input-required">*</span></label>
+    <div class="layui-input-inline">
+      <input type="text" name="value" value="${dataType.grade}" lay-verify="required" placeholder="数据层级" autocomplete="off" class="layui-input">
+    </div>
+    <div class="layui-input-inline">
+      <input type="checkbox" name="editable" value="${dataType.editable}" <c:if test="${dataType.editable}">checked</c:if> title="数据可修改">
+    </div>
+  </div>
+  <div class="layui-form-item layui-form-text">
+    <label class="layui-form-label">备注</label>
+    <div class="layui-input-block">
+      <textarea name="remark" placeholder='备注' class="layui-textarea">${config.remark}</textarea>
     </div>
   </div>
   <div class="layui-form-item">

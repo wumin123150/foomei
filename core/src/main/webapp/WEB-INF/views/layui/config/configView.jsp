@@ -31,7 +31,7 @@
   </style>
 </head>
 <body class="kit-main">
-<form class="layui-form layui-form-pane" action="${ctx}/api/config/save" method="post" style="width:80%;">
+<form id="form" class="layui-form layui-form-pane" action="${ctx}/api/config/updateAll" method="post" style="width:80%;">
   <input type="hidden" name="id" id="id" value="${config.id}"/>
   <c:forEach var="config" items="${configs}" varStatus="status">
     <div class="layui-form-item <c:if test='${config.type eq 1}'> layui-form-text</c:if>">
@@ -87,7 +87,6 @@
       </div>
     </div>
   </c:forEach>
-
   <div class="layui-form-item">
     <div class="layui-input-block">
       <button class="layui-btn" lay-submit lay-filter="save">保存</button>
@@ -110,7 +109,7 @@
         url: data.form.action,
         type: 'POST',
         cache: false,
-        data: data.field,
+        data: $('#form').serialize(),//data.field 不支持checkbox
         dataType: 'json',
         success: function (result) {
           if (result.success) {
@@ -120,7 +119,14 @@
             parent.location.reload();
           } else {
             loadIndex && layer.close(loadIndex);
-            layer.msg(result.message, {icon: 2});
+            if(result.data) {
+              var message = '';
+              for(var i=0;i<result.data.length;i++) {
+                message += result.data[i].errorMsg + '<br>';
+              }
+              layer.msg(message, {icon: 2});
+            } else
+              layer.msg(result.message, {icon: 2});
           }
         },
         error: function () {

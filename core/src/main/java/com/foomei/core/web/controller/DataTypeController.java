@@ -6,6 +6,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,6 +22,9 @@ public class DataTypeController {
   private static final String ACTION_CREATE = "create";
   private static final String ACTION_UPDATE = "update";
 
+  @Value("${system.theme:ace}")
+  private String theme;
+
   @Autowired
   private DataTypeService dataTypeService;
 
@@ -29,7 +33,7 @@ public class DataTypeController {
   @RequestMapping
   public String list(Model model) {
     model.addAttribute("menu", MENU);
-    return "admin/dataDictionary/dataTypeList";
+    return theme + "/dataDictionary/dataTypeList";
   }
 
   @ApiOperation(value = "数据类型新增页面", httpMethod = "GET")
@@ -40,7 +44,7 @@ public class DataTypeController {
     model.addAttribute("action", ACTION_CREATE);
 
     model.addAttribute("dataType", new DataType());
-    return "admin/dataDictionary/dataTypeForm";
+    return theme + "/dataDictionary/dataTypeForm";
   }
 
   @ApiOperation(value = "数据类型修改页面", httpMethod = "GET")
@@ -51,7 +55,7 @@ public class DataTypeController {
     model.addAttribute("action", ACTION_UPDATE);
 
     model.addAttribute("dataType", dataTypeService.get(id));
-    return "admin/dataDictionary/dataTypeForm";
+    return theme + "/dataDictionary/dataTypeForm";
   }
 
 }

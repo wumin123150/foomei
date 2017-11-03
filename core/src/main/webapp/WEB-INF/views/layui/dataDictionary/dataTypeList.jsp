@@ -6,7 +6,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>角色管理</title>
+  <title>数据字典管理</title>
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -39,7 +39,6 @@
     <script type="text/html" id="kit-table-bar">
       <a class="layui-btn layui-btn-mini" lay-event="edit">编辑</a>
       <a class="layui-btn layui-btn-danger layui-btn-mini" lay-event="del">删除</a>
-      <a class="layui-btn layui-btn-warm layui-btn-mini" lay-event="auth">分配用户</a>
     </script>
   </div>
 </div>
@@ -48,11 +47,10 @@
 <script>
   var tableId = 'kit-table';
   var tableFilter = 'kit-table';
-  var table_page_url = "${ctx}/api/role/page2";
-  var table_add_url = "${ctx}/admin/role/create";
-  var table_edit_url = "${ctx}/admin/role/update/";
-  var table_del_url = "${ctx}/api/role/delete/";
-  var table_auth_url = "${ctx}/admin/role/auth/";
+  var table_page_url = "${ctx}/api/dataType/page2";
+  var table_add_url = "${ctx}/admin/dataType/create";
+  var table_edit_url = "${ctx}/admin/dataType/update/";
+  var table_del_url = "${ctx}/api/dataType/delete/";
   layui.use('table', function () {
     var table = layui.table,
       layer = layui.layer,
@@ -70,6 +68,8 @@
           { field: 'id', title: 'ID', width: 80 },
           { field: 'code', title: '代码', width: 100, sort: true },
           { field: 'name', title: '名称', width: 150 },
+          { field: 'remark', title: '备注', width: 200 },
+          { field: 'editable', title: '数据可修改', width: 100, templet: '<div>{{#  if(d.editable){ }} <span class="layui-badge layui-bg-green">是</span> {{#  } else { }} <span class="layui-badge layui-bg-orange">否</span> {{#  } }}</div>' },
           { fixed: 'right', title: '操作', width: 180, align: 'center', toolbar: '#kit-table-bar' }
         ]
       ],
@@ -138,12 +138,12 @@
         });
       } else if (layEvent === 'edit') { //编辑
         var index = layer.open({
-          title : "修改角色",
+          title : "修改数据类型",
           type : 2,
           content : table_edit_url + data.id,
           success : function(layero, index){
             setTimeout(function(){
-              layui.layer.tips('点击此处返回角色列表', '.layui-layer-setwin .layui-layer-close', {
+              layui.layer.tips('点击此处返回数据类型列表', '.layui-layer-setwin .layui-layer-close', {
                 tips: 3
               });
             },1000)
@@ -154,14 +154,6 @@
           layer.full(index);
         })
         layer.full(index);
-      } else if (layEvent === 'auth') { //分配
-        top.layer.open({
-          title : "分配用户",
-          type : 2,
-          maxmin: true,
-          area: ['893px', '600px'],
-          content : table_auth_url + data.id
-        })
       }
     });
     $('#kit-search-more').on('click', function () {
@@ -175,12 +167,12 @@
       switch (action) {
         case 'add':
           var index = layer.open({
-            title : "新增角色",
+            title : "新增数据类型",
             type : 2,
             content : table_add_url,
             success : function(layero, index){
               setTimeout(function(){
-                layui.layer.tips('点击此处返回角色列表', '.layui-layer-setwin .layui-layer-close', {
+                layui.layer.tips('点击此处返回数据类型列表', '.layui-layer-setwin .layui-layer-close', {
                   tips: 3
                 });
               },1000)

@@ -83,7 +83,7 @@
               <a href="javascript:;" data-url="${ctx}/admin/user"><i class="layui-icon" data-icon="&#xe612;">&#xe612;</i><cite>用户管理</cite></a>
             </dd>
             <dd>
-              <a href="javascript:;" data-url="${ctx}/admin/role"><i class="layui-icon" data-icon=""></i><cite>角色管理</cite></a>
+              <a href="javascript:;" data-url="${ctx}/admin/role"><cite>角色管理</cite></a>
             </dd>
             <dd>
               <a href="javascript:;" data-url="${ctx}/admin/log"><i class="layui-icon" data-icon=""></i><cite>日志管理</cite></a>
@@ -94,7 +94,13 @@
           <a href="javascript:;" data-url="${ctx}/admin/config"><i class="layui-icon">&#xe614;</i><cite>系统配置</cite></a>
         </li>
         <li class="layui-nav-item layui-nav-itemed">
-          <a href="javascript:;" data-url="${ctx}/admin/annex"><i class="layui-icon">&#xe64a;</i><cite>附件</cite></a>
+          <a href="javascript:;" data-url="${ctx}/admin/dataType"><i class="layui-icon">&#xe62d;</i><cite>数据字典</cite></a>
+        </li>
+        <li class="layui-nav-item layui-nav-itemed">
+          <a href="javascript:;" data-url="${ctx}/admin/message"><i class="layui-icon">&#xe63a;</i><cite>消息</cite></a>
+        </li>
+        <li class="layui-nav-item layui-nav-itemed">
+          <a href="javascript:;" data-url="${ctx}/admin/annex"><i class="layui-icon">&#xe621;</i><cite>附件</cite></a>
         </li>
         <li class="layui-nav-item layui-nav-itemed">
           <a href="javascript:;" data-url="${ctx}/admin/log"><i class="layui-icon">&#xe705;</i><cite>日志</cite></a>

@@ -6,6 +6,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +21,9 @@ public class MessageController {
   private static final String ACTION_CREATE = "create";
   private static final String ACTION_UPDATE = "update";
 
+  @Value("${system.theme:ace}")
+  private String theme;
+
   @Autowired
   private MessageService messageService;
 
@@ -28,7 +32,7 @@ public class MessageController {
   @RequestMapping
   public String list(Model model) {
     model.addAttribute("menu", MENU);
-    return "admin/message/messageList";
+    return theme + "/message/messageList";
   }
 
   @ApiOperation(value = "消息新增页面", httpMethod = "GET")
@@ -39,7 +43,7 @@ public class MessageController {
     model.addAttribute("action", ACTION_CREATE);
 
     model.addAttribute("text", new MessageText());
-    return "admin/message/messageForm";
+    return theme + "/message/messageForm";
   }
 
 }

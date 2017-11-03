@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @Api(description = "角色授权接口")
 @RestController
@@ -39,6 +40,17 @@ public class UserRoleEndpoint {
   public ResponseResult<Page<BaseUser>> page(PageQuery pageQuery, Long roleId, HttpServletRequest request) {
     Page<User> page = userService.getPageByRole(pageQuery.getSearchKey(), roleId, pageQuery.buildPageRequest());
     return ResponseResult.createSuccess(page, User.class, BaseUser.class);
+  }
+
+  @ApiOperation(value = "角色授权简单分页列表", httpMethod = "GET", produces = "application/json")
+  @ApiImplicitParams({
+    @ApiImplicitParam(name = "roleId", value = "角色ID", dataType = "long", paramType = "query")
+  })
+  @RequiresRoles("admin")
+  @RequestMapping(value = "page2")
+  public ResponseResult<List<BaseUser>> page2(PageQuery pageQuery, Long roleId) {
+    Page<User> page = userService.getPageByRole(pageQuery.getSearchKey(), roleId, pageQuery.buildPageRequest());
+    return ResponseResult.createSuccess(page.getContent(), page.getTotalElements(), User.class, BaseUser.class);
   }
 
   @ApiOperation(value = "角色授权新增", httpMethod = "POST", produces = "application/json")

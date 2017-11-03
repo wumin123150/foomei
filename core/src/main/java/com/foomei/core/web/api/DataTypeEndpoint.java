@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Validation;
+import java.util.List;
 
 @Api(description = "数据类型接口")
 @RestController
@@ -48,6 +49,14 @@ public class DataTypeEndpoint {
     }
 
     return ResponseResult.createSuccess(page, DataType.class, DataTypeDto.class);
+  }
+
+  @ApiOperation(value = "数据类型简单分页列表", httpMethod = "GET", produces = "application/json")
+  @RequiresRoles("admin")
+  @RequestMapping(value = "page2", method = RequestMethod.GET)
+  public ResponseResult<List<DataTypeDto>> page2(PageQuery pageQuery) {
+    Page<DataType> page = dataTypeService.getPage(new SearchRequest(pageQuery, DataType.PROP_CODE, DataType.PROP_NAME));
+    return ResponseResult.createSuccess(page.getContent(), page.getTotalElements(), DataType.class, DataTypeDto.class);
   }
 
   @ApiOperation(value = "数据类型保存", httpMethod = "POST")

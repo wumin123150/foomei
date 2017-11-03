@@ -4,7 +4,7 @@
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 <html>
 <head>
-  <title>角色授权</title>
+  <title>分配用户</title>
 </head>
 <pluginCss>
   <!-- page specific plugin styles -->
@@ -85,7 +85,7 @@
         <li>
           <a href="${ctx}/admin/role">角色管理</a>
         </li>
-        <li class="active">角色授权</li>
+        <li class="active">分配用户</li>
       </ul><!-- /.breadcrumb -->
     </div>
 
@@ -93,7 +93,7 @@
     <div class="page-content">
       <div class="page-header">
         <h1>
-          角色授权
+          分配用户
         </h1>
       </div><!-- /.page-header -->
 
@@ -174,7 +174,7 @@
       $("#form-roleId").val($("#roleId").val());
 
       BootstrapDialog.show({
-        title: '<i class="ace-icon fa fa-plus-circle bigger-110"></i>&nbsp;新增用户',
+        title: '<i class="ace-icon fa fa-plus-circle bigger-110"></i>&nbsp;添加用户',
         message: $('#dialog-form'),
         autodestroy: false,
         buttons: [{
@@ -217,7 +217,7 @@
     function delForm(id) {
       var roleId = $("#roleId").val();
 
-      BootstrapDialog.confirm('你确定要删除吗？', function (result) {
+      BootstrapDialog.confirm('你确定要移除吗？', function (result) {
         if (result) {
           $.ajax({
             url: grid_del_url,
@@ -371,7 +371,7 @@
             name: 'myop', index: '', width: 80, fixed: true, sortable: false, resize: false, search: false,
             formatter: function (cellvalue, options, rowObject) {
               return '<div class="action-buttons">'
-                + '<div title="删除" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" onmouseover="$(this).addClass(\'ui-state-hover\');" onmouseout="$(this).removeClass(\'ui-state-hover\')"><a class="red" href="javascript:void(0);" onClick="delForm(\'' + rowObject.id + '\')"><i class="ace-icon fa fa-trash-o bigger-140"></i></a></div>'
+                + '<div title="移除" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" onmouseover="$(this).addClass(\'ui-state-hover\');" onmouseout="$(this).removeClass(\'ui-state-hover\')"><a class="red" href="javascript:void(0);" onClick="delForm(\'' + rowObject.id + '\')"><i class="ace-icon fa fa-trash-o bigger-140"></i></a></div>'
                 + '</div>';
             }
           },
