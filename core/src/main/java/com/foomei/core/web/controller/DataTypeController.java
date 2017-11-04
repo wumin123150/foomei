@@ -39,7 +39,7 @@ public class DataTypeController {
   @ApiOperation(value = "数据类型新增页面", httpMethod = "GET")
   @RequiresRoles("admin")
   @RequestMapping(value = "create", method = RequestMethod.GET)
-  public String createForm(Model model) {
+  public String create(Model model) {
     model.addAttribute("menu", MENU);
     model.addAttribute("action", ACTION_CREATE);
 
@@ -50,7 +50,7 @@ public class DataTypeController {
   @ApiOperation(value = "数据类型修改页面", httpMethod = "GET")
   @RequiresRoles("admin")
   @RequestMapping(value = "update/{id}", method = RequestMethod.GET)
-  public String updateForm(@PathVariable("id") Long id, Model model) {
+  public String update(@PathVariable("id") Long id, Model model) {
     model.addAttribute("menu", MENU);
     model.addAttribute("action", ACTION_UPDATE);
 

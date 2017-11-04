@@ -107,7 +107,7 @@
     var grid_add_url = "${ctx}/admin/dataType/create";
     var grid_edit_url = "${ctx}/admin/dataType/update/";
     var grid_del_url = "${ctx}/api/dataType/delete/";
-    var grid_data_url = "${ctx}/admin/dataDictionary?typeCode=";
+    var grid_data_url = "${ctx}/admin/dataDictionary?typeId=";
 
     jQuery(function ($) {
       $(grid_selector).foomei_JqGrid({
@@ -127,7 +127,7 @@
             formatter: function (cellvalue, options, rowObject) {
               return '<div class="action-buttons">'
                 + '<div title="编辑" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" onmouseover="$(this).addClass(\'ui-state-hover\');" onmouseout="$(this).removeClass(\'ui-state-hover\')"><a class="blue" href="' + grid_edit_url + rowObject.id + '"><i class="ace-icon fa fa-pencil bigger-140"></i></a></div>'
-                + '<div title="数据字典" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" onmouseover="$(this).addClass(\'ui-state-hover\');" onmouseout="$(this).removeClass(\'ui-state-hover\')"><a class="orange" href="' + grid_data_url + rowObject.code + '"><i class="ace-icon fa fa-table bigger-140"></i></a></div>'
+                + '<div title="数据字典" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" onmouseover="$(this).addClass(\'ui-state-hover\');" onmouseout="$(this).removeClass(\'ui-state-hover\')"><a class="orange" href="' + grid_data_url + rowObject.id + '"><i class="ace-icon fa fa-table bigger-140"></i></a></div>'
                 + (rowObject.editable ? '<div title="删除" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" onmouseover="$(this).addClass(\'ui-state-hover\');" onmouseout="$(this).removeClass(\'ui-state-hover\')"><a class="red btn-del" href="javascript:void(0);" data-id="' + rowObject.id + '"><i class="ace-icon fa fa-trash-o bigger-140"></i></a></div>' : '')
                 + '</div>';
             }

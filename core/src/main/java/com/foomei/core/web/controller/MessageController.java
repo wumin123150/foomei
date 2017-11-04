@@ -38,7 +38,7 @@ public class MessageController {
   @ApiOperation(value = "消息新增页面", httpMethod = "GET")
   @RequiresRoles("admin")
   @RequestMapping(value = "create", method = RequestMethod.GET)
-  public String createForm(Model model) {
+  public String create(Model model) {
     model.addAttribute("menu", MENU);
     model.addAttribute("action", ACTION_CREATE);
 

@@ -64,6 +64,9 @@
       -webkit-box-shadow: none;
       box-shadow: none;
     }
+
+    .ztree li span.button.switch.level0 {visibility:hidden; width:1px;}
+    .ztree li ul.level0 {padding:0; background:none;}
   </style>
 </pageCss>
 <body>
@@ -212,7 +215,7 @@
                   <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-role"> 角色 </label>
                   <div class="col-xs-12 col-sm-8">
                     <div class="clearfix">
-                      <select name="roleIds" id="form-role" class="form-control chosen-select tag-input-style"
+                      <select name="roles" id="form-role" class="form-control chosen-select tag-input-style"
                               data-placeholder="角色" multiple="">
                         <c:forEach items="${roles}" var="role">
                           <option value="${role.id}">${role.name}</option>
@@ -269,8 +272,8 @@
   <script type="text/javascript">
     var grid_selector = "#grid-table1";
     var grid_page_url = "${ctx}/api/userGroup/page";
-    var grid_add_url = "${ctx}/api/userGroup/create";
-    var grid_edit_url = "${ctx}/api/userGroup/update";
+    var grid_add_url = "${ctx}/api/userGroup/save";
+    var grid_edit_url = "${ctx}/api/userGroup/save";
     var grid_del_url = "${ctx}/api/userGroup/delete/";
     var grid_get_url = "${ctx}/api/userGroup/get/";
 
@@ -352,7 +355,7 @@
           $("#form-parentId").val(result.data.parentId);
           $("#form-code").val(result.data.code);
           $("#form-name").val(result.data.name);
-          $("#form-role").val(result.data.roleIds);
+          $("#form-role").val(result.data.roles);
           $("#form-type").val(result.data.type);
           $("#form-priority").val(result.data.priority);
           $("#form-remark").val(result.data.remark);
@@ -521,36 +524,50 @@
       });
     }
 
-    function zTreeOnClick(event, treeId, treeNode, clickFlag) {
-      if (clickFlag === 0) {
-        $("#parentId").val('');
-        $("#groupId").val('');
-      } else {
-        $("#parentId").val(treeNode.id);
-        $("#groupId").val(treeNode.id);
-      }
-      $("#btn-search1").trigger("click");
-      $("#btn-search2").trigger("click");
-    }
-    ;
-
     var setting = {
       async: {
         enable: true,
         url: '${ctx}/api/userGroup/tree',
         dataType: "json",
-        autoParam: ["id"]
+        autoParam: ["id"],
+        dataFilter: function(treeId, parentNode, result) {
+          if(result.success) {
+            if (parentNode == null) {
+              for(var i=0;i<result.data.length;i++) {
+                if(result.data[i].parentId == null) {
+                  result.data[i].parentId = 0;
+                }
+              }
+              result.data[result.data.length] = { id:0, parentId:null, name:"组织机构", open:true};
+            }
+            return result.data;
+          }
+          return [];
+        }
       },
       data: {
         simpleData: {
-          enable: true
+          enable: true,
+          idKey: "id",
+          pIdKey: "parentId",
+          rootPId: null
         }
       },
       view: {
         selectedMulti: false,
         autoCancelSelected: true
       }, callback: {
-        onClick: zTreeOnClick,
+        onClick: function(event, treeId, treeNode, clickFlag) {
+          if (clickFlag === 0 || treeNode.id == 0) {
+            $("#parentId").val('');
+            $("#groupId").val('');
+          } else {
+            $("#parentId").val(treeNode.id);
+            $("#groupId").val(treeNode.id);
+          }
+          $("#btn-search1").trigger("click");
+          $("#btn-search2").trigger("click");
+        },
         onAsyncSuccess: function (event, treeId, treeNode, msg) {
           if (treeNode == null) {
             var zTree = $.fn.zTree.getZTreeObj(treeId);
@@ -592,7 +609,7 @@
     })(jQuery);
 
     jQuery(function ($) {
-      $.fn.zTree.init($('#tree'), setting, null);
+      $.fn.zTree.init($('#tree'), setting);
 
       $('.chosen-select').chosen({
         allow_single_deselect: true

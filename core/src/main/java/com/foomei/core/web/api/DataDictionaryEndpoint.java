@@ -2,20 +2,25 @@ package com.foomei.core.web.api;
 
 import com.baidu.unbiz.fluentvalidator.*;
 import com.baidu.unbiz.fluentvalidator.jsr303.HibernateSupportedValidator;
+import com.foomei.common.dto.PageQuery;
 import com.foomei.common.dto.ResponseResult;
 import com.foomei.common.mapper.BeanMapper;
 import com.foomei.core.dto.DataDictionaryDto;
 import com.foomei.core.dto.TreeNodeDto;
 import com.foomei.core.entity.DataDictionary;
 import com.foomei.core.entity.DataType;
+import com.foomei.core.entity.UserGroup;
 import com.foomei.core.service.DataDictionaryService;
+import com.foomei.core.vo.UserGroupVo;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -23,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Validation;
 import java.util.List;
+import java.util.Map;
 
 @Api(description = "数据字典接口")
 @RestController
@@ -32,64 +38,71 @@ public class DataDictionaryEndpoint {
   @Autowired
   private DataDictionaryService dataDictionaryService;
 
+  static {
+    Map<String, String> mapFields = Maps.newHashMap();
+    mapFields.put("type.id", "typeId");
+    mapFields.put("type.code", "typeCode");
+    BeanMapper.registerClassMap(DataDictionary.class, DataDictionaryDto.class, mapFields);
+  }
+
   @ApiOperation(value = "根据数据类型和父节点获取数据字典列表", notes = "父节点为空时，获取数据类型下的所有内容", httpMethod = "GET", produces = "application/json")
   @ApiImplicitParams({
-    @ApiImplicitParam(name = "typeCode", value = "数据类型编码", required = true, dataType = "string", paramType = "query"),
+    @ApiImplicitParam(name = "typeId", value = "数据类型ID", required = true, dataType = "long", paramType = "query"),
     @ApiImplicitParam(name = "id", value = "父节点ID", dataType = "long", paramType = "query")
   })
   @RequiresRoles("admin")
   @RequestMapping(value = "tree")
-  public List<TreeNodeDto> tree(String typeCode, Long id) {
+  public ResponseResult<List<DataDictionaryDto>> tree(Long typeId, Long id) {
+    List<DataDictionary> dataDictionarys = null;
     if (id != null) {
-      List<DataDictionary> dataDictionarys = dataDictionaryService.findChildrenByTypeAndParent(typeCode, id);
-      return toNodes(dataDictionarys);
-    } else {
-      List<DataDictionary> dataDictionarys = dataDictionaryService.findByTypeCode(typeCode);
-      return toNodes(dataDictionarys);
-    }
-  }
-
-  @ApiOperation(value = "数据字典新增", httpMethod = "POST", produces = "application/json")
-  @RequiresRoles("admin")
-  @RequestMapping(value = "create", method = RequestMethod.POST)
-  public ResponseResult<TreeNodeDto> create(DataDictionaryDto dictionary) {
-    DataDictionary dataDictionary = BeanMapper.map(dictionary, DataDictionary.class);
-    dataDictionary.setType(new DataType(dictionary.getTypeId()));
-
-    if (dataDictionary.getParentId() != null) {
-      DataDictionary parent = dataDictionaryService.get(dataDictionary.getParentId());
-      if (parent != null) {
-        dataDictionary.setGrade(parent.getGrade() + 1);
+      if(id == 0) {
+        dataDictionarys = dataDictionaryService.findByType(typeId);
+      } else {
+        dataDictionarys = dataDictionaryService.findChildrenByTypeAndParent(typeId, id);
       }
     } else {
-      dataDictionary.setGrade(1);
+      dataDictionarys = dataDictionaryService.getAll();
     }
-
-    ComplexResult result = validate(dataDictionary, dictionary.getTypeCode());
-    if (!result.isSuccess()) {
-      return ResponseResult.createParamError(result);
-    } else {
-      dataDictionaryService.save(dataDictionary);
-    }
-
-    return new ResponseResult<>(new TreeNodeDto(dataDictionary));
+    return ResponseResult.createSuccess(dataDictionarys, DataDictionary.class, DataDictionaryDto.class);
   }
 
-  @ApiOperation(value = "数据字典修改", httpMethod = "POST", produces = "application/json")
-  @RequiresRoles("admin")
-  @RequestMapping(value = "update", method = RequestMethod.POST)
-  public ResponseResult<TreeNodeDto> update(DataDictionaryDto dictionary) {
-    DataDictionary dataDictionary = dataDictionaryService.get(dictionary.getId());
-    dataDictionary = BeanMapper.map(dictionary, dataDictionary, DataDictionaryDto.class, DataDictionary.class);
+  @ApiOperation(value = "数据字典简单分页列表", httpMethod = "GET", produces = "application/json")
+  @RequestMapping(value = "page2")
+  public ResponseResult<List<DataDictionaryDto>> page2(PageQuery pageQuery, Long typeId, Long parentId) {
+    Page<DataDictionary> page = dataDictionaryService.getPage(pageQuery.getSearchKey(), typeId, parentId, pageQuery.buildPageRequest());
+    return ResponseResult.createSuccess(page.getContent(), page.getTotalElements(), DataDictionary.class, DataDictionaryDto.class);
+  }
 
-    ComplexResult result = validate(dataDictionary, dictionary.getTypeCode());
+  @ApiOperation(value = "数据字典保存", httpMethod = "POST", produces = "application/json")
+  @RequiresRoles("admin")
+  @RequestMapping(value = "save", method = RequestMethod.POST)
+  public ResponseResult<DataDictionaryDto> save(DataDictionaryDto dictionaryDto) {
+    DataDictionary dataDictionary = null;
+    if(dictionaryDto.getId() == null) {
+      dataDictionary = BeanMapper.map(dictionaryDto, DataDictionary.class);
+      dataDictionary.setType(new DataType(dictionaryDto.getTypeId()));
+
+      if (dataDictionary.getParentId() != null) {
+        DataDictionary parent = dataDictionaryService.get(dataDictionary.getParentId());
+        if (parent != null) {
+          dataDictionary.setGrade(parent.getGrade() + 1);
+        }
+      } else {
+        dataDictionary.setGrade(1);
+      }
+    } else {
+      dataDictionary = dataDictionaryService.get(dictionaryDto.getId());
+      dataDictionary = BeanMapper.map(dictionaryDto, dataDictionary, DataDictionaryDto.class, DataDictionary.class);
+    }
+
+    ComplexResult result = validate(dataDictionary, dictionaryDto.getTypeCode());
     if (!result.isSuccess()) {
       return ResponseResult.createParamError(result);
     } else {
       dataDictionaryService.save(dataDictionary);
     }
 
-    return new ResponseResult<>(new TreeNodeDto(dataDictionary));
+    return ResponseResult.createSuccess(dataDictionary, DataDictionaryDto.class);
   }
 
   @ApiOperation(value = "数据字典删除", httpMethod = "GET", produces = "application/json")

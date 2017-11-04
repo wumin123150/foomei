@@ -6,14 +6,12 @@ import com.foomei.common.dto.ErrorCodeFactory;
 import com.foomei.common.dto.PageQuery;
 import com.foomei.common.dto.ResponseResult;
 import com.foomei.common.mapper.BeanMapper;
-import com.foomei.core.dto.TreeNodeDto;
 import com.foomei.core.dto.UserGroupDto;
 import com.foomei.core.entity.DataDictionary;
-import com.foomei.core.entity.Role;
 import com.foomei.core.entity.UserGroup;
 import com.foomei.core.service.UserGroupService;
 import com.foomei.core.service.UserService;
-import com.google.common.collect.Lists;
+import com.foomei.core.vo.UserGroupVo;
 import com.google.common.collect.Maps;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -22,7 +20,10 @@ import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Validation;
@@ -41,21 +42,25 @@ public class UserGroupEndpoint {
 
   static {
     Map<String, String> mapFields = Maps.newHashMap();
-    mapFields.put("roleList{id}", "roleIds{}");
-    BeanMapper.registerClassMap(UserGroup.class, UserGroupDto.class, mapFields);
+    mapFields.put("roleList{id}", "roles{}");
+    BeanMapper.registerClassMap(UserGroup.class, UserGroupVo.class, mapFields);
   }
 
   @ApiOperation(value = "根据父节点ID获取机构列表", httpMethod = "GET", produces = "application/json")
   @RequiresRoles("admin")
   @RequestMapping(value = "tree")
-  public List<TreeNodeDto> tree(Long id) {
+  public ResponseResult<List<UserGroupDto>> tree(Long id) {
+    List<UserGroup> userGroups = null;
     if (id != null) {
-      List<UserGroup> userGroups = userGroupService.findChildrenByParent(id);
-      return toNodes(userGroups);
+      if(id == 0) {
+        userGroups = userGroupService.findTop();
+      } else {
+        userGroups = userGroupService.findChildrenByParent(id);
+      }
     } else {
-      List<UserGroup> userGroups = userGroupService.getAll();
-      return toNodes(userGroups);
+      userGroups = userGroupService.getAll();
     }
+    return ResponseResult.createSuccess(userGroups, UserGroup.class, UserGroupDto.class);
   }
 
   @ApiOperation(value = "机构列表", httpMethod = "GET", produces = "application/json")
@@ -73,44 +78,40 @@ public class UserGroupEndpoint {
     return ResponseResult.createSuccess(page, UserGroup.class, UserGroupDto.class);
   }
 
-  @ApiOperation(value = "机构新增", httpMethod = "POST", produces = "application/json")
-  @RequiresRoles("admin")
-  @RequestMapping(value = "create", method = RequestMethod.POST)
-  public ResponseResult create(UserGroupDto group) {
-    UserGroup userGroup = BeanMapper.map(group, UserGroup.class);
-
-    UserGroup parent = null;
-    if (userGroup.getParentId() != null) {
-      parent = userGroupService.get(userGroup.getParentId());
-      if (parent != null) {
-        userGroup.setGrade(parent.getGrade() + 1);
-      }
-    } else {
-      userGroup.setGrade(1);
-    }
-
-    if (parent != null) {
-      userGroup.setPath(parent.getPath() + UserGroup.PATH_SPLIT + userGroup.getCode());
-    } else {
-      userGroup.setPath(UserGroup.PATH_SPLIT + userGroup.getCode());
-    }
-
-    ComplexResult result = validate(userGroup);
-    if (!result.isSuccess()) {
-      return ResponseResult.createParamError(result);
-    } else {
-      userGroupService.save(userGroup);
-    }
-
-    return ResponseResult.SUCCEED;
+  @ApiOperation(value = "机构简单分页列表", httpMethod = "GET", produces = "application/json")
+  @RequestMapping(value = "page2")
+  public ResponseResult<List<UserGroupDto>> page2(PageQuery pageQuery, Long parentId) {
+    Page<UserGroup> page = userGroupService.getPage(pageQuery.getSearchKey(), parentId, pageQuery.buildPageRequest());
+    return ResponseResult.createSuccess(page.getContent(), page.getTotalElements(), UserGroup.class, UserGroupDto.class);
   }
 
-  @ApiOperation(value = "机构修改", httpMethod = "POST", produces = "application/json")
+  @ApiOperation(value = "机构保存", httpMethod = "POST", produces = "application/json")
   @RequiresRoles("admin")
-  @RequestMapping(value = "update", method = RequestMethod.POST)
-  public ResponseResult update(UserGroupDto group) {
-    UserGroup userGroup = userGroupService.get(group.getId());
-    userGroup = BeanMapper.map(group, userGroup, UserGroupDto.class, UserGroup.class);
+  @RequestMapping(value = "save", method = RequestMethod.POST)
+  public ResponseResult save(UserGroupVo groupVo) {
+    UserGroup userGroup = null;
+    if(groupVo.getId() == null) {
+      userGroup = BeanMapper.map(groupVo, UserGroup.class);
+
+      UserGroup parent = null;
+      if (userGroup.getParentId() != null) {
+        parent = userGroupService.get(userGroup.getParentId());
+        if (parent != null) {
+          userGroup.setGrade(parent.getGrade() + 1);
+        }
+      } else {
+        userGroup.setGrade(1);
+      }
+
+      if (parent != null) {
+        userGroup.setPath(parent.getPath() + UserGroup.PATH_SPLIT + userGroup.getCode());
+      } else {
+        userGroup.setPath(UserGroup.PATH_SPLIT + userGroup.getCode());
+      }
+    } else {
+      userGroup = userGroupService.get(groupVo.getId());
+      BeanMapper.map(groupVo, userGroup, UserGroupVo.class, UserGroup.class);
+    }
 
     ComplexResult result = validate(userGroup);
     if (!result.isSuccess()) {
@@ -169,14 +170,6 @@ public class UserGroupEndpoint {
       .doValidate()
       .result(ResultCollectors.toComplex());
     return result;
-  }
-
-  private List<TreeNodeDto> toNodes(List<UserGroup> userGroups) {
-    List<TreeNodeDto> treeNodes = Lists.newArrayListWithCapacity(userGroups.size());
-    for (UserGroup userGroup : userGroups) {
-      treeNodes.add(new TreeNodeDto(userGroup));
-    }
-    return treeNodes;
   }
 
 }

@@ -96,6 +96,11 @@
     .layui-form-item .layui-inline{ width:100%; float:none; }
 }
 
+.layui-input[disabled], .layui-input[readonly], .layui-textarea[disabled], .layui-textarea[readonly] {
+    background-color: #eee;
+    opacity: 1;
+}
+
 .hide {
     display: none;
 }

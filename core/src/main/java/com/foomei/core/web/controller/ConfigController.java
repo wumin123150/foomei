@@ -39,7 +39,7 @@ public class ConfigController {
   @ApiOperation(value = "系统配置新增页面", httpMethod = "GET")
   @RequiresRoles("admin")
   @RequestMapping(value = "create", method = RequestMethod.GET)
-  public String createForm(Model model) {
+  public String create(Model model) {
     model.addAttribute("menu", MENU);
     model.addAttribute("action", ACTION_CREATE);
 
@@ -50,7 +50,7 @@ public class ConfigController {
   @ApiOperation(value = "系统配置修改页面", httpMethod = "GET")
   @RequiresRoles("admin")
   @RequestMapping(value = "update/{id}", method = RequestMethod.GET)
-  public String updateForm(@PathVariable("id") Long id, Model model) {
+  public String update(@PathVariable("id") Long id, Model model) {
     model.addAttribute("menu", MENU);
     model.addAttribute("action", ACTION_UPDATE);
 
@@ -61,7 +61,7 @@ public class ConfigController {
   @ApiOperation(value = "系统配置查看页面", httpMethod = "GET")
   @RequiresRoles("admin")
   @RequestMapping(value = "view", method = RequestMethod.GET)
-  public String viewForm(Model model) {
+  public String view(Model model) {
     model.addAttribute("menu", "configs");
 
     model.addAttribute("configs", configService.getAll());

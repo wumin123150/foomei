@@ -1,12 +1,9 @@
 package com.foomei.core.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.foomei.core.entity.DataDictionary;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-
-import com.foomei.core.entity.DataDictionary;
-import com.foomei.core.entity.UserGroup;
 import lombok.Data;
 
 @Data
@@ -28,17 +25,6 @@ public class TreeNodeDto {
       this.pId = String.valueOf(dataDictionary.getParentId());
     }
     this.name = dataDictionary.getName() + "(" + dataDictionary.getCode() + ")";
-    this.isParent = !dataDictionary.getItem();
-  }
-
-  public TreeNodeDto(UserGroup userGroup) {
-    this.id = String.valueOf(userGroup.getId());
-    if (userGroup.getParentId() != null) {
-      this.pId = String.valueOf(userGroup.getParentId());
-    } else {
-      this.pId = "0";
-    }
-    this.name = userGroup.getName();
     this.isParent = true;
   }
 

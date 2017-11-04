@@ -91,10 +91,10 @@
           </dl>
         </li>
         <li class="layui-nav-item layui-nav-itemed">
-          <a href="javascript:;" data-url="${ctx}/admin/config"><i class="layui-icon">&#xe614;</i><cite>系统配置</cite></a>
+          <a href="javascript:;" data-url="${ctx}/admin/config"><i class="layui-icon">&#xe614;</i><cite>配置</cite></a>
         </li>
         <li class="layui-nav-item layui-nav-itemed">
-          <a href="javascript:;" data-url="${ctx}/admin/dataType"><i class="layui-icon">&#xe62d;</i><cite>数据字典</cite></a>
+          <a href="javascript:;" data-url="${ctx}/admin/dataType"><i class="layui-icon">&#xe62d;</i><cite>字典</cite></a>
         </li>
         <li class="layui-nav-item layui-nav-itemed">
           <a href="javascript:;" data-url="${ctx}/admin/message"><i class="layui-icon">&#xe63a;</i><cite>消息</cite></a>

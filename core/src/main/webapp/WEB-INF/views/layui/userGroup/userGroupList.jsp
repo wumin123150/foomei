@@ -6,7 +6,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>字典管理</title>
+  <title>机构管理</title>
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -16,43 +16,59 @@
   <link rel="stylesheet" href="${ctx}/static/js/layui/css/layui.css" media="all"/>
   <link rel="stylesheet" href="//at.alicdn.com/t/font_tnyc012u2rlwstt9.css" media="all" />
   <link rel="stylesheet" href="${ctx}/static/js/layui/page.css" media="all"/>
+  <link rel="stylesheet" href="${ctx}/static/js/zTree/metroStyle/metroStyle.css">
   <style type="text/css">
+    .ztree {
+      margin-left: 5px;
+    }
+    .ztree li span.button.switch.level0 {visibility:hidden; width:1px;}
+    .ztree li ul.level0 {padding:0; background:none;}
   </style>
 </head>
 <body>
-<div class="kit-table">
-  <form class="layui-form" lay-filter="kit-search-form">
-    <div class="kit-table-header">
-      <div class="kit-search-btns">
-        <a href="javascript:;" data-action="add" class="layui-btn layui-btn-small"><i class="layui-icon">&#xe608;</i>新增</a>
-      </div>
-      <div class="kit-search-inputs">
-        <div class="kit-search-keyword">
-          <input type="text" class="layui-input" name="searchKey" placeholder="搜索关键字.." />
-          <button lay-submit lay-filter="search"><i class="layui-icon">&#xe615;</i></button>
+<div class="layui-row">
+  <div class="layui-col-xs3">
+    <ul id="tree" class="ztree"></ul>
+  </div>
+  <div class="layui-col-xs9">
+    <div class="kit-table">
+      <form class="layui-form" lay-filter="kit-search-form">
+        <div class="kit-table-header">
+          <div class="kit-search-btns">
+            <a href="javascript:;" data-action="add" class="layui-btn layui-btn-small"><i class="layui-icon">&#xe608;</i>新增</a>
+          </div>
+          <div class="kit-search-inputs">
+            <div class="kit-search-keyword">
+              <input type="hidden" id="parentId" name="parentId"/>
+              <input type="text" class="layui-input" name="searchKey" placeholder="搜索关键字.." />
+              <button id="btn-search" lay-submit lay-filter="search"><i class="layui-icon">&#xe615;</i></button>
+            </div>
+          </div>
         </div>
+      </form>
+      <div class="kit-table-body">
+        <table id="kit-table" lay-filter="kit-table"></table>
+        <script type="text/html" id="kit-table-bar">
+          <a class="layui-btn layui-btn-mini" lay-event="edit">编辑</a>
+          <a class="layui-btn layui-btn-danger layui-btn-mini" lay-event="del">删除</a>
+        </script>
       </div>
     </div>
-  </form>
-  <div class="kit-table-body">
-    <table id="kit-table" lay-filter="kit-table"></table>
-    <script type="text/html" id="kit-table-bar">
-      <a class="layui-btn layui-btn-mini" lay-event="edit">编辑</a>
-      <a class="layui-btn layui-btn-danger layui-btn-mini" lay-event="del">删除</a>
-      <a class="layui-btn layui-btn-warm layui-btn-mini" lay-event="data">数据</a>
-    </script>
   </div>
 </div>
+
 <script src="${ctx}/static/js/layui/layui.js"></script>
+<script src="${ctx}/webjars/jquery/jquery.min.js"></script>
+<script src="${ctx}/static/js/zTree/jquery.ztree.core.min.js"></script>
 </body>
 <script>
   var tableId = 'kit-table';
   var tableFilter = 'kit-table';
-  var table_page_url = "${ctx}/api/dataType/page2";
-  var table_add_url = "${ctx}/admin/dataType/create";
-  var table_edit_url = "${ctx}/admin/dataType/update/";
-  var table_del_url = "${ctx}/api/dataType/delete/";
-  var table_data_url = "${ctx}/admin/dataDictionary?typeId=";
+  var table_page_url = "${ctx}/api/userGroup/page2";
+  var table_add_url = "${ctx}/admin/userGroup/create?parentId=";
+  var table_edit_url = "${ctx}/admin/userGroup/update/";
+  var table_del_url = "${ctx}/api/userGroup/delete/";
+  var table_get_url = "${ctx}/api/userGroup/get/";
   layui.use('table', function () {
     var table = layui.table,
       layer = layui.layer,
@@ -70,8 +86,7 @@
           { field: 'id', title: 'ID', width: 80 },
           { field: 'code', title: '代码', width: 100, sort: true },
           { field: 'name', title: '名称', width: 150 },
-          { field: 'remark', title: '备注', width: 200 },
-          { field: 'editable', title: '数据可修改', width: 100, templet: '<div>{{#  if(d.editable){ }} <span class="layui-badge layui-bg-green">是</span> {{#  } else { }} <span class="layui-badge layui-bg-orange">否</span> {{#  } }}</div>' },
+          { field: 'type', title: '类型', width: 150 },
           { fixed: 'right', title: '操作', width: 180, align: 'center', toolbar: '#kit-table-bar' }
         ]
       ],
@@ -140,12 +155,12 @@
         });
       } else if (layEvent === 'edit') { //编辑
         var index = layer.open({
-          title : "修改类型",
+          title : "修改机构",
           type : 2,
           content : table_edit_url + data.id,
           success : function(layero, index){
             setTimeout(function(){
-              layui.layer.tips('点击此处返回类型列表', '.layui-layer-setwin .layui-layer-close', {
+              layui.layer.tips('点击此处返回机构列表', '.layui-layer-setwin .layui-layer-close', {
                 tips: 3
               });
             },1000)
@@ -156,13 +171,13 @@
           layer.full(index);
         })
         layer.full(index);
-      } else if (layEvent === 'data') { //数据
+      } else if (layEvent === 'auth') { //分配
         top.layer.open({
-          title : "字典",
+          title : "分配用户",
           type : 2,
           maxmin: true,
           area: ['893px', '600px'],
-          content : table_data_url + data.id
+          content : table_auth_url + data.id
         })
       }
     });
@@ -177,12 +192,12 @@
       switch (action) {
         case 'add':
           var index = layer.open({
-            title : "新增类型",
+            title : "新增机构",
             type : 2,
-            content : table_add_url,
+            content : table_add_url + $("#parentId").val(),
             success : function(layero, index){
               setTimeout(function(){
-                layui.layer.tips('点击此处返回数据类型列表', '.layui-layer-setwin .layui-layer-close', {
+                layui.layer.tips('点击此处返回机构列表', '.layui-layer-setwin .layui-layer-close', {
                   tips: 3
                 });
               },1000)
@@ -198,6 +213,71 @@
           break;
       }
     });
+  });
+
+  var reloadTree = function () {
+    var treeObj = $.fn.zTree.getZTreeObj("tree");
+    var nodes = treeObj.getSelectedNodes();
+    var treeNode = nodes[0];
+    if (!treeNode) {
+      treeObj.reAsyncChildNodes(null, "refresh");
+    } else {
+      treeObj.reAsyncChildNodes(treeNode, "refresh");
+    }
+  }
+
+  var setting = {
+    async: {
+      enable: true,
+      url: '${ctx}/api/userGroup/tree',
+      dataType: "json",
+      autoParam: ["id"],
+      dataFilter: function(treeId, parentNode, result) {
+        if(result.success) {
+          if (parentNode == null) {
+            for(var i=0;i<result.data.length;i++) {
+              if(result.data[i].parentId == null) {
+                result.data[i].parentId = 0;
+              }
+            }
+            result.data[result.data.length] = { id:0, parentId:null, name:"组织机构", open:true};
+          }
+          return result.data;
+        }
+        return [];
+      }
+    },
+    data: {
+      simpleData: {
+        enable: true,
+        idKey: "id",
+        pIdKey: "parentId",
+        rootPId: null
+      }
+    },
+    view: {
+      selectedMulti: false,
+      autoCancelSelected: true
+    }, callback: {
+      onClick: function(event, treeId, treeNode, clickFlag) {
+        if (clickFlag === 0 || treeNode.id == 0) {
+          $("#parentId").val('');
+        } else {
+          $("#parentId").val(treeNode.id);
+        }
+        $("#btn-search").trigger("click");
+      },
+      onAsyncSuccess: function (event, treeId, treeNode, msg) {
+        if (treeNode == null) {
+          var zTree = $.fn.zTree.getZTreeObj(treeId);
+          zTree.expandAll(true);
+        }
+      }
+    }
+  };
+
+  jQuery(function ($) {
+    $.fn.zTree.init($('#tree'), setting);
   });
 </script>
 </html>

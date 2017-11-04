@@ -56,7 +56,7 @@ public class UserController {
   @ApiOperation(value = "用户新增页面", httpMethod = "GET")
   @RequiresRoles("admin")
   @RequestMapping(value = "create", method = RequestMethod.GET)
-  public String createForm(Model model) {
+  public String create(Model model) {
     model.addAttribute("menu", MENU);
     model.addAttribute("action", ACTION_CREATE);
 
@@ -68,7 +68,7 @@ public class UserController {
   @ApiOperation(value = "用户修改页面", httpMethod = "GET")
   @RequiresRoles("admin")
   @RequestMapping(value = "update/{id}", method = RequestMethod.GET)
-  public String updateForm(@PathVariable("id") Long id, Model model) {
+  public String update(@PathVariable("id") Long id, Model model) {
     model.addAttribute("menu", MENU);
     model.addAttribute("action", ACTION_UPDATE);
 
@@ -80,7 +80,7 @@ public class UserController {
   @ApiOperation(value = "重置密码页面", httpMethod = "GET")
   @RequiresRoles("admin")
   @RequestMapping(value = "reset/{id}", method = RequestMethod.GET)
-  public String resetForm(@PathVariable("id") Long id, Model model) {
+  public String reset(@PathVariable("id") Long id, Model model) {
     model.addAttribute("menu", MENU);
 
     model.addAttribute("user", userService.get(id));

@@ -8,31 +8,21 @@
 </head>
 <pluginCss>
   <!-- page specific plugin styles -->
-  <link rel="stylesheet" href="${ctx}/static/css/jquery-ui.min.css"/>
-  <link rel="stylesheet" href="${ctx}/static/css/toastr.min.css"/>
   <link rel="stylesheet" href="${ctx}/static/js/zTree/metroStyle/metroStyle.css">
 </pluginCss>
 <pageCss>
   <!-- inline styles related to this page -->
   <style>
-    input[type=checkbox].ace.ace-switch.ace-switch-5 + .lbl::before {
-      content: "\a0\a0是\a0\a0\a0\a0\a0\a0\a0\a0\a0\a0\a0否";
-    }
-
     .input-required {
       margin-left: 2px;
       color: #c00;
     }
-
-    .gritter-width {
-      width: 320px;
-    }
+    .ztree li span.button.switch.level0 {visibility:hidden; width:1px;}
+    .ztree li ul.level0 {padding:0; background:none;}
   </style>
   <!--[if lte IE 8]>
   <style>
-    .tree .tree-selected {
-      background-color: #F0F7FC;
-    }
+    .tree .tree-selected {background-color: #F0F7FC;}
   </style>
   <![endif]-->
 </pageCss>
@@ -55,7 +45,7 @@
           <a href="${ctx}/admin/index">首页</a>
         </li>
         <li>
-          <a href="${ctx}/admin/dataType">数据字典管理</a>
+          <a href="${ctx}/admin/dataType">字典管理</a>
         </li>
         <li class="active">字典管理</li>
       </ul><!-- /.breadcrumb -->
@@ -147,18 +137,6 @@
                   </div>
                 </div>
                 <div class="form-group">
-                  <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-item">
-                    无子节点<span class="input-required">*</span>
-                  </label>
-                  <div class="col-xs-12 col-sm-8">
-                    <div class="clearfix" style="padding-top: 7px;">
-                      <input type="hidden" name="item" placeholder="可修改" class="form-control"/>
-                      <input type="checkbox" id="form-item" class="ace ace-switch ace-switch-5"/>
-                      <span class="lbl"></span>
-                    </div>
-                  </div>
-                </div>
-                <div class="form-group">
                   <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-remark"> 备注 </label>
                   <div class="col-xs-12 col-sm-8">
                     <div class="clearfix">
@@ -178,7 +156,6 @@
 </body>
 <pluginJs>
   <!-- page specific plugin scripts -->
-  <script src="${ctx}/static/js/jquery-ui.min.js"></script>
   <script src="${ctx}/static/js/jquery.validate.min.js"></script>
   <script src="${ctx}/static/js/additional-methods.min.js"></script>
   <script src="${ctx}/static/js/messages_zh.min.js"></script>
@@ -194,12 +171,29 @@
         dataType: "json",
         autoParam: ["id"],
         otherParam: {
-          "typeCode": "${type.code}"
+          "typeId": "${type.id}"
+        },
+        dataFilter: function(treeId, parentNode, result) {
+          if(result.success) {
+            if (parentNode == null) {
+              for(var i=0;i<result.data.length;i++) {
+                if(result.data[i].parentId == null) {
+                  result.data[i].parentId = 0;
+                }
+              }
+              result.data[result.data.length] = { id:0, parentId:null, name:"${type.name}", open:true};
+            }
+            return result.data;
+          }
+          return [];
         }
       },
       data: {
         simpleData: {
-          enable: true
+          enable: true,
+          idKey: "id",
+          pIdKey: "parentId",
+          rootPId: null
         }
       },
       view: {
@@ -223,7 +217,7 @@
     }
 
     jQuery(function ($) {
-      $.fn.zTree.init($('#tree'), setting, null);
+      $.fn.zTree.init($('#tree'), setting);
 
       $('#validation-form').validate({
         errorElement: 'div',
@@ -321,13 +315,6 @@
       $("#form-code").val("");
       $("#form-name").val("");
       $("#form-priority").val("");
-      if (grade == ${type.grade}) {
-        $("input[name='item']").val(true);
-        $("#form-item").prop("checked", true);
-      } else {
-        $("input[name='item']").val(false);
-        $("#form-item").prop("checked", false);
-      }
       $("#form-remark").val("");
 
       BootstrapDialog.show({
@@ -346,7 +333,7 @@
             if ($('#validation-form').valid()) {
               var params = $("#validation-form").serialize();
               $.ajax({
-                url: "${ctx}/api/dataDictionary/create",
+                url: "${ctx}/api/dataDictionary/save",
                 data: params,
                 type: 'POST',
                 cache: false,
@@ -380,7 +367,7 @@
       var treeObj = $.fn.zTree.getZTreeObj("tree");
       var nodes = treeObj.getSelectedNodes();
       var treeNode = nodes[0];
-      if (!treeNode) {
+      if (!treeNode || treeNode.id == 0) {
         BootstrapDialog.alert('请先选择节点');
         return;
       }
@@ -396,13 +383,6 @@
           $("#form-code").val(result.data.code);
           $("#form-name").val(result.data.name);
           $("#form-priority").val(result.data.priority);
-          if (result.data.item) {
-            $("input[name='item']").val(true);
-            $("#form-item").prop("checked", true);
-          } else {
-            $("input[name='item']").val(false);
-            $("#form-item").prop("checked", false);
-          }
           $("#form-remark").val(result.data.remark);
 
           BootstrapDialog.show({
@@ -421,7 +401,7 @@
                 if ($('#validation-form').valid()) {
                   var params = $("#validation-form").serialize();
                   $.ajax({
-                    url: "${ctx}/api/dataDictionary/update",
+                    url: "${ctx}/api/dataDictionary/save",
                     data: params,
                     type: 'POST',
                     cache: false,
@@ -457,7 +437,7 @@
       var treeObj = $.fn.zTree.getZTreeObj("tree");
       var nodes = treeObj.getSelectedNodes();
       var treeNode = nodes[0];
-      if (!treeNode) {
+      if (!treeNode || treeNode.id == 0) {
         BootstrapDialog.alert('请先选择节点');
         return;
       } else if (treeNode.isParent && treeNode.children) {

@@ -6,7 +6,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>类型管理</title>
+  <title>机构管理</title>
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -24,33 +24,59 @@
   </style>
 </head>
 <body class="kit-main">
-<form class="layui-form layui-form-pane" action="${ctx}/api/dataType/save" method="post" style="width:80%;">
-  <input type="hidden" name="id" id="id" value="${dataType.id}"/>
+<form id="form" class="layui-form layui-form-pane" action="${ctx}/api/userGroup/save" method="post" style="width:80%;">
+  <input type="hidden" name="id" id="id" value="${userGroup.id}"/>
+  <div class="layui-form-item">
+    <label class="layui-form-label">上级机构</label>
+    <div class="layui-input-inline" style="margin-right: 0px;">
+      <input type="hidden" name="parentId" id="parentId" value="${parent.id}"/>
+      <input type="text" name="parentName" id="parentName" value="${parent.name}" placeholder="上级机构" class="layui-input" disabled>
+    </div>
+    <div class="layui-input-inline" style="width: inherit;">
+      <button class="layui-btn btn-search"><i class="layui-icon">&#xe615;</i></button>
+    </div>
+  </div>
   <div class="layui-form-item">
     <label class="layui-form-label">代码<span class="input-required">*</span></label>
     <div class="layui-input-block">
-      <input type="text" name="code" value="${dataType.code}" lay-verify="required" placeholder="代码" autocomplete="off" class="layui-input">
+      <input type="text" name="code" value="${userGroup.code}" lay-verify="required" placeholder="代码" autocomplete="off" class="layui-input">
     </div>
   </div>
   <div class="layui-form-item">
     <label class="layui-form-label">名称<span class="input-required">*</span></label>
     <div class="layui-input-block">
-      <input type="text" name="name" value="${dataType.name}" lay-verify="required" placeholder="名称" autocomplete="off" class="layui-input">
+      <input type="text" name="name" value="${userGroup.name}" lay-verify="required" placeholder="名称" autocomplete="off" class="layui-input">
     </div>
   </div>
   <div class="layui-form-item">
-    <label class="layui-form-label">数据层级<span class="input-required">*</span></label>
-    <div class="layui-input-inline">
-      <input type="text" name="grade" value="${dataType.grade}" lay-verify="required" placeholder="数据层级" autocomplete="off" class="layui-input">
+    <label class="layui-form-label">类型<span class="input-required">*</span></label>
+    <div class="layui-input-block">
+      <select name="type" data-placeholder="类型">
+        <option value="0" <c:if test="${userGroup.type eq 0}">selected</c:if>>公司</option>
+        <option value="1" <c:if test="${userGroup.type eq 1}">selected</c:if>>部门</option>
+        <option value="2" <c:if test="${userGroup.type eq 2}">selected</c:if>>小组</option>
+        <option value="3" <c:if test="${userGroup.type eq 3}">selected</c:if>>其他</option>
+      </select>
     </div>
-    <div class="layui-input-inline">
-      <input type="checkbox" name="editable" value="${dataType.editable}" <c:if test="${dataType.editable}">checked</c:if> title="数据可修改">
+  </div>
+  <div class="layui-form-item" pane="">
+    <label class="layui-form-label">角色</label>
+    <div class="layui-input-block">
+      <c:forEach items="${roles}" var="role">
+        <c:set value="false" var="selectedRole"/>
+        <c:forEach items="${userGroup.roleList}" var="ownRole">
+          <c:if test="${ownRole.code eq role.code}">
+            <c:set var="selectedRole" value="true"/>
+          </c:if>
+        </c:forEach>
+        <input type="checkbox" name="roles" value="${role.id}" lay-skin="primary" title="${role.name}" <c:if test="${selectedRole}"> checked</c:if>>
+      </c:forEach>
     </div>
   </div>
   <div class="layui-form-item layui-form-text">
     <label class="layui-form-label">备注</label>
     <div class="layui-input-block">
-      <textarea name="remark" placeholder='备注' class="layui-textarea">${config.remark}</textarea>
+      <textarea name="remark" placeholder='备注' class="layui-textarea">${userGroup.remark}</textarea>
     </div>
   </div>
   <div class="layui-form-item">
@@ -75,7 +101,7 @@
         url: data.form.action,
         type: 'POST',
         cache: false,
-        data: data.field,
+        data: $('#form').serialize(),//data.field 不支持checkbox
         dataType: 'json',
         success: function (result) {
           if (result.success) {
@@ -105,6 +131,27 @@
 
     $('.btn-close').on('click', function(){
       parent.layer.closeAll("iframe");
+      return false;
+    });
+
+    $('.btn-search').on('click', function(){
+      top.layer.open({
+        type: 2,
+        area: ['300px', '90%'],
+        title:"选择机构",
+        content: ["${ctx}/admin/userGroup/select", 'no'],
+        btn: ['确定', '关闭'],
+        yes: function(index, layero){
+          var parentId = $(layero.find("iframe")[0].contentWindow.groupId).val();
+          var parentName = $(layero.find("iframe")[0].contentWindow.groupName).val();
+          $('#parentId').val(parentId);
+          $('#parentName').val(parentName);
+          top.layer.close(index);
+        },
+        cancel: function(index){
+
+        }
+      });
       return false;
     });
   });

@@ -140,6 +140,7 @@
 /*底部*/
 .footer{ text-align: center; line-height:44px;}
 
+.layui-layer-iframe iframe { margin-top:-1px; }
 
 /*响应式*/
 @media screen and (max-width:1282px){
