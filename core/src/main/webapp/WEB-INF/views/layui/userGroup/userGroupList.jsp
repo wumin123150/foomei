@@ -49,6 +49,7 @@
       <div class="kit-table-body">
         <table id="kit-table" lay-filter="kit-table"></table>
         <script type="text/html" id="kit-table-bar">
+          <a class="layui-btn layui-btn-warm layui-btn-mini" lay-event="add">新增下级</a>
           <a class="layui-btn layui-btn-mini" lay-event="edit">编辑</a>
           <a class="layui-btn layui-btn-danger layui-btn-mini" lay-event="del">删除</a>
         </script>
@@ -179,6 +180,24 @@
           area: ['893px', '600px'],
           content : table_auth_url + data.id
         })
+      } else if (layEvent === 'add') { //新增下级
+        var index = layer.open({
+          title : "新增机构",
+          type : 2,
+          content : table_add_url + data.id,
+          success : function(layero, index){
+            setTimeout(function(){
+              layui.layer.tips('点击此处返回机构列表', '.layui-layer-setwin .layui-layer-close', {
+                tips: 3
+              });
+            },1000)
+          }
+        })
+        //改变窗口大小时，重置弹窗的高度，防止超出可视区域（如F12调出debug的操作）
+        $(window).resize(function(){
+          layer.full(index);
+        })
+        layer.full(index);
       }
     });
     $('#kit-search-more').on('click', function () {
@@ -194,7 +213,7 @@
           var index = layer.open({
             title : "新增机构",
             type : 2,
-            content : table_add_url + $("#parentId").val(),
+            content : table_add_url,
             success : function(layero, index){
               setTimeout(function(){
                 layui.layer.tips('点击此处返回机构列表', '.layui-layer-setwin .layui-layer-close', {
@@ -240,7 +259,7 @@
                 result.data[i].parentId = 0;
               }
             }
-            result.data[result.data.length] = { id:0, parentId:null, name:"组织机构", open:true};
+            result.data[result.data.length] = { id:0, parentId:null, name:"组织机构树", open:true};
           }
           return result.data;
         }

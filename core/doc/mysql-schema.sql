@@ -107,7 +107,6 @@ create table core_data_dictionary
    name                 varchar(64) comment '名称',
    priority             int comment '序号',
    grade                smallint(6) comment '层级',
-   is_item              tinyint(1) comment '节点类型(0:父节点,1:叶子节点)',
    parent_id            bigint comment '父ID',
    remark               varchar(128) comment '备注',
    primary key (id)

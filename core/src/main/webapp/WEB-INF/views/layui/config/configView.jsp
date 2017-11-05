@@ -7,7 +7,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>配置管理</title>
+  <title>系统设置管理</title>
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -34,7 +34,7 @@
 <form id="form" class="layui-form layui-form-pane" action="${ctx}/api/config/updateAll" method="post" style="width:80%;">
   <input type="hidden" name="id" id="id" value="${config.id}"/>
   <c:forEach var="config" items="${configs}" varStatus="status">
-    <div class="layui-form-item <c:if test='${config.type eq 1}'> layui-form-text</c:if>">
+    <div class="layui-form-item <c:if test='${config.type eq 1}'> layui-form-text</c:if>" <c:if test='${config.type eq 2 || config.type eq 3}'>pane=""</c:if>>
       <label class="layui-form-label">${config.name}（${config.code}）<c:if test="${fn:length(config.remark)>1}"><a class="layui-btn layui-btn-mini btn-help" href="javascript:;" data-content="${config.remark}"><i class="layui-icon">&#xe607;</i></a></c:if></label>
       <div class="layui-input-block">
         <input type="hidden" name="configs[${status.index}].id" value="${config.id}">

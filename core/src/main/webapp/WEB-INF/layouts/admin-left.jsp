@@ -81,7 +81,7 @@
     <li class="<c:if test='${menu == "configs"}'>active</c:if>">
       <a href="${ctx}/admin/config/view">
         <i class="menu-icon fa fa-cogs"></i>
-        <span class="menu-text"> 参数设置 </span>
+        <span class="menu-text"> 系统设置 </span>
       </a>
 
       <b class="arrow"></b>
@@ -97,7 +97,7 @@
     <li class="<c:if test='${menu == "dataDictionary"}'>active</c:if>">
       <a href="${ctx}/admin/dataType">
         <i class="menu-icon fa fa-table"></i>
-        <span class="menu-text"> 数据字典 </span>
+        <span class="menu-text"> 字典 </span>
       </a>
 
       <b class="arrow"></b>

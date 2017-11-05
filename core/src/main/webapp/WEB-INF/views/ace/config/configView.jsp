@@ -5,7 +5,7 @@
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 <html>
 <head>
-  <title>系统配置管理</title>
+  <title>系统设置</title>
 </head>
 <pluginCss>
   <!-- page specific plugin styles -->
@@ -37,7 +37,7 @@
           <i class="ace-icon fa fa-home home-icon"></i>
           <a href="${ctx}/admin/index">首页</a>
         </li>
-        <li class="active">参数设置</li>
+        <li class="active">系统设置</li>
       </ul><!-- /.breadcrumb -->
     </div>
 
@@ -51,7 +51,7 @@
             <div class="col-xs-offset-1 col-xs-10">
               <div class="widget-box">
                 <div class="widget-header">
-                  <h4 class="widget-title lighter smaller">参数设置</h4>
+                  <h4 class="widget-title lighter smaller">系统设置</h4>
                   <div class="widget-toolbar no-border">
                     <button class="btn btn-minier" onclick="history.back()"><i class="ace-icon fa fa-undo"></i>返回
                     </button>

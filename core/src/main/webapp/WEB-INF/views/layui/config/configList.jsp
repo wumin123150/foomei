@@ -25,7 +25,7 @@
     <div class="kit-table-header">
       <div class="kit-search-btns">
         <a href="javascript:;" data-action="add" class="layui-btn layui-btn-small"><i class="layui-icon">&#xe608;</i>新增</a>
-        <a href="javascript:;" data-action="view" class="layui-btn layui-btn-small layui-btn-danger"><i class="layui-icon">&#xe620;</i>参数设置</a>
+        <a href="javascript:;" data-action="view" class="layui-btn layui-btn-small layui-btn-danger"><i class="layui-icon">&#xe620;</i>系统设置</a>
       </div>
       <div class="kit-search-inputs">
         <div class="kit-search-keyword">
@@ -189,7 +189,7 @@
           break;
         case 'view':
           var index = layer.open({
-            title : "参数设置",
+            title : "系统设置",
             type : 2,
             content : table_view_url,
             success : function(layero, index){

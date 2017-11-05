@@ -4,7 +4,7 @@
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 <html>
 <head>
-  <title>数据字典管理</title>
+  <title>字典管理</title>
 </head>
 <pluginCss>
   <!-- page specific plugin styles -->
@@ -37,7 +37,7 @@
           <a href="${ctx}/admin/index">首页</a>
         </li>
         <li>
-          <a href="${ctx}/admin/dataType">数据字典管理</a>
+          <a href="${ctx}/admin/dataType">字典管理</a>
         </li>
         <li class="active"><c:choose><c:when test='${action == "create"}'>新增类型</c:when><c:when
           test='${action == "update"}'>修改类型</c:when></c:choose></li>

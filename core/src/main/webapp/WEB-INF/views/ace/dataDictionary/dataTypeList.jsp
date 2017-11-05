@@ -4,7 +4,7 @@
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 <html>
 <head>
-  <title>数据字典管理</title>
+  <title>字典管理</title>
 </head>
 <pluginCss>
   <!-- page specific plugin styles -->
@@ -55,7 +55,7 @@
           <i class="ace-icon fa fa-home home-icon"></i>
           <a href="${ctx}/admin/index">首页</a>
         </li>
-        <li class="active">数据字典管理</li>
+        <li class="active">字典管理</li>
       </ul><!-- /.breadcrumb -->
     </div>
 
@@ -63,7 +63,7 @@
     <div class="page-content">
       <div class="page-header">
         <h1>
-          数据类型管理
+          类型管理
         </h1>
       </div><!-- /.page-header -->
 
@@ -127,7 +127,7 @@
             formatter: function (cellvalue, options, rowObject) {
               return '<div class="action-buttons">'
                 + '<div title="编辑" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" onmouseover="$(this).addClass(\'ui-state-hover\');" onmouseout="$(this).removeClass(\'ui-state-hover\')"><a class="blue" href="' + grid_edit_url + rowObject.id + '"><i class="ace-icon fa fa-pencil bigger-140"></i></a></div>'
-                + '<div title="数据字典" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" onmouseover="$(this).addClass(\'ui-state-hover\');" onmouseout="$(this).removeClass(\'ui-state-hover\')"><a class="orange" href="' + grid_data_url + rowObject.id + '"><i class="ace-icon fa fa-table bigger-140"></i></a></div>'
+                + '<div title="数据" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" onmouseover="$(this).addClass(\'ui-state-hover\');" onmouseout="$(this).removeClass(\'ui-state-hover\')"><a class="orange" href="' + grid_data_url + rowObject.id + '"><i class="ace-icon fa fa-table bigger-140"></i></a></div>'
                 + (rowObject.editable ? '<div title="删除" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" onmouseover="$(this).addClass(\'ui-state-hover\');" onmouseout="$(this).removeClass(\'ui-state-hover\')"><a class="red btn-del" href="javascript:void(0);" data-id="' + rowObject.id + '"><i class="ace-icon fa fa-trash-o bigger-140"></i></a></div>' : '')
                 + '</div>';
             }

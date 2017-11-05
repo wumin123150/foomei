@@ -15,103 +15,16 @@
   <meta name="format-detection" content="telephone=no">
   <link rel="stylesheet" href="${ctx}/static/js/layui/css/layui.css" media="all"/>
   <link rel="stylesheet" href="//at.alicdn.com/t/font_tnyc012u2rlwstt9.css" media="all" />
+  <link rel="stylesheet" href="${ctx}/static/js/layui/page.css" media="all"/>
+  <style type="text/css">
+  </style>
 </head>
-<style>
-  .kit-table, .kit-table .kit-table-header {
-    position: relative;
-    box-shadow: 0 1px 7px 0 #ccc;
-  }
-
-  .kit-table .kit-table-header {
-    height: 50px;
-  }
-
-  .kit-table .kit-table-header .kit-search-btns {
-    padding: 10px;
-    position: absolute;
-  }
-
-  .kit-table .kit-table-header .kit-search-inputs {
-    position: absolute;
-    right: 0px;
-    top: 0;
-    padding: 10px 25px 10px 10px;
-    display: inline;
-  }
-
-  .kit-table .kit-table-header .kit-search-inputs .kit-search-keyword {
-    margin-right: 10px;
-    position: relative;
-    display: inline-block;
-  }
-
-  .kit-table .kit-table-header .kit-search-inputs .kit-search-keyword input {
-    height: 30px;
-    line-height: 30px;
-    width: 200px;
-    padding-right: 32px;
-  }
-
-  .kit-table .kit-table-header .kit-search-inputs .kit-search-keyword button {
-    position: absolute;
-    right: 0;
-    top: 0;
-    width: 30px;
-    height: 30px;
-    border: 0;
-    cursor: pointer;
-    background-color: #009688;
-    color: #fff;
-  }
-
-  .kit-table .kit-table-header .kit-search-inputs .kit-search-more {
-    cursor: pointer;
-    color: #009688;
-    display: inline-block;
-  }
-
-  .kit-table .kit-search-mored {
-    width: 100%;
-    height: auto;
-    top: 51px;
-    background-color: #fff;
-    z-index: 5;
-    box-shadow: 0 4px 7px -3px #ccc;
-    position: absolute;
-    margin-bottom: 10px;
-    display: none;
-  }
-
-  .kit-table .kit-search-mored .kit-search-body {
-    padding: 10px 10px 45px;
-  }
-
-  .kit-table .kit-search-mored .kit-search-footer {
-    height: 50px;
-    bottom: 0;
-    left: 0;
-    position: absolute;
-    width: 100%;
-    border-top: 1px solid #e2e2e2;
-    text-align: right;
-  }
-
-  .kit-table .kit-search-mored .kit-search-footer .kit-btn {
-    margin: 10px 5px;
-    padding: 0 15px;
-  }
-
-  .kit-table .kit-table-body .layui-table-view {
-    margin: 0;
-  }
-</style>
-<body class="childrenBody">
+<body>
 <div class="kit-table">
   <form class="layui-form" lay-filter="kit-search-form">
     <div class="kit-table-header">
       <div class="kit-search-btns">
-        <a href="javascript:;" data-action="create" class="layui-btn layui-btn-small"><i class="layui-icon">&#xe608;</i>新增</a>
-        <a href="javascript:;" data-action="delSelector" class="layui-btn layui-btn-small layui-btn-danger"><i class="layui-icon">&#xe640;</i>删除所选</a>
+        <a href="javascript:;" data-action="add" class="layui-btn layui-btn-small"><i class="layui-icon">&#xe608;</i>新增</a>
       </div>
       <div class="kit-search-inputs">
         <div class="kit-search-keyword">
@@ -121,50 +34,42 @@
         <div class="kit-search-more" id="kit-search-more">更多筛选<i class="layui-icon">&#xe61a;</i></div>
       </div>
     </div>
-    <div class="kit-search-mored layui-anim layui-anim-upbit">
-      <div class="kit-search-body">
+    <div class="kit-search-mored layui-anim layui-anim-fadein">
+      <div class="kit-search-body" style="width:80%;">
         <div class="layui-form-item">
-          <label class="layui-form-label">输入框</label>
+          <label class="layui-form-label">账号</label>
           <div class="layui-input-block">
-            <input type="text" name="title" placeholder="请输入标题" autocomplete="off" class="layui-input">
+            <input type="text" name="loginName" autocomplete="off" class="layui-input">
           </div>
         </div>
         <div class="layui-form-item">
-          <div class="layui-inline">
-            <label class="layui-form-label">验证手机</label>
-            <div class="layui-input-inline">
-              <input type="tel" name="phone" autocomplete="off" class="layui-input">
-            </div>
-          </div>
-          <div class="layui-inline">
-            <label class="layui-form-label">验证邮箱</label>
-            <div class="layui-input-inline">
-              <input type="text" name="email" autocomplete="off" class="layui-input">
-            </div>
-          </div>
-        </div>
-        <div class="layui-form-item">
-          <div class="layui-inline">
-            <label class="layui-form-label">范围</label>
-            <div class="layui-input-inline" style="width: 100px;">
-              <input type="text" name="price_min" placeholder="￥" autocomplete="off" class="layui-input">
-            </div>
-            <div class="layui-form-mid">-</div>
-            <div class="layui-input-inline" style="width: 100px;">
-              <input type="text" name="price_max" placeholder="￥" autocomplete="off" class="layui-input">
-            </div>
-          </div>
-        </div>
-        <div class="layui-form-item">
-          <label class="layui-form-label">单行选择框</label>
+          <label class="layui-form-label">姓名</label>
           <div class="layui-input-block">
-            <select name="interest" lay-filter="aihao">
+            <input type="text" name="name" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">手机</label>
+          <div class="layui-input-block">
+            <input type="tel" name="mobile" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">邮箱</label>
+          <div class="layui-input-block">
+            <input type="text" name="email" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">状态</label>
+          <div class="layui-input-block">
+            <select name="status">
               <option value=""></option>
-              <option value="0">写作</option>
-              <option value="1" selected="">阅读</option>
-              <option value="2">游戏</option>
-              <option value="3">音乐</option>
-              <option value="4">旅行</option>
+              <option value="A">正常</option>
+              <option value="E">过期</option>
+              <option value="L">锁定</option>
+              <option value="T">停用</option>
+              <option value="I">未激活</option>
             </select>
           </div>
         </div>
@@ -178,9 +83,9 @@
   <div class="kit-table-body">
     <table id="kit-table" lay-filter="kit-table"></table>
     <script type="text/html" id="kit-table-bar">
-      <a class="layui-btn layui-btn-mini" lay-event="detail">查看</a>
+      <a class="layui-btn layui-btn-warm layui-btn-mini" lay-event="password">修改密码</a>
       <a class="layui-btn layui-btn-mini" lay-event="edit">编辑</a>
-      <a class="layui-btn layui-btn-danger layui-btn-mini" lay-event="del">删除</a>
+      <a class="layui-btn layui-btn-danger layui-btn-mini" lay-event="del">停用</a>
     </script>
     <script type="text/html" id="statusTpl">
       {{#  if(d.status == 'A'){ }}
@@ -205,6 +110,10 @@
   var tableId = 'kit-table';
   var tableFilter = 'kit-table';
   var table_page_url = "${ctx}/api/user/page2";
+  var table_add_url = "${ctx}/admin/user/create";
+  var table_edit_url = "${ctx}/admin/user/update/";
+  var table_del_url = "${ctx}/api/user/delete/";
+  var table_pass_url = "${ctx}/admin/user/password/";
   layui.use('table', function () {
     var table = layui.table,
       layer = layui.layer,
@@ -222,7 +131,9 @@
           { field: 'id', title: 'ID', width: 80 },
           { field: 'loginName', title: '账号', width: 100, sort: true },
           { field: 'name', title: '姓名', width: 150 },
-          { field: 'mobile', title: '手机号', width: 150 },
+          { field: 'sex', title: '性别', width: 60 },
+          { field: 'birthday', title: '出生日期', width: 120 },
+          { field: 'mobile', title: '手机', width: 150 },
           { field: 'email', title: '邮箱', width: 150 },
           { field: 'status', title: '状态', width: 80, templet: '#statusTpl' },
           { fixed: 'right', title: '操作', width: 180, align: 'center', toolbar: '#kit-table-bar' }
@@ -248,8 +159,7 @@
     form.render(null, 'kit-search-form');
     //监听搜索表单提交
     form.on('submit(search)', function (data) {
-      console.log(data.field);
-      //layer.msg(JSON.stringify(data.field));
+      $('.kit-search-mored').hide();
       //带条件查询
       kitTable.reload({
         where: data.field
@@ -273,8 +183,8 @@
 
       if (layEvent === 'view') { //查看
         //do somehing
-      } else if (layEvent === 'del') { //删除
-        layer.confirm('你确定要删除吗？', function (index) {
+      } else if (layEvent === 'del') { //停用
+        layer.confirm('你确定要停用吗？', function (index) {
           layer.close(index);
           $.ajax({
             url: table_del_url + data.id,
@@ -283,7 +193,7 @@
             dataType: 'json',
             success: function (result) {
               if (result.success) {
-                layer.msg('删除成功', {icon: 1});
+                layer.msg('停用成功', {icon: 1});
                 kitTable.reload();
               } else {
                 layer.msg(result.message, {icon: 5});
@@ -314,6 +224,7 @@
         layer.full(index);
       }
     });
+
     $('#kit-search-more').on('click', function () {
       $('.kit-search-mored').toggle();
     });

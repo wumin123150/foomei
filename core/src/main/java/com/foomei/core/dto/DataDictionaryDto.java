@@ -9,9 +9,9 @@ import lombok.Data;
 public class DataDictionaryDto {
 
   private Long id;
-  @ApiModelProperty(value = "数据类型ID", required = true)
+  @ApiModelProperty(value = "类型ID", required = true)
   private Long typeId;
-  @ApiModelProperty(value = "数据类型编码", required = true)
+  @ApiModelProperty(value = "类型编码", required = true)
   private String typeCode;
   @ApiModelProperty(value = "编码", required = true)
   private String code;
@@ -19,6 +19,8 @@ public class DataDictionaryDto {
   private String name;
   @ApiModelProperty(value = "序号", required = true)
   private Integer priority;
+  @ApiModelProperty(value = "层级")
+  private Integer grade;
   @ApiModelProperty(value = "父ID")
   private Long parentId;
   @ApiModelProperty(value = "备注")

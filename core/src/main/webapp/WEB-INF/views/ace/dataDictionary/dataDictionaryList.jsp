@@ -4,7 +4,7 @@
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 <html>
 <head>
-  <title>数据字典管理</title>
+  <title>字典管理</title>
 </head>
 <pluginCss>
   <!-- page specific plugin styles -->
@@ -68,14 +68,14 @@
             <div class="col-xs-offset-1 col-xs-10">
               <div class="widget-box">
                 <div class="widget-header">
-                  <h4 class="widget-title lighter smaller">${type.name}(${type.code})</h4>
+                  <h4 class="widget-title lighter smaller">${type.name}字典</h4>
                   <div class="widget-toolbar no-border">
                     <button class="btn btn-minier btn-success" onclick="reloadTree()"><i
                       class="ace-icon fa fa-refresh"></i>刷新
                     </button>
                     <c:if test="${type.editable}">
                       <button class="btn btn-minier btn-purple" onclick="addForm()"><i
-                        class="ace-icon fa fa-plus-circle"></i>新增
+                        class="ace-icon fa fa-plus-circle"></i>新增下级
                       </button>
                       <button class="btn btn-minier btn-primary" onclick="editForm()"><i
                         class="ace-icon fa fa-pencil"></i>修改
@@ -181,7 +181,7 @@
                   result.data[i].parentId = 0;
                 }
               }
-              result.data[result.data.length] = { id:0, parentId:null, name:"${type.name}", open:true};
+              result.data[result.data.length] = { id:0, parentId:null, name:"${type.name}", grade:0, open:true};
             }
             return result.data;
           }
@@ -297,17 +297,18 @@
       var nodes = treeObj.getSelectedNodes();
       var treeNode = nodes[0];
       if (!treeNode) {
+        treeNode = treeObj.getNodeByParam("id", 0, null);
         $("#parentId").val("");
-      } else if (!treeNode.isParent) {
-        BootstrapDialog.alert('不能在叶子节点下创建子节点');
-        return;
+      } else if(treeNode.id == 0) {
+        $("#parentId").val("");
       } else {
         $("#parentId").val(treeNode.id);
       }
 
-      var grade = treeNode ? (treeNode.grade + 2) : 1;
+      var grade = treeNode ? (treeNode.grade + 1) : 1;
+      debugger
       if (grade > ${type.grade}) {
-        BootstrapDialog.alert('已达到规定层级，不能再创建子节点');
+        BootstrapDialog.alert('已达到规定层级，不能再创建下级节点');
         return;
       }
 
@@ -340,12 +341,11 @@
                 dataType: 'json',
                 success: function (result) {
                   if (result.success) {
-                    treeNode = treeObj.addNodes(treeNode, {
-                      id: result.data.id,
-                      pId: result.data.pId,
-                      isParent: result.data.isParent,
-                      name: result.data.name
-                    });
+                    if(result.data.parentId == null) {
+                      result.data.parentId = 0;
+                    }
+
+                    treeNode = treeObj.addNodes(treeNode, result.data);
                     toastr.success('保存成功');
                     dialogRef.close();
                   } else {
@@ -367,8 +367,11 @@
       var treeObj = $.fn.zTree.getZTreeObj("tree");
       var nodes = treeObj.getSelectedNodes();
       var treeNode = nodes[0];
-      if (!treeNode || treeNode.id == 0) {
+      if (!treeNode) {
         BootstrapDialog.alert('请先选择节点');
+        return;
+      } else if (treeNode.id == 0) {
+        BootstrapDialog.alert('根节点不可修改');
         return;
       }
 
@@ -409,7 +412,6 @@
                     success: function (result) {
                       if (result.success) {
                         treeNode.name = result.data.name;
-                        treeNode.isParent = result.data.isParent;
                         treeObj.updateNode(treeNode);
                         toastr.success('保存成功');
                         dialogRef.close();
@@ -437,11 +439,14 @@
       var treeObj = $.fn.zTree.getZTreeObj("tree");
       var nodes = treeObj.getSelectedNodes();
       var treeNode = nodes[0];
-      if (!treeNode || treeNode.id == 0) {
+      if (!treeNode) {
         BootstrapDialog.alert('请先选择节点');
         return;
+      } else if (treeNode.id == 0) {
+        BootstrapDialog.alert('根节点不可删除');
+        return;
       } else if (treeNode.isParent && treeNode.children) {
-        BootstrapDialog.alert('请先删除子节点');
+        BootstrapDialog.alert('请先删除下级节点');
         return;
       }
 

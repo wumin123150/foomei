@@ -3,6 +3,7 @@ package com.foomei.core.web.api;
 import com.foomei.common.base.annotation.LogIgnore;
 import com.foomei.common.dto.ErrorCodeFactory;
 import com.foomei.common.dto.ResponseResult;
+import com.foomei.core.dto.UserDto;
 import com.foomei.core.entity.Annex;
 import com.foomei.core.entity.User;
 import com.foomei.core.service.AnnexService;
@@ -16,6 +17,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,6 +34,14 @@ public class AccountEndpoint {
   private UserService userService;
   @Autowired
   private AnnexService annexService;
+
+  @ApiOperation(value = "账户获取", httpMethod = "GET", produces = "application/json")
+  @RequestMapping(value = "get")
+  public ResponseResult<UserDto> get() {
+    Long id = CoreThreadContext.getUserId();
+    User user = userService.get(id);
+    return ResponseResult.createSuccess(user, UserDto.class);
+  }
 
   @ApiOperation(value = "保存头像", notes = "图片转成base64编码", httpMethod = "POST", produces = "application/json")
   @ApiImplicitParams({

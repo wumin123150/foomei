@@ -29,10 +29,10 @@
   <input type="hidden" name="typeId" id="typeId" value="${type.id}"/>
   <input type="hidden" name="typeCode" id="typeCode" value="${type.code}"/>
   <div class="layui-form-item">
-    <label class="layui-form-label">上层</label>
+    <label class="layui-form-label">上级</label>
     <div class="layui-input-block">
       <input type="hidden" name="parentId" id="parentId" value="${parent.id}"/>
-      <input type="text" name="parentName" id="parentName" value="${parent.name}" placeholder="上层" class="layui-input" disabled>
+      <input type="text" name="parentName" id="parentName" value="${parent.name}" placeholder="上级" class="layui-input" disabled>
     </div>
   </div>
   <div class="layui-form-item">

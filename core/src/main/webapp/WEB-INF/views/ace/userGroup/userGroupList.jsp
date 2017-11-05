@@ -104,7 +104,7 @@
           <div class="widget-box">
             <div class="widget-header widget-header-flat">
               <h4 class="widget-title smaller">
-                组织机构
+                组织机构树
               </h4>
             </div>
 
@@ -538,7 +538,7 @@
                   result.data[i].parentId = 0;
                 }
               }
-              result.data[result.data.length] = { id:0, parentId:null, name:"组织机构", open:true};
+              result.data[result.data.length] = { id:0, parentId:null, name:"组织机构树", open:true};
             }
             return result.data;
           }

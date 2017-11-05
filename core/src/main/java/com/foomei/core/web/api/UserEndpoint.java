@@ -8,6 +8,7 @@ import com.foomei.common.mapper.BeanMapper;
 import com.foomei.common.mapper.JsonMapper;
 import com.foomei.common.persistence.JqGridFilter;
 import com.foomei.common.persistence.search.SearchRequest;
+import com.foomei.core.dto.UserDto;
 import com.foomei.core.entity.Annex;
 import com.foomei.core.entity.BaseUser;
 import com.foomei.core.entity.User;
@@ -52,45 +53,53 @@ public class UserEndpoint {
     mapFields.put("roleList{id}", "roles{}");
     mapFields.put("groupList{id}", "groups{}");
     BeanMapper.registerClassMap(User.class, UserVo.class, mapFields);
+
+    Map<String, String> map2Fields = Maps.newHashMap();
+//    mapFields.put("roleList{id}", "roleIds{}");
+//    mapFields.put("groupList{id}", "groupIds{}");
+//    mapFields.put("roleList{name}", "roleNames{}");
+//    mapFields.put("groupList{name}", "groupNames{}");
+    BeanMapper.registerClassMap(User.class, UserDto.class, map2Fields);
   }
 
-  @ApiOperation(value = "用户智能搜索", notes = "按名称和手机查询", httpMethod = "GET", produces = "application/json")
+  @ApiOperation(value = "用户智能搜索", notes = "按账号和名称查询", httpMethod = "GET", produces = "application/json")
   @ApiImplicitParams({
     @ApiImplicitParam(name = "q", value = "关键词, searchKey作废", required = true, dataType = "string", paramType = "query")
   })
   @RequestMapping(value = "search")
   public ResponseResult<Page<BaseUser>> search(PageQuery pageQuery, @RequestParam("q") String searchKey) {
-    Page<BaseUser> users = baseUserService.getPage(new SearchRequest(pageQuery, new Sort(Sort.Direction.DESC, BaseUser.PROP_NAME), BaseUser.PROP_NAME, BaseUser.PROP_LOGIN_NAME, BaseUser.PROP_MOBILE));
+    Page<BaseUser> users = baseUserService.getPage(new SearchRequest(pageQuery, new Sort(Sort.Direction.DESC, BaseUser.PROP_NAME), BaseUser.PROP_NAME, BaseUser.PROP_LOGIN_NAME));
     return ResponseResult.createSuccess(users);
   }
 
   @ApiOperation(value = "用户分页列表", httpMethod = "GET", produces = "application/json")
   @RequiresRoles("admin")
   @RequestMapping(value = "page")
-  public ResponseResult<Page<BaseUser>> page(PageQuery pageQuery, Boolean advance, HttpServletRequest request) {
-    Page<BaseUser> page = null;
+  public ResponseResult<Page<UserDto>> page(PageQuery pageQuery, Boolean advance, HttpServletRequest request) {
+    Page<User> page = null;
     if (BooleanUtils.isTrue(advance)) {
       JqGridFilter jqGridFilter = JsonMapper.INSTANCE.fromJson(request.getParameter("filters"), JqGridFilter.class);
-      page = baseUserService.getPage(new SearchRequest(jqGridFilter, pageQuery));
+      page = userService.getPage(new SearchRequest(jqGridFilter, pageQuery));
     } else {
-      page = baseUserService.getPage(new SearchRequest(pageQuery, BaseUser.PROP_NAME, BaseUser.PROP_LOGIN_NAME, BaseUser.PROP_MOBILE));
+      page = userService.getPage(new SearchRequest(pageQuery, User.PROP_NAME, User.PROP_LOGIN_NAME, User.PROP_MOBILE));
     }
-    return ResponseResult.createSuccess(page);
+    return ResponseResult.createSuccess(page, User.class, UserDto.class);
   }
 
   @ApiOperation(value = "用户简单分页列表", httpMethod = "GET", produces = "application/json")
   @RequiresRoles("admin")
   @RequestMapping(value = "page2")
-  public ResponseResult<List<BaseUser>> page2(PageQuery pageQuery) {
-    Page<BaseUser> page = baseUserService.getPage(new SearchRequest(pageQuery, BaseUser.PROP_NAME, BaseUser.PROP_LOGIN_NAME, BaseUser.PROP_MOBILE));
-    return ResponseResult.createSuccess(page.getContent(), page.getTotalElements());
+  public ResponseResult<List<UserDto>> page2(PageQuery pageQuery) {
+    Page<User> page = userService.getPage(new SearchRequest(pageQuery, User.PROP_NAME, User.PROP_LOGIN_NAME, User.PROP_MOBILE));
+    return ResponseResult.createSuccess(page.getContent(), page.getTotalElements(), User.class, UserDto.class);
   }
 
   @ApiOperation(value = "用户获取", httpMethod = "GET", produces = "application/json")
+  @RequiresRoles("admin")
   @RequestMapping(value = "get/{id}")
-  public ResponseResult<BaseUser> get(@PathVariable("id") Long id) {
-    BaseUser user = baseUserService.get(id);
-    return ResponseResult.createSuccess(user);
+  public ResponseResult<UserDto> get(@PathVariable("id") Long id) {
+    User user = userService.get(id);
+    return ResponseResult.createSuccess(user, UserDto.class);
   }
 
   @ApiOperation(value = "用户新增", httpMethod = "POST")
@@ -173,7 +182,7 @@ public class UserEndpoint {
   })
   @RequestMapping(value = "checkLoginName")
   public boolean checkLoginName(Long id, String loginName) {
-    return !baseUserService.existLoginName(id, loginName);
+    return !userService.existLoginName(id, loginName);
   }
 
   private ComplexResult validate(User user) {

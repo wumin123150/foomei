@@ -75,11 +75,10 @@
 .kit-table .kit-search-mored .kit-search-footer {
     height: 50px;
     bottom: 0;
-    left: 0;
+    left: 47px;
     position: absolute;
     width: 100%;
     border-top: 1px solid #e2e2e2;
-    text-align: right;
 }
 
 .kit-table .kit-search-mored .kit-search-footer .kit-btn {
@@ -99,6 +98,10 @@
 .layui-input[disabled], .layui-input[readonly], .layui-textarea[disabled], .layui-textarea[readonly] {
     background-color: #eee;
     opacity: 1;
+}
+
+.layui-input.layui-unselect[readonly] {
+    background-color: #fff;
 }
 
 .hide {

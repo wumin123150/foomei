@@ -48,6 +48,7 @@
       <div class="kit-table-body">
         <table id="kit-table" lay-filter="kit-table"></table>
         <script type="text/html" id="kit-table-bar">
+          <a class="layui-btn layui-btn-warm layui-btn-mini" lay-event="add">新增下级</a>
           <a class="layui-btn layui-btn-mini" lay-event="edit">编辑</a>
           <a class="layui-btn layui-btn-danger layui-btn-mini" lay-event="del">删除</a>
         </script>
@@ -84,9 +85,9 @@
           { checkbox: true, fixed: true },
           { field: 'id', title: 'ID', width: 80 },
           { field: 'code', title: '代码', width: 100, sort: true },
-          { field: 'name', title: '名称', width: 150 },
-          { field: 'remark', title: '备注', width: 150 },
-          { fixed: 'right', title: '操作', width: 180, align: 'center', toolbar: '#kit-table-bar' }
+          { field: 'name', title: '名称', width: 100 },
+          { field: 'remark', title: '备注', width: 120 },
+          { fixed: 'right', title: '操作', width: 200, align: 'center', toolbar: '#kit-table-bar' }
         ]
       ],
       even: true,
@@ -170,6 +171,24 @@
           layer.full(index);
         })
         layer.full(index);
+      } else if (layEvent === 'add') { //新增下级
+        var index = layer.open({
+          title : "新增数据",
+          type : 2,
+          content : table_add_url + data.id,
+          success : function(layero, index){
+            setTimeout(function(){
+              layui.layer.tips('点击此处返回数据列表', '.layui-layer-setwin .layui-layer-close', {
+                tips: 3
+              });
+            },1000)
+          }
+        })
+        //改变窗口大小时，重置弹窗的高度，防止超出可视区域（如F12调出debug的操作）
+        $(window).resize(function(){
+          layer.full(index);
+        })
+        layer.full(index);
       }
     });
     $('#kit-search-more').on('click', function () {
@@ -185,7 +204,7 @@
           var index = layer.open({
             title : "新增数据",
             type : 2,
-            content : table_add_url + $("#parentId").val(),
+            content : table_add_url,
             success : function(layero, index){
               setTimeout(function(){
                 layui.layer.tips('点击此处返回数据列表', '.layui-layer-setwin .layui-layer-close', {
@@ -234,7 +253,7 @@
                 result.data[i].parentId = 0;
               }
             }
-            result.data[result.data.length] = { id:0, parentId:null, name:"${type.name}", open:true};
+            result.data[result.data.length] = { id:0, parentId:null, name:"${type.name}", grade:0, open:true};
           }
           return result.data;
         }
@@ -265,6 +284,7 @@
         if (treeNode == null) {
           var zTree = $.fn.zTree.getZTreeObj(treeId);
           zTree.expandAll(true);
+          $("#btn-search").trigger("click");
         }
       }
     }
