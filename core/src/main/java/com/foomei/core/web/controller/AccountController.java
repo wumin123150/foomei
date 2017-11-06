@@ -13,6 +13,7 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.ObjectError;
@@ -34,41 +35,22 @@ public class AccountController {
   @Autowired
   private MessageService messageService;
 
+  @Value("${system.theme:ace}")
+  private String theme;
+
   @ApiOperation(value = "修改账户页面", httpMethod = "GET")
   @RequestMapping(value = "/{action}/changeAccount", method = RequestMethod.GET)
   public String changeAccountForm(@PathVariable("action") String action, Model model) {
     model.addAttribute("action", action);
     model.addAttribute("user", userService.get(CoreThreadContext.getUserId()));
-    return "user/changeAccount";
-  }
-
-  @ApiOperation(value = "头像修改", httpMethod = "POST")
-  @ApiImplicitParams({
-    @ApiImplicitParam(name = "file", value = "头像", required = true, dataType = "file", paramType = "form")
-  })
-  @RequestMapping(value = "/{action}/changeAvatar", method = RequestMethod.POST)
-  public String changeAvatar(@PathVariable("action") String action, @RequestParam(value = "file") MultipartFile file, Model model, RedirectAttributes redirectAttributes) {
-    User user = userService.get(CoreThreadContext.getUserId());
-
-    try {
-      Annex annex = annexService.save(file.getBytes(), file.getOriginalFilename(), User.USER_ANNEX_PATH, String.valueOf(user.getId()), User.USER_ANNEX_TYPE);
-      if (annex != null) {
-        user.setAvatar(annex.getPath());
-        userService.save(user);
-      }
-    } catch (Exception e) {
-
-    }
-
-    redirectAttributes.addFlashAttribute("message", "修改头像成功");
-    return "redirect:/" + action + "/index";
+    return theme + "/account/changeAccount";
   }
 
   @ApiOperation(value = "我的消息页面", httpMethod = "GET")
   @RequestMapping(value = "/{action}/readMessage", method = RequestMethod.GET)
   public String messageForm(@PathVariable("action") String action, Model model) {
     model.addAttribute("action", action);
-    return "user/readMessage";
+    return theme + "/account/readMessage";
   }
 
   @ApiOperation(value = "我的消息页面", httpMethod = "GET")

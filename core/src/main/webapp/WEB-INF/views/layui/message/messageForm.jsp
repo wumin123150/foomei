@@ -18,11 +18,6 @@
   <link rel="stylesheet" href="${ctx}/static/js/layui/page.css" media="all"/>
   <link rel="stylesheet" href="${ctx}/static/js/zTree/metroStyle/metroStyle.css">
   <style type="text/css">
-    .input-required {
-      margin-left: 2px;
-      color: #c00;
-    }
-
     ul.ztree {
       margin-top: 0;
       border: 1px solid #d5d5d5;
@@ -54,7 +49,7 @@
     </div>
   </div>
   <div class="layui-form-item">
-    <div class="layui-input-block">
+    <div class="layui-input-block kit-btns">
       <button class="layui-btn" lay-submit lay-filter="save">保存</button>
       <button class="layui-btn layui-btn-primary btn-close">关闭</button>
     </div>

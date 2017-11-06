@@ -17,10 +17,6 @@
   <link rel="stylesheet" href="//at.alicdn.com/t/font_tnyc012u2rlwstt9.css" media="all"/>
   <link rel="stylesheet" href="${ctx}/static/js/layui/page.css" media="all"/>
   <style type="text/css">
-    .input-required {
-      margin-left: 2px;
-      color: #c00;
-    }
   </style>
 </head>
 <body class="kit-main">
@@ -74,7 +70,7 @@
     </div>
   </div>
   <div class="layui-form-item">
-    <div class="layui-input-block">
+    <div class="layui-input-block kit-btns">
       <button class="layui-btn" lay-submit lay-filter="save">保存</button>
       <button class="layui-btn layui-btn-primary btn-close">关闭</button>
     </div>

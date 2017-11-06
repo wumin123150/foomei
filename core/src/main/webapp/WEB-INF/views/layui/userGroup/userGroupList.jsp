@@ -53,6 +53,17 @@
           <a class="layui-btn layui-btn-mini" lay-event="edit">编辑</a>
           <a class="layui-btn layui-btn-danger layui-btn-mini" lay-event="del">删除</a>
         </script>
+        <script type="text/html" id="typeTpl">
+          {{#  if(d.type == 0){ }}
+          <span class="layui-badge layui-bg-green">公司</span>
+          {{#  } else if(d.type == 1) { }}
+          <span class="layui-badge layui-bg-green">部门</span>
+          {{#  } else if(d.type == 2) { }}
+          <span class="layui-badge layui-bg-green">小组</span>
+          {{#  } else if(d.type == 3) { }}
+          <span class="layui-badge layui-bg-gray">其他</span>
+          {{#  } }}
+        </script>
       </div>
     </div>
   </div>
@@ -87,7 +98,7 @@
           { field: 'id', title: 'ID', width: 80 },
           { field: 'code', title: '代码', width: 100, sort: true },
           { field: 'name', title: '名称', width: 150 },
-          { field: 'type', title: '类型', width: 150 },
+          { field: 'type', title: '类型', width: 150, templet: '#typeTpl' },
           { fixed: 'right', title: '操作', width: 180, align: 'center', toolbar: '#kit-table-bar' }
         ]
       ],

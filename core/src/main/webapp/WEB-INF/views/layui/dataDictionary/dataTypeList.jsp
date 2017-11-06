@@ -37,9 +37,9 @@
   <div class="kit-table-body">
     <table id="kit-table" lay-filter="kit-table"></table>
     <script type="text/html" id="kit-table-bar">
+      <a class="layui-btn layui-btn-warm layui-btn-mini" lay-event="data">数据</a>
       <a class="layui-btn layui-btn-mini" lay-event="edit">编辑</a>
       <a class="layui-btn layui-btn-danger layui-btn-mini" lay-event="del">删除</a>
-      <a class="layui-btn layui-btn-warm layui-btn-mini" lay-event="data">数据</a>
     </script>
   </div>
 </div>

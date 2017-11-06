@@ -45,32 +45,32 @@
   <input type="hidden" name="id" id="id" value="${user.id}"/>
   <div class="layui-row">
   <div class="layui-col-xs12 layui-col-sm9">
-  <div class="layui-form-item">
-    <label class="layui-form-label">账号<span class="input-required">*</span></label>
-    <div class="layui-input-block">
-      <input type="text" name="loginName" value="${user.loginName}" lay-verify="required" placeholder="建议用手机/邮箱注册" autocomplete="off" class="layui-input" <c:if test='${action == "update"}'>disabled</c:if>>
+    <div class="layui-form-item">
+      <label class="layui-form-label">账号<span class="input-required">*</span></label>
+      <div class="layui-input-block">
+        <input type="text" name="loginName" value="${user.loginName}" lay-verify="required" placeholder="建议用手机/邮箱注册" autocomplete="off" class="layui-input" <c:if test='${action == "update"}'>disabled</c:if>>
+      </div>
     </div>
-  </div>
-  <div class="layui-form-item">
-    <label class="layui-form-label">姓名<span class="input-required">*</span></label>
-    <div class="layui-input-block">
-      <input type="text" name="name" value="${user.name}" lay-verify="required" placeholder="姓名" autocomplete="off" class="layui-input">
+    <div class="layui-form-item">
+      <label class="layui-form-label">姓名<span class="input-required">*</span></label>
+      <div class="layui-input-block">
+        <input type="text" name="name" value="${user.name}" lay-verify="required" placeholder="姓名" autocomplete="off" class="layui-input">
+      </div>
     </div>
-  </div>
-  <div class="layui-form-item" pane="">
-    <label class="layui-form-label">性别</label>
-    <div class="layui-input-block">
-      <input type="radio" name="sex" value="0" title="保密" <c:if test="${user.sex eq 0}"> checked</c:if>>
-      <input type="radio" name="sex" value="1" title="男" <c:if test="${user.sex eq 1}"> checked</c:if>>
-      <input type="radio" name="sex" value="2" title="女" <c:if test="${user.sex eq 2}"> checked</c:if>>
+    <div class="layui-form-item" pane="">
+      <label class="layui-form-label">性别</label>
+      <div class="layui-input-block">
+        <input type="radio" name="sex" value="0" title="保密" <c:if test="${user.sex eq 0}"> checked</c:if>>
+        <input type="radio" name="sex" value="1" title="男" <c:if test="${user.sex eq 1}"> checked</c:if>>
+        <input type="radio" name="sex" value="2" title="女" <c:if test="${user.sex eq 2}"> checked</c:if>>
+      </div>
     </div>
-  </div>
-  <div class="layui-form-item">
-    <label class="layui-form-label">出生日期</label>
-    <div class="layui-input-block">
-      <input type="text" name="birthday" id="birthday" value="${user.birthday}" placeholder="出生日期" autocomplete="off" class="layui-input">
+    <div class="layui-form-item">
+      <label class="layui-form-label">出生日期</label>
+      <div class="layui-input-block">
+        <input type="text" name="birthday" id="birthday" value="${user.birthday}" placeholder="出生日期" autocomplete="off" class="layui-input">
+      </div>
     </div>
-  </div>
   </div>
     <div class="layui-col-xs12 layui-col-sm3 center">
       <div class="layui-upload">
@@ -99,7 +99,7 @@
     </div>
   </div>
   <c:if test='${action == "create"}'>
-    <div class="layui-form-item" id="pwdDiv">
+    <div class="layui-form-item">
       <label class="layui-form-label">密码<span class="input-required">*</span></label>
       <div class="layui-input-inline">
         <input type="password" name="password" id="password" lay-verify="pass" placeholder="6~16个字符，区分大小写" autocomplete="off" class="layui-input">
