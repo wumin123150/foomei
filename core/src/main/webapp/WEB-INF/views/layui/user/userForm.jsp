@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 
 <!DOCTYPE html>
@@ -22,12 +23,18 @@
       text-align: center;
     }
     .layui-upload {
-      margin-bottom: 10px;
+      width: 147px;
+      margin: 0 auto;
+      padding-bottom: 5px;
+      border: 1px solid #e6e6e6;
+      background-color: #fff;
+      border-radius: 2px;
+      clear: both;
     }
     .layui-upload-img {
-      width: 152px;
-      height: 152px;
-      margin: 0 10px 10px 0;
+      width: 147px;
+      height: 147px;
+      margin-bottom: 5px;
     }
     ul.ztree {
       margin-top: 0;
@@ -37,6 +44,11 @@
       height: 200px;
       overflow-y: scroll;
       overflow-x: auto;
+    }
+    @media screen and (max-width: 768px) {
+      .layui-upload {
+        margin-left: 0;
+      }
     }
   </style>
 </head>
@@ -68,7 +80,7 @@
     <div class="layui-form-item">
       <label class="layui-form-label">出生日期</label>
       <div class="layui-input-block">
-        <input type="text" name="birthday" id="birthday" value="${user.birthday}" placeholder="出生日期" autocomplete="off" class="layui-input">
+        <input type="text" name="birthday" id="birthday" value="<fmt:formatDate value='${user.birthday}'/>" placeholder="出生日期" autocomplete="off" class="layui-input">
       </div>
     </div>
   </div>
@@ -80,8 +92,7 @@
         <c:if test="${empty user.avatar}">
           <img id="avatar" class="layui-upload-img" src="${ctx}/static/avatars/avatar6.jpg"/>
         </c:if>
-        <p id="demoText"></p>
-        <button type="button" class="layui-btn" id="btn-avatar">上传图片</button>
+        <button type="button" class="layui-btn" id="btn-avatar">上传头像</button>
         <input type="hidden" name="avatarId" id="avatarId"/>
       </div>
     </div>
@@ -107,7 +118,7 @@
       <div class="layui-input-inline">
         <input type="password" name="repassword" lay-verify="repass" placeholder="请再次填写密码" autocomplete="off" class="layui-input">
       </div>
-      <div class="layui-form-inline">
+      <div class="layui-input-inline">
         <span class="layui-btn layui-btn-primary pswState"> &nbsp;&nbsp;&nbsp; </span>
       </div>
     </div>

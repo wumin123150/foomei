@@ -89,6 +89,15 @@
       <a class="layui-btn layui-btn-mini" lay-event="edit">编辑</a>
       <a class="layui-btn layui-btn-danger layui-btn-mini" lay-event="del">停用</a>
     </script>
+    <script type="text/html" id="sexTpl">
+      {{#  if(d.sex == 0){ }}
+      <span class="layui-badge layui-bg-gray">保密</span>
+      {{#  } else if(d.sex == 1) { }}
+      <span class="layui-badge layui-bg-green">男</span>
+      {{#  } else if(d.sex == 2) { }}
+      <span class="layui-badge layui-bg-green">女</span>
+      {{#  } }}
+    </script>
     <script type="text/html" id="statusTpl">
       {{#  if(d.status == 'A'){ }}
       <span class="layui-badge layui-bg-green">正常</span>
@@ -133,7 +142,7 @@
           { field: 'id', title: 'ID', width: 80 },
           { field: 'loginName', title: '账号', width: 100, sort: true },
           { field: 'name', title: '姓名', width: 150 },
-          { field: 'sex', title: '性别', width: 60 },
+          { field: 'sex', title: '性别', width: 70, templet: '#sexTpl' },
           { field: 'birthday', title: '出生日期', width: 120 },
           { field: 'mobile', title: '手机', width: 150 },
           { field: 'email', title: '邮箱', width: 150 },
