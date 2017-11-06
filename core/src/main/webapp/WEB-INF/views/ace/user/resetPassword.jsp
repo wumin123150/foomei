@@ -81,7 +81,7 @@
             </div>
           </c:if>
           <form class="form-horizontal" id="validation-form" action="" method="post" role="form">
-            <input type="hidden" name="id" id="id" value="${user.id}"/>
+            <input type="hidden" name="userId" id="id" value="${user.id}"/>
             <!-- #section:elements.form -->
             <div class="row">
               <div class="col-xs-12 col-sm-6">
@@ -117,7 +117,7 @@
                   </label>
                   <div class="col-xs-12 col-sm-8">
                     <div class="input-group">
-                      <input type="password" name="plainPassword" id="form-password" placeholder="6~16个字符，区分大小写" class="form-control"/>
+                      <input type="password" name="password" id="form-password" placeholder="6~16个字符，区分大小写" class="form-control"/>
                       <span class="input-group-addon pswState">&nbsp;&nbsp;&nbsp;</span>
                     </div>
                   </div>
@@ -191,7 +191,7 @@
         focusInvalid: false,
         ignore: "",
         rules: {
-          plainPassword: {
+          password: {
             required: true,
             rangelength: [6, 16]
           },
@@ -201,7 +201,7 @@
         },
         messages: {
           plainPassword: {
-            rangelength: '密码长度应为{0}~{1}个字符'
+            rangelength: '密码长度必须{0}-{1}位'
           },
           repassword: {
             equalTo: '必须与密码保持一致'

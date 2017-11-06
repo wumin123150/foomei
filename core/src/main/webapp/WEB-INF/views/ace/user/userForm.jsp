@@ -245,11 +245,7 @@
                   <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-group"> 归属部门 </label>
                   <div class="col-xs-12 col-sm-8">
                     <div class="clearfix">
-                      <select name="groups" id="groups" multiple="" style="display: none;">
-                        <c:forEach items="${user.groupList}" var="group">
-                          <option value="${group.id}" selected>${group.name}</option>
-                        </c:forEach>
-                      </select>
+                      <input type="text" name="groups" id="groups" class="hide"/>
                       <input type="text" name="groupNames" value="${user.groupNames}" id="form-group" readonly
                              data-placeholder="归属部门" class="form-control" style="background: #fff!important;" onclick="showMenu();"/>
                       <div id="menuContent" class="menuContent" style="display:none; position: absolute; z-index: 1;">
@@ -387,22 +383,21 @@
             nodes = zTree.getCheckedNodes(true),
             names = "", ids = "";
 
-          $("#groups").empty();
+          $("#groups").val('');
           for (var i = 0, l = nodes.length; i < l; i++) {
             names += nodes[i].name + ", ";
             ids += nodes[i].id + ",";
-            $("#groups").append('<option value="'+nodes[i].id+'" selected>'+nodes[i].name+'</option>');
           }
           if (names.length > 0) names = names.substring(0, names.length - 2);
           if (ids.length > 0) ids = ids.substring(0, ids.length - 1);
           $("#form-group").val(names);
-          //$("#groups").val(ids);
+          $("#groups").val(ids);
         }
       }
     };
 
     function showMenu() {
-      $("#menuContent").css({width: $("#form-group").outerWidth()}).slideDown("fast");
+      $("#menuContent").css({width: $("#form-group").outerWidth() - 12}).slideDown("fast");
       $("body").bind("mousedown", onBodyDown);
     }
 

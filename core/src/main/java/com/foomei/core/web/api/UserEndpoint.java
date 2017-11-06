@@ -151,12 +151,12 @@ public class UserEndpoint {
   @ApiOperation(value = "密码重置", httpMethod = "POST")
   @RequiresRoles("admin")
   @RequestMapping(value = "reset", method = RequestMethod.POST)
-  public ResponseResult reset(String loginName, String plainPassword) {
-    if (StringUtils.isEmpty(plainPassword)) {
+  public ResponseResult reset(Long userId, String password) {
+    if (StringUtils.isEmpty(password)) {
       return ResponseResult.createParamError("密码不能为空");
     }
 
-    userService.changePassword(loginName, plainPassword);
+    userService.changePassword(userId, password);
     return ResponseResult.SUCCEED;
   }
 

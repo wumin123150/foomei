@@ -75,15 +75,17 @@
         </div>
       </div>
       <div class="kit-search-footer">
-        <button type="reset" class="layui-btn layui-btn-small layui-btn-primary kit-btn">重置</button>
-        <button lay-submit lay-filter="search" class="layui-btn layui-btn-small kit-btn">确定</button>
+        <div class="layui-form-item">
+          <button type="reset" class="layui-btn layui-btn-small layui-btn-primary kit-btn">重置</button>
+          <button lay-submit lay-filter="search" class="layui-btn layui-btn-small kit-btn">确定</button>
+        </div>
       </div>
     </div>
   </form>
   <div class="kit-table-body">
     <table id="kit-table" lay-filter="kit-table"></table>
     <script type="text/html" id="kit-table-bar">
-      <a class="layui-btn layui-btn-warm layui-btn-mini" lay-event="password">修改密码</a>
+      <a class="layui-btn layui-btn-warm layui-btn-mini" lay-event="reset">修改密码</a>
       <a class="layui-btn layui-btn-mini" lay-event="edit">编辑</a>
       <a class="layui-btn layui-btn-danger layui-btn-mini" lay-event="del">停用</a>
     </script>
@@ -113,7 +115,7 @@
   var table_add_url = "${ctx}/admin/user/create";
   var table_edit_url = "${ctx}/admin/user/update/";
   var table_del_url = "${ctx}/api/user/delete/";
-  var table_pass_url = "${ctx}/admin/user/password/";
+  var table_reset_url = "${ctx}/admin/user/reset/";
   layui.use('table', function () {
     var table = layui.table,
       layer = layui.layer,
@@ -209,6 +211,24 @@
           title : "修改用户",
           type : 2,
           content : table_edit_url + data.id,
+          success : function(layero, index){
+            setTimeout(function(){
+              layui.layer.tips('点击此处返回用户列表', '.layui-layer-setwin .layui-layer-close', {
+                tips: 3
+              });
+            },1000)
+          }
+        })
+        //改变窗口大小时，重置弹窗的高度，防止超出可视区域（如F12调出debug的操作）
+        $(window).resize(function(){
+          layer.full(index);
+        })
+        layer.full(index);
+      } else if (layEvent === 'reset') { //密码
+        var index = layer.open({
+          title : "修改密码",
+          type : 2,
+          content : table_reset_url + data.id,
           success : function(layero, index){
             setTimeout(function(){
               layui.layer.tips('点击此处返回用户列表', '.layui-layer-setwin .layui-layer-close', {

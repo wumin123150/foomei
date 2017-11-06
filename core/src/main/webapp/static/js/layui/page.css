@@ -75,9 +75,10 @@
 .kit-table .kit-search-mored .kit-search-footer {
     height: 50px;
     bottom: 0;
-    left: 47px;
+    left: 0;
     position: absolute;
-    width: 100%;
+    padding-left: 115px;
+    width: calc(100% - 115px);
     border-top: 1px solid #e2e2e2;
 }
 
@@ -95,6 +96,19 @@
     .layui-form-item .layui-inline{ width:100%; float:none; }
 }
 
+@media screen and (max-width: 750px) {
+    .kit-table-header .kit-search-more {
+        display: none !important;
+    }
+    .layui-form-pane .layui-input-block.kit-btns {
+        margin-left: 0px;
+        text-align: center;
+    }
+    .kit-main .layui-form {
+        width: 100%!important;
+    }
+}
+
 .layui-input[disabled], .layui-input[readonly], .layui-textarea[disabled], .layui-textarea[readonly] {
     background-color: #eee;
     opacity: 1;
@@ -102,6 +116,11 @@
 
 .layui-input.layui-unselect[readonly] {
     background-color: #fff;
+}
+
+.input-required {
+    margin-left: 2px;
+    color: #c00;
 }
 
 .hide {
