@@ -87,7 +87,7 @@
           { field: 'code', title: '代码', width: 100, sort: true },
           { field: 'name', title: '名称', width: 100 },
           { field: 'remark', title: '备注', width: 120 },
-          { fixed: 'right', title: '操作', width: 200, align: 'center', toolbar: '#kit-table-bar' }
+          { fixed: 'right', title: '操作', width: 190, align: 'center', toolbar: '#kit-table-bar' }
         ]
       ],
       even: true,

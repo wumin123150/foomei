@@ -147,7 +147,7 @@
           { field: 'mobile', title: '手机', width: 150 },
           { field: 'email', title: '邮箱', width: 150 },
           { field: 'status', title: '状态', width: 80, templet: '#statusTpl' },
-          { fixed: 'right', title: '操作', width: 180, align: 'center', toolbar: '#kit-table-bar' }
+          { fixed: 'right', title: '操作', width: 190, align: 'center', toolbar: '#kit-table-bar' }
         ]
       ],
       even: true,

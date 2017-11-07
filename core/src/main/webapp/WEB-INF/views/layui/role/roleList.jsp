@@ -70,7 +70,7 @@
           { field: 'id', title: 'ID', width: 80 },
           { field: 'code', title: '代码', width: 100, sort: true },
           { field: 'name', title: '名称', width: 150 },
-          { fixed: 'right', title: '操作', width: 180, align: 'center', toolbar: '#kit-table-bar' }
+          { fixed: 'right', title: '操作', width: 190, align: 'center', toolbar: '#kit-table-bar' }
         ]
       ],
       even: true,
@@ -155,13 +155,23 @@
         })
         layer.full(index);
       } else if (layEvent === 'auth') { //分配
-        top.layer.open({
+        var index = layer.open({
           title : "分配用户",
           type : 2,
-          maxmin: true,
-          area: ['893px', '600px'],
-          content : table_auth_url + data.id
+          content : table_auth_url + data.id,
+          success : function(layero, index){
+            setTimeout(function(){
+              layui.layer.tips('点击此处返回角色列表', '.layui-layer-setwin .layui-layer-close', {
+                tips: 3
+              });
+            },1000)
+          }
         })
+        //改变窗口大小时，重置弹窗的高度，防止超出可视区域（如F12调出debug的操作）
+        $(window).resize(function(){
+          layer.full(index);
+        })
+        layer.full(index);
       }
     });
     $('#kit-search-more').on('click', function () {

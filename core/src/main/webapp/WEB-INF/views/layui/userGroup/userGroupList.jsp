@@ -99,7 +99,7 @@
           { field: 'code', title: '代码', width: 100, sort: true },
           { field: 'name', title: '名称', width: 150 },
           { field: 'type', title: '类型', width: 150, templet: '#typeTpl' },
-          { fixed: 'right', title: '操作', width: 180, align: 'center', toolbar: '#kit-table-bar' }
+          { fixed: 'right', title: '操作', width: 190, align: 'center', toolbar: '#kit-table-bar' }
         ]
       ],
       even: true,

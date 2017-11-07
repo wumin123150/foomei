@@ -73,7 +73,7 @@
           { field: 'value', title: '值', width: 150 },
           { field: 'remark', title: '备注', width: 200 },
           { field: 'editable', title: '值可修改', width: 100, templet: '<div>{{#  if(d.editable){ }} <span class="layui-badge layui-bg-green">是</span> {{#  } else { }} <span class="layui-badge layui-bg-orange">否</span> {{#  } }}</div>' },
-          { fixed: 'right', title: '操作', width: 180, align: 'center', toolbar: '#kit-table-bar' }
+          { fixed: 'right', title: '操作', width: 120, align: 'center', toolbar: '#kit-table-bar' }
         ]
       ],
       even: true,
