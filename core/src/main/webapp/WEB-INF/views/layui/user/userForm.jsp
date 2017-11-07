@@ -16,7 +16,6 @@
   <meta name="format-detection" content="telephone=no">
   <link rel="stylesheet" href="${ctx}/static/js/layui/css/layui.css" media="all"/>
   <link rel="stylesheet" href="//at.alicdn.com/t/font_tnyc012u2rlwstt9.css" media="all"/>
-  <link rel="stylesheet" href="${ctx}/static/js/zTree/metroStyle/metroStyle.css">
   <link rel="stylesheet" href="${ctx}/static/js/layui/page.css" media="all"/>
   <style type="text/css">
     .center {
@@ -44,11 +43,6 @@
       height: 200px;
       overflow-y: scroll;
       overflow-x: auto;
-    }
-    @media screen and (max-width: 768px) {
-      .layui-upload {
-        margin-left: 0;
-      }
     }
   </style>
 </head>
@@ -137,12 +131,12 @@
   </div>
   <div class="layui-form-item">
     <label class="layui-form-label">归属部门</label>
-    <div class="layui-input-block">
+    <div class="layui-input-inline" style="margin-right: 0px;">
       <input type="text" name="groups" id="groups" class="hide"/>
-      <input type="text" name="groupNames" id="groupNames" value="${user.groupNames}" placeholder="归属部门" class="layui-input" onclick="showMenu();" readonly/>
-      <div id="menuContent" class="menuContent" style="display:none; position: absolute; z-index: 1;">
-        <ul id="tree" class="ztree"></ul>
-      </div>
+      <input type="text" name="groupNames" id="groupNames" value="${user.groupNames}" placeholder="归属部门" class="layui-input" disabled/>
+    </div>
+    <div class="layui-input-inline" style="width: inherit;">
+      <button class="layui-btn btn-search"><i class="layui-icon">&#xe615;</i></button>
     </div>
   </div>
   <div class="layui-form-item" pane="">
@@ -167,9 +161,6 @@
   </div>
 </form>
 <script src="${ctx}/static/js/layui/layui.js"></script>
-<script src="${ctx}/webjars/jquery/jquery.min.js"></script>
-<script src="${ctx}/static/js/zTree/jquery.ztree.core.min.js"></script>
-<script src="${ctx}/static/js/zTree/jquery.ztree.excheck.min.js"></script>
 </body>
 <script>
   layui.use(['form', 'laydate', 'upload'], function () {
@@ -261,69 +252,28 @@
       parent.layer.closeAll("iframe");
       return false;
     });
-  });
 
-  var setting = {
-    check: {
-      enable: true,
-      chkboxType: {"Y": "", "N": ""}
-    },
-    data: {
-      simpleData: {
-        enable: true,
-        idKey: "id",
-        pIdKey: "parentId",
-        rootPId: null
-      }
-    },
-    view: {
-      selectedMulti: true,
-      autoCancelSelected: true
-    }, callback: {
-      onCheck: function (event, treeId, treeNode) {
-        var zTree = $.fn.zTree.getZTreeObj("tree"),
-          nodes = zTree.getCheckedNodes(true),
-          names = "", ids = "";
+    $('.btn-search').on('click', function(){
+      top.layer.open({
+        type: 2,
+        area: ['300px', '90%'],
+        title:"选择归属部门",
+        content: ["${ctx}/admin/userGroup/checkbox", 'no'],
+        btn: ['确定', '关闭'],
+        yes: function(index, layero){
+          var groupIds = $(layero.find("iframe")[0].contentWindow.groupIds).val();
+          var groupNames = $(layero.find("iframe")[0].contentWindow.groupNames).val();
+          $('#groups').val(groupIds);
+          $('#groupNames').val(groupNames);
+          top.layer.close(index);
+        },
+        cancel: function(index){
 
-        $("#groups").val();
-        for (var i = 0, l = nodes.length; i < l; i++) {
-          names += nodes[i].name + ", ";
-          ids += nodes[i].id + ",";
         }
-        if (names.length > 0) names = names.substring(0, names.length - 2);
-        if (ids.length > 0) ids = ids.substring(0, ids.length - 1);
-        $("#groupNames").val(names);
-        $("#groups").val(ids);
-      }
-    }
-  };
-
-  function showMenu() {
-    $("#menuContent").css({width: $("#groupNames").outerWidth() - 12}).slideDown("fast");
-    $("body").bind("mousedown", onBodyDown);
-  }
-
-  function hideMenu() {
-    $("#menuContent").fadeOut("fast");
-    $("body").unbind("mousedown", onBodyDown);
-  }
-
-  function onBodyDown(event) {
-    if (!(event.target.id == "groupNames" || event.target.id == "menuContent" || $(event.target).parents("#menuContent").length > 0)) {
-      hideMenu();
-    }
-  }
-
-  jQuery(function ($) {
-    $.post('${ctx}/api/userGroup/list', function(result) {
-      if(result.success) {
-        for(var i =0; i < result.data.length; i++) {
-          result.data[i].open = true;
-        }
-        $.fn.zTree.init($('#tree'), setting, result.data);
-      }
+      });
+      return false;
     });
-  })
+  });
 </script>
 </body>
 </html>

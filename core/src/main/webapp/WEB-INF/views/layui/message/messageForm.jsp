@@ -16,7 +16,6 @@
   <link rel="stylesheet" href="${ctx}/static/js/layui/css/layui.css" media="all"/>
   <link rel="stylesheet" href="//at.alicdn.com/t/font_tnyc012u2rlwstt9.css" media="all"/>
   <link rel="stylesheet" href="${ctx}/static/js/layui/page.css" media="all"/>
-  <link rel="stylesheet" href="${ctx}/static/js/zTree/metroStyle/metroStyle.css">
   <style type="text/css">
     ul.ztree {
       margin-top: 0;
@@ -40,12 +39,22 @@
   </div>
   <div class="layui-form-item">
     <label class="layui-form-label">接收人<span class="input-required">*</span></label>
-    <div class="layui-input-block">
-      <input type="text" name="userNames" id="userNames" value="${userNames}" placeholder="接收人" class="layui-input" onclick="showMenu();" readonly/>
-      <div id="menuContent" class="menuContent" style="display:none; position: absolute; z-index: 1;">
-        <ul id="tree" class="ztree"></ul>
-      </div>
+    <div class="layui-input-inline" style="margin-right: 0px;width: calc(100% - 165px);">
       <input type="text" name="users" id="users" class="hide"/>
+      <input type="text" name="userNames" id="userNames" placeholder="接收人" class="layui-input" disabled/>
+    </div>
+    <div class="layui-input-inline" style="width: inherit;margin-right: 0px;">
+      <button class="layui-btn btn-search"><i class="layui-icon">&#xe615;</i></button>
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">接收人<span class="input-required">*</span></label>
+    <div class="kit-search-inline">
+      <input type="text" name="users" id="user1s" class="hide"/>
+      <input type="text" name="userNames" id="user1Names" placeholder="接收人" class="layui-input" disabled/>
+    </div>
+    <div class="kit-search-btn">
+      <button class="layui-btn btn-search"><i class="layui-icon">&#xe615;</i></button>
     </div>
   </div>
   <div class="layui-form-item">
@@ -57,8 +66,6 @@
 </form>
 <script src="${ctx}/static/js/layui/layui.js"></script>
 <script src="${ctx}/webjars/jquery/jquery.min.js"></script>
-<script src="${ctx}/static/js/zTree/jquery.ztree.core.min.js"></script>
-<script src="${ctx}/static/js/zTree/jquery.ztree.excheck.min.js"></script>
 </body>
 <script>
   layui.use(['form'], function () {
@@ -105,87 +112,29 @@
       parent.layer.closeAll("iframe");
       return false;
     });
-  });
 
-  var setting = {
-    check: {
-      enable: true,
-      chkboxType: {"Y": "ps", "N": "ps"}
-    },
-    data: {
-      simpleData: {
-        enable: true,
-        idKey: "id",
-        pIdKey: "parentId",
-        rootPId: null
-      }
-    },
-    view: {
-      selectedMulti: true,
-      autoCancelSelected: true
-    }, callback: {
-      onCheck: function (event, treeId, treeNode) {
-        var zTree = $.fn.zTree.getZTreeObj("tree");
-        var nodes = zTree.getCheckedNodes(true);
-        var names = new Array(), ids = new Array();
+    $('.btn-search').on('click', function(){
+      top.layer.open({
+        type: 2,
+        area: ['400px', '90%'],
+        title:"选择接收人",
+        content: ["${ctx}/admin/user/treeCheckbox", 'no'],
+        btn: ['确定', '关闭'],
+        yes: function(index, layero){
+          var userIds = $(layero.find("iframe")[0].contentWindow.userIds).val();
+          var userNames = $(layero.find("iframe")[0].contentWindow.userNames).val();
+          debugger
+          $('#users').val(userIds);
+          $('#userNames').val(userNames);
+          top.layer.close(index);
+        },
+        cancel: function(index){
 
-        $("#users").val('');
-        for (var i = 0, l = nodes.length; i < l; i++) {
-          if(!nodes[i].isParent) {
-            var id = nodes[i].id.substr(nodes[i].id.indexOf('_') + 1);
-            if(ids.indexOf(id) == -1) {
-              names.push(nodes[i].name);
-              ids.push(id);
-            }
-          }
         }
-        $("#userNames").val(names.join(','));
-        $("#users").val(ids.join(','));
-      }
-    }
-  };
-
-  function showMenu() {
-    $("#menuContent").css({width: $("#userNames").outerWidth() - 12}).slideDown("fast");
-    $("body").bind("mousedown", onBodyDown);
-  }
-
-  function hideMenu() {
-    $("#menuContent").fadeOut("fast");
-    $("body").unbind("mousedown", onBodyDown);
-  }
-
-  function onBodyDown(event) {
-    if (!(event.target.id == "userNames" || event.target.id == "menuContent" || $(event.target).parents("#menuContent").length > 0)) {
-      hideMenu();
-    }
-  }
-
-  jQuery(function ($) {
-    $.get('${ctx}/api/userGroup/list', function(result) {
-      if(result.success && result.data.length) {
-        for(var i =0; i < result.data.length; i++) {
-          result.data[i].open = true;
-          result.data[i].isParent = true;
-        }
-        $.fn.zTree.init($('#tree'), setting, result.data);
-
-        for(var i =0; i < result.data.length; i++) {
-          var groupId = result.data[i].id;
-          $.get('${ctx}/api/membership/list?groupId=' + groupId, function(result) {
-            if(result.success && result.data.length > 0) {
-              for (var i = 0; i < result.data.length; i++) {
-                result.data[i].id = groupId + '_' + result.data[i].id;
-              }
-              var zTree = $.fn.zTree.getZTreeObj("tree");
-              var parentNode = zTree.getNodeByParam("id", groupId, null);
-              zTree.addNodes(parentNode, result.data, true);
-            }
-          })
-        }
-      }
+      });
+      return false;
     });
-  })
+  });
 </script>
 </body>
 </html>

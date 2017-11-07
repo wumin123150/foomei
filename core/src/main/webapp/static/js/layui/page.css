@@ -91,9 +91,30 @@
     margin: 0;
 }
 
-.layui-form-item .layui-inline{ width:33.333%; float:left; margin-right:0; }
-@media(max-width:1240px){
-    .layui-form-item .layui-inline{ width:100%; float:none; }
+.layui-form-item .kit-search-inline{
+    width:calc(100% - 166px);
+    float:left;
+    margin-left: -1px;
+    margin-right:0;
+    position: relative;
+}
+.layui-form-item .kit-search-btn {
+    float:left;
+    position: relative;
+}
+@media(max-width:450px){
+    .layui-form-item .kit-search-inline{
+        float: none;
+        left: -3px;
+        width: auto;
+        margin: 0 0 10px 112px;
+    }
+    .layui-form-item .kit-search-btn {
+        float:none;
+        left: -3px;
+        width: auto;
+        margin: 0 0 10px 112px;
+    }
 }
 
 @media screen and (max-width: 750px) {

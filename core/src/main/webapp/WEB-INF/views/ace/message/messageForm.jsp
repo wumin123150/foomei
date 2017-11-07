@@ -198,7 +198,7 @@
           $.fn.zTree.init($('#tree'), setting, result.data);
 
           for(var i =0; i < result.data.length; i++) {
-            var groupId = result.data[i].id;
+            let groupId = result.data[i].id;
             $.get('${ctx}/api/membership/list?groupId=' + groupId, function(result) {
               if(result.success && result.data.length > 0) {
                 for (var i = 0; i < result.data.length; i++) {

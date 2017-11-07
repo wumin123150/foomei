@@ -6,7 +6,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>机构选择</title>
+  <title>用户选择</title>
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -24,8 +24,8 @@
 </head>
 <body class="kit-main">
 <ul id="tree" class="ztree"></ul>
-<input type="hidden" id="groupId">
-<input type="hidden" id="groupName">
+<input type="hidden" id="userId">
+<input type="hidden" id="userName">
 <script src="${ctx}/static/js/layui/layui.js"></script>
 <script src="${ctx}/webjars/jquery/jquery.min.js"></script>
 <script src="${ctx}/static/js/zTree/jquery.ztree.core.min.js"></script>
@@ -57,29 +57,47 @@
       selectedMulti: false,
       autoCancelSelected: true
     }, callback: {
+      beforeClick: function(treeId, treeNode, clickFlag) {
+        return !treeNode.isParent;
+      },
       onClick: function(event, treeId, treeNode, clickFlag) {
         if (clickFlag === 0 || treeNode.id == 0) {
-          $("#groupId").val('');
-          $("#groupName").val('');
+          $("#userId").val('');
+          $("#userName").val('');
         } else {
-          $("#groupId").val(treeNode.id);
-          $("#groupName").val(treeNode.name);
+          $("#userId").val(treeNode.id.substr(treeNode.id.indexOf('_') + 1));
+          $("#userName").val(treeNode.name);
         }
       }
     }
   }
 
   jQuery(function ($) {
-    $.post('${ctx}/api/userGroup/list', function(result) {
+    $.get('${ctx}/api/userGroup/list', function(result) {
       if(result.success) {
         for(var i=0;i<result.data.length;i++) {
           if(result.data[i].parentId == null) {
             result.data[i].parentId = 0;
           }
           result.data[i].open = true;
+          result.data[i].isParent = true;
         }
-        result.data[result.data.length] = { id:0, parentId:null, name:"组织机构", open:true};
+        result.data[result.data.length] = { id:0, parentId:null, name:"组织机构树", open:true};
         $.fn.zTree.init($('#tree'), setting, result.data);
+
+        for(var i =0; i < result.data.length; i++) {
+          $.get('${ctx}/api/membership/list?groupId=' + result.data[i].id, function(result, status, jqXHR) {
+            var groupId = this.url.substr(this.url.indexOf('=') + 1);
+            if(result.success && result.data.length > 0) {
+              for (var i = 0; i < result.data.length; i++) {
+                result.data[i].id = groupId + '_' + result.data[i].id;
+              }
+              var zTree = $.fn.zTree.getZTreeObj("tree");
+              var parentNode = zTree.getNodeByParam("id", groupId, null);
+              zTree.addNodes(parentNode, result.data, true);
+            }
+          })
+        }
       }
     });
   });

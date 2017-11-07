@@ -413,7 +413,7 @@
     }
 
     jQuery(function ($) {
-      $.post('${ctx}/api/userGroup/list', function(result) {
+      $.get('${ctx}/api/userGroup/list', function(result) {
         if(result.success) {
           for(var i =0; i < result.data.length; i++) {
             result.data[i].open = true;

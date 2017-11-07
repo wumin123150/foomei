@@ -37,7 +37,7 @@ public class MembershipEndpoint {
   })
   @RequiresRoles("admin")
   @RequestMapping(value = "list")
-  public ResponseResult<List<BaseUser>> page(Long groupId, HttpServletRequest request) {
+  public ResponseResult<List<BaseUser>> list(Long groupId, HttpServletRequest request) {
     List<User> user = userService.getListByGroup(groupId);
     return ResponseResult.createSuccess(user, User.class, BaseUser.class);
   }

@@ -60,11 +60,18 @@ public class UserGroupController {
     return theme + "/userGroup/userGroupForm";
   }
 
-  @ApiOperation(value = "机构选择页面", httpMethod = "GET")
+  @ApiOperation(value = "机构单选页面", httpMethod = "GET")
   @RequiresRoles("admin")
   @RequestMapping(value = "select", method = RequestMethod.GET)
   public String select(Model model) {
-    return theme + "/userGroupSelect";
+    return theme + "/userGroup/userGroupSelect";
+  }
+
+  @ApiOperation(value = "机构多选页面", httpMethod = "GET")
+  @RequiresRoles("admin")
+  @RequestMapping(value = "checkbox", method = RequestMethod.GET)
+  public String checkbox(Model model) {
+    return theme + "/userGroup/userGroupCheckbox";
   }
 
 }

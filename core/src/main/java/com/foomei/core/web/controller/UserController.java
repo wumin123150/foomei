@@ -87,4 +87,18 @@ public class UserController {
     return theme + "/user/resetPassword";
   }
 
+  @ApiOperation(value = "用户树形单选页面", httpMethod = "GET")
+  @RequiresRoles("admin")
+  @RequestMapping(value = "treeSelect", method = RequestMethod.GET)
+  public String select(Model model) {
+    return theme + "/user/userTreeSelect";
+  }
+
+  @ApiOperation(value = "用户树形多选页面", httpMethod = "GET")
+  @RequiresRoles("admin")
+  @RequestMapping(value = "treeCheckbox", method = RequestMethod.GET)
+  public String checkbox(Model model) {
+    return theme + "/user/userTreeCheckbox";
+  }
+
 }
