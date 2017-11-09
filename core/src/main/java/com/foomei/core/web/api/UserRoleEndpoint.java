@@ -63,9 +63,13 @@ public class UserRoleEndpoint {
   public ResponseResult create(Long userId, Long roleId) {
     User user = userService.get(userId);
     Role role = roleService.get(roleId);
-    user.getRoleList().add(role);
-    userService.save(user);
-    return ResponseResult.SUCCEED;
+    if(!user.getRoleList().contains(role)) {
+      user.getRoleList().add(role);
+      userService.save(user);
+      return ResponseResult.SUCCEED;
+    } else {
+      return ResponseResult.createParamError("用户已存在");
+    }
   }
 
   @ApiOperation(value = "角色授权删除", httpMethod = "POST", produces = "application/json")

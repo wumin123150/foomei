@@ -60,6 +60,15 @@ public class UserGroupController {
     return theme + "/userGroup/userGroupForm";
   }
 
+  @ApiOperation(value = "机构授权页面", httpMethod = "GET")
+  @RequiresRoles("admin")
+  @RequestMapping(value = "auth/{id}")
+  public String authorize(@PathVariable("id") Long id, Model model) {
+    model.addAttribute("menu", MENU);
+    model.addAttribute("groupId", id);
+    return theme + "/userGroup/userGroupAuth";
+  }
+
   @ApiOperation(value = "机构单选页面", httpMethod = "GET")
   @RequiresRoles("admin")
   @RequestMapping(value = "select", method = RequestMethod.GET)

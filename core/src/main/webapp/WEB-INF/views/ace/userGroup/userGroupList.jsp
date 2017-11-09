@@ -633,7 +633,7 @@
           delay: 250,
           data: function (term, pageNo) {
             return {
-              q: $.trim(term),	//联动查询的字符
+              searchKey: $.trim(term),	//联动查询的字符
               pageSize: 15,    	//一次性加载的数据条数
               pageNo: pageNo,  	//页码
               time: new Date()  	//测试

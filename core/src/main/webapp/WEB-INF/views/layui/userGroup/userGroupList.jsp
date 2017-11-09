@@ -49,6 +49,7 @@
       <div class="kit-table-body">
         <table id="kit-table" lay-filter="kit-table"></table>
         <script type="text/html" id="kit-table-bar">
+          <a class="layui-btn layui-btn-normal layui-btn-mini" lay-event="auth">分配用户</a>
           <a class="layui-btn layui-btn-warm layui-btn-mini" lay-event="add">新增下级</a>
           <a class="layui-btn layui-btn-mini" lay-event="edit">编辑</a>
           <a class="layui-btn layui-btn-danger layui-btn-mini" lay-event="del">删除</a>
@@ -81,6 +82,7 @@
   var table_edit_url = "${ctx}/admin/userGroup/update/";
   var table_del_url = "${ctx}/api/userGroup/delete/";
   var table_get_url = "${ctx}/api/userGroup/get/";
+  var table_auth_url = "${ctx}/admin/userGroup/auth/";
   layui.use('table', function () {
     var table = layui.table,
       layer = layui.layer,
@@ -99,7 +101,7 @@
           { field: 'code', title: '代码', width: 100, sort: true },
           { field: 'name', title: '名称', width: 150 },
           { field: 'type', title: '类型', width: 150, templet: '#typeTpl' },
-          { fixed: 'right', title: '操作', width: 190, align: 'center', toolbar: '#kit-table-bar' }
+          { fixed: 'right', title: '操作', width: 260, align: 'center', toolbar: '#kit-table-bar' }
         ]
       ],
       even: true,
@@ -184,13 +186,23 @@
         })
         layer.full(index);
       } else if (layEvent === 'auth') { //分配
-        top.layer.open({
+        var index = layer.open({
           title : "分配用户",
           type : 2,
-          maxmin: true,
-          area: ['893px', '600px'],
-          content : table_auth_url + data.id
+          content : table_auth_url + data.id,
+          success : function(layero, index){
+            setTimeout(function(){
+              layui.layer.tips('点击此处返回机构列表', '.layui-layer-setwin .layui-layer-close', {
+                tips: 3
+              });
+            },1000)
+          }
         })
+        //改变窗口大小时，重置弹窗的高度，防止超出可视区域（如F12调出debug的操作）
+        $(window).resize(function(){
+          layer.full(index);
+        })
+        layer.full(index);
       } else if (layEvent === 'add') { //新增下级
         var index = layer.open({
           title : "新增机构",

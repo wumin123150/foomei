@@ -63,11 +63,8 @@ public class UserEndpoint {
   }
 
   @ApiOperation(value = "用户智能搜索", notes = "按账号和名称查询", httpMethod = "GET", produces = "application/json")
-  @ApiImplicitParams({
-    @ApiImplicitParam(name = "q", value = "关键词, searchKey作废", required = true, dataType = "string", paramType = "query")
-  })
   @RequestMapping(value = "search")
-  public ResponseResult<Page<BaseUser>> search(PageQuery pageQuery, @RequestParam("q") String searchKey) {
+  public ResponseResult<Page<BaseUser>> search(PageQuery pageQuery) {
     Page<BaseUser> users = baseUserService.getPage(new SearchRequest(pageQuery, new Sort(Sort.Direction.DESC, BaseUser.PROP_NAME), BaseUser.PROP_NAME, BaseUser.PROP_LOGIN_NAME));
     return ResponseResult.createSuccess(users);
   }

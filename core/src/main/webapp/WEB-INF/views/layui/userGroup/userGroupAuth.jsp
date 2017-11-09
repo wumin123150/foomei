@@ -46,8 +46,8 @@
   </div>
 </div>
 <div id="dialog-container" class="hide">
-  <form class="layui-form layui-form-pane" action="${ctx}/api/userRole/create" method="post" style="padding: 15px;">
-    <input type="hidden" name="roleId" value="${roleId}"/>
+  <form class="layui-form layui-form-pane" action="${ctx}/api/membership/create" method="post" style="padding: 15px;">
+    <input type="hidden" name="groupId" value="${groupId}"/>
     <div class="layui-form-item">
       <label class="layui-form-label">用户<span class="input-required">*</span></label>
       <div class="layui-input-block">
@@ -63,8 +63,8 @@
 <script>
   var tableId = 'kit-table';
   var tableFilter = 'kit-table';
-  var table_page_url = "${ctx}/api/userRole/page2?roleId=${roleId}";
-  var table_del_url = "${ctx}/api/userRole/delete";
+  var table_page_url = "${ctx}/api/membership/page2?groupId=${groupId}";
+  var table_del_url = "${ctx}/api/membership/delete";
   layui.use('table', function () {
     var table = layui.table,
       layer = layui.layer,
@@ -137,7 +137,7 @@
             type: 'POST',
             data: {
               userId: data.id,
-              roleId: ${roleId}
+              groupId: ${groupId}
             },
             cache: false,
             dataType: 'json',
@@ -217,10 +217,10 @@
               var userId = layero.find('#userId').val();
               var loadIndex = layer.load();
               $.ajax({
-                url: '${ctx}/api/userRole/create',
+                url: '${ctx}/api/membership/create',
                 type: 'POST',
                 cache: false,
-                data: {userId:userId, roleId:${roleId}},
+                data: {userId:userId, groupId:${groupId}},
                 dataType: 'json',
                 success: function (result) {
                   if (result.success) {

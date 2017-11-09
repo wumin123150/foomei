@@ -53,6 +53,17 @@ public class MembershipEndpoint {
     return ResponseResult.createSuccess(page, User.class, BaseUser.class);
   }
 
+  @ApiOperation(value = "机构授权简单分页列表", httpMethod = "GET", produces = "application/json")
+  @ApiImplicitParams({
+    @ApiImplicitParam(name = "groupId", value = "机构ID", dataType = "long", paramType = "query")
+  })
+  @RequiresRoles("admin")
+  @RequestMapping(value = "page2")
+  public ResponseResult<List<BaseUser>> page2(PageQuery pageQuery, Long groupId) {
+    Page<User> page = userService.getPageByGroup(pageQuery.getSearchKey(), groupId, pageQuery.buildPageRequest());
+    return ResponseResult.createSuccess(page.getContent(), page.getTotalElements(), User.class, BaseUser.class);
+  }
+
   @ApiOperation(value = "机构授权新增", httpMethod = "POST", produces = "application/json")
   @ApiImplicitParams({
     @ApiImplicitParam(name = "userId", value = "用户ID", required = true, dataType = "long", paramType = "form"),
@@ -63,9 +74,13 @@ public class MembershipEndpoint {
   public ResponseResult create(Long userId, Long groupId) {
     User user = userService.get(userId);
     UserGroup group = userGroupService.get(groupId);
-    user.getGroupList().add(group);
-    userService.save(user);
-    return ResponseResult.SUCCEED;
+    if(!user.getGroupList().contains(group)) {
+      user.getGroupList().add(group);
+      userService.save(user);
+      return ResponseResult.SUCCEED;
+    } else {
+      return ResponseResult.createParamError("用户已存在");
+    }
   }
 
   @ApiOperation(value = "机构授权删除", httpMethod = "POST", produces = "application/json")

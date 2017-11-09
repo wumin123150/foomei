@@ -285,7 +285,7 @@
           delay: 250,
           data: function (term, pageNo) {
             return {
-              q: $.trim(term),	//联动查询的字符
+              searchKey: $.trim(term),	//联动查询的字符
               pageSize: 15,    	//一次性加载的数据条数
               pageNo: pageNo,  	//页码
               time: new Date()  	//测试
@@ -323,9 +323,7 @@
           }
         },
         messages: {
-          code: {
-            remote: '代码已经被使用'
-          }
+
         },
         highlight: function (e) {
           $(e).closest('.form-group').removeClass('has-info').addClass('has-error');
