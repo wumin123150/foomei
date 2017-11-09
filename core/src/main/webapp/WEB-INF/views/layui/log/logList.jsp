@@ -138,10 +138,10 @@
 
       if (layEvent === 'view') { //查看
         var index = layer.open({
-          title : "查看日志",
-          type : 2,
-          content : table_view_url + data.id,
-          success : function(layero, index){
+          title: "查看日志",
+          type: 2,
+          content: table_view_url + data.id,
+          success: function(layero, index){
             setTimeout(function(){
               layui.layer.tips('点击此处返回日志列表', '.layui-layer-setwin .layui-layer-close', {
                 tips: 3

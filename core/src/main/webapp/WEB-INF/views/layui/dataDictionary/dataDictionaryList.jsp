@@ -49,7 +49,7 @@
         <table id="kit-table" lay-filter="kit-table"></table>
         <script type="text/html" id="kit-table-bar">
           <a class="layui-btn layui-btn-warm layui-btn-mini" lay-event="add">新增下级</a>
-          <a class="layui-btn layui-btn-mini" lay-event="edit">编辑</a>
+          <a class="layui-btn layui-btn-mini" lay-event="edit">修改</a>
           <a class="layui-btn layui-btn-danger layui-btn-mini" lay-event="del">删除</a>
         </script>
       </div>
@@ -155,10 +155,10 @@
         });
       } else if (layEvent === 'edit') { //编辑
         var index = layer.open({
-          title : "修改数据",
-          type : 2,
-          content : table_edit_url + data.id,
-          success : function(layero, index){
+          title: "修改数据",
+          type: 2,
+          content: table_edit_url + data.id,
+          success: function(layero, index){
             setTimeout(function(){
               layui.layer.tips('点击此处返回数据列表', '.layui-layer-setwin .layui-layer-close', {
                 tips: 3
@@ -173,10 +173,10 @@
         layer.full(index);
       } else if (layEvent === 'add') { //新增下级
         var index = layer.open({
-          title : "新增数据",
-          type : 2,
-          content : table_add_url + data.id,
-          success : function(layero, index){
+          title: "新增数据",
+          type: 2,
+          content: table_add_url + data.id,
+          success: function(layero, index){
             setTimeout(function(){
               layui.layer.tips('点击此处返回数据列表', '.layui-layer-setwin .layui-layer-close', {
                 tips: 3
@@ -202,10 +202,10 @@
       switch (action) {
         case 'add':
           var index = layer.open({
-            title : "新增数据",
-            type : 2,
-            content : table_add_url,
-            success : function(layero, index){
+            title: "新增数据",
+            type: 2,
+            content: table_add_url,
+            success: function(layero, index){
               setTimeout(function(){
                 layui.layer.tips('点击此处返回数据列表', '.layui-layer-setwin .layui-layer-close', {
                   tips: 3

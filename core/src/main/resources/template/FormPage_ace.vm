@@ -86,11 +86,13 @@
               </div>
             </c:forEach>
           </c:if>
-          <form class="form-horizontal" id="validation-form" action="${r'${ctx}'}/${folder}/${variable}/${r'${action}'}" method="post" role="form">
+          <form class="form-horizontal" id="validation-form" method="post" role="form">
             <input type="hidden" name="id" id="id" value="${r'${'}${variable}.id}"/>
             <!-- #section:elements.form -->
+            <#list fields?keys as k>
+            <#if k_index%2 == 0>
             <div class="row">
-              <#list fields?keys as k>
+            </#if>
               <div class="col-xs-12 col-sm-6">
                 <div class="form-group">
                   <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-${k}">${fields[k].second}<#if fieldNotBlanks?keys?seq_contains(k)><span class="input-required">*</span></#if></label>
@@ -117,8 +119,10 @@
                   </div>
                 </div>
               </div>
-              </#list>
+            <#if k_index%2 == 1 || !k_has_next>
             </div>
+            </#if>
+            </#list>
             <div class="clearfix form-actions">
               <div class="col-sm-offset-4 col-sm-8 col-xs-offset-3 col-xs-9">
                 <button class="btn btn-info btn-sm" type="submit">
@@ -165,9 +169,9 @@
         focusInvalid: false,
         ignore: "",
         rules: {
-        <#list fieldRules?keys as k>
+        <#list fieldValidateRules?keys as k>
           ${k}: {
-            ${fieldRules[k]?join(', ')}
+            ${fieldValidateRules[k]?join(', ')}
           }<#if k_has_next>,</#if>
         </#list>
         },
@@ -196,7 +200,29 @@
           else error.insertAfter(element.parent());
         },
         submitHandler: function (form) {
-          form.submit();
+          //form.submit();
+          var data = $('#validation-form').serialize();
+          $.ajax({
+            url: '${r'${ctx}'}/api/${variable}/save',
+            type: 'POST',
+            cache: false,
+            data: data,
+            dataType: 'json',
+            success: function (result) {
+              if (result.success) {
+                toastr.success('保存成功');
+                setTimeout(function(){
+                  history.back();
+                },1000);
+              } else {
+                toastr.error(result.message);
+              }
+            },
+            error: function () {
+              toastr.error('未知错误，请联系管理员');
+            }
+          });
+          return false;
         },
         invalidHandler: function (form) {
         }

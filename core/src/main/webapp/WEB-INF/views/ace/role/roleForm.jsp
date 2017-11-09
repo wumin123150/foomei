@@ -56,7 +56,7 @@
       <div class="row">
         <div class="col-xs-12">
           <!-- PAGE CONTENT BEGINS -->
-          <form class="form-horizontal" id="validation-form" action="${ctx}/admin/role/${action}" method="post" role="form">
+          <form class="form-horizontal" id="validation-form" method="post" role="form">
             <input type="hidden" name="id" id="id" value="${role.id}"/>
             <!-- #section:elements.form -->
             <div class="row">

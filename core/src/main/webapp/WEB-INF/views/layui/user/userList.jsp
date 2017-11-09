@@ -86,7 +86,7 @@
     <table id="kit-table" lay-filter="kit-table"></table>
     <script type="text/html" id="kit-table-bar">
       <a class="layui-btn layui-btn-warm layui-btn-mini" lay-event="reset">修改密码</a>
-      <a class="layui-btn layui-btn-mini" lay-event="edit">编辑</a>
+      <a class="layui-btn layui-btn-mini" lay-event="edit">修改</a>
       <a class="layui-btn layui-btn-danger layui-btn-mini" lay-event="del">停用</a>
     </script>
     <script type="text/html" id="sexTpl">
@@ -217,10 +217,10 @@
         });
       } else if (layEvent === 'edit') { //编辑
         var index = layer.open({
-          title : "修改用户",
-          type : 2,
-          content : table_edit_url + data.id,
-          success : function(layero, index){
+          title: "修改用户",
+          type: 2,
+          content: table_edit_url + data.id,
+          success: function(layero, index){
             setTimeout(function(){
               layui.layer.tips('点击此处返回用户列表', '.layui-layer-setwin .layui-layer-close', {
                 tips: 3
@@ -235,10 +235,10 @@
         layer.full(index);
       } else if (layEvent === 'reset') { //密码
         var index = layer.open({
-          title : "修改密码",
-          type : 2,
-          content : table_reset_url + data.id,
-          success : function(layero, index){
+          title: "修改密码",
+          type: 2,
+          content: table_reset_url + data.id,
+          success: function(layero, index){
             setTimeout(function(){
               layui.layer.tips('点击此处返回用户列表', '.layui-layer-setwin .layui-layer-close', {
                 tips: 3
@@ -265,10 +265,10 @@
       switch (action) {
         case 'add':
           var index = layer.open({
-            title : "新增用户",
-            type : 2,
-            content : table_add_url,
-            success : function(layero, index){
+            title: "新增用户",
+            type: 2,
+            content: table_add_url,
+            success: function(layero, index){
               setTimeout(function(){
                 layui.layer.tips('点击此处返回用户列表', '.layui-layer-setwin .layui-layer-close', {
                   tips: 3

@@ -148,10 +148,10 @@
       switch (action) {
         case 'add':
           var index = layer.open({
-            title : "新增消息",
-            type : 2,
-            content : table_add_url,
-            success : function(layero, index){
+            title: "新增消息",
+            type: 2,
+            content: table_add_url,
+            success: function(layero, index){
               setTimeout(function(){
                 layui.layer.tips('点击此处返回消息列表', '.layui-layer-setwin .layui-layer-close', {
                   tips: 3

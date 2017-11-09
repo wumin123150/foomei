@@ -165,8 +165,6 @@
     $('#kit-search-more').on('click', function () {
       $('.kit-search-mored').toggle();
     });
-
-    var tab = parent.tab;
     $('.kit-search-btns > a').off('click').on('click', function () {
       var $that = $(this),
         action = $that.data('action');

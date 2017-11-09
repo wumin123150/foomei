@@ -13,6 +13,7 @@ import ${package}.entity.${model};
 import ${package}.service.${model}Service;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Validation;
+import java.util.List;
 
 @Api(description = "${comment}接口")
 @RestController
@@ -33,31 +35,25 @@ public class ${model}Endpoint {
 
   @ApiOperation(value = "${comment}分页列表", httpMethod = "GET", produces = "application/json")
   @RequestMapping(value = "page", method = RequestMethod.GET)
-  public ResponseResult<Page<${model}Dto>> page(PageQuery pageQuery, HttpServletRequest request) {
+  public ResponseResult<List<${model}Dto>> page(PageQuery pageQuery, HttpServletRequest request) {
     Page<${model}> page = ${variable}Service.getPage(new SearchRequest(pageQuery));
-    return ResponseResult.createSuccess(page, ${model}.class, ${model}Dto.class);
+    return ResponseResult.createSuccess(page.getContent(), page.getTotalElements(), ${model}.class, ${model}Dto.class);
   }
 
-  @ApiOperation(value = "${comment}新增", httpMethod = "POST", produces = "application/json")
-  @RequestMapping(value = "create", method = RequestMethod.POST)
-  public ResponseResult<${model}Dto> create(${model}Dto dto) {
-    ${model} ${variable} = BeanMapper.map(dto, ${model}.class);
-
-    ComplexResult result = validate(${variable});
-    if (!result.isSuccess()) {
-      return ResponseResult.createParamError(result);
+  @ApiOperation(value = "${comment}保存", httpMethod = "POST", produces = "application/json")
+  @RequestMapping(value = "save", method = RequestMethod.POST)
+  public ResponseResult<${model}Dto> create(${model}Dto ${variable}Dto) {
+    ${model} ${variable} = null;
+<#if idType == 'String'>
+    if (StringUtils.isEmpty(${variable}Dto.getId())) {
+<#else>
+    if (${variable}Dto.getId() == null) {
+</#if>
+      ${variable} = BeanMapper.map(${variable}Dto, ${model}.class);
     } else {
-      ${variable}Service.save(${variable});
+      ${variable} = ${variable}Service.get(${variable}Dto.getId());
+      ${variable} = BeanMapper.map(${variable}Dto, ${variable}, ${model}Dto.class, ${model}.class);
     }
-
-    return ResponseResult.createSuccess(${variable}, ${model}Dto.class);
-  }
-
-  @ApiOperation(value = "${comment}修改", httpMethod = "POST", produces = "application/json")
-  @RequestMapping(value = "update", method = RequestMethod.POST)
-  public ResponseResult<${model}Dto> update(${model}Dto dto) {
-    ${model} ${variable} = ${variable}Service.get(dto.getId());
-    ${variable} = BeanMapper.map(dto, ${variable}, ${model}Dto.class, ${model}.class);
 
     ComplexResult result = validate(${variable});
     if (!result.isSuccess()) {
@@ -77,10 +73,10 @@ public class ${model}Endpoint {
   }
 
   private ComplexResult validate(${model} ${variable}) {
-  ComplexResult result = FluentValidator.checkAll()
-    .on(${variable}, new HibernateSupportedValidator<${model}>().setHiberanteValidator(Validation.buildDefaultValidatorFactory().getValidator()))
-    .doValidate()
-    .result(ResultCollectors.toComplex());
+    ComplexResult result = FluentValidator.checkAll()
+      .on(${variable}, new HibernateSupportedValidator<${model}>().setHiberanteValidator(Validation.buildDefaultValidatorFactory().getValidator()))
+      .doValidate()
+      .result(ResultCollectors.toComplex());
     return result;
   }
 

@@ -38,7 +38,7 @@
   <div class="kit-table-body">
     <table id="kit-table" lay-filter="kit-table"></table>
     <script type="text/html" id="kit-table-bar">
-      <a class="layui-btn layui-btn-mini" lay-event="edit">编辑</a>
+      <a class="layui-btn layui-btn-mini" lay-event="edit">修改</a>
       <a class="layui-btn layui-btn-danger layui-btn-mini" lay-event="del">删除</a>
     </script>
   </div>
@@ -141,10 +141,10 @@
         });
       } else if (layEvent === 'edit') { //编辑
         var index = layer.open({
-          title : "修改配置",
-          type : 2,
-          content : table_edit_url + data.id,
-          success : function(layero, index){
+          title: "修改配置",
+          type: 2,
+          content: table_edit_url + data.id,
+          success: function(layero, index){
             setTimeout(function(){
               layui.layer.tips('点击此处返回配置列表', '.layui-layer-setwin .layui-layer-close', {
                 tips: 3
@@ -162,18 +162,16 @@
     $('#kit-search-more').on('click', function () {
       $('.kit-search-mored').toggle();
     });
-
-    var tab = parent.tab;
     $('.kit-search-btns > a').off('click').on('click', function () {
       var $that = $(this),
         action = $that.data('action');
       switch (action) {
         case 'add':
           var index = layer.open({
-            title : "新增配置",
-            type : 2,
-            content : table_add_url,
-            success : function(layero, index){
+            title: "新增配置",
+            type: 2,
+            content: table_add_url,
+            success: function(layero, index){
               setTimeout(function(){
                 layui.layer.tips('点击此处返回配置列表', '.layui-layer-setwin .layui-layer-close', {
                   tips: 3
@@ -189,10 +187,10 @@
           break;
         case 'view':
           var index = layer.open({
-            title : "系统设置",
-            type : 2,
-            content : table_view_url,
-            success : function(layero, index){
+            title: "系统设置",
+            type: 2,
+            content: table_view_url,
+            success: function(layero, index){
               setTimeout(function(){
                 layui.layer.tips('点击此处返回配置列表', '.layui-layer-setwin .layui-layer-close', {
                   tips: 3
