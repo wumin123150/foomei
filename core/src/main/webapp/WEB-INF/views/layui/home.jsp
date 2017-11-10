@@ -17,35 +17,11 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="format-detection" content="telephone=no">
   <link rel="stylesheet" href="${ctx}/static/js/layui/css/layui.css" media="all"/>
-  <link rel="stylesheet" href="${ctx}/static/js/layui/main.css" media="all"/>
+  <link rel="stylesheet" href="${ctx}/static/js/layui/page.css" media="all"/>
 </head>
-<body class="childrenBody">
-<div class="panel_box row">
-  <div class="panel col">
-    <a href="javascript:;" data-url="page/message/message.html">
-      <div class="panel_icon">
-        <i class="layui-icon" data-icon="&#xe63a;">&#xe63a;</i>
-      </div>
-      <div class="panel_word newMessage">
-        <span></span>
-        <cite>新消息</cite>
-      </div>
-    </a>
-  </div>
-  <div class="panel col">
-    <a href="javascript:;" data-url="page/user/allUsers.html">
-      <div class="panel_icon" style="background-color:#009688;">
-        <i class="layui-icon" data-icon="&#xe613;">&#xe613;</i>
-      </div>
-      <div class="panel_word userAll">
-        <span></span>
-        <cite>用户总数</cite>
-      </div>
-    </a>
-  </div>
-</div>
+<body class="kit-main">
 <div class="row">
-  <div class="sysNotice col">
+  <div class="col">
     <blockquote class="layui-elem-quote title">系统基本参数</blockquote>
     <table class="layui-table">
       <colgroup>
@@ -55,31 +31,23 @@
       <tbody>
       <tr>
         <td>当前版本</td>
-        <td class="version"></td>
+        <td class="version">2.2.1-GA</td>
       </tr>
       <tr>
         <td>开发作者</td>
-        <td class="author"></td>
+        <td class="author">wumin</td>
       </tr>
       <tr>
-        <td>网站首页</td>
-        <td class="homePage"></td>
+        <td>已用内存</td>
+        <td class="server"><fmt:formatNumber type="number" pattern="0.##">${usedMemory/1024/1024}</fmt:formatNumber>MB</td>
       </tr>
       <tr>
-        <td>服务器环境</td>
-        <td class="server"></td>
+        <td>剩余内存</td>
+        <td class="dataBase"><fmt:formatNumber type="number" pattern="0.##">${freeMemory/1024/1024}</fmt:formatNumber>MB</td>
       </tr>
       <tr>
-        <td>数据库版本</td>
-        <td class="dataBase"></td>
-      </tr>
-      <tr>
-        <td>最大上传限制</td>
-        <td class="maxUpload"></td>
-      </tr>
-      <tr>
-        <td>当前用户权限</td>
-        <td class="userRights"></td>
+        <td>最大内存</td>
+        <td class="dataBase"><fmt:formatNumber type="number" pattern="0.##">${maxMemory/1024/1024}</fmt:formatNumber>MB</td>
       </tr>
       </tbody>
     </table>
