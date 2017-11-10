@@ -20,7 +20,7 @@
   <meta name="format-detection" content="telephone=no">
   <link rel="icon" href="favicon.ico">
   <link rel="stylesheet" href="${ctx}/static/js/layui/css/layui.css" media="all"/>
-  <link rel="stylesheet" href="//at.alicdn.com/t/font_470259_h1g4u7jhw1z1714i.css" media="all" />
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_470259_i5hllb8man61or.css" media="all" />
   <link rel="stylesheet" href="${ctx}/static/js/layui/main.css" media="all"/>
 </head>
 <style>
@@ -49,7 +49,10 @@
         <li class="layui-nav-item" mobile>
           <a href="page/login/login.html" class="signOut"><i class="iconfont icon-zhuxiao"></i> 退出</a>
         </li>
-        <li class="layui-nav-item lockcms" pc>
+        <li class="layui-nav-item screenfull" pc>
+          <a href="javascript:;"><i class="iconfont icon-full"></i><cite>全屏</cite></a>
+        </li>
+        <li class="layui-nav-item screenlock" pc>
           <a href="javascript:;"><i class="iconfont icon-lock"></i><cite>锁屏</cite></a>
         </li>
         <li class="layui-nav-item" pc>
@@ -145,6 +148,7 @@
 
 <script src="${ctx}/static/js/layui/layui.js"></script>
 <script src="${ctx}/static/js/layui/leftNav.js"></script>
+<script src="${ctx}/static/js/screenfull.min.js"></script>
 </body>
 <script>
   var $,tab;
@@ -283,6 +287,15 @@
     //渲染左侧菜单
     tab.render();
 
+    //全屏
+    $(".screenfull").on("click",function(){
+      if (!screenfull.enabled) {
+        layer.msg("浏览器不支持！");
+        return false
+      }
+      screenfull.request();
+    })
+
     //锁屏
     function lockPage(){
       layer.open({
@@ -301,12 +314,12 @@
       })
       $(".admin-header-lock-input").focus();
     }
-    $(".lockcms").on("click",function(){
-      window.sessionStorage.setItem("lockcms",true);
+    $(".screenlock").on("click",function(){
+      window.sessionStorage.setItem("screenlock",true);
       lockPage();
     })
     // 判断是否显示锁屏
-    if(window.sessionStorage.getItem("lockcms") == "true"){
+    if(window.sessionStorage.getItem("screenlock") == "true"){
       lockPage();
     }
     // 解锁
@@ -316,7 +329,7 @@
         $(this).siblings(".admin-header-lock-input").focus();
       }else{
         if($(this).siblings(".admin-header-lock-input").val() == "123456"){
-          window.sessionStorage.setItem("lockcms",false);
+          window.sessionStorage.setItem("screenlock",false);
           $(this).siblings(".admin-header-lock-input").val('');
           layer.closeAll("page");
         }else{
