@@ -20,7 +20,7 @@
   <meta name="format-detection" content="telephone=no">
   <link rel="icon" href="favicon.ico">
   <link rel="stylesheet" href="${ctx}/static/js/layui/css/layui.css" media="all"/>
-  <link rel="stylesheet" href="//at.alicdn.com/t/font_tnyc012u2rlwstt9.css" media="all" />
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_470259_h1g4u7jhw1z1714i.css" media="all" />
   <link rel="stylesheet" href="${ctx}/static/js/layui/main.css" media="all"/>
 </head>
 <style>
@@ -33,7 +33,7 @@
     <div class="layui-main">
       <a href="#" class="logo">layui后台管理</a>
       <!-- 显示/隐藏菜单 -->
-      <a href="javascript:;" class="iconfont hideMenu icon-menu1"></a>
+      <a href="javascript:;" class="iconfont hideMenu icon-menu"></a>
       <ul class="layui-nav top_menu">
         <li class="layui-nav-item">
           <a href="javascript:;">其它系统<span class="layui-badge-dot"></span></a>
@@ -44,13 +44,13 @@
           </dl>
         </li>
         <li class="layui-nav-item" mobile>
-          <a href="javascript:;" class="mobileAddTab" data-url="${ctx}/admin/changeAccount"><i class="iconfont icon-shezhi1" data-icon="icon-shezhi1"></i><cite>设置</cite></a>
+          <a href="javascript:;" class="mobileAddTab" data-url="${ctx}/admin/changeAccount"><i class="iconfont icon-shezhi" data-icon="icon-shezhi"></i><cite>设置</cite></a>
         </li>
         <li class="layui-nav-item" mobile>
-          <a href="page/login/login.html" class="signOut"><i class="iconfont icon-loginout"></i> 退出</a>
+          <a href="page/login/login.html" class="signOut"><i class="iconfont icon-zhuxiao"></i> 退出</a>
         </li>
         <li class="layui-nav-item lockcms" pc>
-          <a href="javascript:;"><i class="iconfont icon-lock1"></i><cite>锁屏</cite></a>
+          <a href="javascript:;"><i class="iconfont icon-lock"></i><cite>锁屏</cite></a>
         </li>
         <li class="layui-nav-item" pc>
           <a href="javascript:;">
@@ -58,9 +58,9 @@
             <cite><shiro:principal property="name"/></cite>
           </a>
           <dl class="layui-nav-child">
-            <dd><a href="javascript:;" data-url="${ctx}/admin/changeAccount"><i class="iconfont icon-zhanghu" data-icon="icon-zhanghu"></i><cite>个人资料</cite></a></dd>
+            <dd><a href="javascript:;" data-url="${ctx}/admin/changeAccount"><i class="iconfont icon-zhanghu" data-icon="icon-zhanghuxinxi"></i><cite>个人资料</cite></a></dd>
             <dd><a href="javascript:;" class="changeSkin"><i class="iconfont icon-huanfu"></i><cite>更换皮肤</cite></a></dd>
-            <dd><a href="${ctx}/logout" class="signOut"><i class="iconfont icon-loginout"></i><cite>退出</cite></a></dd>
+            <dd><a href="${ctx}/logout" class="signOut"><i class="iconfont icon-zhuxiao"></i><cite>退出</cite></a></dd>
           </dl>
         </li>
       </ul>
@@ -112,15 +112,15 @@
     <div class="layui-tab layui-tab-card" id="top_tabs_box" lay-filter="bodyTab">
       <! -- 选项卡-->
       <ul class="layui-tab-title top_tab" id="top_tabs">
-        <li class="layui-this" lay-id=""><i class="layui-icon"></i> 后台首页</li>
+        <li class="layui-this" lay-id=""><i class="iconfont icon-home"></i> 后台首页</li>
       </ul>
       <ul class="layui-nav closeBox">
         <li class="layui-nav-item">
           <a href="javascript:;"><i class="iconfont icon-caozuo"></i> 页面操作</a>
           <dl class="layui-nav-child">
-            <dd><a href="javascript:;" class="refresh refreshThis"><i class="layui-icon">&#x1002;</i> 刷新当前</a></dd>
-            <dd><a href="javascript:;" class="closePageOther"><i class="iconfont icon-prohibit"></i> 关闭其他</a></dd>
-            <dd><a href="javascript:;" class="closePageAll"><i class="iconfont icon-guanbi"></i> 关闭全部</a></dd>
+            <dd><a href="javascript:;" class="refresh refreshThis"><i class="iconfont icon-refresh"></i> 刷新当前</a></dd>
+            <dd><a href="javascript:;" class="closePageOther"><i class="iconfont icon-jujue"></i> 关闭其他</a></dd>
+            <dd><a href="javascript:;" class="closePageAll"><i class="iconfont icon-close"></i> 关闭全部</a></dd>
           </dl>
         </li>
       </ul>
