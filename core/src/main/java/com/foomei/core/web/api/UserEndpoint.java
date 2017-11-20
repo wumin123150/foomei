@@ -84,10 +84,23 @@ public class UserEndpoint {
   }
 
   @ApiOperation(value = "用户简单分页列表", httpMethod = "GET", produces = "application/json")
+  @ApiImplicitParams({
+    @ApiImplicitParam(name = "loginName", value = "账号", required = false, dataType = "string", paramType = "query"),
+    @ApiImplicitParam(name = "name", value = "姓名", required = false, dataType = "string", paramType = "query"),
+    @ApiImplicitParam(name = "mobile", value = "手机", required = false, dataType = "string", paramType = "query"),
+    @ApiImplicitParam(name = "email", value = "邮箱", required = false, dataType = "string", paramType = "query"),
+    @ApiImplicitParam(name = "status", value = "状态(I:未激活,A:正常,E:过期,L:锁定,T:终止)", required = false, dataType = "string", paramType = "query")
+  })
   @RequiresRoles("admin")
   @RequestMapping(value = "page2")
-  public ResponseResult<List<UserDto>> page2(PageQuery pageQuery) {
-    Page<User> page = userService.getPage(new SearchRequest(pageQuery, User.PROP_NAME, User.PROP_LOGIN_NAME, User.PROP_MOBILE));
+  public ResponseResult<List<UserDto>> page2(PageQuery pageQuery, String loginName, String name, String mobile, String email, String status) {
+    SearchRequest searchRequest = new SearchRequest(pageQuery, User.PROP_NAME, User.PROP_LOGIN_NAME, User.PROP_MOBILE)
+      .addContain(User.PROP_LOGIN_NAME, loginName)
+      .addContain(User.PROP_NAME, name)
+      .addContain(User.PROP_MOBILE, mobile)
+      .addContain(User.PROP_EMAIL, email)
+      .addEqualToNotEmpty(User.PROP_STATUS, status);
+    Page<User> page = userService.getPage(searchRequest);
     return ResponseResult.createSuccess(page.getContent(), page.getTotalElements(), User.class, UserDto.class);
   }
 
@@ -173,9 +186,9 @@ public class UserEndpoint {
     return ResponseResult.SUCCEED;
   }
 
-  @ApiOperation(value = "检查用户名是否存在", httpMethod = "GET")
+  @ApiOperation(value = "检查账号是否存在", httpMethod = "GET")
   @ApiImplicitParams({
-    @ApiImplicitParam(name = "loginName", value = "用户名", required = true, dataType = "string", paramType = "query")
+    @ApiImplicitParam(name = "loginName", value = "账号", required = true, dataType = "string", paramType = "query")
   })
   @RequestMapping(value = "checkLoginName")
   public boolean checkLoginName(Long id, String loginName) {

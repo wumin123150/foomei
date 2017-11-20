@@ -1,5 +1,6 @@
 package com.foomei.common.persistence.search;
 
+import com.foomei.common.collection.CollectionUtil;
 import com.foomei.common.collection.ListUtil;
 import com.foomei.common.dto.PageQuery;
 import com.foomei.common.persistence.JqGridFilter;
@@ -130,7 +131,7 @@ public class SearchRequest {
         }
 
         if (operator == SearchOperator.IN || operator == SearchOperator.NI) {
-          value = Arrays.asList(StringUtils.split((String) value, ", "));
+          value = Arrays.asList(StringUtils.split((String) value, ","));
         }
 
         searchFilters.add(new SimpleFilter(propertyName, operator, value));
@@ -168,62 +169,100 @@ public class SearchRequest {
   }
 
   public SearchRequest addEqualTo(String fieldName, Object value) {
-    searchFilters.add(SimpleFilter.equalTo(fieldName, value));
+    if(value != null) {
+      searchFilters.add(SimpleFilter.equalTo(fieldName, value));
+    }
+    return this;
+  }
+
+  public SearchRequest addEqualToNotEmpty(String fieldName, Object value) {
+    if (!(value == null || (value instanceof String && StringUtils.isEmpty((String) value)))) {
+      searchFilters.add(SimpleFilter.equalTo(fieldName, value));
+    }
     return this;
   }
 
   public SearchRequest addNotEqualTo(String fieldName, Object value) {
-    searchFilters.add(SimpleFilter.notEqualTo(fieldName, value));
+    if(value != null) {
+      searchFilters.add(SimpleFilter.notEqualTo(fieldName, value));
+    }
+    return this;
+  }
+
+  public SearchRequest addNotEqualToNotEmpty(String fieldName, Object value) {
+    if(value != null) {
+      searchFilters.add(SimpleFilter.notEqualTo(fieldName, value));
+    }
     return this;
   }
 
   public SearchRequest addLessThan(String fieldName, Object value) {
-    searchFilters.add(SimpleFilter.lessThan(fieldName, value));
+    if (!(value == null || (value instanceof String && StringUtils.isEmpty((String) value)))) {
+      searchFilters.add(SimpleFilter.lessThan(fieldName, value));
+    }
     return this;
   }
 
   public SearchRequest addLessThanOrEqualTo(String fieldName, Object value) {
-    searchFilters.add(SimpleFilter.lessThanOrEqualTo(fieldName, value));
+    if (!(value == null || (value instanceof String && StringUtils.isEmpty((String) value)))) {
+      searchFilters.add(SimpleFilter.lessThanOrEqualTo(fieldName, value));
+    }
     return this;
   }
 
   public SearchRequest addGreaterThan(String fieldName, Object value) {
-    searchFilters.add(SimpleFilter.greaterThan(fieldName, value));
+    if (!(value == null || (value instanceof String && StringUtils.isEmpty((String) value)))) {
+      searchFilters.add(SimpleFilter.greaterThan(fieldName, value));
+    }
     return this;
   }
 
   public SearchRequest addGreaterOrEqualTo(String fieldName, Object value) {
-    searchFilters.add(SimpleFilter.greaterOrEqualTo(fieldName, value));
+    if (!(value == null || (value instanceof String && StringUtils.isEmpty((String) value)))) {
+      searchFilters.add(SimpleFilter.greaterOrEqualTo(fieldName, value));
+    }
     return this;
   }
 
   public SearchRequest addStartWith(String fieldName, Object value) {
-    searchFilters.add(SimpleFilter.startWith(fieldName, value));
+    if (!(value == null || (value instanceof String && StringUtils.isEmpty((String) value)))) {
+      searchFilters.add(SimpleFilter.startWith(fieldName, value));
+    }
     return this;
   }
 
   public SearchRequest addNotStartWith(String fieldName, Object value) {
-    searchFilters.add(SimpleFilter.notStartWith(fieldName, value));
+    if (!(value == null || (value instanceof String && StringUtils.isEmpty((String) value)))) {
+      searchFilters.add(SimpleFilter.notStartWith(fieldName, value));
+    }
     return this;
   }
 
   public SearchRequest addEndWith(String fieldName, Object value) {
-    searchFilters.add(SimpleFilter.endWith(fieldName, value));
+    if (!(value == null || (value instanceof String && StringUtils.isEmpty((String) value)))) {
+      searchFilters.add(SimpleFilter.endWith(fieldName, value));
+    }
     return this;
   }
 
   public SearchRequest addNotEndWith(String fieldName, Object value) {
-    searchFilters.add(SimpleFilter.notEndWith(fieldName, value));
+    if (!(value == null || (value instanceof String && StringUtils.isEmpty((String) value)))) {
+      searchFilters.add(SimpleFilter.notEndWith(fieldName, value));
+    }
     return this;
   }
 
   public SearchRequest addContain(String fieldName, Object value) {
-    searchFilters.add(SimpleFilter.contain(fieldName, value));
+    if (!(value == null || (value instanceof String && StringUtils.isEmpty((String) value)))) {
+      searchFilters.add(SimpleFilter.contain(fieldName, value));
+    }
     return this;
   }
 
   public SearchRequest addNotContain(String fieldName, Object value) {
-    searchFilters.add(SimpleFilter.notContain(fieldName, value));
+    if (!(value == null || (value instanceof String && StringUtils.isEmpty((String) value)))) {
+      searchFilters.add(SimpleFilter.notContain(fieldName, value));
+    }
     return this;
   }
 
@@ -238,12 +277,16 @@ public class SearchRequest {
   }
 
   public SearchRequest addIn(String fieldName, Collection<Object> values) {
-    searchFilters.add(SimpleFilter.in(fieldName, values));
+    if(CollectionUtil.isNotEmpty(values)) {
+      searchFilters.add(SimpleFilter.in(fieldName, values));
+    }
     return this;
   }
 
   public SearchRequest addNotIn(String fieldName, Collection<Object> values) {
-    searchFilters.add(SimpleFilter.notIn(fieldName, values));
+    if(CollectionUtil.isNotEmpty(values)) {
+      searchFilters.add(SimpleFilter.notIn(fieldName, values));
+    }
     return this;
   }
 
