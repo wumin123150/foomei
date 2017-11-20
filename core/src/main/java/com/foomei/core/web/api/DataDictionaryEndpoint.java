@@ -77,6 +77,11 @@ public class DataDictionaryEndpoint {
   @RequiresRoles("admin")
   @RequestMapping(value = "save", method = RequestMethod.POST)
   public ResponseResult<DataDictionaryDto> save(DataDictionaryDto dictionaryDto) {
+    ComplexResult result = validate(dictionaryDto, dictionaryDto.getTypeCode());
+    if (!result.isSuccess()) {
+      return ResponseResult.createParamError(result);
+    }
+
     DataDictionary dataDictionary = null;
     if(dictionaryDto.getId() == null) {
       dataDictionary = BeanMapper.map(dictionaryDto, DataDictionary.class);
@@ -95,13 +100,7 @@ public class DataDictionaryEndpoint {
       dataDictionary = BeanMapper.map(dictionaryDto, dataDictionary, DataDictionaryDto.class, DataDictionary.class);
     }
 
-    ComplexResult result = validate(dataDictionary, dictionaryDto.getTypeCode());
-    if (!result.isSuccess()) {
-      return ResponseResult.createParamError(result);
-    } else {
-      dataDictionaryService.save(dataDictionary);
-    }
-
+    dataDictionaryService.save(dataDictionary);
     return ResponseResult.createSuccess(dataDictionary, DataDictionaryDto.class);
   }
 
@@ -133,11 +132,11 @@ public class DataDictionaryEndpoint {
     return !dataDictionaryService.existCode(id, typeCode, code);
   }
 
-  private ComplexResult validate(DataDictionary dataDictionary, final String typeCode) {
+  private ComplexResult validate(DataDictionaryDto dataDictionary, final String typeCode) {
     ComplexResult result = FluentValidator.checkAll()
-      .on(dataDictionary, new HibernateSupportedValidator<DataDictionary>().setHiberanteValidator(Validation.buildDefaultValidatorFactory().getValidator()))
-      .on(dataDictionary, new ValidatorHandler<DataDictionary>() {
-        public boolean validate(ValidatorContext context, DataDictionary t) {
+      .on(dataDictionary, new HibernateSupportedValidator<DataDictionaryDto>().setHiberanteValidator(Validation.buildDefaultValidatorFactory().getValidator()))
+      .on(dataDictionary, new ValidatorHandler<DataDictionaryDto>() {
+        public boolean validate(ValidatorContext context, DataDictionaryDto t) {
           if (dataDictionaryService.existCode(t.getId(), typeCode, t.getCode())) {
             context.addErrorMsg("代码已经被使用");
             return false;

@@ -1,31 +1,19 @@
 package com.foomei.core.entity;
 
 import com.foomei.common.entity.DeleteRecord;
-import io.swagger.annotations.ApiModelProperty;
-
-import java.util.List;
-
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.OrderBy;
-import javax.persistence.Table;
-import javax.validation.constraints.Size;
-
+import com.foomei.common.entity.IdEntity;
+import com.google.common.collect.Lists;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
-import org.hibernate.validator.constraints.NotBlank;
 
-import com.foomei.common.entity.IdEntity;
-import com.google.common.collect.Lists;
+import javax.persistence.*;
+import java.util.List;
 
 /**
  * 用户组
@@ -58,17 +46,13 @@ public class UserGroup extends IdEntity implements DeleteRecord {
 
   public static final String PATH_SPLIT = "/";
 
-  @Size(max = 64, message = "代码最大长度为64位")
   private String code;//代码
-  @NotBlank(message = "名称不能为空")
-  @Size(max = 64, message = "名称最大长度为64位")
   private String name;//名称
   private Integer type;//类型(0:公司,1:部门,2:小组,3:其他)
   private Integer grade;//层级
   private BaseUser director;//负责人
   private String path;//路径
   private Long parentId;//父ID
-  @Size(max = 128, message = "备注最大长度为128位")
   private String remark;//备注
   private Boolean delFlag;//删除标志(0:正常,1:停用)
 

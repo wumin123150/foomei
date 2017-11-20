@@ -27,7 +27,10 @@ import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Validation;
@@ -116,13 +119,12 @@ public class UserEndpoint {
   @RequiresRoles("admin")
   @RequestMapping(value = "create", method = RequestMethod.POST)
   public ResponseResult create(UserVo userVo) throws IOException {
-    User user = BeanMapper.map(userVo, User.class);
-
-    ComplexResult result = validate(user);
+    ComplexResult result = validate(userVo);
     if (!result.isSuccess()) {
       return ResponseResult.createParamError(result);
     }
 
+    User user = BeanMapper.map(userVo, User.class);
     user = userService.save(user);
 
     if(StringUtils.isNotEmpty(userVo.getAvatarId())) {
@@ -138,6 +140,11 @@ public class UserEndpoint {
   @RequiresRoles("admin")
   @RequestMapping(value = "update", method = RequestMethod.POST)
   public ResponseResult update(UserVo userVo) throws IOException {
+    ComplexResult result = validate(userVo);
+    if (!result.isSuccess()) {
+      return ResponseResult.createParamError(result);
+    }
+
     User user = userService.get(userVo.getId());
     userVo.setLoginName(user.getLoginName());//修改不能设置账号
     userVo.setPassword(null);//修改不能设置密码
@@ -146,12 +153,6 @@ public class UserEndpoint {
     if(StringUtils.isNotEmpty(userVo.getAvatarId())) {
       Annex annex = annexService.move(userVo.getAvatarId(), String.valueOf(user.getId()), User.USER_ANNEX_TYPE, User.USER_ANNEX_PATH);
       user.setAvatar(annex.getPath());
-      userService.save(user);
-    }
-
-    ComplexResult result = validate(user);
-    if (!result.isSuccess()) {
-      return ResponseResult.createParamError(result);
     }
 
     userService.save(user);
@@ -195,11 +196,11 @@ public class UserEndpoint {
     return !userService.existLoginName(id, loginName);
   }
 
-  private ComplexResult validate(User user) {
+  private ComplexResult validate(UserVo user) {
     ComplexResult result = FluentValidator.checkAll()
-      .on(user, new HibernateSupportedValidator<User>().setHiberanteValidator(Validation.buildDefaultValidatorFactory().getValidator()))
-      .on(user, new ValidatorHandler<User>() {
-        public boolean validate(ValidatorContext context, User t) {
+      .on(user, new HibernateSupportedValidator<UserVo>().setHiberanteValidator(Validation.buildDefaultValidatorFactory().getValidator()))
+      .on(user, new ValidatorHandler<UserVo>() {
+        public boolean validate(ValidatorContext context, UserVo t) {
           if (userService.existLoginName(t.getId(), t.getLoginName())) {
             context.addErrorMsg("账号已经被使用");
             return false;

@@ -2,11 +2,14 @@ package com.foomei.core.entity;
 
 import com.foomei.common.entity.CreateRecord;
 import com.foomei.common.entity.UuidEntity;
-import lombok.*;
-import org.hibernate.validator.constraints.NotBlank;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
-import javax.persistence.*;
-import java.io.Serializable;
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.util.Date;
 
 /**
@@ -28,7 +31,6 @@ public class MessageText extends UuidEntity implements CreateRecord {
   public static final String PROP_CREATE_TIME = "createTime";
   public static final String PROP_CREATOR = "creator";
 
-  @NotBlank(message = "内容不能为空")
   private String content;//内容
   @ManyToOne
   private BaseUser sender;//发送人

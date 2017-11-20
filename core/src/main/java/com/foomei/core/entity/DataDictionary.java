@@ -1,26 +1,17 @@
 package com.foomei.core.entity;
 
+import com.foomei.common.entity.IdEntity;
 import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.validator.constraints.NotBlank;
-import org.hibernate.validator.constraints.Range;
-
-import com.foomei.common.entity.IdEntity;
 
 /**
  * 数据字典
@@ -45,22 +36,14 @@ public class DataDictionary extends IdEntity {
   public static final String PROP_PARENT_ID = "parentId";
   public static final String PROP_REMARK = "remark";
 
-  @NotNull(message = "数据类型不能为空")
   @ManyToOne
   @JoinColumn(name = "type_id")
   private DataType type;//类型
-  @NotBlank(message = "代码不能为空")
-  @Size(max = 64, message = "代码最大长度为64位")
   private String code;//代码
-  @NotBlank(message = "名称不能为空")
-  @Size(max = 64, message = "名称最大长度为64位")
   private String name;//名称
-  @NotNull(message = "序号不能为空")
-  @Range(min = 0, max = 10000, message = "序号必须在0到10000之间")
   private Integer priority;//序号
   private Integer grade;//层级
   private Long parentId;//父ID
-  @Size(max = 128, message = "备注最大长度为128位")
   private String remark;//备注
 
 }
