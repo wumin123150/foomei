@@ -32,7 +32,7 @@
       <input type="text" name="parentName" id="parentName" value="${parent.name}" placeholder="上级机构" class="layui-input" disabled>
     </div>
     <div class="layui-input-inline" style="width: inherit;">
-      <button class="layui-btn btn-search"><i class="layui-icon">&#xe615;</i></button>
+      <button class="layui-btn <c:if test='${not empty userGroup.id}'>layui-btn-disabled</c:if> btn-search" <c:if test='${not empty userGroup.id}'>disabled</c:if>><i class="layui-icon">&#xe615;</i></button>
     </div>
   </div>
   <div class="layui-form-item">

@@ -36,10 +36,10 @@
   <div class="layui-form-item">
     <label class="layui-form-label">数据层级<span class="input-required">*</span></label>
     <div class="layui-input-inline">
-      <input type="text" name="grade" value="${dataType.grade}" lay-verify="required" placeholder="数据层级" autocomplete="off" class="layui-input">
+      <input type="text" name="grade" value="${dataType.grade}" lay-verify="required|number" placeholder="数据层级" autocomplete="off" class="layui-input">
     </div>
     <div class="layui-input-inline">
-      <input type="checkbox" name="editable" value="${dataType.editable}" <c:if test="${dataType.editable}">checked</c:if> title="数据可修改">
+      <input type="checkbox" name="editable" value="true" <c:if test="${dataType.editable}">checked</c:if> title="数据可修改">
     </div>
   </div>
   <div class="layui-form-item layui-form-text">

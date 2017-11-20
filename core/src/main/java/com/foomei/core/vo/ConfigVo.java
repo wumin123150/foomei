@@ -22,7 +22,7 @@ public class ConfigVo {
   @ApiModelProperty(value = "参数")
   private String params;
   @ApiModelProperty(value = "是否可修改(0:不可修改,1:可修改)", required = true)
-  private Boolean editable = true;
+  private Boolean editable = false;
   @ApiModelProperty(value = "备注")
   private String remark;
 

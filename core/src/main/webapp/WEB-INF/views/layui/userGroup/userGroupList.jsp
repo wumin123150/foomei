@@ -157,6 +157,7 @@
               if (result.success) {
                 layer.msg('删除成功', {icon: 1});
                 kitTable.reload();
+                reloadTree();
               } else {
                 layer.msg(result.message, {icon: 5});
               }

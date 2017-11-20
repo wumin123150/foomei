@@ -9,6 +9,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import com.foomei.common.service.impl.ServiceException;
 import com.foomei.common.web.ThreadContext;
 import com.foomei.core.web.CoreThreadContext;
 import com.google.common.base.Charsets;
@@ -96,8 +97,8 @@ public class UserService extends JpaServiceImpl<User, Long> {
     }
 
     if (isSupervisor(user)) {
-      logger.warn("操作员{}尝试修改超级管理员用户", ThreadContext.getUserName());
-      throw new ServiceException("不能修改超级管理员用户");
+      logger.warn("操作员{}尝试修改超级管理员", ThreadContext.getUserName());
+      throw new ServiceException("不能修改超级管理员");
     }
 
     // 设定安全的密码，生成随机的salt并经过1024次 sha-1 hash

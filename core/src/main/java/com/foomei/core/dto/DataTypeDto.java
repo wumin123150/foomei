@@ -16,7 +16,7 @@ public class DataTypeDto {
   @ApiModelProperty(value = "层级", required = true)
   private Integer grade;
   @ApiModelProperty(value = "是否可修改数据(0:不可修改,1:可修改)", required = true)
-  private Boolean editable;
+  private Boolean editable = false;
   @ApiModelProperty(value = "备注")
   private String remark;
 

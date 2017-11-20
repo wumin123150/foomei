@@ -2,6 +2,8 @@ package com.foomei.core.web.api;
 
 import com.baidu.unbiz.fluentvalidator.*;
 import com.baidu.unbiz.fluentvalidator.jsr303.HibernateSupportedValidator;
+import com.foomei.common.collection.ListUtil;
+import com.foomei.common.dto.ErrorCodeFactory;
 import com.foomei.common.dto.PageQuery;
 import com.foomei.common.dto.ResponseResult;
 import com.foomei.common.mapper.BeanMapper;
@@ -9,9 +11,7 @@ import com.foomei.core.dto.DataDictionaryDto;
 import com.foomei.core.dto.TreeNodeDto;
 import com.foomei.core.entity.DataDictionary;
 import com.foomei.core.entity.DataType;
-import com.foomei.core.entity.UserGroup;
 import com.foomei.core.service.DataDictionaryService;
-import com.foomei.core.vo.UserGroupVo;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import io.swagger.annotations.Api;
@@ -58,10 +58,10 @@ public class DataDictionaryEndpoint {
       if(id == 0) {
         dataDictionarys = dataDictionaryService.findByType(typeId);
       } else {
-        dataDictionarys = dataDictionaryService.findChildrenByTypeAndParent(typeId, id);
+        dataDictionarys = dataDictionaryService.findChildrenByParent(id);
       }
     } else {
-      dataDictionarys = dataDictionaryService.getAll();
+      dataDictionarys = dataDictionaryService.findByType(typeId);
     }
     return ResponseResult.createSuccess(dataDictionarys, DataDictionary.class, DataDictionaryDto.class);
   }
@@ -109,6 +109,11 @@ public class DataDictionaryEndpoint {
   @RequiresRoles("admin")
   @RequestMapping(value = "delete/{id}")
   public ResponseResult delete(@PathVariable("id") Long id) {
+    List<DataDictionary> children = dataDictionaryService.findChildrenByParent(id);
+    if(!ListUtil.isEmpty(children)) {
+      return ResponseResult.createError(ErrorCodeFactory.BAD_REQUEST, "请先删除下级数据");
+    }
+
     dataDictionaryService.delete(id);
     return ResponseResult.SUCCEED;
   }

@@ -48,14 +48,14 @@ public class DataDictionaryService extends JpaServiceImpl<DataDictionary, Long> 
     return dataDictionaryDao.findByTypeAndGrade(typeId, grade);
   }
 
-  public List<DataDictionary> findChildrenByTypeAndParent(Long typeId, Long id) {
-    return dataDictionaryDao.findChildrenByTypeAndParent(typeId, id);
+  public List<DataDictionary> findChildrenByParent(Long id) {
+    return dataDictionaryDao.findChildrenByParent(id);
   }
 
   public List<DataDictionary> findChildrenByTypeAndCode(String typeCode, String code) {
     DataDictionary parent = getByTypeAndCode(typeCode, code);
     if (parent != null) {
-      return dataDictionaryDao.findChildrenByTypeCodeAndParent(typeCode, parent.getId());
+      return dataDictionaryDao.findChildrenByParent(parent.getId());
     }
     return Lists.newArrayList();
   }

@@ -2,6 +2,7 @@ package com.foomei.core.web.api;
 
 import com.baidu.unbiz.fluentvalidator.*;
 import com.baidu.unbiz.fluentvalidator.jsr303.HibernateSupportedValidator;
+import com.foomei.common.collection.ListUtil;
 import com.foomei.common.dto.ErrorCodeFactory;
 import com.foomei.common.dto.PageQuery;
 import com.foomei.common.dto.ResponseResult;
@@ -129,6 +130,11 @@ public class UserGroupEndpoint {
   public ResponseResult delete(@PathVariable("id") Long id) {
     if (userService.existGroup(id)) {
       return ResponseResult.createError(ErrorCodeFactory.BAD_REQUEST, "请先删除此机构下的用户");
+    }
+
+    List<UserGroup> children = userGroupService.findChildrenByParent(id);
+    if(!ListUtil.isEmpty(children)) {
+      return ResponseResult.createError(ErrorCodeFactory.BAD_REQUEST, "请先删除下级机构");
     }
 
     userGroupService.delete(id);

@@ -45,7 +45,7 @@
   <div class="layui-form-item">
     <label class="layui-form-label">序号<span class="input-required">*</span></label>
     <div class="layui-input-block">
-      <input type="text" name="priority" value="${dataDictionary.priority}" lay-verify="required" placeholder="序号" autocomplete="off" class="layui-input">
+      <input type="text" name="priority" value="${dataDictionary.priority}" lay-verify="required|number" placeholder="序号" autocomplete="off" class="layui-input">
     </div>
   </div>
   <div class="layui-form-item layui-form-text">

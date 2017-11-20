@@ -4,6 +4,7 @@ import com.foomei.common.dto.ResponseResult;
 import com.foomei.common.mapper.JsonMapper;
 import com.foomei.common.net.IPUtil;
 import com.foomei.common.net.RequestUtil;
+import com.foomei.common.service.impl.ServiceException;
 import com.foomei.common.web.MediaTypes;
 import com.google.common.collect.Maps;
 import org.slf4j.Logger;
@@ -31,9 +32,14 @@ public class ApiExceptionHandler {
     throws Exception {
     logError(ex, request);
 
+    ResponseResult result = null;
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.parseMediaType(MediaTypes.JSON_UTF_8));
-    ResponseResult result = ResponseResult.create4Exception(ex);
+    if(ex instanceof ServiceException) {
+      result = ResponseResult.createParamError(ex.getMessage());
+    } else {
+      result = ResponseResult.create4Exception(ex);
+    }
     return new ResponseEntity<ResponseResult>(result, headers, HttpStatus.OK);
   }
 

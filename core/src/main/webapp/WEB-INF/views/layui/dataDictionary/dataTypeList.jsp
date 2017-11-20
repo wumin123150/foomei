@@ -157,7 +157,7 @@
         layer.full(index);
       } else if (layEvent === 'data') { //数据
         top.layer.open({
-          title: "字典",
+          title: "数据",
           type: 2,
           maxmin: true,
           area: ['893px', '600px'],
