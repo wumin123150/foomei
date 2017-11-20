@@ -106,7 +106,7 @@
     <div class="layui-form-item">
       <label class="layui-form-label">密码<span class="input-required">*</span></label>
       <div class="layui-input-inline">
-        <input type="password" name="password" id="password" lay-verify="pass" placeholder="6~16个字符，区分大小写" autocomplete="off" class="layui-input">
+        <input type="password" name="password" id="password" lay-verify="pass" placeholder="6~16位，区分大小写" autocomplete="off" class="layui-input">
       </div>
       <div class="layui-input-inline">
         <input type="password" name="repassword" lay-verify="repass" placeholder="请再次填写密码" autocomplete="off" class="layui-input">
@@ -204,7 +204,7 @@
     });
 
     form.verify({
-      pass: [/(.+){6,16}$/, '密码长度必须6到16位'],
+      pass: [/^\S{6,16}$/, '密码长度必须6到16位'],
       repass: function(value){
         if(value != $('#password').val()){
           return '必须与密码保持一致';

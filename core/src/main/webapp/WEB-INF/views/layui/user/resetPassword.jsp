@@ -81,7 +81,7 @@
     });
 
     form.verify({
-      pass: [/(.+){6,16}$/, '密码长度必须6到16位'],
+      pass: [/^\S{6,16}$/, '密码长度必须6到16位'],
       repass: function(value){
         if(value != $('#password').val()){
           return '必须与密码保持一致';
