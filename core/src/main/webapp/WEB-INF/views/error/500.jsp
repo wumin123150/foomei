@@ -58,10 +58,20 @@
   <h1>500</h1>
   <h3>您要访问的页面无法正常显示.</h3>
   <hr/>
-  <p>服务器内部错误，请刷新页面重试，或者<a href="${ctx}">点击这里</a> 回到首页.</p>
-  <p style="display:none;">
-    <c:out value="${ex}" /><br>
-    <c:out value="${ex.stackTrace[0]}" />
-  </p>
-</body>			
+  <p>服务器内部<a id="detail" href="javascript:void(0);">错误</a>，请刷新页面重试，或者<a href="${ctx}">点击这里</a> 回到首页.</p>
+  <div id="exception" style="display:none;word-break:break-all;">
+    <c:out value="${exception}" /><br>
+    <c:forEach var="trace" items="${exception.stackTrace}">
+    <p>${trace}</p>
+    </c:forEach>
+  </div>
+</body>
+<script src="${ctx}/webjars/jquery/jquery.min.js"></script>
+<script>
+  jQuery(function ($) {
+    $("#detail").click(function(){
+      $('#exception').toggle();
+    });
+  })
+</script>
 </html>
