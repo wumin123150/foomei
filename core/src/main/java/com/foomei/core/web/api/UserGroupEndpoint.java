@@ -8,7 +8,6 @@ import com.foomei.common.dto.PageQuery;
 import com.foomei.common.dto.ResponseResult;
 import com.foomei.common.mapper.BeanMapper;
 import com.foomei.core.dto.UserGroupDto;
-import com.foomei.core.entity.DataDictionary;
 import com.foomei.core.entity.UserGroup;
 import com.foomei.core.service.UserGroupService;
 import com.foomei.core.service.UserService;
@@ -89,10 +88,15 @@ public class UserGroupEndpoint {
   @ApiOperation(value = "机构保存", httpMethod = "POST", produces = "application/json")
   @RequiresRoles("admin")
   @RequestMapping(value = "save", method = RequestMethod.POST)
-  public ResponseResult save(UserGroupVo groupVo) {
+  public ResponseResult save(UserGroupVo userGroupVo) {
+    ComplexResult result = validate(userGroupVo);
+    if (!result.isSuccess()) {
+      return ResponseResult.createParamError(result);
+    }
+
     UserGroup userGroup = null;
-    if(groupVo.getId() == null) {
-      userGroup = BeanMapper.map(groupVo, UserGroup.class);
+    if(userGroupVo.getId() == null) {
+      userGroup = BeanMapper.map(userGroupVo, UserGroup.class);
 
       UserGroup parent = null;
       if (userGroup.getParentId() != null) {
@@ -110,17 +114,11 @@ public class UserGroupEndpoint {
         userGroup.setPath(UserGroup.PATH_SPLIT + userGroup.getCode());
       }
     } else {
-      userGroup = userGroupService.get(groupVo.getId());
-      BeanMapper.map(groupVo, userGroup, UserGroupVo.class, UserGroup.class);
+      userGroup = userGroupService.get(userGroupVo.getId());
+      BeanMapper.map(userGroupVo, userGroup, UserGroupVo.class, UserGroup.class);
     }
 
-    ComplexResult result = validate(userGroup);
-    if (!result.isSuccess()) {
-      return ResponseResult.createParamError(result);
-    } else {
-      userGroupService.save(userGroup);
-    }
-
+    userGroupService.save(userGroup);
     return ResponseResult.SUCCEED;
   }
 
@@ -161,11 +159,11 @@ public class UserGroupEndpoint {
     return !userGroupService.existCode(id, code);
   }
 
-  private ComplexResult validate(UserGroup userGroup) {
+  private ComplexResult validate(UserGroupVo userGroup) {
     ComplexResult result = FluentValidator.checkAll()
-      .on(userGroup, new HibernateSupportedValidator<UserGroup>().setHiberanteValidator(Validation.buildDefaultValidatorFactory().getValidator()))
-      .on(userGroup, new ValidatorHandler<UserGroup>() {
-        public boolean validate(ValidatorContext context, DataDictionary t) {
+      .on(userGroup, new HibernateSupportedValidator<UserGroupVo>().setHiberanteValidator(Validation.buildDefaultValidatorFactory().getValidator()))
+      .on(userGroup, new ValidatorHandler<UserGroupVo>() {
+        public boolean validate(ValidatorContext context, UserGroupVo t) {
           if (userGroupService.existCode(t.getId(), t.getCode())) {
             context.addErrorMsg("编码已经被使用");
             return false;

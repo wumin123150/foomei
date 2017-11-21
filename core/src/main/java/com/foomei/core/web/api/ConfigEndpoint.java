@@ -90,17 +90,17 @@ public class ConfigEndpoint {
   @RequiresRoles("admin")
   @RequestMapping(value = "save", method = RequestMethod.POST)
   public ResponseResult save(ConfigVo configVo) {
+    ComplexResult result = validate(configVo);
+    if (!result.isSuccess()) {
+      return ResponseResult.createParamError(result);
+    }
+
     Config config = null;
     if(configVo.getId() == null) {
       config = BeanMapper.map(configVo, Config.class);;
     } else {
       config = configService.get(configVo.getId());
       BeanMapper.map(configVo, config, ConfigVo.class, Config.class);
-    }
-
-    ComplexResult result = validate(config);
-    if (!result.isSuccess()) {
-      return ResponseResult.createParamError(result);
     }
 
     configService.save(config);
@@ -145,11 +145,11 @@ public class ConfigEndpoint {
     return !configService.existCode(id, code);
   }
 
-  private ComplexResult validate(Config config) {
+  private ComplexResult validate(ConfigVo config) {
     ComplexResult result = FluentValidator.checkAll()
-      .on(config, new HibernateSupportedValidator<Config>().setHiberanteValidator(Validation.buildDefaultValidatorFactory().getValidator()))
-      .on(config, new ValidatorHandler<Config>() {
-        public boolean validate(ValidatorContext context, Config t) {
+      .on(config, new HibernateSupportedValidator<ConfigVo>().setHiberanteValidator(Validation.buildDefaultValidatorFactory().getValidator()))
+      .on(config, new ValidatorHandler<ConfigVo>() {
+        public boolean validate(ValidatorContext context, ConfigVo t) {
           if (configService.existCode(t.getId(), t.getCode())) {
             context.addErrorMsg("键已经被使用");
             return false;

@@ -1,8 +1,6 @@
 package ${package}.entity;
 
 import javax.persistence.*;
-import javax.validation.constraints.*;
-import org.hibernate.validator.constraints.*;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,18 +27,8 @@ public class ${model} extends ${idStrategy}Entity<#if hasImplement> implements $
   <#list consts as const>
   ${const}
   </#list>
-	
+
   <#list fields?keys as k>
-  <#if fieldNotBlanks?keys?seq_contains(k)>
-  <#if fields[k].first == 'String'>
-  @NotBlank(message = "${fieldNotBlanks[k]}不能为空")
-  <#else>
-  @NotNull(message = "${fieldNotBlanks[k]}不能为空")
-  </#if>
-  </#if>
-  <#if fieldSizes?keys?seq_contains(k)>
-  @Size(max = ${fieldSizes[k].first}, message = "${fieldSizes[k].second}最大长度为${fieldSizes[k].first}位")
-  </#if>
   <#if fields[k].first == 'java.time.LocalDate'>
   @org.springframework.format.annotation.DateTimeFormat(pattern="yyyy-MM-dd")
   @Temporal(TemporalType.DATE)

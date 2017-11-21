@@ -71,17 +71,17 @@ public class RoleEndpoint {
   @RequiresRoles("admin")
   @RequestMapping(value = "save", method = RequestMethod.POST)
   public ResponseResult save(RoleVo roleVo) {
+    ComplexResult result = validate(roleVo);
+    if (!result.isSuccess()) {
+      return ResponseResult.createParamError(result);
+    }
+
     Role role = null;
     if(roleVo.getId() == null) {
       role = BeanMapper.map(roleVo, Role.class);;
     } else {
       role = roleService.get(roleVo.getId());
       BeanMapper.map(roleVo, role, RoleVo.class, Role.class);
-    }
-
-    ComplexResult result = validate(role);
-    if (!result.isSuccess()) {
-      return ResponseResult.createParamError(result);
     }
 
     roleService.save(role);
@@ -108,11 +108,11 @@ public class RoleEndpoint {
     return !roleService.existCode(id, code);
   }
 
-  private ComplexResult validate(Role role) {
+  private ComplexResult validate(RoleVo role) {
     ComplexResult result = FluentValidator.checkAll()
-      .on(role, new HibernateSupportedValidator<Role>().setHiberanteValidator(Validation.buildDefaultValidatorFactory().getValidator()))
-      .on(role, new ValidatorHandler<Role>() {
-        public boolean validate(ValidatorContext context, Role t) {
+      .on(role, new HibernateSupportedValidator<RoleVo>().setHiberanteValidator(Validation.buildDefaultValidatorFactory().getValidator()))
+      .on(role, new ValidatorHandler<RoleVo>() {
+        public boolean validate(ValidatorContext context, RoleVo t) {
           if (roleService.existCode(t.getId(), t.getCode())) {
             context.addErrorMsg("代码已经被使用");
             return false;

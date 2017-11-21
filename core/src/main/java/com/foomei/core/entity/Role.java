@@ -1,29 +1,19 @@
 package com.foomei.core.entity;
 
-import java.util.List;
-
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-import javax.validation.constraints.Size;
-
+import com.foomei.common.collection.CollectionExtractor;
+import com.foomei.common.entity.IdEntity;
+import com.google.common.collect.Lists;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
-import org.hibernate.validator.constraints.NotBlank;
 
-import com.foomei.common.collection.CollectionExtractor;
-import com.foomei.common.entity.IdEntity;
-import com.google.common.collect.Lists;
+import javax.persistence.*;
+import java.util.List;
 
 /**
  * 角色.
@@ -42,12 +32,8 @@ public class Role extends IdEntity {
   public static final String PROP_CODE = "code";
   public static final String PROP_NAME = "name";
   public static final String PROP_PERMISSION_LIST = "permissionList";
-
-  @NotBlank(message = "代码不能为空")
-  @Size(max = 64, message = "代码长度必须在1到64位之间")
+  
   private String code;//代码
-  @NotBlank(message = "名称不能为空")
-  @Size(max = 64, message = "名称长度必须在1到64位之间")
   private String name;//名称
 
   @ManyToMany

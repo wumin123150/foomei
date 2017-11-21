@@ -43,6 +43,11 @@ public class ${model}Endpoint {
   @ApiOperation(value = "${comment}保存", httpMethod = "POST", produces = "application/json")
   @RequestMapping(value = "save", method = RequestMethod.POST)
   public ResponseResult<${model}Dto> create(${model}Dto ${variable}Dto) {
+    ComplexResult result = validate(${variable}Dto);
+    if (!result.isSuccess()) {
+      return ResponseResult.createParamError(result);
+    }
+
     ${model} ${variable} = null;
 <#if idType == 'String'>
     if (StringUtils.isEmpty(${variable}Dto.getId())) {
@@ -55,13 +60,7 @@ public class ${model}Endpoint {
       ${variable} = BeanMapper.map(${variable}Dto, ${variable}, ${model}Dto.class, ${model}.class);
     }
 
-    ComplexResult result = validate(${variable});
-    if (!result.isSuccess()) {
-      return ResponseResult.createParamError(result);
-    } else {
-      ${variable}Service.save(${variable});
-    }
-
+    ${variable}Service.save(${variable});
     return ResponseResult.createSuccess(${variable}, ${model}Dto.class);
   }
 
@@ -72,9 +71,9 @@ public class ${model}Endpoint {
     return ResponseResult.SUCCEED;
   }
 
-  private ComplexResult validate(${model} ${variable}) {
+  private ComplexResult validate(${model}Dto ${variable}) {
     ComplexResult result = FluentValidator.checkAll()
-      .on(${variable}, new HibernateSupportedValidator<${model}>().setHiberanteValidator(Validation.buildDefaultValidatorFactory().getValidator()))
+      .on(${variable}, new HibernateSupportedValidator<${model}Dto>().setHiberanteValidator(Validation.buildDefaultValidatorFactory().getValidator()))
       .doValidate()
       .result(ResultCollectors.toComplex());
     return result;

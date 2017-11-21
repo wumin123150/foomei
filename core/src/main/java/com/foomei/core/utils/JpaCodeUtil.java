@@ -112,8 +112,6 @@ public class JpaCodeUtil {
           params.put("model", model);
           params.put("idStrategy", getIdStrategy(columns));
           params.put("fields", toFields(columns));
-          params.put("fieldNotBlanks", toFieldNotBlanks(columns));
-          params.put("fieldSizes", toFieldSizes(columns));
           params.put("props", toProps(columns));
           params.put("consts", toConsts(columns));
           params.put("hasImplement", hasCreateRecord || hasUpdateRecord || hasDeleteRecord);
@@ -156,6 +154,8 @@ public class JpaCodeUtil {
           params.put("package", packageName);
           params.put("model", model);
           params.put("fields", toFieldDtos(columns));
+          params.put("fieldNotBlanks", toFieldNotBlanks(columns));
+          params.put("fieldSizes", toFieldSizes(columns));
           String content = FreeMarkerUtil.renderString(FileUtil.toString(new File(localProjectPath, VM_DTO)),
             params);
           FileUtil.write(content, entityFile);
@@ -368,9 +368,8 @@ public class JpaCodeUtil {
           params.put("fieldNotBlanks", toFieldNotBlanks(columns));
           params.put("fieldSizes", toFieldSizes(columns));
           params.put("fieldConsts", toFieldConsts(columns));
-          params.put("fieldRequireds", toFieldRequireds(columns));
+          params.put("fieldLayVerifys", toFieldLayVerifys(columns));
           params.put("fieldValidateRules", toFieldValidateRules(columns));
-          params.put("consts", toFieldConsts(columns));
           String content = FreeMarkerUtil.renderString(FileUtil.toString(new File(localProjectPath, VM_FORM_PAGE + theme + ".vm")), params);
           FileUtil.write(content, formPageFile);
           System.out.println(formPage);
@@ -657,16 +656,30 @@ public class JpaCodeUtil {
     return fields;
   }
 
-  public static List<String> toFieldRequireds(List<Map<String, String>> columnDefines) {
-    List<String> fields = Lists.newArrayList();
+  public static Map<String, List<String>> toFieldLayVerifys(List<Map<String, String>> columnDefines) {
+    Map<String, List<String>> fields = Maps.newLinkedHashMap();
     for (Map<String, String> columnDefine : columnDefines) {
       String columnName = columnDefine.get("column");
+      String consts = StringUtils.substringBetween(columnDefine.get("comment"), "(", ")");
+      String dataType = toType(columnDefine.get("type"));
       String isNull = columnDefine.get("isNull");
       if (!StringUtils.equalsIgnoreCase(columnName, "id") && !StringUtils.equalsIgnoreCase(columnName, "del_flag")
         && !StringUtils.equalsIgnoreCase(columnName, "creator") && !StringUtils.equalsIgnoreCase(columnName, "create_time")
         && !StringUtils.equalsIgnoreCase(columnName, "updator") && !StringUtils.equalsIgnoreCase(columnName, "update_time")) {
         if (StringUtils.equalsIgnoreCase(isNull, "NO")) {
-          fields.add(toField(columnName));
+          if(fields.containsKey(toField(columnName))) {
+            fields.get(toField(columnName)).add("required");
+          } else {
+            fields.put(toField(columnName), ListUtil.newArrayList("required"));
+          }
+        }
+
+        if((StringUtils.equals(dataType, "Long") || StringUtils.equals(dataType, "Integer")) && StringUtils.isEmpty(consts) && !StringUtils.endsWith(columnName, "_id")) {
+          if(fields.containsKey(toField(columnName))) {
+            fields.get(toField(columnName)).add("number");
+          } else {
+            fields.put(toField(columnName), ListUtil.newArrayList("number"));
+          }
         }
       }
     }

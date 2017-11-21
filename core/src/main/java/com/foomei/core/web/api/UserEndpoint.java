@@ -27,7 +27,10 @@ import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Validation;
@@ -84,10 +87,23 @@ public class UserEndpoint {
   }
 
   @ApiOperation(value = "用户简单分页列表", httpMethod = "GET", produces = "application/json")
+  @ApiImplicitParams({
+    @ApiImplicitParam(name = "loginName", value = "账号", required = false, dataType = "string", paramType = "query"),
+    @ApiImplicitParam(name = "name", value = "姓名", required = false, dataType = "string", paramType = "query"),
+    @ApiImplicitParam(name = "mobile", value = "手机", required = false, dataType = "string", paramType = "query"),
+    @ApiImplicitParam(name = "email", value = "邮箱", required = false, dataType = "string", paramType = "query"),
+    @ApiImplicitParam(name = "status", value = "状态(I:未激活,A:正常,E:过期,L:锁定,T:终止)", required = false, dataType = "string", paramType = "query")
+  })
   @RequiresRoles("admin")
   @RequestMapping(value = "page2")
-  public ResponseResult<List<UserDto>> page2(PageQuery pageQuery) {
-    Page<User> page = userService.getPage(new SearchRequest(pageQuery, User.PROP_NAME, User.PROP_LOGIN_NAME, User.PROP_MOBILE));
+  public ResponseResult<List<UserDto>> page2(PageQuery pageQuery, String loginName, String name, String mobile, String email, String status) {
+    SearchRequest searchRequest = new SearchRequest(pageQuery, User.PROP_NAME, User.PROP_LOGIN_NAME, User.PROP_MOBILE)
+      .addContain(User.PROP_LOGIN_NAME, loginName)
+      .addContain(User.PROP_NAME, name)
+      .addContain(User.PROP_MOBILE, mobile)
+      .addContain(User.PROP_EMAIL, email)
+      .addEqualToNotEmpty(User.PROP_STATUS, status);
+    Page<User> page = userService.getPage(searchRequest);
     return ResponseResult.createSuccess(page.getContent(), page.getTotalElements(), User.class, UserDto.class);
   }
 
@@ -103,13 +119,12 @@ public class UserEndpoint {
   @RequiresRoles("admin")
   @RequestMapping(value = "create", method = RequestMethod.POST)
   public ResponseResult create(UserVo userVo) throws IOException {
-    User user = BeanMapper.map(userVo, User.class);
-
-    ComplexResult result = validate(user);
+    ComplexResult result = validate(userVo);
     if (!result.isSuccess()) {
       return ResponseResult.createParamError(result);
     }
 
+    User user = BeanMapper.map(userVo, User.class);
     user = userService.save(user);
 
     if(StringUtils.isNotEmpty(userVo.getAvatarId())) {
@@ -125,6 +140,11 @@ public class UserEndpoint {
   @RequiresRoles("admin")
   @RequestMapping(value = "update", method = RequestMethod.POST)
   public ResponseResult update(UserVo userVo) throws IOException {
+    ComplexResult result = validate(userVo);
+    if (!result.isSuccess()) {
+      return ResponseResult.createParamError(result);
+    }
+
     User user = userService.get(userVo.getId());
     userVo.setLoginName(user.getLoginName());//修改不能设置账号
     userVo.setPassword(null);//修改不能设置密码
@@ -133,12 +153,6 @@ public class UserEndpoint {
     if(StringUtils.isNotEmpty(userVo.getAvatarId())) {
       Annex annex = annexService.move(userVo.getAvatarId(), String.valueOf(user.getId()), User.USER_ANNEX_TYPE, User.USER_ANNEX_PATH);
       user.setAvatar(annex.getPath());
-      userService.save(user);
-    }
-
-    ComplexResult result = validate(user);
-    if (!result.isSuccess()) {
-      return ResponseResult.createParamError(result);
     }
 
     userService.save(user);
@@ -173,20 +187,20 @@ public class UserEndpoint {
     return ResponseResult.SUCCEED;
   }
 
-  @ApiOperation(value = "检查用户名是否存在", httpMethod = "GET")
+  @ApiOperation(value = "检查账号是否存在", httpMethod = "GET")
   @ApiImplicitParams({
-    @ApiImplicitParam(name = "loginName", value = "用户名", required = true, dataType = "string", paramType = "query")
+    @ApiImplicitParam(name = "loginName", value = "账号", required = true, dataType = "string", paramType = "query")
   })
   @RequestMapping(value = "checkLoginName")
   public boolean checkLoginName(Long id, String loginName) {
     return !userService.existLoginName(id, loginName);
   }
 
-  private ComplexResult validate(User user) {
+  private ComplexResult validate(UserVo user) {
     ComplexResult result = FluentValidator.checkAll()
-      .on(user, new HibernateSupportedValidator<User>().setHiberanteValidator(Validation.buildDefaultValidatorFactory().getValidator()))
-      .on(user, new ValidatorHandler<User>() {
-        public boolean validate(ValidatorContext context, User t) {
+      .on(user, new HibernateSupportedValidator<UserVo>().setHiberanteValidator(Validation.buildDefaultValidatorFactory().getValidator()))
+      .on(user, new ValidatorHandler<UserVo>() {
+        public boolean validate(ValidatorContext context, UserVo t) {
           if (userService.existLoginName(t.getId(), t.getLoginName())) {
             context.addErrorMsg("账号已经被使用");
             return false;

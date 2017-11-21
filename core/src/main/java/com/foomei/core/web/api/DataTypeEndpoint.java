@@ -63,17 +63,17 @@ public class DataTypeEndpoint {
   @RequiresRoles("admin")
   @RequestMapping(value = "save", method = RequestMethod.POST)
   public ResponseResult save(DataTypeDto dataTypeDto) {
+    ComplexResult result = validate(dataTypeDto);
+    if (!result.isSuccess()) {
+      return ResponseResult.createParamError(result);
+    }
+
     DataType dataType = null;
     if(dataTypeDto.getId() == null) {
       dataType = BeanMapper.map(dataTypeDto, DataType.class);;
     } else {
       dataType = dataTypeService.get(dataTypeDto.getId());
       BeanMapper.map(dataTypeDto, dataType, DataTypeDto.class, DataType.class);
-    }
-
-    ComplexResult result = validate(dataType);
-    if (!result.isSuccess()) {
-      return ResponseResult.createParamError(result);
     }
 
     dataTypeService.save(dataType);
@@ -100,11 +100,11 @@ public class DataTypeEndpoint {
     return !dataTypeService.existCode(id, code);
   }
 
-  private ComplexResult validate(DataType dataType) {
+  private ComplexResult validate(DataTypeDto dataType) {
     ComplexResult result = FluentValidator.checkAll()
-      .on(dataType, new HibernateSupportedValidator<DataType>().setHiberanteValidator(Validation.buildDefaultValidatorFactory().getValidator()))
-      .on(dataType, new ValidatorHandler<DataType>() {
-        public boolean validate(ValidatorContext context, DataType t) {
+      .on(dataType, new HibernateSupportedValidator<DataTypeDto>().setHiberanteValidator(Validation.buildDefaultValidatorFactory().getValidator()))
+      .on(dataType, new ValidatorHandler<DataTypeDto>() {
+        public boolean validate(ValidatorContext context, DataTypeDto t) {
           if (dataTypeService.existCode(t.getId(), t.getCode())) {
             context.addErrorMsg("代码已经被使用");
             return false;
