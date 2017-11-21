@@ -165,7 +165,7 @@ public class UserGroupEndpoint {
       .on(userGroup, new ValidatorHandler<UserGroupVo>() {
         public boolean validate(ValidatorContext context, UserGroupVo t) {
           if (userGroupService.existCode(t.getId(), t.getCode())) {
-            context.addErrorMsg("编码已经被使用");
+            context.addErrorMsg("代码已经被使用");
             return false;
           }
           return true;

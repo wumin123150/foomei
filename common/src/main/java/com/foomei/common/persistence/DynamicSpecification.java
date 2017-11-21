@@ -11,6 +11,7 @@ import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import com.foomei.common.entity.DeleteRecord;
 import com.foomei.common.persistence.search.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.jpa.domain.Specification;
@@ -24,7 +25,12 @@ public class DynamicSpecification {
 	public static <T> Specification<T> bySearchRequest(final SearchRequest searchRequest, final Class<T> entityClazz) {
 		return new Specification<T>() {
 			public Predicate toPredicate(Root<T> root, CriteriaQuery<?> query, CriteriaBuilder builder) {
-				return filterTo(root, builder, searchRequest.getOperator(), searchRequest.getSearchFilters());
+				Predicate predicate = filterTo(root, builder, searchRequest.getOperator(), searchRequest.getSearchFilters());
+				if(searchRequest.hasDelFlagFilter() && DeleteRecord.class.isAssignableFrom(entityClazz)) {
+					Predicate delFlagPredicate = builder.equal(root.get(DeleteRecord.PROP_DEL_FLAG).as(Boolean.class), false);
+					return predicate != null ? builder.and(delFlagPredicate, predicate): delFlagPredicate;
+				}
+				return predicate;
 			}
 		};
 	}

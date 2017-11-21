@@ -71,7 +71,7 @@ public class MessageTextEndpoint {
     if(StringUtils.isEmpty(content)) {
       return ResponseResult.createParamError("内容不能为空");
     }
-    if(users == null && users.length == 0) {
+    if(users == null || users.length == 0) {
       return ResponseResult.createParamError("接收人不能为空");
     }
 

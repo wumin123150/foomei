@@ -1,11 +1,13 @@
 package com.foomei.common.persistence.search;
 
+import com.foomei.common.base.BooleanUtil;
 import com.foomei.common.collection.CollectionUtil;
 import com.foomei.common.collection.ListUtil;
 import com.foomei.common.dto.PageQuery;
 import com.foomei.common.persistence.JqGridFilter;
 import com.foomei.common.persistence.JqGridRule;
 import com.google.common.collect.Lists;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.util.CollectionUtils;
 import org.springframework.data.domain.PageRequest;
@@ -20,18 +22,28 @@ public class SearchRequest {
   private final List<SearchFilter> searchFilters = Lists.newArrayList();
   private Pageable page;
   private Sort sort;
+  private boolean delFlagFilter = true;
 
   public SearchRequest() {
-    this(new TreeMap<String, Object>());
+
   }
 
   public SearchRequest(final PageQuery pageQuery, String... searchProperty) {
-    this(pageQuery, null, searchProperty);
+    this(pageQuery, true, searchProperty);
+  }
+
+  public SearchRequest(final PageQuery pageQuery, final Boolean delFlagFilter, String... searchProperty) {
+    this(pageQuery, null, delFlagFilter, searchProperty);
   }
 
   public SearchRequest(final PageQuery pageQuery, final Sort defaultSort, String... searchProperty) {
+    this(pageQuery, defaultSort, true, searchProperty);
+  }
+
+  public SearchRequest(final PageQuery pageQuery, final Sort defaultSort, final boolean delFlagFilter, String... searchProperty) {
     this.page = pageQuery.buildPageRequest(defaultSort);
     this.sort = this.page.getSort();
+    this.delFlagFilter = delFlagFilter;
 
     if(searchProperty != null && StringUtils.isNotEmpty(pageQuery.getSearchKey())) {
       List<SearchFilter> searchFilters = Lists.newArrayList();
@@ -315,12 +327,24 @@ public class SearchRequest {
     return this;
   }
 
+  public void openDelFlagFilter() {
+    this.delFlagFilter = true;
+  }
+
+  public void closeDelFlagFilter() {
+    this.delFlagFilter = false;
+  }
+
   public BooleanOperator getOperator() {
     return operator;
   }
 
   public List<SearchFilter> getSearchFilters() {
     return searchFilters;
+  }
+
+  public boolean hasDelFlagFilter() {
+    return delFlagFilter;
   }
 
   public boolean hasSearchFilter() {

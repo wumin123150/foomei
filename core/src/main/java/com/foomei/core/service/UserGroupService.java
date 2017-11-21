@@ -109,7 +109,7 @@ public class UserGroupService extends JpaServiceImpl<UserGroup, Long> {
 
   public boolean existCode(Long id, String code) {
     UserGroup userGroup = getByCode(code);
-    if (userGroup == null || (id != null && id.equals(userGroup.getId()) || userGroup.getDelFlag())) {
+    if (userGroup == null || (id != null && id.equals(userGroup.getId()))) {
       return false;
     } else {
       return true;
