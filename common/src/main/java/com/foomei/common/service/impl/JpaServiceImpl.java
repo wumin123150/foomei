@@ -50,6 +50,9 @@ public abstract class JpaServiceImpl<T, ID extends Serializable> implements JpaS
     if(entity instanceof CreateRecord && !((CreateRecord) entity).isCreated()) {
       ((CreateRecord) entity).setCreateTime(new Date());
       ((CreateRecord) entity).setCreator(ThreadContext.getUserId());
+      if (entity instanceof DeleteRecord) {
+        ((DeleteRecord) entity).setDelFlag(false);
+      }
     }
     if (entity instanceof UpdateRecord) {
       ((UpdateRecord) entity).setUpdateTime(new Date());

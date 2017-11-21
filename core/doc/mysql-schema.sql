@@ -34,8 +34,6 @@ drop table if exists core_role_permission;
 
 drop table if exists core_token;
 
-drop index idx_user_name on core_user;
-
 drop table if exists core_user;
 
 drop table if exists core_user_group;
@@ -184,6 +182,7 @@ create table core_message
    text_id              varchar(36) comment '内容ID',
    receiver             bigint comment '接收人',
    send_status          tinyint(1) comment '发送状态(0:发送中,1:已发送,2:发送失败)',
+   send_time            datetime comment '发送时间',
    read_status          tinyint(1) comment '阅读状态(0:未读,1:已读)',
    read_time            datetime comment '阅读时间',
    primary key (id)

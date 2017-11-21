@@ -47,16 +47,6 @@
     </div>
   </div>
   <div class="layui-form-item">
-    <label class="layui-form-label">接收人<span class="input-required">*</span></label>
-    <div class="kit-search-inline">
-      <input type="text" name="users" id="user1s" class="hide"/>
-      <input type="text" name="userNames" id="user1Names" placeholder="接收人" class="layui-input" disabled/>
-    </div>
-    <div class="kit-search-btn">
-      <button class="layui-btn btn-search"><i class="layui-icon">&#xe615;</i></button>
-    </div>
-  </div>
-  <div class="layui-form-item">
     <div class="layui-input-block kit-btns">
       <button class="layui-btn" lay-submit lay-filter="save">保存</button>
       <button class="layui-btn layui-btn-primary btn-close">关闭</button>

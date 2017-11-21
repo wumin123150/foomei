@@ -107,7 +107,6 @@
         <div class="layui-form-item">
           <div class="layui-input-block">
             <button class="layui-btn" lay-submit lay-filter="save">保存</button>
-            <button class="layui-btn layui-btn-primary btn-close">关闭</button>
           </div>
         </div>
       </form>
@@ -136,7 +135,6 @@
         <div class="layui-form-item">
           <div class="layui-input-block">
             <button class="layui-btn" lay-submit lay-filter="save2">保存</button>
-            <button class="layui-btn layui-btn-primary btn-close">关闭</button>
           </div>
         </div>
       </form>
@@ -275,11 +273,6 @@
           layer.msg('未知错误，请联系管理员', {icon: 5});
         }
       });
-      return false;
-    });
-
-    $('.btn-close').on('click', function(){
-      parent.layer.closeAll("iframe");
       return false;
     });
   });
