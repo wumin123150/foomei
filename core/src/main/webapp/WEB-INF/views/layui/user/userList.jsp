@@ -23,7 +23,7 @@
   <form class="layui-form" lay-filter="kit-search-form">
     <div class="kit-table-header">
       <div class="kit-search-btns">
-        <a href="javascript:;" data-action="add" class="layui-btn layui-btn-small"><i class="layui-icon">&#xe608;</i>新增</a>
+        <a href="javascript:;" data-action="add" class="layui-btn layui-btn-sm"><i class="layui-icon">&#xe608;</i>新增</a>
       </div>
       <div class="kit-search-inputs">
         <div class="kit-search-keyword">
@@ -75,8 +75,8 @@
       </div>
       <div class="kit-search-footer">
         <div class="layui-form-item">
-          <button type="reset" class="layui-btn layui-btn-small layui-btn-primary kit-btn">重置</button>
-          <button lay-submit lay-filter="search" class="layui-btn layui-btn-small kit-btn">确定</button>
+          <button type="reset" class="layui-btn layui-btn-sm layui-btn-primary kit-btn">重置</button>
+          <button lay-submit lay-filter="search" class="layui-btn layui-btn-sm kit-btn">确定</button>
         </div>
       </div>
     </div>
@@ -84,9 +84,9 @@
   <div class="kit-table-body">
     <table id="kit-table" lay-filter="kit-table"></table>
     <script type="text/html" id="kit-table-bar">
-      <a class="layui-btn layui-btn-warm layui-btn-mini" lay-event="reset">修改密码</a>
-      <a class="layui-btn layui-btn-mini" lay-event="edit">修改</a>
-      <a class="layui-btn layui-btn-danger layui-btn-mini" lay-event="del">停用</a>
+      <a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="reset">修改密码</a>
+      <a class="layui-btn layui-btn-xs" lay-event="edit">修改</a>
+      <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">停用</a>
     </script>
     <script type="text/html" id="sexTpl">
       {{#  if(d.sex == 0){ }}

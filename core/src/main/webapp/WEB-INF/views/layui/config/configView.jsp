@@ -30,7 +30,7 @@
   <input type="hidden" name="id" id="id" value="${config.id}"/>
   <c:forEach var="config" items="${configs}" varStatus="status">
     <div class="layui-form-item <c:if test='${config.type eq 1}'> layui-form-text</c:if>" <c:if test='${config.type eq 2 || config.type eq 3}'>pane=""</c:if>>
-      <label class="layui-form-label">${config.name}（${config.code}）<c:if test="${fn:length(config.remark)>1}"><a class="layui-btn layui-btn-mini btn-help" href="javascript:;" data-content="${config.remark}"><i class="layui-icon">&#xe607;</i></a></c:if></label>
+      <label class="layui-form-label">${config.name}（${config.code}）<c:if test="${fn:length(config.remark)>1}"><a class="layui-btn layui-btn-xs btn-help" href="javascript:;" data-content="${config.remark}"><i class="layui-icon">&#xe607;</i></a></c:if></label>
       <div class="layui-input-block">
         <input type="hidden" name="configs[${status.index}].id" value="${config.id}">
         <c:choose>

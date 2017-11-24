@@ -23,7 +23,7 @@
   <form class="layui-form" lay-filter="kit-search-form">
     <div class="kit-table-header">
       <div class="kit-search-btns">
-        <a href="javascript:;" data-action="add" class="layui-btn layui-btn-small"><i class="layui-icon">&#xe608;</i>新增类型</a>
+        <a href="javascript:;" data-action="add" class="layui-btn layui-btn-sm"><i class="layui-icon">&#xe608;</i>新增类型</a>
       </div>
       <div class="kit-search-inputs">
         <div class="kit-search-keyword">
@@ -36,9 +36,9 @@
   <div class="kit-table-body">
     <table id="kit-table" lay-filter="kit-table"></table>
     <script type="text/html" id="kit-table-bar">
-      <a class="layui-btn layui-btn-warm layui-btn-mini" lay-event="data">数据</a>
-      <a class="layui-btn layui-btn-mini" lay-event="edit">修改</a>
-      <a class="layui-btn layui-btn-danger layui-btn-mini" lay-event="del">删除</a>
+      <a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="data">数据</a>
+      <a class="layui-btn layui-btn-xs" lay-event="edit">修改</a>
+      <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
     </script>
   </div>
 </div>
