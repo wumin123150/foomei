@@ -38,7 +38,7 @@
     <div class="layui-input-inline">
       <input type="text" name="grade" value="${dataType.grade}" lay-verify="required|number" placeholder="数据层级" autocomplete="off" class="layui-input">
     </div>
-    <div class="layui-input-inline">
+    <div class="layui-input-inline" style="width: inherit;">
       <input type="checkbox" name="editable" value="true" <c:if test="${dataType.editable}">checked</c:if> title="数据可修改">
     </div>
   </div>

@@ -45,7 +45,7 @@
     <div class="layui-input-inline">
       <input type="password" name="repassword" lay-verify="repass" placeholder="请再次填写密码" autocomplete="off" class="layui-input">
     </div>
-    <div class="layui-form-inline">
+    <div class="layui-form-inline" style="width: inherit;">
       <span class="layui-btn layui-btn-primary pswState"> &nbsp;&nbsp;&nbsp; </span>
     </div>
   </div>

@@ -40,10 +40,47 @@
   <div class="kit-table-body">
     <table id="kit-table" lay-filter="kit-table"></table>
     <script type="text/html" id="kit-table-bar">
-      <a class="layui-btn layui-btn-xs" lay-event="view">查看</a>
       <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
     </script>
   </div>
+</div>
+<div id="dialog-container" class="layui-hide">
+  <table class="layui-table" style="width: inherit;margin: 15px;">
+    <colgroup>
+      <col width="150">
+      <col>
+    </colgroup>
+    <tbody>
+    <tr>
+      <td>操作描述</td>
+      <td id="form-description"></td>
+    </tr>
+    <tr>
+      <td>操作用户</td>
+      <td id="form-username"></td>
+    </tr>
+    <tr>
+      <td>操作时间</td>
+      <td id="form-logTime"></td>
+    </tr>
+    <tr>
+      <td>访问路径</td>
+      <td id="form-url"></td>
+    </tr>
+    <tr>
+      <td>访问方式</td>
+      <td id="form-userAgent"></td>
+    </tr>
+    <tr>
+      <td>请求参数</td>
+      <td style="word-break: break-all;" id="form-parameter"></td>
+    </tr>
+    <tr>
+      <td>响应结果</td>
+      <td style="word-break: break-all;" id="form-result"></td>
+    </tr>
+    </tbody>
+  </table>
 </div>
 <script src="${ctx}/static/js/layui/layui.js"></script>
 </body>
@@ -52,7 +89,7 @@
   var tableFilter = 'kit-table';
   var table_page_url = "${ctx}/api/log/page2";
   var table_del_url = "${ctx}/api/log/delete/";
-  var table_view_url = "${ctx}/admin/log/view/";
+  var table_get_url = "${ctx}/api/log/get/";
   var table_batch_del_url = "${ctx}/api/log/batch/delete";
   layui.use(['table', 'laydate'], function () {
     var table = layui.table,
@@ -87,9 +124,9 @@
         [
           { checkbox: true, fixed: true },
           { field: 'username', title: '操作用户', width: 100, sort: true },
-          { field: 'description', title: '操作描述', width: 150 },
-          { field: 'url', title: 'URL', width: 350 },
-          { field: 'ip', title: 'IP', width: 120 },
+          { field: 'description', title: '操作描述', width: 200, event: 'view', style:'cursor: pointer;' },
+          { field: 'url', title: 'URL', width: 400 },
+          { field: 'ip', title: 'IP', width: 130 },
           { field: 'logTime', title: '操作日期', width: 160, sort: true },
           { field: 'spendTime', title: '消耗时间', width: 90 },
           { fixed: 'right', title: '操作', width: 120, align: 'center', toolbar: '#kit-table-bar' }
@@ -109,6 +146,10 @@
         msgName: 'message',
         countName: 'total',
         dataName: 'data'
+      },
+      initSort: {
+        field: 'logTime',
+        type: 'desc'
       }
     });
     //渲染表单
@@ -136,23 +177,41 @@
       var layEvent = obj.event;
 
       if (layEvent === 'view') { //查看
-        var index = layer.open({
-          title: "查看日志",
-          type: 2,
-          content: table_view_url + data.id,
-          success: function(layero, index){
-            setTimeout(function(){
-              layui.layer.tips('点击此处返回日志列表', '.layui-layer-setwin .layui-layer-close', {
-                tips: 3
+        $.ajax({
+          url: table_get_url + data.id,
+          type: 'GET',
+          cache: false,
+          dataType: 'json',
+          success: function (result) {
+            if (result.success) {
+              $('#form-description').text(result.data.description);
+              $('#form-username').text(result.data.username + '(' + result.data.ip + ')');
+              $('#form-logTime').text(result.data.logTime + '  耗时' + result.data.spendTime + '秒');
+              $('#form-url').text('[' + result.data.method + ']' + result.data.url);
+              $('#form-userAgent').text(result.data.userAgent);
+              $('#form-parameter').text(result.data.parameter);
+              $('#form-result').text(result.data.result);
+
+              parent.layer.open({
+                type: 1,
+                title: "查看日志",
+                shadeClose: true,
+                area: ['800px', '80%'],
+                content: $('#dialog-container').html(),
+                btn: [ '关闭'],
+                btnAlign: 'c',
+                yes: function(index, layero) {
+                  parent.layer.close(index);
+                }
               });
-            },1000)
+            } else {
+              layer.msg(result.message, {icon: 2});
+            }
+          },
+          error: function () {
+            layer.msg('未知错误，请联系管理员', {icon: 5});
           }
-        })
-        //改变窗口大小时，重置弹窗的高度，防止超出可视区域（如F12调出debug的操作）
-        $(window).resize(function(){
-          layer.full(index);
-        })
-        layer.full(index);
+        });
       } else if (layEvent === 'del') { //删除
         layer.confirm('你确定要删除吗？', function (index) {
           layer.close(index);

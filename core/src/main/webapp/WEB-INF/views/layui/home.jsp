@@ -22,7 +22,7 @@
 <body class="kit-main">
 <div class="row">
   <div class="col">
-    <blockquote class="layui-elem-quote title">系统基本参数</blockquote>
+    <blockquote class="layui-elem-quote">系统基本参数</blockquote>
     <table class="layui-table">
       <colgroup>
         <col width="150">
@@ -31,23 +31,23 @@
       <tbody>
       <tr>
         <td>当前版本</td>
-        <td class="version">2.2.1-GA</td>
+        <td>2.3.1-GA</td>
       </tr>
       <tr>
         <td>开发作者</td>
-        <td class="author">wumin</td>
+        <td>wumin</td>
       </tr>
       <tr>
         <td>已用内存</td>
-        <td class="server"><fmt:formatNumber type="number" pattern="0.##">${usedMemory/1024/1024}</fmt:formatNumber>MB</td>
+        <td><fmt:formatNumber type="number" pattern="0.##">${usedMemory/1024/1024}</fmt:formatNumber>MB</td>
       </tr>
       <tr>
         <td>剩余内存</td>
-        <td class="dataBase"><fmt:formatNumber type="number" pattern="0.##">${freeMemory/1024/1024}</fmt:formatNumber>MB</td>
+        <td><fmt:formatNumber type="number" pattern="0.##">${freeMemory/1024/1024}</fmt:formatNumber>MB</td>
       </tr>
       <tr>
         <td>最大内存</td>
-        <td class="dataBase"><fmt:formatNumber type="number" pattern="0.##">${maxMemory/1024/1024}</fmt:formatNumber>MB</td>
+        <td><fmt:formatNumber type="number" pattern="0.##">${maxMemory/1024/1024}</fmt:formatNumber>MB</td>
       </tr>
       </tbody>
     </table>

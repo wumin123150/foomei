@@ -67,7 +67,7 @@
         [
           { checkbox: true, fixed: true },
           { field: 'id', title: 'ID', width: 80 },
-          { field: 'name', title: '名称', width: 100 },
+          { field: 'name', title: '名称', width: 120 },
           { field: 'code', title: '键', width: 150, sort: true },
           { field: 'value', title: '值', width: 150 },
           { field: 'remark', title: '备注', width: 200 },

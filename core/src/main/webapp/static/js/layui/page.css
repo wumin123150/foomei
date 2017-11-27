@@ -134,7 +134,6 @@
     background-color: #eee;
     opacity: 1;
 }
-
 .layui-input.layui-unselect[readonly] {
     background-color: #fff;
 }
@@ -193,8 +192,4 @@
 .input-required {
     margin-left: 2px;
     color: #c00;
-}
-
-.hide {
-    display: none;
 }

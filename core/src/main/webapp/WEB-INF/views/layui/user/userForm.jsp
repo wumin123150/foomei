@@ -53,7 +53,7 @@
     <div class="layui-form-item">
       <label class="layui-form-label">账号<span class="input-required">*</span></label>
       <div class="layui-input-block">
-        <input type="text" name="loginName" value="${user.loginName}" lay-verify="required" placeholder="建议用手机/邮箱注册" autocomplete="off" class="layui-input" <c:if test='${action == "update"}'>disabled</c:if>>
+        <input type="text" name="loginName" value="${user.loginName}" lay-verify="required" placeholder="建议用手机/邮箱注册" autocomplete="off" class="layui-input" <c:if test='${action == "update"}'>readonly</c:if>>
       </div>
     </div>
     <div class="layui-form-item">
@@ -111,7 +111,7 @@
       <div class="layui-input-inline">
         <input type="password" name="repassword" lay-verify="repass" placeholder="请再次填写密码" autocomplete="off" class="layui-input">
       </div>
-      <div class="layui-input-inline">
+      <div class="layui-input-inline" style="width: inherit;">
         <span class="layui-btn layui-btn-primary pswState"> &nbsp;&nbsp;&nbsp; </span>
       </div>
     </div>

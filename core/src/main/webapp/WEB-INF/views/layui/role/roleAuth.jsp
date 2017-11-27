@@ -44,7 +44,7 @@
     </script>
   </div>
 </div>
-<div id="dialog-container" class="hide">
+<div id="dialog-container" class="layui-hide">
   <form class="layui-form layui-form-pane" action="${ctx}/api/userRole/create" method="post" style="padding: 15px;">
     <input type="hidden" name="roleId" value="${roleId}"/>
     <div class="layui-form-item">
@@ -81,8 +81,8 @@
           { field: 'id', title: 'ID', width: 80 },
           { field: 'loginName', title: '账号', width: 100, sort: true },
           { field: 'name', title: '名称', width: 150 },
-          { field: 'mobile', title: '手机', width: 150 },
-          { field: 'email', title: '邮箱', width: 150 },
+          { field: 'mobile', title: '手机', width: 120 },
+          { field: 'email', title: '邮箱', width: 200 },
           { fixed: 'right', title: '操作', width: 70, align: 'center', toolbar: '#kit-table-bar' }
         ]
       ],

@@ -39,7 +39,7 @@
     <div class="layui-input-inline">
       <input type="text" name="value" value="${config.value}" lay-verify="required" placeholder="值" autocomplete="off" class="layui-input">
     </div>
-    <div class="layui-input-inline">
+    <div class="layui-input-inline" style="width: inherit;">
       <input type="checkbox" name="editable" value="true" <c:if test="${config.editable}">checked</c:if> title="可修改">
     </div>
   </div>

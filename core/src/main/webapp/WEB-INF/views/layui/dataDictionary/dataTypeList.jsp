@@ -67,7 +67,7 @@
         [
           { checkbox: true, fixed: true },
           { field: 'id', title: 'ID', width: 80 },
-          { field: 'code', title: '代码', width: 100, sort: true },
+          { field: 'code', title: '代码', width: 150, sort: true },
           { field: 'name', title: '名称', width: 150 },
           { field: 'remark', title: '备注', width: 200 },
           { field: 'editable', title: '数据可修改', width: 100, templet: '<div>{{#  if(d.editable){ }} <span class="layui-badge layui-bg-green">是</span> {{#  } else { }} <span class="layui-badge layui-bg-orange">否</span> {{#  } }}</div>' },

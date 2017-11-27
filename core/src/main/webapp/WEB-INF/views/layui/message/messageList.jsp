@@ -63,7 +63,7 @@
       cols: [
         [
           { checkbox: true, fixed: true },
-          { field: 'content', title: '内容', width: 400 },
+          { field: 'content', title: '内容', minWidth: 400 },
           { field: 'sender', title: '发送人', width: 150, templet: '<div>{{#  if(d.sender != null){ }} {{d.sender.name}} {{#  } else { }} 系统 {{#  } }}</div>' },
           { field: 'createTime', title: '更新时间', width: 160 },
           { fixed: 'right', title: '操作', width: 180, align: 'center', toolbar: '#kit-table-bar' }

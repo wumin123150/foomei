@@ -98,8 +98,8 @@
           { checkbox: true, fixed: true },
           { field: 'id', title: 'ID', width: 80 },
           { field: 'code', title: '代码', width: 100, sort: true },
-          { field: 'name', title: '名称', width: 150 },
-          { field: 'type', title: '类型', width: 150, templet: '#typeTpl' },
+          { field: 'name', title: '名称', width: 200 },
+          { field: 'type', title: '类型', width: 80, templet: '#typeTpl' },
           { fixed: 'right', title: '操作', width: 260, align: 'center', toolbar: '#kit-table-bar' }
         ]
       ],

@@ -139,12 +139,12 @@
         [
           { checkbox: true, fixed: true },
           { field: 'id', title: 'ID', width: 80 },
-          { field: 'loginName', title: '账号', width: 100, sort: true },
-          { field: 'name', title: '姓名', width: 150 },
+          { field: 'loginName', title: '账号', minWidth: 80, sort: true },
+          { field: 'name', title: '姓名', minWidth: 100 },
           { field: 'sex', title: '性别', width: 70, templet: '#sexTpl' },
-          { field: 'birthday', title: '出生日期', width: 120 },
-          { field: 'mobile', title: '手机', width: 150 },
-          { field: 'email', title: '邮箱', width: 150 },
+          { field: 'birthday', title: '出生日期', width: 110 },
+          { field: 'mobile', title: '手机', width: 120 },
+          { field: 'email', title: '邮箱', width: 200 },
           { field: 'status', title: '状态', width: 80, templet: '#statusTpl' },
           { fixed: 'right', title: '操作', width: 190, align: 'center', toolbar: '#kit-table-bar' }
         ]
