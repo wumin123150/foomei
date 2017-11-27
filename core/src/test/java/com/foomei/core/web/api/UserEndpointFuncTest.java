@@ -60,6 +60,51 @@ public class UserEndpointFuncTest extends SpringTransactionalTestCase {
   }
 
   @Test
+  public void create() throws Exception {
+    mockMvc.perform(MockMvcRequestBuilders.post("/api/user/create").param("loginName", "wumin").param("plainPassword", "123456").param("name", "wumin").param("status", "A"))
+      .andDo(MockMvcResultHandlers.print())
+      .andExpect(MockMvcResultMatchers.status().isOk())
+      .andExpect(MockMvcResultMatchers.content().contentType(MediaType.JSON_UTF_8.toString()))
+      .andExpect(MockMvcResultMatchers.jsonPath("$.success").value(false));
+  }
+
+  @Test
+  public void update() throws Exception {
+    mockMvc.perform(MockMvcRequestBuilders.post("/api/user/update").param("id", "2").param("loginName", "wumin").param("name", "wumin").param("status", "A"))
+      .andDo(MockMvcResultHandlers.print())
+      .andExpect(MockMvcResultMatchers.status().isOk())
+      .andExpect(MockMvcResultMatchers.content().contentType(MediaType.JSON_UTF_8.toString()))
+      .andExpect(MockMvcResultMatchers.jsonPath("$.success").value(true));
+  }
+
+  @Test
+  public void reset() throws Exception {
+    mockMvc.perform(MockMvcRequestBuilders.post("/api/user/reset").param("userId", "2").param("password", "123456"))
+      .andDo(MockMvcResultHandlers.print())
+      .andExpect(MockMvcResultMatchers.status().isOk())
+      .andExpect(MockMvcResultMatchers.content().contentType(MediaType.JSON_UTF_8.toString()))
+      .andExpect(MockMvcResultMatchers.jsonPath("$.success").value(true));
+  }
+
+  @Test
+  public void delete() throws Exception {
+    mockMvc.perform(MockMvcRequestBuilders.post("/api/user/delete/{id}", 2L))
+      .andDo(MockMvcResultHandlers.print())
+      .andExpect(MockMvcResultMatchers.status().isOk())
+      .andExpect(MockMvcResultMatchers.content().contentType(MediaType.JSON_UTF_8.toString()))
+      .andExpect(MockMvcResultMatchers.jsonPath("$.success").value(true));
+  }
+
+  @Test
+  public void start() throws Exception {
+    mockMvc.perform(MockMvcRequestBuilders.post("/api/user/start/{id}", 2L))
+      .andDo(MockMvcResultHandlers.print())
+      .andExpect(MockMvcResultMatchers.status().isOk())
+      .andExpect(MockMvcResultMatchers.content().contentType(MediaType.JSON_UTF_8.toString()))
+      .andExpect(MockMvcResultMatchers.jsonPath("$.success").value(true));
+  }
+
+  @Test
   public void checkLoginName() throws Exception {
     mockMvc.perform(MockMvcRequestBuilders.get("/api/user/checkLoginName").param("id", "").param("loginName", "admin"))
       .andDo(MockMvcResultHandlers.print())

@@ -33,8 +33,6 @@ public class UserController {
   private static final String ACTION_CREATE = "create";
   private static final String ACTION_UPDATE = "update";
 
-  @Value("${upload.folder:/opt/upload/}")
-  private String root;
   @Value("${system.theme:ace}")
   private String theme;
 
