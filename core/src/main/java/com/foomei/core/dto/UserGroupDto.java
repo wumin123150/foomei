@@ -1,5 +1,6 @@
 package com.foomei.core.dto;
 
+import com.foomei.core.entity.BaseUser;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -22,6 +23,8 @@ public class UserGroupDto {
   private Integer type;
   @ApiModelProperty(value = "层级", required = true)
   private Integer grade;
+  @ApiModelProperty(value = "负责人")
+  private BaseUser director;
   @ApiModelProperty(value = "父ID")
   private Long parentId;
   @ApiModelProperty(value = "备注")

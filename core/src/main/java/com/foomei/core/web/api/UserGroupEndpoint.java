@@ -42,7 +42,7 @@ public class UserGroupEndpoint {
 
   static {
     Map<String, String> mapFields = Maps.newHashMap();
-    mapFields.put("roleList{id}", "roles{}");
+    mapFields.put("director.id", "directorId");
     BeanMapper.registerClassMap(UserGroup.class, UserGroupVo.class, mapFields);
   }
 

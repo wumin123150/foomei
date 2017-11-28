@@ -50,6 +50,7 @@ public class UserGroup extends IdEntity implements DeleteRecord {
   private String name;//名称
   private Integer type;//类型(0:公司,1:部门,2:小组,3:其他)
   private Integer grade;//层级
+  @ManyToOne
   private BaseUser director;//负责人
   private String path;//路径
   private Long parentId;//父ID

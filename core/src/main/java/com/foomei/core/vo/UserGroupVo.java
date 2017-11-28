@@ -24,6 +24,8 @@ public class UserGroupVo {
   private String name;
   @ApiModelProperty(value = "类型(0:公司,1:部门,2:小组,3:其他)", required = true)
   private Integer type;
+  @ApiModelProperty(value = "负责人ID")
+  private Long directorId;
   @ApiModelProperty(value = "父ID")
   private Long parentId;
   @ApiModelProperty(value = "备注")

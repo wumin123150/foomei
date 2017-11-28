@@ -14,6 +14,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="format-detection" content="telephone=no">
   <link rel="stylesheet" href="${ctx}/static/js/layui/css/layui.css" media="all"/>
+  <link rel="stylesheet" href="${ctx}/static/css/select2.min.css" media="all"/>
   <link rel="stylesheet" href="${ctx}/static/js/layui/page.css" media="all"/>
   <style type="text/css">
     .input-required {
@@ -58,6 +59,12 @@
       </select>
     </div>
   </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">负责人</label>
+    <div class="layui-input-block">
+      <input type="text" name="directorId" id="directorId" class="select2"/>
+    </div>
+  </div>
   <div class="layui-form-item" pane="">
     <label class="layui-form-label">角色</label>
     <div class="layui-input-block">
@@ -86,6 +93,8 @@
   </div>
 </form>
 <script src="${ctx}/static/js/layui/layui.js"></script>
+<script src="${ctx}/webjars/jquery/jquery.min.js"></script>
+<script src="${ctx}/static/js/select2.min.js"></script>
 </body>
 <script>
   layui.use(['form'], function () {
@@ -152,6 +161,68 @@
         }
       });
       return false;
+    });
+
+    $.fn.select2.locales['zh-CN'] = {
+      formatNoMatches: function () {
+        return "没有找到匹配项";
+      },
+      formatAjaxError: function (jqXHR, textStatus, errorThrown) {
+        return "获取结果失败";
+      },
+      formatInputTooShort: function (input, min) {
+        return "至少输入" + min + "位";
+      },
+      formatInputTooLong: function (input, max) {
+        return "最多输入" + max + "位";
+      },
+      formatSelectionTooBig: function (limit) {
+        return "最多能选择" + limit + "项";
+      },
+      formatLoadMore: function (pageNumber) {
+        return "加载结果中…";
+      },
+      formatSearching: function () {
+        return "搜索中…";
+      }
+    };
+
+    $.extend($.fn.select2.defaults, $.fn.select2.locales['zh-CN']);
+
+    $('.select2').select2({
+      placeholder: "用户",
+      minimumInputLength: 1,
+      ajax: {
+        url: "${ctx}/api/user/search",
+        dataType: 'json',
+        delay: 250,
+        data: function (term, pageNo) {
+          return {
+            searchKey: $.trim(term),	//联动查询的字符
+            pageSize: 15,    	//一次性加载的数据条数
+            pageNo: pageNo,  	//页码
+            time: new Date()  	//测试
+          }
+        },
+        results: function (result, pageNo) {
+          var more = (pageNo * 15) < result.data.totalElements; //用来判断是否还有更多数据可以加载
+          return {
+            results: result.data.content, more: more
+          };
+        },
+        cache: false
+      },
+      escapeMarkup: function (markup) {
+        return markup;
+      }, // let our custom formatter work
+      formatResult: function (repo) {
+        if (repo.loading) return repo.text;
+
+        return repo.name + "(" + repo.loginName + ")";
+      },
+      formatSelection: function (repo) {
+        return repo.name || repo.text;
+      }
     });
   });
 </script>

@@ -64,6 +64,12 @@
           <span class="layui-badge layui-bg-gray">其他</span>
           {{#  } }}
         </script>
+        <script type="text/html" id="directorTpl">
+          {{#  if(d.director != null){ }}
+          {{d.director.name}}
+          {{#  } else { }}
+          {{#  } }}
+        </script>
       </div>
     </div>
   </div>
@@ -100,6 +106,7 @@
           { field: 'code', title: '代码', width: 100, sort: true },
           { field: 'name', title: '名称', width: 200 },
           { field: 'type', title: '类型', width: 80, templet: '#typeTpl' },
+          { field: 'director', title: '负责人', width: 100, templet: '#directorTpl' },
           { fixed: 'right', title: '操作', width: 260, align: 'center', toolbar: '#kit-table-bar' }
         ]
       ],

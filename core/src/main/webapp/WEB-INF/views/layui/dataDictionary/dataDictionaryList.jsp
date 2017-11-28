@@ -68,6 +68,7 @@
   var table_edit_url = "${ctx}/admin/dataDictionary/update/";
   var table_del_url = "${ctx}/api/dataDictionary/delete/";
   var table_get_url = "${ctx}/api/dataDictionary/get/";
+  var table_save_url = "${ctx}/api/dataDictionary/save";
   layui.use('table', function () {
     var table = layui.table,
       layer = layui.layer,
@@ -83,9 +84,9 @@
         [
           { checkbox: true, fixed: true },
           { field: 'id', title: 'ID', width: 80 },
-          { field: 'code', title: '代码', width: 100, sort: true },
-          { field: 'name', title: '名称', width: 100 },
-          { field: 'remark', title: '备注', width: 120 },
+          { field: 'code', title: '代码', width: 100, sort: true, edit: 'text' },
+          { field: 'name', title: '名称', width: 100, edit: 'text' },
+          { field: 'remark', title: '备注', width: 120, edit: 'text' },
           { fixed: 'right', title: '操作', width: 190, align: 'center', toolbar: '#kit-table-bar' }
         ]
       ],
@@ -190,6 +191,42 @@
         })
         layer.full(index);
       }
+    });
+    //监听单元格编辑
+    table.on('edit(' + tableFilter + ')', function(obj){
+      var value = obj.value
+        ,data = obj.data
+        ,field = obj.field;
+
+      var loadIndex = layer.load();
+      $.ajax({
+        url: table_save_url,
+        type: 'POST',
+        cache: false,
+        data: data,
+        dataType: 'json',
+        success: function (result) {
+          if (result.success) {
+            loadIndex && layer.close(loadIndex);
+            layer.msg('保存成功', {icon: 1});
+            reloadTree();
+          } else {
+            loadIndex && layer.close(loadIndex);
+            if(result.data) {
+              var message = '';
+              for(var i=0;i<result.data.length;i++) {
+                message += result.data[i].errorMsg + '<br>';
+              }
+              layer.msg(message, {icon: 2});
+            } else
+              layer.msg(result.message, {icon: 2});
+          }
+        },
+        error: function () {
+          loadIndex && layer.close(loadIndex);
+          layer.msg('未知错误，请联系管理员', {icon: 5});
+        }
+      });
     });
     $('#kit-search-more').on('click', function () {
       $('.kit-search-mored').toggle();
