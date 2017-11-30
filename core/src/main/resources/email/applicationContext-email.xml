@@ -6,13 +6,13 @@
 	<description>Email配置</description>
 
 	<!-- 文本邮件服务类 -->
-	<bean id="simpleMailService" class="com.foomei.core.utilities.email.SimpleMailService">
+	<bean id="simpleMailService" class="com.foomei.core.utils.email.SimpleMailService">
 		<property name="mailSender" ref="mailSender" />
 		<property name="from" value="support@foomei.com" />
 	</bean>
 
 	<!-- MIME邮件服务类 -->
-	<bean id="mimeMailService" class="com.foomei.core.utilities.email.MimeMailService">
+	<bean id="mimeMailService" class="com.foomei.core.utils.email.MimeMailService">
 		<property name="mailSender" ref="mailSender" />
 		<property name="freemarkerConfiguration" ref="freemarkerConfiguration" />
 		<property name="from" value="support@foomei.com" />
