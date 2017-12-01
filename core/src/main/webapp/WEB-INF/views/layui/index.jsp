@@ -18,7 +18,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="format-detection" content="telephone=no">
-  <link rel="icon" href="favicon.ico">
+  <!--
+  <link type="image/x-icon" href="${ctx}/static/images/favicon.ico" rel="shortcut icon">
+  -->
   <link rel="stylesheet" href="${ctx}/static/js/layui/css/layui.css" media="all"/>
   <link rel="stylesheet" href="//at.alicdn.com/t/font_470259_i5hllb8man61or.css" media="all" />
   <link rel="stylesheet" href="${ctx}/static/js/layui/main.css" media="all"/>
@@ -305,7 +307,24 @@
         '<div class="admin-header-lock-img"><img src="${ctx}/avatar/<shiro:principal property="id"/>" onerror="this.src=\'${ctx}/static/avatars/avatar6.jpg\'"></div>'+
         '<div class="admin-header-lock-name" id="lockUserName"><shiro:principal property="name"/></div>'+
         '<div class="input_btn">'+
-        '<input type="password" class="admin-header-lock-input layui-input" autocomplete="off" placeholder="请输入密码解锁.." name="lockPwd" id="lockPwd" />'+
+        '<input type="password" class="admin-header-lock-input layui-input" autocomplete="off" placeholder="请输入密码锁屏.." name="lockPwd" id="lockPwd" />'+
+        '<button class="layui-btn" id="lock">锁屏</button>'+
+        '</div>'+
+        '</div>',
+        closeBtn: 0,
+        shade: 0.9
+      })
+      $(".admin-header-lock-input").focus();
+    }
+    function unlockPage(){
+      layer.open({
+        title: false,
+        type: 1,
+        content: '	<div class="admin-header-lock" id="lock-box">'+
+        '<div class="admin-header-lock-img"><img src="${ctx}/avatar/<shiro:principal property="id"/>" onerror="this.src=\'${ctx}/static/avatars/avatar6.jpg\'"></div>'+
+        '<div class="admin-header-lock-name" id="lockUserName"><shiro:principal property="name"/></div>'+
+        '<div class="input_btn">'+
+        '<input type="password" class="admin-header-lock-input layui-input" autocomplete="off" placeholder="请输入密码解锁.." name="unlockPwd" id="unlockPwd" />'+
         '<button class="layui-btn" id="unlock">解锁</button>'+
         '</div>'+
         '</div>',
@@ -316,24 +335,38 @@
     }
     $(".screenlock").on("click",function(){
       window.sessionStorage.setItem("screenlock",true);
-      lockPage();
+      if(window.sessionStorage.getItem("screenlockPwd") == null) {
+        lockPage();
+      } else {
+        unlockPage();
+      }
     })
     // 判断是否显示锁屏
     if(window.sessionStorage.getItem("screenlock") == "true"){
-      lockPage();
+      unlockPage();
     }
+    // 锁屏
+    $("body").on("click","#lock",function(){
+      if($(this).siblings(".admin-header-lock-input").val() == ''){
+        layer.msg("请输入锁屏密码！");
+        $(this).siblings(".admin-header-lock-input").focus();
+      }else{
+        window.sessionStorage.setItem("screenlockPwd",$(this).siblings(".admin-header-lock-input").val());
+        unlockPage();
+      }
+    });
     // 解锁
     $("body").on("click","#unlock",function(){
       if($(this).siblings(".admin-header-lock-input").val() == ''){
-        layer.msg("请输入解锁密码！");
+        layer.msg("请输入解锁密码！", {icon: 2});
         $(this).siblings(".admin-header-lock-input").focus();
       }else{
-        if($(this).siblings(".admin-header-lock-input").val() == "123456"){
+        if($(this).siblings(".admin-header-lock-input").val() == window.sessionStorage.getItem("screenlockPwd")){
           window.sessionStorage.setItem("screenlock",false);
           $(this).siblings(".admin-header-lock-input").val('');
           layer.closeAll("page");
         }else{
-          layer.msg("密码错误，请重新输入！");
+          layer.msg("密码错误，请重新输入！", {icon: 2});
           $(this).siblings(".admin-header-lock-input").val('').focus();
         }
       }

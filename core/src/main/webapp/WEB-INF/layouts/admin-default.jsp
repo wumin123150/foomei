@@ -7,19 +7,22 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title><sitemesh:write property='title'/> - ${iApplication}</title>
+  <title>${iApplication}</title>
   <!--
   <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
   <meta http-equiv="Cache-Control" content="no-store" />
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
    -->
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
   <meta charset="utf-8"/>
-  <meta name="description" content="Common form elements and layouts"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta http-equiv="Access-Control-Allow-Origin" content="*">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
+  <!--
   <link type="image/x-icon" href="${ctx}/static/images/favicon.ico" rel="shortcut icon">
+  -->
 
   <!-- bootstrap & fontawesome -->
   <link rel="stylesheet" href="${ctx}/webjars/bootstrap/css/bootstrap.min.css"/>

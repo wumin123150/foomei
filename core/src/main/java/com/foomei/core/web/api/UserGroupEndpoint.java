@@ -97,6 +97,9 @@ public class UserGroupEndpoint {
     UserGroup userGroup = null;
     if(userGroupVo.getId() == null) {
       userGroup = BeanMapper.map(userGroupVo, UserGroup.class);
+      if(userGroupVo.getDirectorId() == null) {
+        userGroup.setDirector(null);
+      }
 
       UserGroup parent = null;
       if (userGroup.getParentId() != null) {
@@ -116,6 +119,9 @@ public class UserGroupEndpoint {
     } else {
       userGroup = userGroupService.get(userGroupVo.getId());
       BeanMapper.map(userGroupVo, userGroup, UserGroupVo.class, UserGroup.class);
+      if(userGroupVo.getDirectorId() == null) {
+        userGroup.setDirector(null);
+      }
     }
 
     userGroupService.save(userGroup);
