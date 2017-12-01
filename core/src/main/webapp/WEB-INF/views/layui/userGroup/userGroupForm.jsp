@@ -224,6 +224,8 @@
         return repo.name || repo.text;
       }
     });
+
+    $('#directorId').select2("data", {id: "${userGroup.director.id}", text: "${userGroup.director.name}"});
   });
 </script>
 </body>

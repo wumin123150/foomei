@@ -7,10 +7,6 @@
 	
 	<!-- 对不同的路径，启用不同的装饰器 -->
 	<mapping path="/admin/*" decorator="/WEB-INF/layouts/admin-default.jsp"/>
-	<mapping path="/weixin/index" decorator="/WEB-INF/layouts/weixin-default.jsp"/>
-	<mapping path="/weixin/callback" decorator="/WEB-INF/layouts/weixin-default.jsp"/>
-	<mapping path="/weixin/localLogin" decorator="/WEB-INF/layouts/weixin-default.jsp"/>
-	<mapping path="/w/*" decorator="/WEB-INF/layouts/weixin-default.jsp"/>
 	
 	<!-- 排除，不进行装饰的路径 -->
 	<mapping path="/register" exclue="true"/>
@@ -23,7 +19,6 @@
 	<mapping path="/druid/*" exclue="true"/>
 	<mapping path="/swagger-*.*" exclue="true"/>
 	<mapping path="/error/*" exclue="true"/>
-	<mapping path="/layui/*" exclue="true"/>
 
 	<!-- 自定义 tag 规则 -->
  	<content-processor>

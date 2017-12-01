@@ -212,6 +212,14 @@
                   </div>
                 </div>
                 <div class="form-group">
+                  <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-directorId"> 负责人 </label>
+                  <div class="col-xs-12 col-sm-8">
+                    <div class="clearfix">
+                      <input type="text" name="directorId" id="form-directorId" class="select2"/>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
                   <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-role"> 角色 </label>
                   <div class="col-xs-12 col-sm-8">
                     <div class="clearfix">
@@ -297,6 +305,7 @@
     function addForm() {
       $("#validation-form1")[0].reset();
       $("#form-parentId").val($("#parentId").val());
+      $('#form-directorId').select2("val", "");
 
       BootstrapDialog.show({
         title: '<i class="ace-icon fa fa-plus-circle bigger-110"></i>&nbsp;新增机构',
@@ -359,6 +368,10 @@
           $("#form-type").val(result.data.type);
           $("#form-priority").val(result.data.priority);
           $("#form-remark").val(result.data.remark);
+          if(result.data.director) {
+            $('#form-directorId').select2("data", {id: result.data.director.id, text: result.data.director.name});
+          } else
+            $('#form-directorId').select2("data", null);
 
           BootstrapDialog.show({
             title: '<i class="ace-icon fa fa-pencil bigger-110"></i>&nbsp;修改机构',
@@ -438,7 +451,7 @@
 
     function addForm2() {
       $("#validation-form2")[0].reset();
-      $(".select2").select2("val", "");
+      $("#form-userId").select2("val", "");
 
       var groupId = $("#groupId").val();
       if (!groupId) {
@@ -736,8 +749,8 @@
           }
         },
         messages: {
-          code: {
-            remote: '代码已经被使用'
+          userId: {
+            required: '必须选择'
           }
         },
         highlight: function (e) {
@@ -769,7 +782,7 @@
 
       $(grid_selector).foomei_JqGrid({
         url: grid_page_url,
-        colNames: ['操作', '机构代码', '机构名称', '机构类型'],
+        colNames: ['操作', '机构代码', '机构名称', '机构类型', '负责人'],
         colModel: [
           //{name:'myac',index:'', width:80, fixed:true, sortable:false, resize:false,
           //formatter:'actions',
@@ -799,7 +812,8 @@
               case 3: content = '其他'; break;
             }
             return content;
-          }}
+          }},
+          {name: 'director.name', index: 'director', width: 100}
         ],
         nav: {
           search: false

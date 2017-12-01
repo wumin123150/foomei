@@ -13,15 +13,18 @@
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
    -->
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
   <meta charset="utf-8"/>
-  <meta name="description" content="苗木交易服务平台，花木电商平台"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta http-equiv="Access-Control-Allow-Origin" content="*">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <link type="image/x-icon" href="${ctx}/static/img/favicon.ico" rel="shortcut icon">
+  <!--
+  <link type="image/x-icon" href="${ctx}/static/images/favicon.ico" rel="shortcut icon">
+  -->
 
   <!-- bootstrap & fontawesome -->
-  <link rel="stylesheet" href="${ctx}/static/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="${ctx}/webjars/bootstrap/css/bootstrap.min.css"/>
   <link rel="stylesheet" href="${ctx}/static/css/font-awesome.min.css"/>
 
   <link rel="stylesheet" href="${ctx}/static/css/toastr.min.css"/>
@@ -215,7 +218,7 @@
     <!-- #section:basics/footer -->
     <div class="footer-content">
 				<span>
-					<p class="center">${iCompany}版权所有© 2014-2015</p>
+					<p class="center">${iCompany}版权所有© 2014-2017</p>
 				</span>
     </div>
 
@@ -224,22 +227,8 @@
 </div>
 
 <!-- basic scripts -->
-
-<!--[if !IE]> -->
-<script type="text/javascript">
-  window.jQuery || document.write("<script src='${ctx}/static/js/jquery.min.js'>" + "<" + "/script>");
-</script>
-<!-- <![endif]-->
-
-<!--[if IE]>
-<script type="text/javascript">
-  window.jQuery || document.write("<script src='${ctx}/static/js/jquery1x.min.js'>" + "<" + "/script>");
-</script>
-<![endif]-->
-<script type="text/javascript">
-  if ('ontouchstart' in document.documentElement) document.write("<script src='${ctx}/static/js/jquery.mobile.custom.min.js'>" + "<" + "/script>");
-</script>
-<script src="${ctx}/static/js/bootstrap.min.js"></script>
+<script src="${ctx}/webjars/jquery/jquery.min.js"></script>
+<script src="${ctx}/webjars/bootstrap/js/bootstrap.min.js"></script>
 
 <!-- page specific plugin scripts -->
 <script src="${ctx}/static/js/jquery.validate.min.js"></script>

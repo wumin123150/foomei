@@ -133,7 +133,7 @@
                   <div class="col-xs-12 col-sm-8">
                     <div class="clearfix">
                       <input type="text" name="loginName" value="${user.loginName}" id="form-loginName" placeholder="建议用手机/邮箱注册" class="form-control"
-                         <c:if test='${action == "update"}'>disabled</c:if> />
+                         <c:if test='${action == "update"}'>readonly</c:if> />
                     </div>
                   </div>
                 </div>
@@ -397,7 +397,7 @@
     };
 
     function showMenu() {
-      $("#menuContent").css({width: $("#form-group").outerWidth() - 12}).slideDown("fast");
+      $("#menuContent").css({width: $("#form-group").outerWidth()}).slideDown("fast");
       $("body").bind("mousedown", onBodyDown);
     }
 
