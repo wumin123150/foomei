@@ -98,6 +98,7 @@
         dataType: 'json',
         success: function (result) {
           if (result.success) {
+            window.sessionStorage.setItem("screenlock",false);
             setTimeout(function() {
               location.href = '${ctx}/admin/index'
             }, 1000);
