@@ -45,7 +45,7 @@ public class ConfigEndpoint {
   @ApiOperation(value = "系统配置分页列表", httpMethod = "GET", produces = "application/json")
   @RequiresRoles("admin")
   @RequestMapping(value = "page", method = RequestMethod.GET)
-  public ResponseResult<Page<Config>> page(PageQuery pageQuery, Boolean advance, HttpServletRequest request) {
+  public ResponseResult<Page<ConfigVo>> page(PageQuery pageQuery, Boolean advance, HttpServletRequest request) {
     Page<Config> page = null;
     if (BooleanUtils.isTrue(advance)) {
       JqGridFilter jqGridFilter = JsonMapper.INSTANCE.fromJson(request.getParameter("filters"), JqGridFilter.class);
@@ -54,15 +54,15 @@ public class ConfigEndpoint {
       page = configService.getPage(new SearchRequest(pageQuery, Config.PROP_CODE, Config.PROP_NAME));
     }
 
-    return ResponseResult.createSuccess(page);
+    return ResponseResult.createSuccess(page, Config.class, ConfigVo.class);
   }
 
   @ApiOperation(value = "系统配置简单分页列表", httpMethod = "GET", produces = "application/json")
   @RequiresRoles("admin")
   @RequestMapping(value = "page2", method = RequestMethod.GET)
-  public ResponseResult<List<Config>> page2(PageQuery pageQuery) {
+  public ResponseResult<List<ConfigVo>> page2(PageQuery pageQuery) {
     Page<Config> page = configService.getPage(new SearchRequest(pageQuery, Config.PROP_CODE, Config.PROP_NAME));
-    return ResponseResult.createSuccess(page.getContent(), page.getTotalElements());
+    return ResponseResult.createSuccess(page.getContent(), page.getTotalElements(), Config.class, ConfigVo.class);
   }
 
   @ApiOperation(value = "单配置获取", httpMethod = "GET")

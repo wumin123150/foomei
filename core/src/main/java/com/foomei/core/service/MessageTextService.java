@@ -1,10 +1,10 @@
 package com.foomei.core.service;
 
 import com.foomei.common.service.impl.JpaServiceImpl;
+import com.foomei.common.web.ThreadContext;
 import com.foomei.core.dao.jpa.MessageTextDao;
 import com.foomei.core.entity.BaseUser;
 import com.foomei.core.entity.MessageText;
-import com.foomei.core.web.CoreThreadContext;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -41,7 +41,7 @@ public class MessageTextService extends JpaServiceImpl<MessageText, String> {
           predicates.add(cb.like(root.get(MessageText.PROP_CONTENT).as(String.class), "%" + StringUtils.trimToEmpty(searchKey) + "%"));
         }
 
-        predicates.add(cb.equal(root.get(MessageText.PROP_SENDER).get(BaseUser.PROP_ID).as(Long.class), CoreThreadContext.getUserId()));
+        predicates.add(cb.equal(root.get(MessageText.PROP_SENDER).get(BaseUser.PROP_ID).as(Long.class), ThreadContext.getUserId()));
         return cb.and(predicates.toArray(new Predicate[predicates.size()]));
       }
     }, page);

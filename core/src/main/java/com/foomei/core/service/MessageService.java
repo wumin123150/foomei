@@ -1,19 +1,17 @@
 package com.foomei.core.service;
 
 import com.foomei.common.service.impl.JpaServiceImpl;
+import com.foomei.common.web.ThreadContext;
 import com.foomei.core.dao.jpa.MessageDao;
 import com.foomei.core.entity.BaseUser;
 import com.foomei.core.entity.Message;
 import com.foomei.core.entity.MessageText;
-import com.foomei.core.web.CoreThreadContext;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.messaging.simp.SimpMessageSendingOperations;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -80,7 +78,7 @@ public class MessageService extends JpaServiceImpl<Message, String> {
           predicates.add(cb.equal(root.get(Message.PROP_READ_STATUS).as(Integer.class), readStatus));
         }
 
-        predicates.add(cb.equal(root.get(Message.PROP_RECEIVER).get(BaseUser.PROP_ID).as(Long.class), CoreThreadContext.getUserId()));
+        predicates.add(cb.equal(root.get(Message.PROP_RECEIVER).get(BaseUser.PROP_ID).as(Long.class), ThreadContext.getUserId()));
         return cb.and(predicates.toArray(new Predicate[predicates.size()]));
       }
     }, page);

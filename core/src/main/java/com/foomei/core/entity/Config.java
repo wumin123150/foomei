@@ -1,6 +1,5 @@
 package com.foomei.core.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.foomei.common.entity.IdEntity;
 import com.foomei.common.mapper.JsonMapper;
 import lombok.Getter;
@@ -51,11 +50,9 @@ public class Config extends IdEntity {
   }
 
   @Transient
-  @JsonIgnore
-  public Map<String, String> getOptions() {
+  public Map getOptions() {
     if (StringUtils.isNotEmpty(params)) {
-      JsonMapper jsonMapper = JsonMapper.INSTANCE;
-      return jsonMapper.fromJson(params, jsonMapper.buildMapType(TreeMap.class, String.class, String.class));
+      return JsonMapper.INSTANCE.fromJson(params, Map.class);
     }
     return null;
   }

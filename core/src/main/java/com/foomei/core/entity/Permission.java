@@ -1,18 +1,15 @@
 package com.foomei.core.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
-
+import com.foomei.common.entity.IdEntity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.validator.constraints.Range;
 
-import com.foomei.common.entity.IdEntity;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 /**
  * 权限
@@ -34,7 +31,6 @@ public class Permission extends IdEntity {
 
   private String code;//代码
   private String name;//名称
-  @Range(min = 0, max = 10000, message = "序号必须在0到10000之间")
   private Integer priority;//序号
 
   public Permission(Long id) {

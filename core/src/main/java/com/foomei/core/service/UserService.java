@@ -1,17 +1,15 @@
 package com.foomei.core.service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
+import com.foomei.common.persistence.Hibernates;
+import com.foomei.common.security.DigestUtil;
+import com.foomei.common.service.impl.JpaServiceImpl;
 import com.foomei.common.service.impl.ServiceException;
+import com.foomei.common.text.EncodeUtil;
 import com.foomei.common.web.ThreadContext;
-import com.foomei.core.web.CoreThreadContext;
+import com.foomei.core.dao.jpa.UserDao;
+import com.foomei.core.entity.Role;
+import com.foomei.core.entity.User;
+import com.foomei.core.entity.UserGroup;
 import com.google.common.base.Charsets;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,14 +19,13 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.foomei.common.persistence.Hibernates;
-import com.foomei.common.security.DigestUtil;
-import com.foomei.common.service.impl.JpaServiceImpl;
-import com.foomei.common.text.EncodeUtil;
-import com.foomei.core.dao.jpa.UserDao;
-import com.foomei.core.entity.Role;
-import com.foomei.core.entity.User;
-import com.foomei.core.entity.UserGroup;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * 用户管理业务类.
@@ -93,7 +90,7 @@ public class UserService extends JpaServiceImpl<User, Long> {
   public User save(User user) {
     if(user.getId() == null) {
       user.setRegisterTime(new Date());
-      user.setRegisterIp(CoreThreadContext.getIp());
+      user.setRegisterIp(ThreadContext.getIp());
     }
 
     if (isSupervisor(user)) {
