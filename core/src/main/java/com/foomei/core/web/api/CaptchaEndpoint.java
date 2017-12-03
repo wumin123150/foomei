@@ -26,7 +26,7 @@ import java.util.Random;
 @RestController
 public class CaptchaEndpoint {
 
-  private static Logger logger = LoggerFactory.getLogger(CaptchaEndpoint.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(CaptchaEndpoint.class);
 
   @Value("${sms.content}")
   private String smsContent;
@@ -87,8 +87,8 @@ public class CaptchaEndpoint {
     }
 
     boolean result = SmsUtil.send(phone, content);
-    if (logger.isInfoEnabled()) {
-      logger.info("验证码:{}", captcha);
+    if (LOGGER.isInfoEnabled()) {
+      LOGGER.info("验证码:{}", captcha);
     }
     return result;
   }

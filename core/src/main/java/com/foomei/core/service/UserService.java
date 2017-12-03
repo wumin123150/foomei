@@ -94,7 +94,7 @@ public class UserService extends JpaServiceImpl<User, Long> {
     }
 
     if (isSupervisor(user)) {
-      logger.warn("操作员{}尝试修改超级管理员", ThreadContext.getUserName());
+      LOGGER.warn("操作员{}尝试修改超级管理员", ThreadContext.getUserName());
       throw new ServiceException("不能修改超级管理员");
     }
 
@@ -232,7 +232,7 @@ public class UserService extends JpaServiceImpl<User, Long> {
     entryptPassword(user);
 
     super.save(user);
-    logger.info("change password for: {}", user.getName());
+    LOGGER.info("change password for: {}", user.getName());
   }
 
   @Transactional(readOnly = false)
@@ -242,7 +242,7 @@ public class UserService extends JpaServiceImpl<User, Long> {
     entryptPassword(user);
 
     super.save(user);
-    logger.info("change password for: {}", username);
+    LOGGER.info("change password for: {}", username);
     // TODO:发送邮件提醒用户
   }
 

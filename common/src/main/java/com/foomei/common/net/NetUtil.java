@@ -32,7 +32,7 @@ import com.google.common.annotations.Beta;
 @Beta
 public class NetUtil {
 
-	private static Logger logger = LoggerFactory.getLogger(NetUtil.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(NetUtil.class);
 
 	public static final int PORT_RANGE_MIN = 1024;
 
@@ -141,7 +141,7 @@ public class NetUtil {
 
 		localHost = IPUtil.toString(localAddress);
 
-		logger.info("localhost is {}", localHost);
+		LOGGER.info("localhost is {}", localHost);
 	}
 
 	/**

@@ -20,7 +20,7 @@ public class ThreadDumpper {
 
 	private static final int DEFAULT_MAX_STACK_LEVEL = 8;
 
-	private static Logger logger = LoggerFactory.getLogger(ThreadDumpper.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ThreadDumpper.class);
 
 	private boolean enable = true; // 快速关闭该功能
 	private long leastIntervalMills = 0; // 每次打印ThreadDump的最小时间间隔，单位为毫秒
@@ -61,19 +61,18 @@ public class ThreadDumpper {
 			}
 		}
 
-		logger.info("Thread dump by ThreadDumpper" + (reasonMsg != null ? (" for " + reasonMsg) : ""));
+		LOGGER.info("Thread dump by ThreadDumpper" + (reasonMsg != null ? (" for " + reasonMsg) : ""));
 
 		Map<Thread, StackTraceElement[]> threads = Thread.getAllStackTraces();
 		// 两条日志间的时间间隔，是VM被thread dump堵塞的时间.
-		logger.info("Finish the threads snapshot");
+		LOGGER.info("Finish the threads snapshot");
 
 		StringBuilder sb = new StringBuilder(8192 * 20).append("\n");
 
 		for (Entry<Thread, StackTraceElement[]> entry : threads.entrySet()) {
 			dumpThreadInfo(entry.getKey(), entry.getValue(), sb);
 		}
-		logger.info(sb.toString());
-
+		LOGGER.info(sb.toString());
 	}
 
 	/**

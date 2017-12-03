@@ -44,7 +44,7 @@ public class RemoteContentServlet extends HttpServlet {
   private static final int CONNECTION_POOL_SIZE = 10;
   private static final int TIMEOUT_SECONDS = 20;
 
-  private static Logger logger = LoggerFactory.getLogger(RemoteContentServlet.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(RemoteContentServlet.class);
 
   private HttpClient httpClient = null;
 
@@ -115,7 +115,7 @@ public class RemoteContentServlet extends HttpServlet {
       HttpResponse remoteResponse = httpClient.execute(httpGet, context);
       entity = remoteResponse.getEntity();
     } catch (Exception e) {
-      logger.error("fetch remote content" + contentUrl + "  error", e);
+      LOGGER.error("fetch remote content" + contentUrl + "  error", e);
       httpGet.abort();
       return;
     }

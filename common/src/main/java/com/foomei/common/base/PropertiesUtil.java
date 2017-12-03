@@ -24,7 +24,7 @@ import com.foomei.common.number.NumberUtil;
  */
 public class PropertiesUtil {
 
-	private static final Logger logger = LoggerFactory.getLogger(PropertiesUtil.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(PropertiesUtil.class);
 
 	/////////////////// 读取Properties ////////////////////
 
@@ -61,7 +61,7 @@ public class PropertiesUtil {
 			is = URLResourceUtil.asStream(generalPath);
 			p.load(is);
 		} catch (IOException e) {
-			logger.warn("Load property from " + generalPath + " fail ", e);
+			LOGGER.warn("Load property from " + generalPath + " fail ", e);
 		} finally {
 			IOUtil.closeQuietly(is);
 		}

@@ -38,7 +38,7 @@ import java.util.Date;
 
 public class PasswordAuthenticationFilter extends FormAuthenticationFilter {
 
-  private Logger logger = LoggerFactory.getLogger(PasswordAuthenticationFilter.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(PasswordAuthenticationFilter.class);
 
   @Autowired
   private UserService userService;
@@ -161,8 +161,8 @@ public class PasswordAuthenticationFilter extends FormAuthenticationFilter {
     Log log = new Log();
     log.setDescription("登录");
     endTime = System.currentTimeMillis();
-    if (logger.isDebugEnabled()) {
-      logger.debug("登录耗时：{}", endTime - startTime);
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("登录耗时：{}", endTime - startTime);
     }
 
     log.setIp(IPUtil.getIp(request));

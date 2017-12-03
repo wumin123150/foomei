@@ -43,7 +43,7 @@ import java.util.Map;
 @Component
 public class LogAspect {
 
-  private static Logger logger = LoggerFactory.getLogger(LogAspect.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(LogAspect.class);
 
   JsonMapper jsonMapper = new JsonMapper();
 
@@ -58,14 +58,14 @@ public class LogAspect {
   @Before("@annotation(io.swagger.annotations.ApiOperation)")
   // @Before("execution(* *..controller.*.*(..))")
   public void doBeforeInServiceLayer(JoinPoint joinPoint) {
-    logger.debug("doBeforeInServiceLayer");
+    LOGGER.debug("doBeforeInServiceLayer");
     startTime = System.currentTimeMillis();
   }
 
   @After("@annotation(io.swagger.annotations.ApiOperation)")
   // @After("execution(* *..controller.*.*(..))")
   public void doAfterInServiceLayer(JoinPoint joinPoint) {
-    logger.debug("doAfterInServiceLayer");
+    LOGGER.debug("doAfterInServiceLayer");
   }
 
   @Around("@annotation(io.swagger.annotations.ApiOperation)")
@@ -89,8 +89,8 @@ public class LogAspect {
     }
 
     endTime = System.currentTimeMillis();
-    if (logger.isDebugEnabled()) {
-      logger.debug("doAround>>>result={},耗时：{}", result, endTime - startTime);
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("doAround>>>result={},耗时：{}", result, endTime - startTime);
     }
 
     List<String> excludes = ListUtil.newArrayList();

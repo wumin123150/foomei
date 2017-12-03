@@ -28,7 +28,7 @@ import java.util.List;
 
 public abstract class JpaServiceImpl<T, ID extends Serializable> implements JpaService<T, ID> {
 
-  protected static final Logger logger = LoggerFactory.getLogger(JpaServiceImpl.class);
+  protected static final Logger LOGGER = LoggerFactory.getLogger(JpaServiceImpl.class);
 
   protected JpaDao<T, ID> dao;
   protected Class<T> entityClazz;
@@ -59,7 +59,7 @@ public abstract class JpaServiceImpl<T, ID extends Serializable> implements JpaS
       ((UpdateRecord) entity).setUpdator(ThreadContext.getUserId());
     }
     T t = dao.save(entity);
-    logger.info("save entity: {}", entity);
+    LOGGER.info("save entity: {}", entity);
     return t;
   }
 
@@ -86,7 +86,7 @@ public abstract class JpaServiceImpl<T, ID extends Serializable> implements JpaS
       this.save(entity);
     } else {
       dao.delete(entity);
-      logger.info("delete entity: {}", entity);
+      LOGGER.info("delete entity: {}", entity);
     }
   }
 
@@ -111,7 +111,7 @@ public abstract class JpaServiceImpl<T, ID extends Serializable> implements JpaS
       }
     } else {
       dao.deleteInBatch(entities);
-      logger.info("delete entities: {}", entities);
+      LOGGER.info("delete entities: {}", entities);
     }
   }
 

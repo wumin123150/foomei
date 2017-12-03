@@ -91,7 +91,7 @@ public class ThreadPoolUtil {
      */
     public static class SafeRunnable implements Runnable {
 
-        private static Logger logger = LoggerFactory.getLogger(SafeRunnable.class);
+        private static final Logger LOGGER = LoggerFactory.getLogger(SafeRunnable.class);
 
         private Runnable runnable;
 
@@ -106,7 +106,7 @@ public class ThreadPoolUtil {
                 runnable.run();
             } catch (Throwable e) {
                 // catch any exception, because the scheduled thread will break if the exception thrown to outside.
-                logger.error("Unexpected error occurred in task", e);
+                LOGGER.error("Unexpected error occurred in task", e);
             }
         }
     }

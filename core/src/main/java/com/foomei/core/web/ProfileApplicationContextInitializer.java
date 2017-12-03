@@ -13,7 +13,7 @@ import org.springframework.core.io.support.PropertiesLoaderUtils;
 public class ProfileApplicationContextInitializer implements
   ApplicationContextInitializer<ConfigurableApplicationContext> {
 
-  private Logger logger = LoggerFactory.getLogger(ProfileApplicationContextInitializer.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(ProfileApplicationContextInitializer.class);
 
   public static String profile;
 
@@ -26,8 +26,8 @@ public class ProfileApplicationContextInitializer implements
       profile = properties.getProperty("spring.profile");
 
       applicationContext.getEnvironment().setActiveProfiles(profile.split(","));
-      if (logger.isInfoEnabled()) {
-        logger.info("Active spring profile: {}", profile);
+      if (LOGGER.isInfoEnabled()) {
+        LOGGER.info("Active spring profile: {}", profile);
       }
 
     } catch (IOException e) {

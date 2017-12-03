@@ -21,7 +21,7 @@ import java.util.List;
 
 public abstract class MybatisServiceImpl<T, ID extends Serializable> implements MybatisService<T, ID> {
 
-  protected static final Logger logger = LoggerFactory.getLogger(MybatisServiceImpl.class);
+  protected static final Logger LOGGER = LoggerFactory.getLogger(MybatisServiceImpl.class);
 
   protected MybatisDao<T> dao;
   protected Class<T> entityClazz;
@@ -41,14 +41,14 @@ public abstract class MybatisServiceImpl<T, ID extends Serializable> implements 
   @Transactional(readOnly = false)
   public T insert(T entity) {
     dao.insert(entity);
-    logger.info("insert entity: {}", entity);
+    LOGGER.info("insert entity: {}", entity);
     return entity;
   }
 
   @Transactional(readOnly = false)
   public T update(T entity) {
     dao.updateByPrimaryKey(entity);
-    logger.info("update entity: {}", entity);
+    LOGGER.info("update entity: {}", entity);
     return entity;
   }
 
@@ -68,7 +68,7 @@ public abstract class MybatisServiceImpl<T, ID extends Serializable> implements 
       update(entity);
     } else {
       dao.delete(entity);
-      logger.info("delete entity: {}", entity);
+      LOGGER.info("delete entity: {}", entity);
     }
   }
 

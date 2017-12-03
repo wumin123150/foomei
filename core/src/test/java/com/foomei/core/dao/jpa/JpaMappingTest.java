@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ContextConfiguration(locations = { "/applicationContext.xml" })
 public class JpaMappingTest extends SpringTransactionalTestCase {
 
-  private static Logger logger = LoggerFactory.getLogger(JpaMappingTest.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(JpaMappingTest.class);
 
   @PersistenceContext
   private EntityManager em;
@@ -29,7 +29,7 @@ public class JpaMappingTest extends SpringTransactionalTestCase {
     for (EntityType entityType : model.getEntities()) {
       String entityName = entityType.getName();
       em.createQuery("select o from " + entityName + " o").getResultList();
-      logger.info("ok: " + entityName);
+      LOGGER.info("ok: " + entityName);
     }
   }
 }

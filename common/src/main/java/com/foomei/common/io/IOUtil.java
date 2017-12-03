@@ -36,7 +36,7 @@ import com.foomei.common.text.Charsets;
  * @author walker
  */
 public class IOUtil {
-	private static final Logger logger = LoggerFactory.getLogger(IOUtil.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(IOUtil.class);
 
 	private static final int DEFAULT_BUFFER_SIZE = 1024 * 4;
 	private static final int EOF = -1;
@@ -51,7 +51,7 @@ public class IOUtil {
 			try {
 				closeable.close();
 			} catch (IOException e) {
-				logger.warn(CLOSE_ERROR_MESSAGE, e);
+				LOGGER.warn(CLOSE_ERROR_MESSAGE, e);
 			}
 		}
 	}

@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @RequestMapping(value = "/admin/user")
 public class UserController {
 
-  private static Logger logger = LoggerFactory.getLogger(UserController.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
   private static final String MENU = "user";
   private static final String ACTION_CREATE = "create";

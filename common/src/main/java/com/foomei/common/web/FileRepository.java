@@ -20,7 +20,7 @@ import com.foomei.common.io.WebFileUtil;
  * 本地文件存储
  */
 public class FileRepository {
-  private static Logger log = LoggerFactory.getLogger(FileRepository.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(FileRepository.class);
 
   public static String storeByExt(byte[] data, String path, String ext) throws IOException {
     String filename = WebFileUtil.generateFilename(path, ext);
@@ -68,7 +68,7 @@ public class FileRepository {
       FileUtil.makesureDirExists(dest.getParentFile());
       FileUtil.write(data, dest);
     } catch (IOException e) {
-      log.error("Transfer file error when upload file", e);
+      LOGGER.error("Transfer file error when upload file", e);
       throw e;
     }
   }
@@ -78,7 +78,7 @@ public class FileRepository {
       FileUtil.makesureDirExists(dest.getParentFile());
       ImageIO.write(image, format, dest);
     } catch (IOException e) {
-      log.error("Save image error", e);
+      LOGGER.error("Save image error", e);
       throw e;
     }
   }
@@ -88,7 +88,7 @@ public class FileRepository {
       FileUtil.makesureDirExists(dest.getParentFile());
       FileUtil.copyFile(file, dest);
     } catch (IOException e) {
-      log.error("Transfer file error when upload file", e);
+      LOGGER.error("Transfer file error when upload file", e);
       throw e;
     }
   }
@@ -111,7 +111,7 @@ public class FileRepository {
       FileUtil.makesureDirExists(dest.getParentFile());
       FileUtil.moveFile(file, dest);
     } catch (IOException e) {
-      log.error("Move file error", e);
+      LOGGER.error("Move file error", e);
       throw e;
     }
   }

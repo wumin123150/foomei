@@ -31,7 +31,7 @@ public class MimeMailService {
 
   private static final String DEFAULT_ENCODING = "utf-8";
 
-  private static Logger logger = LoggerFactory.getLogger(MimeMailService.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(MimeMailService.class);
 
   private JavaMailSender mailSender;
 
@@ -79,11 +79,11 @@ public class MimeMailService {
       }
 
       mailSender.send(msg);
-      logger.info("HTML版邮件已发送至", to);
+      LOGGER.info("HTML版邮件已发送至", to);
     } catch (MessagingException e) {
-      logger.error("构造邮件失败", e);
+      LOGGER.error("构造邮件失败", e);
     } catch (Exception e) {
-      logger.error("发送邮件失败", e);
+      LOGGER.error("发送邮件失败", e);
     }
   }
 
@@ -95,10 +95,10 @@ public class MimeMailService {
       Template template = configuration.getTemplate(templateName, DEFAULT_ENCODING);
       return FreeMarkerUtil.renderTemplate(template, model);
     } catch (IOException e) {
-      logger.error("生成邮件内容失败, FreeMarker模板不存在", e);
+      LOGGER.error("生成邮件内容失败, FreeMarker模板不存在", e);
       throw new MessagingException("FreeMarker模板不存在", e);
     } catch (RuntimeException e) {
-      logger.error("生成邮件内容失败, FreeMarker处理失败", e);
+      LOGGER.error("生成邮件内容失败, FreeMarker处理失败", e);
       throw new MessagingException("FreeMarker处理失败", e);
     }
   }

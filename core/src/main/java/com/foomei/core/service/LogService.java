@@ -69,7 +69,7 @@ public class LogService extends JpaServiceImpl<Log, String> {
   public void clear() {
     Date deadline = DateUtil.subDays(DateUtil.today(), period);
     logDao.clear(deadline);
-    logger.info("delete entities {}, deadline is {}", entityClazz.getName(), DateFormatUtil.formatShortDate(deadline));
+    LOGGER.info("delete entities {}, deadline is {}", entityClazz.getName(), DateFormatUtil.formatShortDate(deadline));
   }
 
 }

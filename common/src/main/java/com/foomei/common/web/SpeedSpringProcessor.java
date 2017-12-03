@@ -17,7 +17,7 @@ import java.util.*;
 
 public class SpeedSpringProcessor implements BeanFactoryPostProcessor {
 
-  private final Logger log = LoggerFactory.getLogger(SpeedSpringProcessor.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(SpeedSpringProcessor.class);
 
   private String[] removedClassPatterns;
   private String[] includeClassPatterns;
@@ -102,7 +102,7 @@ public class SpeedSpringProcessor implements BeanFactoryPostProcessor {
   public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
 
     if(!(beanFactory instanceof DefaultListableBeanFactory)) {
-      log.error("if speed up spring, bean factory must be type of DefaultListableBeanFactory");
+      LOGGER.error("if speed up spring, bean factory must be type of DefaultListableBeanFactory");
       return;
     }
 

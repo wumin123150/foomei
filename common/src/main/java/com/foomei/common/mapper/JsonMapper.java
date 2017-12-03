@@ -27,7 +27,7 @@ import com.fasterxml.jackson.module.jaxb.JaxbAnnotationModule;
  */
 public class JsonMapper {
 
-	private static Logger logger = LoggerFactory.getLogger(JsonMapper.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(JsonMapper.class);
 
 	public static final JsonMapper INSTANCE = new JsonMapper();
 
@@ -78,7 +78,7 @@ public class JsonMapper {
 		try {
 			return mapper.writeValueAsString(object);
 		} catch (IOException e) {
-			logger.warn("write to json string error:" + object, e);
+			LOGGER.warn("write to json string error:" + object, e);
 			return null;
 		}
 	}
@@ -100,7 +100,7 @@ public class JsonMapper {
 		try {
 			return mapper.readValue(jsonString, clazz);
 		} catch (IOException e) {
-			logger.warn("parse json string error:" + jsonString, e);
+			LOGGER.warn("parse json string error:" + jsonString, e);
 			return null;
 		}
 	}
@@ -118,7 +118,7 @@ public class JsonMapper {
 		try {
 			return (T) mapper.readValue(jsonString, javaType);
 		} catch (IOException e) {
-			logger.warn("parse json string error:" + jsonString, e);
+			LOGGER.warn("parse json string error:" + jsonString, e);
 			return null;
 		}
 	}
@@ -144,9 +144,9 @@ public class JsonMapper {
 		try {
 			mapper.readerForUpdating(object).readValue(jsonString);
 		} catch (JsonProcessingException e) {
-			logger.warn("update json string:" + jsonString + " to object:" + object + " error.", e);
+			LOGGER.warn("update json string:" + jsonString + " to object:" + object + " error.", e);
 		} catch (IOException e) {
-			logger.warn("update json string:" + jsonString + " to object:" + object + " error.", e);
+			LOGGER.warn("update json string:" + jsonString + " to object:" + object + " error.", e);
 		}
 	}
 

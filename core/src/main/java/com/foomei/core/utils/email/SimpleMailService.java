@@ -12,7 +12,7 @@ import org.springframework.mail.javamail.JavaMailSender;
  * @author walker
  */
 public class SimpleMailService {
-  private static Logger logger = LoggerFactory.getLogger(SimpleMailService.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(SimpleMailService.class);
 
   private JavaMailSender mailSender;
 
@@ -48,11 +48,11 @@ public class SimpleMailService {
 
     try {
       mailSender.send(msg);
-      if (logger.isInfoEnabled()) {
-        logger.info("纯文本邮件已发送至{}", StringUtils.join(msg.getTo(), ","));
+      if (LOGGER.isInfoEnabled()) {
+        LOGGER.info("纯文本邮件已发送至{}", StringUtils.join(msg.getTo(), ","));
       }
     } catch (Exception e) {
-      logger.error("发送邮件失败", e);
+      LOGGER.error("发送邮件失败", e);
     }
   }
 

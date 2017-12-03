@@ -19,7 +19,7 @@ import com.foomei.common.collection.MapUtil;
  * HttpServletRequest帮助类
  */
 public class RequestUtil {
-  private static final Logger logger = LoggerFactory.getLogger(RequestUtil.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(RequestUtil.class);
 
   /**
    * HTTP POST请求

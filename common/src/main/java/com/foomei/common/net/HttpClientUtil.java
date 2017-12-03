@@ -45,7 +45,7 @@ import com.foomei.common.mapper.JsonMapper;
 
 public class HttpClientUtil {
 
-	private static Logger logger = LoggerFactory.getLogger(HttpClientUtil.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(HttpClientUtil.class);
 
 	private static JsonMapper json;
 	private static SSLContext sslcontext = null;
@@ -78,10 +78,10 @@ public class HttpClientUtil {
 
 	public static HttpResponse get(String url, Map<String, String> bodyParams, Map<String, String> headParams, String charset, HttpClientContext context) throws Exception {
 		url = buildQuery(url, bodyParams, charset);
-		logger.info("api url:" + url);
-		logger.info("api head params:" + json.toJson(headParams));
+		LOGGER.info("api url:" + url);
+		LOGGER.info("api head params:" + json.toJson(headParams));
 		if(context.getCookieStore() != null) {
-			logger.info("api cookies:" + json.toJson(context.getCookieStore().getCookies()));
+			LOGGER.info("api cookies:" + json.toJson(context.getCookieStore().getCookies()));
 		}
 
 		HttpGet httpGet = new HttpGet(url);
@@ -97,10 +97,10 @@ public class HttpClientUtil {
 	
 	public static HttpEntity getEntity(String url, Map<String, String> bodyParams, Map<String, String> headParams, String charset, HttpClientContext context) throws Exception {
 		url = buildQuery(url, bodyParams, charset);
-		logger.info("api url:" + url);
-		logger.info("api head params:" + json.toJson(headParams));
+		LOGGER.info("api url:" + url);
+		LOGGER.info("api head params:" + json.toJson(headParams));
 		if(context.getCookieStore() != null) {
-			logger.info("api cookies:" + json.toJson(context.getCookieStore().getCookies()));
+			LOGGER.info("api cookies:" + json.toJson(context.getCookieStore().getCookies()));
 		}
 
 		HttpEntity entity = null;
@@ -119,7 +119,7 @@ public class HttpClientUtil {
 			return entity;
 		} catch (Exception e) {
 			String msg = String.format("Failed to call api '%s'", url);
-			logger.error(msg, e);
+			LOGGER.error(msg, e);
 			httpGet.abort();
 			throw e;
 		}
@@ -154,11 +154,11 @@ public class HttpClientUtil {
 	}
 	
 	public static HttpResponse put(String url, Map<String, String> bodyParams, Map<String, String> headParams, String charset, HttpClientContext context) throws Exception {
-		logger.info("api url:" + url);
-		logger.info("api head params:" + json.toJson(headParams));
-		logger.info("api body params:" + json.toJson(bodyParams));
+		LOGGER.info("api url:" + url);
+		LOGGER.info("api head params:" + json.toJson(headParams));
+		LOGGER.info("api body params:" + json.toJson(bodyParams));
 		if(context.getCookieStore() != null) {
-			logger.info("api cookies:" + json.toJson(context.getCookieStore().getCookies()));
+			LOGGER.info("api cookies:" + json.toJson(context.getCookieStore().getCookies()));
 		}
 
 		HttpPut httpPut = new HttpPut(url);
@@ -178,11 +178,11 @@ public class HttpClientUtil {
 	}
 
 	public static HttpEntity putEntity(String url, Map<String, String> bodyParams, Map<String, String> headParams, String charset, HttpClientContext context) throws Exception {
-		logger.info("api url:" + url);
-		logger.info("api head params:" + json.toJson(headParams));
-		logger.info("api body params:" + json.toJson(bodyParams));
+		LOGGER.info("api url:" + url);
+		LOGGER.info("api head params:" + json.toJson(headParams));
+		LOGGER.info("api body params:" + json.toJson(bodyParams));
 		if(context.getCookieStore() != null) {
-			logger.info("api cookies:" + json.toJson(context.getCookieStore().getCookies()));
+			LOGGER.info("api cookies:" + json.toJson(context.getCookieStore().getCookies()));
 		}
 
 		HttpEntity entity = null;
@@ -207,7 +207,7 @@ public class HttpClientUtil {
 			return entity;
 		} catch (Exception e) {
 			String msg = String.format("Failed to call api '%s'", url);
-			logger.error(msg, e);
+			LOGGER.error(msg, e);
 			httpPut.abort();
 			throw e;
 		}
@@ -242,11 +242,11 @@ public class HttpClientUtil {
 	}
 	
 	public static HttpResponse post(String url, Map<String, String> bodyParams, Map<String, String> headParams, String charset, HttpClientContext context) throws Exception {
-		logger.info("api url:" + url);
-		logger.info("api head params:" + json.toJson(headParams));
-		logger.info("api body params:" + json.toJson(bodyParams));
+		LOGGER.info("api url:" + url);
+		LOGGER.info("api head params:" + json.toJson(headParams));
+		LOGGER.info("api body params:" + json.toJson(bodyParams));
 		if(context.getCookieStore() != null) {
-			logger.info("api cookies:" + json.toJson(context.getCookieStore().getCookies()));
+			LOGGER.info("api cookies:" + json.toJson(context.getCookieStore().getCookies()));
 		}
 
 		HttpPost httpPost = new HttpPost(url);
@@ -266,11 +266,11 @@ public class HttpClientUtil {
 	}
 
 	public static HttpEntity postEntity(String url, Map<String, String> bodyParams, Map<String, String> headParams, String charset, HttpClientContext context) throws Exception {
-		logger.info("api url:" + url);
-		logger.info("api head params:" + json.toJson(headParams));
-		logger.info("api body params:" + json.toJson(bodyParams));
+		LOGGER.info("api url:" + url);
+		LOGGER.info("api head params:" + json.toJson(headParams));
+		LOGGER.info("api body params:" + json.toJson(bodyParams));
 		if(context.getCookieStore() != null) {
-			logger.info("api cookies:" + json.toJson(context.getCookieStore().getCookies()));
+			LOGGER.info("api cookies:" + json.toJson(context.getCookieStore().getCookies()));
 		}
 
 		HttpEntity entity = null;
@@ -295,7 +295,7 @@ public class HttpClientUtil {
 			return entity;
 		} catch (Exception e) {
 			String msg = String.format("Failed to call api '%s'", url);
-			logger.error(msg, e);
+			LOGGER.error(msg, e);
 			httpPost.abort();
 			throw e;
 		}

@@ -23,7 +23,7 @@ import java.util.Map;
 @ControllerAdvice(annotations = {RestController.class})
 public class ApiExceptionHandler {
 
-  private Logger logger = LoggerFactory.getLogger(ApiExceptionHandler.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(ApiExceptionHandler.class);
 
   private JsonMapper jsonMapper = new JsonMapper();
 
@@ -54,6 +54,6 @@ public class ApiExceptionHandler {
     map.put("message", ex.getMessage());
     map.put("from", IPUtil.getIp(request));
     map.put("path", RequestUtil.getLocation(request));
-    logger.error(jsonMapper.toJson(map), ex);
+    LOGGER.error(jsonMapper.toJson(map), ex);
   }
 }

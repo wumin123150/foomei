@@ -28,7 +28,7 @@ public class TokenService extends JpaServiceImpl<Token, String> {
   @Transactional(readOnly = false)
   public void disable(Long userId) {
     tokenDao.disable(userId);
-    logger.info("disable entity {}, userId is {}", Token.class.getName(), userId);
+    LOGGER.info("disable entity {}, userId is {}", Token.class.getName(), userId);
   }
 
   @Transactional(readOnly = false)

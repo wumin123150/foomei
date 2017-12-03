@@ -21,7 +21,7 @@ import com.foomei.core.service.TokenService;
 
 public class ShiroLogoutFilter extends LogoutFilter {
 
-  private Logger logger = LoggerFactory.getLogger(ShiroLogoutFilter.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(ShiroLogoutFilter.class);
 
   @Autowired
   private TokenService tokenService;
@@ -35,7 +35,7 @@ public class ShiroLogoutFilter extends LogoutFilter {
     try {
       subject.logout();
     } catch (SessionException ise) {
-      logger.debug("Encountered session exception during logout.  This can generally safely be ignored.", ise);
+      LOGGER.debug("Encountered session exception during logout.  This can generally safely be ignored.", ise);
     }
     if (RequestUtil.isAjaxRequest((HttpServletRequest) request)) {
       if (user != null) {
