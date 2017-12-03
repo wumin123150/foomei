@@ -2,6 +2,7 @@ package com.foomei.core.web.api;
 
 import com.baidu.unbiz.fluentvalidator.*;
 import com.baidu.unbiz.fluentvalidator.jsr303.HibernateSupportedValidator;
+import com.foomei.common.collection.MapUtil;
 import com.foomei.common.dto.PageQuery;
 import com.foomei.common.dto.ResponseResult;
 import com.foomei.common.mapper.BeanMapper;
@@ -12,7 +13,6 @@ import com.foomei.core.dto.RoleDto;
 import com.foomei.core.entity.Role;
 import com.foomei.core.service.RoleService;
 import com.foomei.core.vo.RoleVo;
-import com.google.common.collect.Maps;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -40,7 +40,7 @@ public class RoleEndpoint {
   private RoleService roleService;
 
   static {
-    Map<String, String> mapFields = Maps.newHashMap();
+    Map<String, String> mapFields = MapUtil.newHashMap();
     mapFields.put("permissionList{id}", "permissions{}");
     BeanMapper.registerClassMap(Role.class, RoleVo.class, mapFields);
   }

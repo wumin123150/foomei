@@ -1,8 +1,8 @@
 package com.foomei.core.entity;
 
+import com.foomei.common.collection.ListUtil;
 import com.foomei.common.entity.DeleteRecord;
 import com.foomei.common.entity.IdEntity;
-import com.google.common.collect.Lists;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -70,7 +70,7 @@ public class UserGroup extends IdEntity implements DeleteRecord {
   @OrderBy("id ASC")
   // 缓存策略
   @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-  private List<Role> roleList = Lists.newArrayList();
+  private List<Role> roleList = ListUtil.newArrayList();
 
   public void markDeleted() {
     delFlag = true;

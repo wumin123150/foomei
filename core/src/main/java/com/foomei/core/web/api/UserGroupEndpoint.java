@@ -3,6 +3,7 @@ package com.foomei.core.web.api;
 import com.baidu.unbiz.fluentvalidator.*;
 import com.baidu.unbiz.fluentvalidator.jsr303.HibernateSupportedValidator;
 import com.foomei.common.collection.ListUtil;
+import com.foomei.common.collection.MapUtil;
 import com.foomei.common.dto.ErrorCodeFactory;
 import com.foomei.common.dto.PageQuery;
 import com.foomei.common.dto.ResponseResult;
@@ -12,7 +13,6 @@ import com.foomei.core.entity.UserGroup;
 import com.foomei.core.service.UserGroupService;
 import com.foomei.core.service.UserService;
 import com.foomei.core.vo.UserGroupVo;
-import com.google.common.collect.Maps;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -41,7 +41,7 @@ public class UserGroupEndpoint {
   private UserGroupService userGroupService;
 
   static {
-    Map<String, String> mapFields = Maps.newHashMap();
+    Map<String, String> mapFields = MapUtil.newHashMap();
     mapFields.put("director.id", "directorId");
     BeanMapper.registerClassMap(UserGroup.class, UserGroupVo.class, mapFields);
   }

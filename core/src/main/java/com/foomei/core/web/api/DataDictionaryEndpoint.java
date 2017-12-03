@@ -3,6 +3,7 @@ package com.foomei.core.web.api;
 import com.baidu.unbiz.fluentvalidator.*;
 import com.baidu.unbiz.fluentvalidator.jsr303.HibernateSupportedValidator;
 import com.foomei.common.collection.ListUtil;
+import com.foomei.common.collection.MapUtil;
 import com.foomei.common.dto.ErrorCodeFactory;
 import com.foomei.common.dto.PageQuery;
 import com.foomei.common.dto.ResponseResult;
@@ -12,8 +13,6 @@ import com.foomei.core.dto.TreeNodeDto;
 import com.foomei.core.entity.DataDictionary;
 import com.foomei.core.entity.DataType;
 import com.foomei.core.service.DataDictionaryService;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -39,7 +38,7 @@ public class DataDictionaryEndpoint {
   private DataDictionaryService dataDictionaryService;
 
   static {
-    Map<String, String> mapFields = Maps.newHashMap();
+    Map<String, String> mapFields = MapUtil.newHashMap();
     mapFields.put("type.id", "typeId");
     mapFields.put("type.code", "typeCode");
     BeanMapper.registerClassMap(DataDictionary.class, DataDictionaryDto.class, mapFields);
@@ -155,7 +154,7 @@ public class DataDictionaryEndpoint {
   }
 
   private List<TreeNodeDto> toNodes(List<DataDictionary> dataDictionarys) {
-    List<TreeNodeDto> treeNodes = Lists.newArrayListWithCapacity(dataDictionarys.size());
+    List<TreeNodeDto> treeNodes = ListUtil.newArrayListWithCapacity(dataDictionarys.size());
     for (DataDictionary dataDictionary : dataDictionarys) {
       treeNodes.add(new TreeNodeDto(dataDictionary));
     }

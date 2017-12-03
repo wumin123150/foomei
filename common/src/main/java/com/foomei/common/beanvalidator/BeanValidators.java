@@ -1,15 +1,14 @@
 package com.foomei.common.beanvalidator;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import com.foomei.common.collection.ListUtil;
+import com.foomei.common.collection.MapUtil;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Validator;
-
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * JSR303 Validator(Hibernate Validator)工具类.
@@ -48,7 +47,7 @@ public class BeanValidators {
 	 */
 	@SuppressWarnings("rawtypes")
 	public static List<String> extractMessage(Set<? extends ConstraintViolation> constraintViolations) {
-		List<String> errorMessages = Lists.newArrayList();
+		List<String> errorMessages = ListUtil.newArrayList();
 		for (ConstraintViolation violation : constraintViolations) {
 			errorMessages.add(violation.getMessage());
 		}
@@ -67,7 +66,7 @@ public class BeanValidators {
 	 */
 	@SuppressWarnings("rawtypes")
 	public static Map<String, String> extractPropertyAndMessage(Set<? extends ConstraintViolation> constraintViolations) {
-		Map<String, String> errorMessages = Maps.newHashMap();
+		Map<String, String> errorMessages = MapUtil.newHashMap();
 		for (ConstraintViolation violation : constraintViolations) {
 			errorMessages.put(violation.getPropertyPath().toString(), violation.getMessage());
 		}
@@ -101,7 +100,7 @@ public class BeanValidators {
 	 */
 	@SuppressWarnings("rawtypes")
 	public static List<String> extractPropertyAndMessageAsList(Set<? extends ConstraintViolation> constraintViolations, String separator) {
-		List<String> errorMessages = Lists.newArrayList();
+		List<String> errorMessages = ListUtil.newArrayList();
 		for (ConstraintViolation violation : constraintViolations) {
 			errorMessages.add(violation.getPropertyPath() + separator + violation.getMessage());
 		}

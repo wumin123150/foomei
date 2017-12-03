@@ -1,24 +1,18 @@
 package com.foomei.common.persistence;
 
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
-
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaBuilder.In;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Path;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
+import com.foomei.common.collection.CollectionUtil;
+import com.foomei.common.collection.ListUtil;
 import com.foomei.common.entity.DeleteRecord;
 import com.foomei.common.persistence.search.*;
+import com.foomei.common.time.DateFormatUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.jpa.domain.Specification;
 
-import com.foomei.common.collection.CollectionUtil;
-import com.foomei.common.time.DateFormatUtil;
-import com.google.common.collect.Lists;
+import javax.persistence.criteria.*;
+import javax.persistence.criteria.CriteriaBuilder.In;
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
 
 public class DynamicSpecification {
 	@SuppressWarnings({"unchecked", "rawtypes"})
@@ -36,7 +30,7 @@ public class DynamicSpecification {
 	}
 
 	public static <T> Predicate filterTo(Root<T> root, CriteriaBuilder builder, BooleanOperator operator, List<SearchFilter> searchFilters) {
-		List<Predicate> predicates = Lists.newArrayList();
+		List<Predicate> predicates = ListUtil.newArrayList();
 
 		if (CollectionUtil.isNotEmpty(searchFilters)) {
 			for (SearchFilter searchFilter : searchFilters) {

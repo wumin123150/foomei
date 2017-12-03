@@ -2,6 +2,7 @@ package com.foomei.core.web.api;
 
 import com.baidu.unbiz.fluentvalidator.*;
 import com.baidu.unbiz.fluentvalidator.jsr303.HibernateSupportedValidator;
+import com.foomei.common.collection.MapUtil;
 import com.foomei.common.dto.PageQuery;
 import com.foomei.common.dto.ResponseResult;
 import com.foomei.common.mapper.BeanMapper;
@@ -16,7 +17,6 @@ import com.foomei.core.service.AnnexService;
 import com.foomei.core.service.BaseUserService;
 import com.foomei.core.service.UserService;
 import com.foomei.core.vo.UserVo;
-import com.google.common.collect.Maps;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -51,13 +51,13 @@ public class UserEndpoint {
   private AnnexService annexService;
 
   static {
-    Map<String, String> mapFields = Maps.newHashMap();
+    Map<String, String> mapFields = MapUtil.newHashMap();
     mapFields.put("plainPassword", "password");
     mapFields.put("roleList{id}", "roles{}");
     mapFields.put("groupList{id}", "groups{}");
     BeanMapper.registerClassMap(User.class, UserVo.class, mapFields);
 
-    Map<String, String> map2Fields = Maps.newHashMap();
+    Map<String, String> map2Fields = MapUtil.newHashMap();
 //    mapFields.put("roleList{id}", "roleIds{}");
 //    mapFields.put("groupList{id}", "groupIds{}");
 //    mapFields.put("roleList{name}", "roleNames{}");

@@ -3,12 +3,7 @@ package com.foomei.core.dto;
 import com.foomei.core.entity.BaseUser;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-
-import java.util.List;
-
 import lombok.Data;
-
-import com.google.common.collect.Lists;
 
 @Data
 @ApiModel(description = "用户组")

@@ -1,6 +1,6 @@
 package com.foomei.common.persistence.search;
 
-import com.google.common.collect.Lists;
+import com.foomei.common.collection.ListUtil;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -9,7 +9,7 @@ import java.util.List;
 public class CompoundFilter implements SearchFilter {
 
   private BooleanOperator operator;
-  private List<SearchFilter> searchFilters = Lists.newArrayList();
+  private List<SearchFilter> searchFilters = ListUtil.newArrayList();
 
   public CompoundFilter(BooleanOperator operator) {
     this.operator = operator;

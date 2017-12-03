@@ -1,6 +1,6 @@
 package com.foomei.core.vo;
 
-import com.google.common.collect.Lists;
+import com.foomei.common.collection.ListUtil;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -32,6 +32,6 @@ public class UserGroupVo {
   @Size(max = 128, message = "备注最大长度为128位")
   private String remark;
   @ApiModelProperty(value = "角色ID")
-  private List<Long> roles = Lists.newArrayList();
+  private List<Long> roles = ListUtil.newArrayList();
 
 }

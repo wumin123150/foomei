@@ -41,13 +41,16 @@
             <textarea name="configs[${status.index}].value" class="layui-textarea" <c:if test="${not config.editable}"> readonly</c:if>>${config.value}</textarea>
           </c:when>
           <c:when test="${config.type eq 2}">
-            <c:forEach items="${config.options}" var="option">
+            <c:if test="${not empty options[status.index]}">
+            <c:forEach items="${options[status.index]}" var="option">
               <input type="radio" name="configs[${status.index}].value" value="${option.key}" title="${option.value}" <c:if test="${config.value eq option.key}"> checked</c:if> <c:if test="${not config.editable}"> readonly</c:if>>
             </c:forEach>
+            </c:if>
           </c:when>
           <c:when test="${config.type eq 3}">
-              <c:set value="${fn:split(config.value, ',')}" var="values"/>
-              <c:forEach items="${config.options}" var="option">
+            <c:set value="${fn:split(config.value, ',')}" var="values"/>
+            <c:if test="${not empty options[status.index]}">
+              <c:forEach items="${options[status.index]}" var="option">
                 <c:set value="false" var="selectedConfig"/>
                 <c:forEach items="${values}" var="value">
                   <c:if test="${value eq option.key}">
@@ -56,26 +59,31 @@
                 </c:forEach>
                 <input type="checkbox" name="configs[${status.index}].value" value="${option.key}" lay-skin="primary" title="${option.value}" <c:if test="${selectedConfig}"> checked</c:if> <c:if test="${not config.editable}"> readonly</c:if>>
               </c:forEach>
+            </c:if>
           </c:when>
           <c:when test="${config.type eq 4}">
             <select name="configs[${status.index}].value" <c:if test="${not config.editable}"> readonly</c:if>>
-              <c:forEach items="${config.options}" var="option">
-                <option value="${option.key}" <c:if test="${config.value eq option.key}"> selected</c:if>>${option.value}</option>
-              </c:forEach>
+              <c:if test="${not empty options[status.index]}">
+                <c:forEach items="${options[status.index]}" var="option">
+                  <option value="${option.key}" <c:if test="${config.value eq option.key}"> selected</c:if>>${option.value}</option>
+                </c:forEach>
+              </c:if>
             </select>
           </c:when>
           <c:when test="${config.type eq 5}">
             <c:set value="${fn:split(config.value, ',')}" var="values"/>
             <select name="configs[${status.index}].value" multiple <c:if test="${not config.editable}"> readonly</c:if>>
-              <c:forEach items="${config.options}" var="option">
-                <c:set value="false" var="selectedConfig"/>
-                <c:forEach items="${values}" var="value">
-                  <c:if test="${value eq option.key}">
-                    <c:set value="true" var="selectedConfig"/>
-                  </c:if>
+              <c:if test="${not empty options[status.index]}">
+                <c:forEach items="${options[status.index]}" var="option">
+                  <c:set value="false" var="selectedConfig"/>
+                  <c:forEach items="${values}" var="value">
+                    <c:if test="${value eq option.key}">
+                      <c:set value="true" var="selectedConfig"/>
+                    </c:if>
+                  </c:forEach>
+                  <option value="${option.key}" <c:if test="${selectedConfig}"> selected</c:if>>${option.value}</option>
                 </c:forEach>
-                <option value="${option.key}" <c:if test="${selectedConfig}"> selected</c:if>>${option.value}</option>
-              </c:forEach>
+              </c:if>
             </select>
           </c:when>
         </c:choose>

@@ -1,7 +1,6 @@
 package com.foomei.common.test.jetty;
 
-import java.util.List;
-
+import com.foomei.common.collection.ListUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
@@ -9,7 +8,7 @@ import org.eclipse.jetty.server.nio.SelectChannelConnector;
 import org.eclipse.jetty.webapp.WebAppClassLoader;
 import org.eclipse.jetty.webapp.WebAppContext;
 
-import com.google.common.collect.Lists;
+import java.util.List;
 
 /**
  * 创建Jetty Server的工厂类.
@@ -49,7 +48,7 @@ public class JettyFactory {
 	 */
 	public static void setTldJarNames(Server server, String... jarNames) {
 		WebAppContext context = (WebAppContext) server.getHandler();
-		List<String> jarNameExprssions = Lists.newArrayList(".*/jstl-[^/]*\\.jar$", ".*/.*taglibs[^/]*\\.jar$");
+		List<String> jarNameExprssions = ListUtil.newArrayList(".*/jstl-[^/]*\\.jar$", ".*/.*taglibs[^/]*\\.jar$");
 		for (String jarName : jarNames) {
 			jarNameExprssions.add(".*/" + jarName + "-[^/]*\\.jar$");
 		}

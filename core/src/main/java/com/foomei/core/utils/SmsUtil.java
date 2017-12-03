@@ -1,14 +1,11 @@
 package com.foomei.core.utils;
 
-import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import com.foomei.common.collection.MapUtil;
 import com.foomei.common.net.HttpClientUtil;
 import com.foomei.common.web.PropertyHolder;
-import com.google.common.collect.Maps;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.Map;
 
 public class SmsUtil {
 
@@ -23,7 +20,7 @@ public class SmsUtil {
   }
 
   public static boolean send(String phones, String content) {
-    Map<String, String> params = Maps.newHashMap();
+    Map<String, String> params = MapUtil.newHashMap();
     params.put("phones", phones);
     params.put("content", content);
     params.put("identityKey", identityKey);

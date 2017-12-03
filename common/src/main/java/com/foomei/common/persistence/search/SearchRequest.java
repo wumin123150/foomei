@@ -1,25 +1,25 @@
 package com.foomei.common.persistence.search;
 
-import com.foomei.common.base.BooleanUtil;
 import com.foomei.common.collection.CollectionUtil;
 import com.foomei.common.collection.ListUtil;
 import com.foomei.common.dto.PageQuery;
 import com.foomei.common.persistence.JqGridFilter;
 import com.foomei.common.persistence.JqGridRule;
-import com.google.common.collect.Lists;
-import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.util.CollectionUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 public class SearchRequest {
 
   protected BooleanOperator operator = BooleanOperator.AND;
-  private final List<SearchFilter> searchFilters = Lists.newArrayList();
+  private final List<SearchFilter> searchFilters = ListUtil.newArrayList();
   private Pageable page;
   private Sort sort;
   private boolean delFlagFilter = true;
@@ -46,7 +46,7 @@ public class SearchRequest {
     this.delFlagFilter = delFlagFilter;
 
     if(searchProperty != null && StringUtils.isNotEmpty(pageQuery.getSearchKey())) {
-      List<SearchFilter> searchFilters = Lists.newArrayList();
+      List<SearchFilter> searchFilters = ListUtil.newArrayList();
       for (int i = 0; i < searchProperty.length; i++) {
         searchFilters.add(SimpleFilter.contain(searchProperty[i], pageQuery.getSearchKey()));
       }

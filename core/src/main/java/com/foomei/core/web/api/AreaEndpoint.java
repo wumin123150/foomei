@@ -1,9 +1,9 @@
 package com.foomei.core.web.api;
 
+import com.foomei.common.collection.ListUtil;
 import com.foomei.common.dto.ResponseResult;
 import com.foomei.core.entity.Area;
 import com.foomei.core.service.AreaService;
-import com.google.common.collect.Lists;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -28,7 +28,7 @@ public class AreaEndpoint {
   @ApiOperation(value = "根据父节点ID获取地区列表", httpMethod = "GET", produces = "application/json")
   @RequestMapping(value = "findByParent")
   public ResponseResult<List<Area>> findByParent(String parentId) {
-    List<Area> areas = Lists.newArrayList();
+    List<Area> areas = ListUtil.newArrayList();
     if (StringUtils.isEmpty(parentId)) {
       areas = areaService.findTop();
     } else {

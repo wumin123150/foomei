@@ -1,13 +1,9 @@
 package com.foomei.core.service;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
+import com.foomei.common.collection.ListUtil;
+import com.foomei.common.service.impl.JpaServiceImpl;
+import com.foomei.core.dao.jpa.UserGroupDao;
+import com.foomei.core.entity.UserGroup;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -16,10 +12,12 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.foomei.common.service.impl.JpaServiceImpl;
-import com.foomei.core.dao.jpa.UserGroupDao;
-import com.foomei.core.entity.UserGroup;
-import com.google.common.collect.Lists;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 用户组管理业务类.
@@ -58,7 +56,7 @@ public class UserGroupService extends JpaServiceImpl<UserGroup, Long> {
     if (parent != null) {
       return findChildrenByParent(parent.getId());
     }
-    return Lists.newArrayList();
+    return ListUtil.newArrayList();
   }
 
   @Transactional(readOnly = false)

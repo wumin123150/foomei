@@ -1,12 +1,12 @@
 package com.foomei.core.service;
 
+import com.foomei.common.collection.ListUtil;
 import com.foomei.common.service.impl.JpaServiceImpl;
 import com.foomei.common.web.ThreadContext;
 import com.foomei.core.dao.jpa.MessageDao;
 import com.foomei.core.entity.BaseUser;
 import com.foomei.core.entity.Message;
 import com.foomei.core.entity.MessageText;
-import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -43,7 +43,7 @@ public class MessageService extends JpaServiceImpl<Message, String> {
   public List<Message> save(String content, Long sender, List<Long> receivers) {
     MessageText text = messageTextService.save(new MessageText(content, sender != null ? new BaseUser(sender) : null));
 
-    List<Message> messages = Lists.newArrayList();
+    List<Message> messages = ListUtil.newArrayList();
     for(Long receiver : receivers) {
       Message message = save(new Message(text, new BaseUser(receiver)));
       messages.add(message);

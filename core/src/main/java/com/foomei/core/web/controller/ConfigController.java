@@ -1,9 +1,14 @@
 package com.foomei.core.web.controller;
 
+import com.foomei.common.collection.ListUtil;
+import com.foomei.common.collection.MapUtil;
+import com.foomei.common.collection.type.Pair;
+import com.foomei.common.mapper.JsonMapper;
 import com.foomei.core.entity.Config;
 import com.foomei.core.service.ConfigService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,6 +17,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+
+import java.util.List;
+import java.util.Map;
 
 @Api(description = "系统配置管理")
 @Controller
@@ -64,7 +72,17 @@ public class ConfigController {
   public String view(Model model) {
     model.addAttribute("menu", "configs");
 
-    model.addAttribute("configs", configService.getAll());
+    List<Config> configs = configService.getAll();
+    List<Map<String, String>> options = ListUtil.newArrayList();
+    for(Config config : configs) {
+      if(StringUtils.isNotEmpty(config.getParams())) {
+        options.add(JsonMapper.INSTANCE.fromJson(config.getParams(), Map.class));
+      } else {
+        options.add(null);
+      }
+    }
+    model.addAttribute("configs", configs);
+    model.addAttribute("options", options);
     return theme + "/config/configView";
   }
 

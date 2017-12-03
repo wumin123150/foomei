@@ -1,12 +1,12 @@
 package com.foomei.core.web.api;
 
+import com.foomei.common.collection.MapUtil;
 import com.foomei.common.dto.PageQuery;
 import com.foomei.common.dto.ResponseResult;
 import com.foomei.common.mapper.BeanMapper;
 import com.foomei.core.dto.MessageDto;
 import com.foomei.core.entity.Message;
 import com.foomei.core.service.MessageService;
-import com.google.common.collect.Maps;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +28,7 @@ public class MessageEndpoint {
   private MessageService messageService;
 
   static {
-    Map<String, String> mapFields = Maps.newHashMap();
+    Map<String, String> mapFields = MapUtil.newHashMap();
     mapFields.put("text.content", "content");
     mapFields.put("text.sender", "sender");
     mapFields.put("text.createTime", "createTime");

@@ -7,8 +7,6 @@ import com.foomei.common.io.FileUtil;
 import com.foomei.common.io.JdbcUtil;
 import com.foomei.common.text.FreeMarkerUtil;
 import com.foomei.common.text.TextValidator;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
@@ -105,7 +103,7 @@ public class JpaCodeUtil {
             records.add("DeleteRecord");
           }
 
-          Map<String, Object> params = Maps.newHashMap();
+          Map<String, Object> params = MapUtil.newHashMap();
           params.put("tableName", tableName);
           params.put("comment", StringUtils.isNotEmpty(tableComment) ? tableComment : model);
           params.put("package", packageName);
@@ -149,7 +147,7 @@ public class JpaCodeUtil {
         if (!entityFile.exists()) {
           FileUtil.makesureParentDirExists(entityFile);
 
-          Map<String, Object> params = Maps.newHashMap();
+          Map<String, Object> params = MapUtil.newHashMap();
           params.put("comment", StringUtils.isNotEmpty(tableComment) ? tableComment : model);
           params.put("package", packageName);
           params.put("model", model);
@@ -185,7 +183,7 @@ public class JpaCodeUtil {
         if (!daoFile.exists()) {
           FileUtil.makesureParentDirExists(daoFile);
 
-          Map<String, String> params = Maps.newHashMap();
+          Map<String, String> params = MapUtil.newHashMap();
           params.put("package", packageName);
           params.put("model", model);
           params.put("idType", getIdType(columns));
@@ -217,7 +215,7 @@ public class JpaCodeUtil {
         if (!serviceFile.exists()) {
           FileUtil.makesureParentDirExists(serviceFile);
 
-          Map<String, String> params = Maps.newHashMap();
+          Map<String, String> params = MapUtil.newHashMap();
           params.put("package", packageName);
           params.put("model", model);
           params.put("idType", getIdType(columns));
@@ -251,7 +249,7 @@ public class JpaCodeUtil {
         if (!controllerFile.exists()) {
           FileUtil.makesureParentDirExists(controllerFile);
 
-          Map<String, String> params = Maps.newHashMap();
+          Map<String, String> params = MapUtil.newHashMap();
           params.put("folder", StringUtils.substringAfterLast(packageName, "."));
           params.put("comment", StringUtils.isNotEmpty(tableComment) ? tableComment : model);
           params.put("package", packageName);
@@ -288,7 +286,7 @@ public class JpaCodeUtil {
         if (!endpointFile.exists()) {
           FileUtil.makesureParentDirExists(endpointFile);
 
-          Map<String, String> params = Maps.newHashMap();
+          Map<String, String> params = MapUtil.newHashMap();
           params.put("comment", StringUtils.isNotEmpty(tableComment) ? tableComment : model);
           params.put("package", packageName);
           params.put("variable", toVariable(tableName, tablePrefix));
@@ -324,7 +322,7 @@ public class JpaCodeUtil {
         if (!listPageFile.exists()) {
           FileUtil.makesureParentDirExists(listPageFile);
 
-          Map<String, Object> params = Maps.newHashMap();
+          Map<String, Object> params = MapUtil.newHashMap();
           params.put("folder", StringUtils.substringAfterLast(packageName, "."));
           params.put("comment", StringUtils.isNotEmpty(tableComment) ? tableComment : toModel(tableName, tablePrefix));
           params.put("variable", toVariable(tableName, tablePrefix));
@@ -360,7 +358,7 @@ public class JpaCodeUtil {
         if (!formPageFile.exists()) {
           FileUtil.makesureParentDirExists(formPageFile);
 
-          Map<String, Object> params = Maps.newHashMap();
+          Map<String, Object> params = MapUtil.newHashMap();
           params.put("folder", StringUtils.substringAfterLast(packageName, "."));
           params.put("comment", StringUtils.isNotEmpty(tableComment) ? tableComment : toModel(tableName, tablePrefix));
           params.put("variable", toVariable(tableName, tablePrefix));
@@ -494,7 +492,7 @@ public class JpaCodeUtil {
   }
 
   public static Map<String, String> toProps(List<Map<String, String>> columnDefines) {
-    Map<String, String> fields = Maps.newLinkedHashMap();
+    Map<String, String> fields = MapUtil.newSortedMap();
     for (Map<String, String> columnDefine : columnDefines) {
       String columnName = columnDefine.get("column");
       if (!StringUtils.equalsIgnoreCase(columnName, "id")) {
@@ -505,7 +503,7 @@ public class JpaCodeUtil {
   }
 
   public static List<String> toConsts(List<Map<String, String>> columnDefines) {
-    List<String> fields = Lists.newArrayList();
+    List<String> fields = ListUtil.newArrayList();
     for (Map<String, String> columnDefine : columnDefines) {
       String columnName = columnDefine.get("column");
       String consts = StringUtils.substringBetween(columnDefine.get("comment"), "(", ")");
@@ -524,7 +522,7 @@ public class JpaCodeUtil {
   }
 
   public static Map<String, Pair<String, String>> toFields(List<Map<String, String>> columnDefines) {
-    Map<String, Pair<String, String>> fields = Maps.newLinkedHashMap();
+    Map<String, Pair<String, String>> fields = MapUtil.newSortedMap();
     for (Map<String, String> columnDefine : columnDefines) {
       String columnName = columnDefine.get("column");
       String comment = columnDefine.get("comment");
@@ -540,7 +538,7 @@ public class JpaCodeUtil {
   }
 
   public static Map<String, Pair<String, String>> toFieldDtos(List<Map<String, String>> columnDefines) {
-    Map<String, Pair<String, String>> fields = Maps.newLinkedHashMap();
+    Map<String, Pair<String, String>> fields = MapUtil.newSortedMap();
     for (Map<String, String> columnDefine : columnDefines) {
       String columnName = columnDefine.get("column");
       String comment = columnDefine.get("comment");
@@ -555,7 +553,7 @@ public class JpaCodeUtil {
   }
 
   public static Map<String, Pair<String, String>> toFieldLists(List<Map<String, String>> columnDefines) {
-    Map<String, Pair<String, String>> fields = Maps.newLinkedHashMap();
+    Map<String, Pair<String, String>> fields = MapUtil.newSortedMap();
     for (Map<String, String> columnDefine : columnDefines) {
       String columnName = columnDefine.get("column");
       String comment = StringUtils.substringBefore(columnDefine.get("comment"), "(");
@@ -570,7 +568,7 @@ public class JpaCodeUtil {
   }
 
   public static Map<String, List<Pair<String, String>>> toFieldConsts(List<Map<String, String>> columnDefines) {
-    Map<String, List<Pair<String, String>>> fields = Maps.newLinkedHashMap();
+    Map<String, List<Pair<String, String>>> fields = MapUtil.newSortedMap();
     for (Map<String, String> columnDefine : columnDefines) {
       String columnName = columnDefine.get("column");
       String consts = StringUtils.substringBetween(columnDefine.get("comment"), "(", ")");
@@ -592,7 +590,7 @@ public class JpaCodeUtil {
   }
 
   public static Map<String, String> toFieldNotBlanks(List<Map<String, String>> columnDefines) {
-    Map<String, String> fields = Maps.newLinkedHashMap();
+    Map<String, String> fields = MapUtil.newSortedMap();
     for (Map<String, String> columnDefine : columnDefines) {
       String columnName = columnDefine.get("column");
       String comment = StringUtils.substringBefore(columnDefine.get("comment"), "(");
@@ -605,7 +603,7 @@ public class JpaCodeUtil {
   }
 
   public static Map<String, Pair<Long, String>> toFieldSizes(List<Map<String, String>> columnDefines) {
-    Map<String, Pair<Long, String>> fields = Maps.newLinkedHashMap();
+    Map<String, Pair<Long, String>> fields = MapUtil.newSortedMap();
     for (Map<String, String> columnDefine : columnDefines) {
       String columnName = columnDefine.get("column");
       String comment = StringUtils.substringBefore(columnDefine.get("comment"), "(");
@@ -618,7 +616,7 @@ public class JpaCodeUtil {
   }
 
   public static Map<String, List<String>> toFieldValidateRules(List<Map<String, String>> columnDefines) {
-    Map<String, List<String>> fields = Maps.newLinkedHashMap();
+    Map<String, List<String>> fields = MapUtil.newSortedMap();
     for (Map<String, String> columnDefine : columnDefines) {
       String columnName = columnDefine.get("column");
       String consts = StringUtils.substringBetween(columnDefine.get("comment"), "(", ")");
@@ -657,7 +655,7 @@ public class JpaCodeUtil {
   }
 
   public static Map<String, List<String>> toFieldLayVerifys(List<Map<String, String>> columnDefines) {
-    Map<String, List<String>> fields = Maps.newLinkedHashMap();
+    Map<String, List<String>> fields = MapUtil.newSortedMap();
     for (Map<String, String> columnDefine : columnDefines) {
       String columnName = columnDefine.get("column");
       String consts = StringUtils.substringBetween(columnDefine.get("comment"), "(", ")");

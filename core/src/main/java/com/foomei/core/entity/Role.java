@@ -1,8 +1,8 @@
 package com.foomei.core.entity;
 
 import com.foomei.common.collection.CollectionExtractor;
+import com.foomei.common.collection.ListUtil;
 import com.foomei.common.entity.IdEntity;
-import com.google.common.collect.Lists;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -40,7 +40,7 @@ public class Role extends IdEntity {
   @JoinTable(name = "Core_Role_Permission", joinColumns = {@JoinColumn(name = "roleId")}, inverseJoinColumns = {@JoinColumn(name = "permissionId")})
   @Fetch(FetchMode.SUBSELECT)
   @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-  private List<Permission> permissionList = Lists.newArrayList(); // 有序的关联对象集合
+  private List<Permission> permissionList = ListUtil.newArrayList(); // 有序的关联对象集合
 
   public Role(Long id) {
     this.id = id;

@@ -1,15 +1,13 @@
 package com.foomei.common.test.log;
 
-import java.util.List;
-
-import org.slf4j.LoggerFactory;
-
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
-
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.UnsynchronizedAppenderBase;
+import com.foomei.common.collection.ListUtil;
+import com.google.common.collect.Iterables;
+import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 /**
  * 在List中保存日志的Appender, 用于测试Logback的日志输出.
@@ -20,7 +18,7 @@ import ch.qos.logback.core.UnsynchronizedAppenderBase;
  */
 public class LogbackListAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
 
-	private final List<ILoggingEvent> logs = Lists.newArrayList();
+	private final List<ILoggingEvent> logs = ListUtil.newArrayList();
 
 	public LogbackListAppender() {
 		start();

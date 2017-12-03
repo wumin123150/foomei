@@ -1,33 +1,23 @@
 package com.foomei.common.text;
 
+import com.foomei.common.collection.ListUtil;
+import com.foomei.common.time.DateFormatUtil;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.hssf.usermodel.*;
+import org.apache.poi.xssf.usermodel.*;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFCellStyle;
-import org.apache.poi.hssf.usermodel.HSSFDateUtil;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.xssf.usermodel.XSSFCell;
-import org.apache.poi.xssf.usermodel.XSSFCellStyle;
-import org.apache.poi.xssf.usermodel.XSSFRow;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
-import com.foomei.common.time.DateFormatUtil;
-import com.google.common.collect.Lists;
-
 public class ExcelUtil {
 
 	public static List<List<List<String>>> readXlsx(InputStream is) throws IOException {
 		XSSFWorkbook xssfWorkbook = new XSSFWorkbook(is);
 
-		List<List<List<String>>> result = Lists.newArrayList();
+		List<List<List<String>>> result = ListUtil.newArrayList();
 		// 循环工作表Sheet
 		for (int numSheet = 0; numSheet < xssfWorkbook.getNumberOfSheets(); numSheet++) {
 			List<List<String>> sheet = readXlsx(xssfWorkbook, numSheet);
@@ -47,7 +37,7 @@ public class ExcelUtil {
 	}
 
 	public static List<List<String>> readXlsx(XSSFWorkbook xssfWorkbook, int sheet) throws IOException {
-		List<List<String>> result = Lists.newArrayList();
+		List<List<String>> result = ListUtil.newArrayList();
 
 		XSSFSheet xssfSheet = xssfWorkbook.getSheetAt(sheet);
 		if (xssfSheet != null) {
@@ -58,7 +48,7 @@ public class ExcelUtil {
 					continue;
 				}
 
-				List<String> row = Lists.newArrayList();
+				List<String> row = ListUtil.newArrayList();
 				// 循环列Cell
 				for (int cellNum = 0; cellNum <= xssfRow.getLastCellNum(); cellNum++) {
 					XSSFCell xssfCell = xssfRow.getCell(cellNum);
@@ -175,7 +165,7 @@ public class ExcelUtil {
 	public static List<List<List<String>>> readXls(InputStream is) throws IOException {
 		HSSFWorkbook hssfWorkbook = new HSSFWorkbook(is);
 
-		List<List<List<String>>> result = Lists.newArrayList();
+		List<List<List<String>>> result = ListUtil.newArrayList();
 		// 循环工作表Sheet
 		for (int numSheet = 0; numSheet < hssfWorkbook.getNumberOfSheets(); numSheet++) {
 			List<List<String>> sheet = readXls(hssfWorkbook, numSheet);
@@ -195,7 +185,7 @@ public class ExcelUtil {
 	}
 
 	public static List<List<String>> readXls(HSSFWorkbook hssfWorkbook, int sheet) throws IOException {
-		List<List<String>> result = Lists.newArrayList();
+		List<List<String>> result = ListUtil.newArrayList();
 
 		HSSFSheet hssfSheet = hssfWorkbook.getSheetAt(sheet);
 		if (hssfSheet != null) {
@@ -206,7 +196,7 @@ public class ExcelUtil {
 					continue;
 				}
 
-				List<String> row = Lists.newArrayList();
+				List<String> row = ListUtil.newArrayList();
 				// 循环列Cell
 				for (int cellNum = 0; cellNum <= hssfRow.getLastCellNum(); cellNum++) {
 					HSSFCell hssfCell = hssfRow.getCell(cellNum);

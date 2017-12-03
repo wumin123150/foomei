@@ -1,10 +1,10 @@
 package com.foomei.core.service;
 
+import com.foomei.common.collection.ListUtil;
 import com.foomei.common.service.impl.JpaServiceImpl;
 import com.foomei.core.dao.jpa.DataDictionaryDao;
 import com.foomei.core.entity.DataDictionary;
 import com.foomei.core.entity.DataType;
-import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -57,7 +57,7 @@ public class DataDictionaryService extends JpaServiceImpl<DataDictionary, Long> 
     if (parent != null) {
       return dataDictionaryDao.findChildrenByParent(parent.getId());
     }
-    return Lists.newArrayList();
+    return ListUtil.newArrayList();
   }
 
   public Page<DataDictionary> getPage(final String searchKey, final Long typeId, final Long parentId, Pageable page) {

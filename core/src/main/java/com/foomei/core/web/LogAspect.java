@@ -3,13 +3,13 @@ package com.foomei.core.web;
 import com.foomei.common.base.ObjectUtil;
 import com.foomei.common.base.annotation.LogIgnore;
 import com.foomei.common.collection.ArrayUtil;
+import com.foomei.common.collection.ListUtil;
 import com.foomei.common.collection.MapUtil;
 import com.foomei.common.mapper.JsonMapper;
 import com.foomei.common.net.IPUtil;
 import com.foomei.common.net.RequestUtil;
 import com.foomei.core.entity.Log;
 import com.foomei.core.service.LogService;
-import com.google.common.collect.Lists;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.lang3.StringUtils;
@@ -93,7 +93,7 @@ public class LogAspect {
       logger.debug("doAround>>>result={},耗时：{}", result, endTime - startTime);
     }
 
-    List<String> excludes = Lists.newArrayList();
+    List<String> excludes = ListUtil.newArrayList();
     if (logIgnore != null && StringUtils.equals("field", logIgnore.value())) {
       excludes = ArrayUtil.asList(logIgnore.excludes());
     }

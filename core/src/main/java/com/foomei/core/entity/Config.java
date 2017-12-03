@@ -1,20 +1,15 @@
 package com.foomei.core.entity;
 
 import com.foomei.common.entity.IdEntity;
-import com.foomei.common.mapper.JsonMapper;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import javax.persistence.Transient;
-import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * 系统配置
@@ -47,14 +42,6 @@ public class Config extends IdEntity {
 
   public Config(Long id) {
     this.id = id;
-  }
-
-  @Transient
-  public Map getOptions() {
-    if (StringUtils.isNotEmpty(params)) {
-      return JsonMapper.INSTANCE.fromJson(params, Map.class);
-    }
-    return null;
   }
 
 }

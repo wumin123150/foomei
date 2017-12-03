@@ -86,7 +86,8 @@
                                   </c:when>
                                   <c:when test="${config.type eq 2}">
                                     <div class="radio">
-                                      <c:forEach items="${config.options}" var="option">
+                                      <c:if test="${not empty options[status.index]}">
+                                      <c:forEach items="${options[status.index]}" var="option">
                                         <label>
                                           <input type="radio" name="configs[${status.index}].value" class="ace" value="${option.key}"
                                             <c:if test="${config.value eq option.key}"> checked</c:if>
@@ -94,12 +95,14 @@
                                           <span class="lbl">${option.value}</span>
                                         </label>
                                       </c:forEach>
+                                      </c:if>
                                     </div>
                                   </c:when>
                                   <c:when test="${config.type eq 3}">
                                     <div class="checkbox">
                                       <c:set value="${fn:split(config.value, ',')}" var="values"/>
-                                      <c:forEach items="${config.options}" var="option">
+                                      <c:if test="${not empty options[status.index]}">
+                                      <c:forEach items="${options[status.index]}" var="option">
                                         <c:set value="false" var="selectedConfig"/>
                                         <c:forEach items="${values}" var="value">
                                           <c:if test="${value eq option.key}">
@@ -113,21 +116,25 @@
                                           <span class="lbl">${option.value}</span>
                                         </label>
                                       </c:forEach>
+                                      </c:if>
                                     </div>
                                   </c:when>
                                   <c:when test="${config.type eq 4}">
                                     <select name="configs[${status.index}].value" id="form-${config.code}" class="form-control"
                                       <c:if test="${not config.editable}"> readonly="true"</c:if>>
-                                      <c:forEach items="${config.options}" var="option">
+                                      <c:if test="${not empty options[status.index]}">
+                                      <c:forEach items="${options[status.index]}" var="option">
                                         <option value="${option.key}" <c:if test="${config.value eq option.key}"> selected</c:if>>${option.value}</option>
                                       </c:forEach>
+                                      </c:if>
                                     </select>
                                   </c:when>
                                   <c:when test="${config.type eq 5}">
                                     <c:set value="${fn:split(config.value, ',')}" var="values"/>
                                     <select name="configs[${status.index}].value" id="form-${config.code}" class="form-control" multiple
                                       <c:if test="${not config.editable}"> readonly="true"</c:if>>
-                                      <c:forEach items="${config.options}" var="option">
+                                      <c:if test="${not empty options[status.index]}">
+                                      <c:forEach items="${options[status.index]}" var="option">
                                         <c:set value="false" var="selectedConfig"/>
                                         <c:forEach items="${values}" var="value">
                                           <c:if test="${value eq option.key}">
@@ -136,6 +143,7 @@
                                         </c:forEach>
                                         <option value="${option.key}" <c:if test="${selectedConfig}"> selected</c:if>>${option.value}</option>
                                       </c:forEach>
+                                      </c:if>
                                     </select>
                                   </c:when>
                                 </c:choose>

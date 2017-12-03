@@ -1,8 +1,8 @@
 package com.foomei.core.entity;
 
 import com.foomei.common.collection.CollectionExtractor;
+import com.foomei.common.collection.ListUtil;
 import com.foomei.common.entity.IdEntity;
-import com.google.common.collect.Lists;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -91,7 +91,7 @@ public class User extends IdEntity {
   @OrderBy("id ASC")
   // 缓存策略
   @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-  private List<UserGroup> groupList = Lists.newArrayList();
+  private List<UserGroup> groupList = ListUtil.newArrayList();
   // 多对多定义
   @ManyToMany
   @JoinTable(name = "Core_User_Role", joinColumns = {@JoinColumn(name = "user_id")}, inverseJoinColumns = {@JoinColumn(name = "role_id")})
@@ -101,7 +101,7 @@ public class User extends IdEntity {
   @OrderBy("id ASC")
   // 缓存策略
   @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-  private List<Role> roleList = Lists.newArrayList(); // 有序的关联对象集合
+  private List<Role> roleList = ListUtil.newArrayList(); // 有序的关联对象集合
 
   @Transient
   private String plainPassword;

@@ -1,12 +1,12 @@
 package com.foomei.core.web;
 
+import com.foomei.common.collection.MapUtil;
 import com.foomei.common.dto.ResponseResult;
 import com.foomei.common.mapper.JsonMapper;
 import com.foomei.common.net.IPUtil;
 import com.foomei.common.net.RequestUtil;
 import com.foomei.common.service.impl.ServiceException;
 import com.foomei.common.web.MediaTypes;
-import com.google.common.collect.Maps;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -50,7 +50,7 @@ public class ApiExceptionHandler {
   // }
 
   public void logError(Exception ex, HttpServletRequest request) {
-    Map<String, String> map = Maps.newHashMap();
+    Map<String, String> map = MapUtil.newHashMap();
     map.put("message", ex.getMessage());
     map.put("from", IPUtil.getIp(request));
     map.put("path", RequestUtil.getLocation(request));
