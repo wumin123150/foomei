@@ -49,7 +49,7 @@
           <a href="javascript:;" class="mobileAddTab" data-url="${ctx}/admin/changeAccount"><i class="iconfont icon-shezhi" data-icon="icon-shezhi"></i><cite>设置</cite></a>
         </li>
         <li class="layui-nav-item" mobile>
-          <a href="page/login/login.html" class="signOut"><i class="iconfont icon-zhuxiao"></i> 退出</a>
+          <a href="${ctx}/logout" class="signOut"><i class="iconfont icon-zhuxiao"></i> 退出</a>
         </li>
         <li class="layui-nav-item screenfull" pc>
           <a href="javascript:;"><i class="iconfont icon-full"></i><cite>全屏</cite></a>

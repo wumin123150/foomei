@@ -23,7 +23,7 @@
   <form class="layui-form" lay-filter="kit-search-form">
     <div class="kit-table-header">
       <div class="kit-search-btns">
-        <a href="javascript:;" data-action="add" class="layui-btn layui-btn-small"><i class="layui-icon">&#xe608;</i>新增</a>
+        <a href="javascript:;" data-action="add" class="layui-btn layui-btn-sm"><i class="layui-icon">&#xe608;</i>新增</a>
       </div>
       <div class="kit-search-inputs">
         <div class="kit-search-keyword">
@@ -36,8 +36,8 @@
   <div class="kit-table-body">
     <table id="kit-table" lay-filter="kit-table"></table>
     <script type="text/html" id="kit-table-bar">
-      <a class="layui-btn layui-btn-mini" lay-event="edit">修改</a>
-      <a class="layui-btn layui-btn-danger layui-btn-mini" lay-event="del">删除</a>
+      <a class="layui-btn layui-btn-xs" lay-event="edit">修改</a>
+      <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
     </script>
     <#list fields?keys as k>
     <#if fieldConsts?keys?seq_contains(k)>
@@ -161,6 +161,9 @@
                 tips: 3
               });
             },1000)
+          },
+          end: function() {
+            kitTable.reload();
           }
         })
         //改变窗口大小时，重置弹窗的高度，防止超出可视区域（如F12调出debug的操作）
@@ -188,6 +191,9 @@
                   tips: 3
                 });
               },1000)
+            },
+            end: function() {
+              kitTable.reload();
             }
           })
           //改变窗口大小时，重置弹窗的高度，防止超出可视区域（如F12调出debug的操作）

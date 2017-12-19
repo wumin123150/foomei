@@ -27,7 +27,7 @@
     <label class="layui-form-label">${fields[k].second}<#if fieldLayVerifys?keys?seq_contains(k)><#if fieldLayVerifys[k]?seq_contains("required")><span class="input-required">*</span></#if></#if></label>
     <div class="layui-input-block">
     <#if fieldConsts?keys?seq_contains(k)>
-    <select name="${k}" data-placeholder="${fields[k].second}">
+    <select name="${k}" id="${k}" data-placeholder="${fields[k].second}">
     <#list fieldConsts[k] as value>
     <#if fields[k].first == 'String'>
     <option value="${value.first}" <c:if test="${r'${'}${variable}.${k} eq '${value.first}'}">selected</c:if>>${value.second}</option>
@@ -37,11 +37,11 @@
     </#list>
     </select>
     <#elseif fields[k].first == 'java.time.LocalDate' || fields[k].first == 'java.time.LocalDateTime'>
-    <input type="text" name="${k}" value="<fmt:formatDate value='${r'${'}${variable}.${k}}'/>"<#if fieldLayVerifys?keys?seq_contains(k)> lay-verify="${fieldLayVerifys[k]?join('|')}"</#if> placeholder="${fields[k].second}" placeholder="${fields[k].second}" autocomplete="off" class="layui-input date-picker">
+    <input type="text" name="${k}" id="${k}" value="<fmt:formatDate value='${r'${'}${variable}.${k}}'/>"<#if fieldLayVerifys?keys?seq_contains(k)> lay-verify="${fieldLayVerifys[k]?join('|')}"</#if> placeholder="${fields[k].second}" placeholder="${fields[k].second}" autocomplete="off" class="layui-input date-picker">
     <#elseif fieldSizes?keys?seq_contains(k) && fieldSizes[k].first gt 64>
-    <textarea name="${k}"<#if fieldLayVerifys?keys?seq_contains(k)> lay-verify="${fieldLayVerifys[k]?join('|')}"</#if> placeholder="${fields[k].second}" placeholder='${fields[k].second}' class="layui-textarea">${r'${'}${variable}.${k}}</textarea>
+    <textarea name="${k}" id="${k}"<#if fieldLayVerifys?keys?seq_contains(k)> lay-verify="${fieldLayVerifys[k]?join('|')}"</#if> placeholder="${fields[k].second}" placeholder='${fields[k].second}' class="layui-textarea">${r'${'}${variable}.${k}}</textarea>
     <#else>
-    <input type="text" name="${k}" value="${r'${'}${variable}.${k}}"<#if fieldLayVerifys?keys?seq_contains(k)> lay-verify="${fieldLayVerifys[k]?join('|')}"</#if> placeholder="${fields[k].second}" autocomplete="off" class="layui-input">
+    <input type="text" name="${k}" id="${k}" value="${r'${'}${variable}.${k}}"<#if fieldLayVerifys?keys?seq_contains(k)> lay-verify="${fieldLayVerifys[k]?join('|')}"</#if> placeholder="${fields[k].second}" autocomplete="off" class="layui-input">
     </#if>
     </div>
   </div>
@@ -62,9 +62,18 @@
     $ = layui.jquery,
     laydate = layui.laydate;
 
+    <#list fields?keys as k>
+    <#if fields[k].first == 'java.time.LocalDate'>
     laydate.render({
-      elem: '.date-picker'
+      elem: '#${k}'
     });
+    <#elseif fields[k].first == 'java.time.LocalDateTime'>
+    laydate.render({
+      elem: '#${k}',
+      type: 'datetime'
+    });
+    </#if>
+    </#list>
 
     form.verify({
 
@@ -83,8 +92,6 @@
           if (result.success) {
             loadIndex && layer.close(loadIndex);
             layer.msg('保存成功', {icon: 1});
-            parent.layer.closeAll("iframe");
-            parent.location.reload();
           } else {
             loadIndex && layer.close(loadIndex);
             if(result.data) {

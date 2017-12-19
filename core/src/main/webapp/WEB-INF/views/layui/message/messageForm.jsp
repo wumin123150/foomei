@@ -76,7 +76,6 @@
             loadIndex && layer.close(loadIndex);
             layer.msg('保存成功', {icon: 1});
             parent.layer.closeAll("iframe");
-            parent.location.reload();
           } else {
             loadIndex && layer.close(loadIndex);
             if(result.data) {

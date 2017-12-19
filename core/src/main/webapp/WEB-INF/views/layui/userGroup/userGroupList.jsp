@@ -185,6 +185,10 @@
                 tips: 3
               });
             },1000)
+          },
+          end: function() {
+            kitTable.reload();
+            reloadTree();
           }
         })
         //改变窗口大小时，重置弹窗的高度，防止超出可视区域（如F12调出debug的操作）
@@ -221,6 +225,10 @@
                 tips: 3
               });
             },1000)
+          },
+          end: function() {
+            kitTable.reload();
+            reloadTree();
           }
         })
         //改变窗口大小时，重置弹窗的高度，防止超出可视区域（如F12调出debug的操作）

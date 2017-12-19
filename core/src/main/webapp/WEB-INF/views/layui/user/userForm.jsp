@@ -131,7 +131,7 @@
   <div class="layui-form-item">
     <label class="layui-form-label">归属部门</label>
     <div class="layui-input-inline" style="margin-right: 0px;">
-      <input type="text" name="groups" id="groups" class="hide"/>
+      <input type="text" name="groups" id="groups" class="layui-hide"/>
       <input type="text" name="groupNames" id="groupNames" value="${user.groupNames}" placeholder="归属部门" class="layui-input" disabled/>
     </div>
     <div class="layui-input-inline" style="width: inherit;">
@@ -226,7 +226,6 @@
             loadIndex && layer.close(loadIndex);
             layer.msg('保存成功', {icon: 1});
             parent.layer.closeAll("iframe");
-            parent.location.reload();
           } else {
             loadIndex && layer.close(loadIndex);
             if(result.data) {

@@ -170,7 +170,7 @@
           layer.open({
             type: 1,
             title: "分配用户",
-            shadeClose: true,
+            shade: 0,
             area: ['500px', '240px'],
             content: $('#dialog-container').html(),
             btn: [ '确认', '取消' ],
