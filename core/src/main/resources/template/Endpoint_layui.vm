@@ -42,7 +42,7 @@ public class ${model}Endpoint {
 
   @ApiOperation(value = "${comment}保存", httpMethod = "POST", produces = "application/json")
   @RequestMapping(value = "save", method = RequestMethod.POST)
-  public ResponseResult<${model}Dto> create(${model}Dto ${variable}Dto) {
+  public ResponseResult<${model}Dto> save(${model}Dto ${variable}Dto) {
     ComplexResult result = validate(${variable}Dto);
     if (!result.isSuccess()) {
       return ResponseResult.createParamError(result);
