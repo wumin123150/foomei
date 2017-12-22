@@ -95,13 +95,16 @@
     //监听搜索表单提交
     form.on('submit(search)', function (data) {
       kitTable.reload({
+        page: {
+          curr: 1 //重新从第1页开始
+        },
         where: data.field
       });
       return false;
     });
     //监听排序
     table.on('sort(' + tableFilter + ')', function (obj) {
-      table.reload(tableId, {
+      kitTable.reload({
         initSort: obj,
         where: {
           sortBy: obj.field,
