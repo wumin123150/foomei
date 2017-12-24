@@ -3,7 +3,6 @@ package com.foomei.core.web.api;
 import com.baidu.unbiz.fluentvalidator.*;
 import com.baidu.unbiz.fluentvalidator.jsr303.HibernateSupportedValidator;
 import com.foomei.common.collection.ListUtil;
-import com.foomei.common.collection.MapUtil;
 import com.foomei.common.dto.ErrorCodeFactory;
 import com.foomei.common.dto.PageQuery;
 import com.foomei.common.dto.ResponseResult;
@@ -28,7 +27,6 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Validation;
 import java.util.List;
-import java.util.Map;
 
 @Api(description = "机构接口")
 @RestController
@@ -39,12 +37,6 @@ public class UserGroupEndpoint {
   private UserService userService;
   @Autowired
   private UserGroupService userGroupService;
-
-  static {
-    Map<String, String> mapFields = MapUtil.newHashMap();
-    mapFields.put("director.id", "directorId");
-    BeanMapper.registerClassMap(UserGroup.class, UserGroupVo.class, mapFields);
-  }
 
   @ApiOperation(value = "根据父节点ID获取机构列表", httpMethod = "GET", produces = "application/json")
   @RequiresRoles("admin")
@@ -97,9 +89,6 @@ public class UserGroupEndpoint {
     UserGroup userGroup = null;
     if(userGroupVo.getId() == null) {
       userGroup = BeanMapper.map(userGroupVo, UserGroup.class);
-      if(userGroupVo.getDirectorId() == null) {
-        userGroup.setDirector(null);
-      }
 
       UserGroup parent = null;
       if (userGroup.getParentId() != null) {
@@ -119,9 +108,6 @@ public class UserGroupEndpoint {
     } else {
       userGroup = userGroupService.get(userGroupVo.getId());
       BeanMapper.map(userGroupVo, userGroup, UserGroupVo.class, UserGroup.class);
-      if(userGroupVo.getDirectorId() == null) {
-        userGroup.setDirector(null);
-      }
     }
 
     userGroupService.save(userGroup);

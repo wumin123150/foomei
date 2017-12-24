@@ -1,8 +1,16 @@
 package com.foomei.core.vo;
 
+import com.foomei.common.collection.CollectionExtractor;
+import com.foomei.common.collection.ListUtil;
+import com.foomei.common.mapper.BeanMapper;
+import com.foomei.common.mapper.FieldsMapper;
+import com.foomei.core.entity.Role;
+import com.foomei.core.entity.User;
+import com.foomei.core.entity.UserGroup;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -45,5 +53,36 @@ public class UserVo {
   private List<Long> roles;
   @ApiModelProperty(value = "机构")
   private List<Long> groups;
+
+  static {
+    BeanMapper.registerClassMap(User.class, UserVo.class, ListUtil.newArrayList("password"), new FieldsMapper<User, UserVo>() {
+      @Override
+      public void map(User user, UserVo userVo) {
+        if(ListUtil.isNotEmpty(user.getRoleList())) {
+          userVo.setRoles(CollectionExtractor.extractToList(user.getRoleList(), Role.PROP_ID));
+        }
+        if(ListUtil.isNotEmpty(user.getGroupList())) {
+          userVo.setGroups(CollectionExtractor.extractToList(user.getGroupList(), UserGroup.PROP_ID));
+        }
+      }
+
+      @Override
+      public void reverseMap(UserVo userVo, User user) {
+        if(StringUtils.isNotEmpty(userVo.getPassword())) {
+          user.setPlainPassword(user.getPassword());
+        }
+        if(ListUtil.isNotEmpty(userVo.getRoles())) {
+          user.setRoleList(CollectionExtractor.injectToList(userVo.getRoles(), Role.class));
+        } else {
+          user.setRoleList(ListUtil.<Role>emptyList());
+        }
+        if(ListUtil.isNotEmpty(userVo.getGroups())) {
+          user.setGroupList(CollectionExtractor.injectToList(userVo.getGroups(), UserGroup.class));
+        } else {
+          user.setGroupList(ListUtil.<UserGroup>emptyList());
+        }
+      }
+    });
+  }
 
 }

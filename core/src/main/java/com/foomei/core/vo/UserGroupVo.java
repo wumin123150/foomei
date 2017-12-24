@@ -1,6 +1,12 @@
 package com.foomei.core.vo;
 
+import com.foomei.common.collection.CollectionExtractor;
 import com.foomei.common.collection.ListUtil;
+import com.foomei.common.mapper.BeanMapper;
+import com.foomei.common.mapper.FieldsMapper;
+import com.foomei.core.entity.BaseUser;
+import com.foomei.core.entity.Role;
+import com.foomei.core.entity.UserGroup;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -33,5 +39,33 @@ public class UserGroupVo {
   private String remark;
   @ApiModelProperty(value = "角色ID")
   private List<Long> roles = ListUtil.newArrayList();
+
+  static {
+    BeanMapper.registerClassMap(UserGroup.class, UserGroupVo.class, new FieldsMapper<UserGroup, UserGroupVo>() {
+      @Override
+      public void map(UserGroup userGroup, UserGroupVo userGroupVo) {
+        if(userGroup.getDirector() != null) {
+          userGroupVo.setDirectorId(userGroup.getDirector().getId());
+        }
+        if(ListUtil.isNotEmpty(userGroup.getRoleList())) {
+          userGroupVo.setRoles(CollectionExtractor.extractToList(userGroup.getRoleList(), Role.PROP_ID));
+        }
+      }
+
+      @Override
+      public void reverseMap(UserGroupVo userGroupVo, UserGroup userGroup) {
+        if(userGroupVo.getDirectorId() != null) {
+          userGroup.setDirector(new BaseUser(userGroupVo.getDirectorId()));
+        } else {
+          userGroup.setDirector(null);
+        }
+        if(ListUtil.isNotEmpty(userGroupVo.getRoles())) {
+          userGroup.setRoleList(CollectionExtractor.injectToList(userGroupVo.getRoles(), Role.class));
+        } else {
+          userGroup.setRoleList(ListUtil.<Role>emptyList());
+        }
+      }
+    });
+  }
 
 }

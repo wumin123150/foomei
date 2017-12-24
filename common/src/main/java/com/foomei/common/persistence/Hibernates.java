@@ -1,10 +1,21 @@
 package com.foomei.common.persistence;
 
+import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
+import java.util.Set;
 
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.sql.DataSource;
 
+import com.foomei.common.entity.IdEntity;
+import com.foomei.common.entity.UuidEntity;
+import com.foomei.common.reflect.ClassUtil;
+import com.foomei.common.reflect.ReflectionUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Hibernate;
 import org.hibernate.dialect.H2Dialect;
@@ -66,5 +77,51 @@ public class Hibernates {
 				}
 			}
 		}
+	}
+
+	public static <T> T lazyFields(T entity, String... fieldNames) {
+		if(entity == null)
+			return entity;
+
+		for (String fieldName : fieldNames) {
+			if(StringUtils.isNotEmpty(fieldName)) {
+				Field field = ClassUtil.getAccessibleField(entity.getClass(), fieldName);
+				entity = lazyField(entity, field);
+			}
+		}
+
+		return entity;
+	}
+
+	private static <T> T lazyField(T entity, Field field) {
+		if(entity == null || field == null)
+			return entity;
+
+		Object value = ReflectionUtil.getFieldValue(entity, field);
+		if(value == null)
+			return entity;
+
+		if(value instanceof IdEntity) {
+			Long id = ((IdEntity)value).getId();
+			if(id != null) {
+				Object lazyValue = ReflectionUtil.invokeConstructor(field.getType());
+				ReflectionUtil.setProperty(lazyValue, IdEntity.PROP_ID, id);
+				ReflectionUtil.setField(entity, field, lazyValue);
+			} else {
+				ReflectionUtil.setField(entity, field, null);
+			}
+		}
+		if(value instanceof UuidEntity) {
+			String id = ((UuidEntity)value).getId();
+			if(StringUtils.isNotEmpty(id)) {
+				Object lazyValue = ReflectionUtil.invokeConstructor(field.getType());
+				ReflectionUtil.setProperty(lazyValue, IdEntity.PROP_ID, id);
+				ReflectionUtil.setField(entity, field, lazyValue);
+			} else {
+				ReflectionUtil.setField(entity, field, null);
+			}
+		}
+
+		return entity;
 	}
 }

@@ -1,16 +1,15 @@
 package com.foomei.common.mapper;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import ma.glasnost.orika.BoundMapperFacade;
-import ma.glasnost.orika.MapperFacade;
-import ma.glasnost.orika.MapperFactory;
+import com.foomei.common.collection.ListUtil;
+import com.foomei.common.collection.MapUtil;
+import ma.glasnost.orika.*;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
 import ma.glasnost.orika.metadata.ClassMapBuilder;
 import ma.glasnost.orika.metadata.Type;
 import ma.glasnost.orika.metadata.TypeFactory;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * 简单封装orika, 实现深度的BeanOfClasssA<->BeanOfClassB复制
@@ -30,19 +29,77 @@ public class BeanMapper {
   }
 
   public static <S, D> void registerClassMap(Class<S> sourceClass, Class<D> destinationClass, boolean mapNulls, boolean mapNullsInReverse) {
-    registerClassMap(sourceClass, destinationClass, new HashMap<String, String>(), mapNulls, mapNullsInReverse);
+    registerClassMap(sourceClass, destinationClass, MapUtil.<String, String>emptyMap(), ListUtil.<String>emptyList(), null, mapNulls, mapNullsInReverse);
   }
 
   public static <S, D> void registerClassMap(Class<S> sourceClass, Class<D> destinationClass, Map<String, String> mapFields) {
-    registerClassMap(sourceClass, destinationClass, mapFields, true, true);
+    registerClassMap(sourceClass, destinationClass, mapFields, ListUtil.<String>emptyList(), null, true, true);
   }
 
-  public static <S, D> void registerClassMap(Class<S> sourceClass, Class<D> destinationClass, Map<String, String> mapFields, boolean mapNulls, boolean mapNullsInReverse) {
+//  public static <S, D> void registerClassMap(Class<S> sourceClass, Class<D> destinationClass, Mapper<S, D> customizedMapper) {
+//    registerClassMap(sourceClass, destinationClass, MapUtil.<String, String>emptyMap(), ListUtil.<String>emptyList(), customizedMapper, true, true);
+//  }
+//
+//  public static <S, D> void registerClassMap(Class<S> sourceClass, Class<D> destinationClass, Map<String, String> mapFields, Mapper<S, D> customizedMapper) {
+//    registerClassMap(sourceClass, destinationClass, mapFields, ListUtil.<String>emptyList(), customizedMapper, true, true);
+//  }
+//
+//  public static <S, D> void registerClassMap(Class<S> sourceClass, Class<D> destinationClass, List<String> excludeFields, Mapper<S, D> customizedMapper) {
+//    registerClassMap(sourceClass, destinationClass, MapUtil.<String, String>emptyMap(), excludeFields, customizedMapper, true, true);
+//  }
+//
+//  public static <S, D> void registerClassMap(Class<S> sourceClass, Class<D> destinationClass, Map<String, String> mapFields, List<String> excludeFields, Mapper<S, D> customizedMapper, boolean mapNulls, boolean mapNullsInReverse) {
+//    if (!mapperFactory.existsRegisteredMapper(TypeFactory.valueOf(sourceClass), TypeFactory.valueOf(destinationClass), false)) {
+//      ClassMapBuilder<S, D> builder = mapperFactory.classMap(sourceClass, destinationClass)
+//        .mapNulls(mapNulls).mapNullsInReverse(mapNullsInReverse);
+//      for (Map.Entry<String, String> entry : mapFields.entrySet()) {
+//        builder.field(entry.getKey(), entry.getValue());
+//      }
+//      for (String field : excludeFields) {
+//        builder.exclude(field);
+//      }
+//      if(customizedMapper != null) {
+//        builder.customize(customizedMapper);
+//      }
+//      builder.byDefault().register();
+//    }
+//  }
+
+  public static <S, D> void registerClassMap(Class<S> sourceClass, Class<D> destinationClass, FieldsMapper<S, D> fieldsMapper) {
+    registerClassMap(sourceClass, destinationClass, MapUtil.<String, String>emptyMap(), ListUtil.<String>emptyList(), fieldsMapper, true, true);
+  }
+
+  public static <S, D> void registerClassMap(Class<S> sourceClass, Class<D> destinationClass, Map<String, String> mapFields, FieldsMapper<S, D> fieldsMapper) {
+    registerClassMap(sourceClass, destinationClass, mapFields, ListUtil.<String>emptyList(), fieldsMapper, true, true);
+  }
+
+  public static <S, D> void registerClassMap(Class<S> sourceClass, Class<D> destinationClass, List<String> excludeFields, FieldsMapper<S, D> fieldsMapper) {
+    registerClassMap(sourceClass, destinationClass, MapUtil.<String, String>emptyMap(), excludeFields, fieldsMapper, true, true);
+  }
+
+  public static <S, D> void registerClassMap(Class<S> sourceClass, Class<D> destinationClass, Map<String, String> mapFields, List<String> excludeFields, final FieldsMapper<S, D> fieldsMapper, boolean mapNulls, boolean mapNullsInReverse) {
     if (!mapperFactory.existsRegisteredMapper(TypeFactory.valueOf(sourceClass), TypeFactory.valueOf(destinationClass), false)) {
       ClassMapBuilder<S, D> builder = mapperFactory.classMap(sourceClass, destinationClass)
         .mapNulls(mapNulls).mapNullsInReverse(mapNullsInReverse);
       for (Map.Entry<String, String> entry : mapFields.entrySet()) {
         builder.field(entry.getKey(), entry.getValue());
+      }
+      for (String field : excludeFields) {
+        builder.exclude(field);
+      }
+      if(fieldsMapper != null) {
+        builder.customize(new CustomMapper<S, D>() {
+          @Override
+          public void mapAtoB(S source, D destination, MappingContext context) {
+            super.mapAtoB(source, destination, context);
+            fieldsMapper.map(source, destination);
+          }
+          @Override
+          public void mapBtoA(D destination, S source, MappingContext context) {
+            super.mapBtoA(destination, source, context);
+            fieldsMapper.reverseMap(destination, source);
+          }
+        });
       }
       builder.byDefault().register();
     }

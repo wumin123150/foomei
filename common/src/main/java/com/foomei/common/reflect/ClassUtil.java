@@ -35,7 +35,7 @@ public class ClassUtil {
   private static final Map<Class<?>, Class<?>> primitiveWrapperTypeMap = new IdentityHashMap<Class<?>, Class<?>>(8);
 
   static {
-    primitiveWrapperTypeMap.put(Boolean.class, Boolean.TYPE);
+    ClassUtil.primitiveWrapperTypeMap.put(Boolean.class, Boolean.TYPE);
     ClassUtil.primitiveWrapperTypeMap.put(Byte.class, Byte.TYPE);
     ClassUtil.primitiveWrapperTypeMap.put(Character.class, Character.TYPE);
     ClassUtil.primitiveWrapperTypeMap.put(Double.class, Double.TYPE);
@@ -158,7 +158,6 @@ public class ClassUtil {
    */
   public static <T extends Annotation> Set<Field> getAnnotatedPublicFields(Class<? extends Object> clazz,
                                                                            Class<T> annotation) {
-
     if (Object.class.equals(clazz)) {
       return Collections.emptySet();
     }
@@ -218,10 +217,6 @@ public class ClassUtil {
     Method[] methods = clazz.getMethods();
 
     for (Method method : methods) {
-      if (StringUtils.equals(method.getName(), "setDao")) {
-        Annotation[] an = method.getAnnotations();
-        method.getAnnotation(annotation);
-      }
       // 如果当前方法有标注，或定义了该方法的所有接口有标注
       if (method.getAnnotation(annotation) != null || searchOnInterfaces(method, annotation, ifcs)) {
         annotatedMethods.add(method);

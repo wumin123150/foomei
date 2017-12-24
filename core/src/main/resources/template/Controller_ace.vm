@@ -1,7 +1,5 @@
 package ${package}.web.controller;
 
-import ${package}.entity.${model};
-import ${package}.service.${model}Service;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 <#if idType == 'String'>
@@ -13,6 +11,9 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import ${package}.entity.${model};
+import ${package}.service.${model}Service;
 
 import javax.validation.Valid;
 

@@ -1,13 +1,14 @@
 package ${package}.web.controller;
 
-import ${package}.entity.${model};
-import ${package}.service.${model}Service;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import ${package}.entity.${model};
+import ${package}.service.${model}Service;
 
 @Api(description = "${comment}管理")
 @Controller

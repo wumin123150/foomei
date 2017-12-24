@@ -44,7 +44,7 @@ public class ReflectionUtil {
 		Method method = ClassUtil.getSetterMethod(obj.getClass(), propertyName, value.getClass());
 		if (method == null) {
 			throw new IllegalArgumentException(
-					"Could not find getter method [" + propertyName + "] on target [" + obj + ']');
+					"Could not find setter method [" + propertyName + "] on target [" + obj + ']');
 		}
 		invokeMethod(obj, method, value);
 	}

@@ -2,7 +2,6 @@ package com.foomei.core.web.api;
 
 import com.baidu.unbiz.fluentvalidator.*;
 import com.baidu.unbiz.fluentvalidator.jsr303.HibernateSupportedValidator;
-import com.foomei.common.collection.MapUtil;
 import com.foomei.common.dto.PageQuery;
 import com.foomei.common.dto.ResponseResult;
 import com.foomei.common.mapper.BeanMapper;
@@ -36,7 +35,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Validation;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 @Api(description = "用户接口")
 @RestController
@@ -49,21 +47,6 @@ public class UserEndpoint {
   private BaseUserService baseUserService;
   @Autowired
   private AnnexService annexService;
-
-  static {
-    Map<String, String> mapFields = MapUtil.newHashMap();
-    mapFields.put("plainPassword", "password");
-    mapFields.put("roleList{id}", "roles{}");
-    mapFields.put("groupList{id}", "groups{}");
-    BeanMapper.registerClassMap(User.class, UserVo.class, mapFields);
-
-    Map<String, String> map2Fields = MapUtil.newHashMap();
-//    mapFields.put("roleList{id}", "roleIds{}");
-//    mapFields.put("groupList{id}", "groupIds{}");
-//    mapFields.put("roleList{name}", "roleNames{}");
-//    mapFields.put("groupList{name}", "groupNames{}");
-    BeanMapper.registerClassMap(User.class, UserDto.class, map2Fields);
-  }
 
   @ApiOperation(value = "用户智能搜索", notes = "按账号和名称查询", httpMethod = "GET", produces = "application/json")
   @RequestMapping(value = "search")

@@ -3,7 +3,6 @@ package com.foomei.core.web.api;
 import com.baidu.unbiz.fluentvalidator.*;
 import com.baidu.unbiz.fluentvalidator.jsr303.HibernateSupportedValidator;
 import com.foomei.common.collection.ListUtil;
-import com.foomei.common.collection.MapUtil;
 import com.foomei.common.dto.ErrorCodeFactory;
 import com.foomei.common.dto.PageQuery;
 import com.foomei.common.dto.ResponseResult;
@@ -11,7 +10,6 @@ import com.foomei.common.mapper.BeanMapper;
 import com.foomei.core.dto.DataDictionaryDto;
 import com.foomei.core.dto.TreeNodeDto;
 import com.foomei.core.entity.DataDictionary;
-import com.foomei.core.entity.DataType;
 import com.foomei.core.service.DataDictionaryService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -27,7 +25,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Validation;
 import java.util.List;
-import java.util.Map;
 
 @Api(description = "数据字典接口")
 @RestController
@@ -36,13 +33,6 @@ public class DataDictionaryEndpoint {
 
   @Autowired
   private DataDictionaryService dataDictionaryService;
-
-  static {
-    Map<String, String> mapFields = MapUtil.newHashMap();
-    mapFields.put("type.id", "typeId");
-    mapFields.put("type.code", "typeCode");
-    BeanMapper.registerClassMap(DataDictionary.class, DataDictionaryDto.class, mapFields);
-  }
 
   @ApiOperation(value = "根据数据类型和父节点获取数据字典列表", notes = "父节点为空时，获取数据类型下的所有内容", httpMethod = "GET", produces = "application/json")
   @ApiImplicitParams({
@@ -84,7 +74,6 @@ public class DataDictionaryEndpoint {
     DataDictionary dataDictionary = null;
     if(dictionaryDto.getId() == null) {
       dataDictionary = BeanMapper.map(dictionaryDto, DataDictionary.class);
-      dataDictionary.setType(new DataType(dictionaryDto.getTypeId()));
 
       if (dataDictionary.getParentId() != null) {
         DataDictionary parent = dataDictionaryService.get(dataDictionary.getParentId());
@@ -99,7 +88,7 @@ public class DataDictionaryEndpoint {
       dataDictionary = BeanMapper.map(dictionaryDto, dataDictionary, DataDictionaryDto.class, DataDictionary.class);
     }
 
-    dataDictionaryService.save(dataDictionary);
+    dataDictionary = dataDictionaryService.save(dataDictionary);
     return ResponseResult.createSuccess(dataDictionary, DataDictionaryDto.class);
   }
 

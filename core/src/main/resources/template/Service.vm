@@ -1,9 +1,9 @@
 package ${package}.service;
 
+import com.foomei.common.service.impl.JpaServiceImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.foomei.common.service.impl.JpaServiceImpl;
 import ${package}.dao.jpa.${model}Dao;
 import ${package}.entity.${model};
 

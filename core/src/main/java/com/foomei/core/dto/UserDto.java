@@ -30,13 +30,9 @@ public class UserDto {
   private String status;
   @ApiModelProperty(value = "头像")
   private String avatar;
-//  @ApiModelProperty(value = "角色ID")
-//  private List<Long> roleIds;
-//  @ApiModelProperty(value = "角色名称")
-//  private List<String> roleNames;
-//  @ApiModelProperty(value = "机构ID")
-//  private List<Long> groupIds;
-//  @ApiModelProperty(value = "机构名称")
-//  private List<String> groupNames;
+  @ApiModelProperty(value = "角色")
+  private List<RoleDto> roles;
+  @ApiModelProperty(value = "机构")
+  private List<UserGroupDto> groups;
 
 }

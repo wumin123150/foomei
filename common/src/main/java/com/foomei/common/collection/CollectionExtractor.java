@@ -92,4 +92,18 @@ public class CollectionExtractor {
     return builder.toString();
   }
 
+  public static <T> List<T> injectToList(final Collection collection, Class<T> clazz) {
+    List<T> list = new ArrayList<T>(collection.size());
+
+    try {
+      for (Object obj : collection) {
+        list.add(ReflectionUtil.invokeConstructor(clazz, obj));
+      }
+    } catch (Exception e) {
+      throw ReflectionUtil.convertReflectionExceptionToUnchecked(e);
+    }
+
+    return list;
+  }
+
 }
