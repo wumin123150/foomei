@@ -142,11 +142,4 @@ public class DataDictionaryEndpoint {
     return result;
   }
 
-  private List<TreeNodeDto> toNodes(List<DataDictionary> dataDictionarys) {
-    List<TreeNodeDto> treeNodes = ListUtil.newArrayListWithCapacity(dataDictionarys.size());
-    for (DataDictionary dataDictionary : dataDictionarys) {
-      treeNodes.add(new TreeNodeDto(dataDictionary));
-    }
-    return treeNodes;
-  }
 }

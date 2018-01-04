@@ -1,11 +1,11 @@
 package com.foomei.common.net;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 
 /**
  * Cookie 辅助类
@@ -31,7 +31,7 @@ public class CookieUtil {
 	 * 
 	 * @param request
 	 *            HttpServletRequest
-	 * @return default:20 max:200
+	 * @return default:10 max:100
 	 */
 	public static int getPageSize(HttpServletRequest request) {
 		Cookie cookie = getCookie(request, COOKIE_PAGE_SIZE);
@@ -66,6 +66,21 @@ public class CookieUtil {
 					return c;
 				}
 			}
+		}
+		return null;
+	}
+
+	/**
+	 * 根据Cookie名称直接得到Cookie值
+	 *
+	 * @param request
+	 * @param name
+	 * @return
+	 */
+	public static String getCookieValue(HttpServletRequest request, String name) {
+		Cookie cookie = getCookie(request, name);
+		if(cookie != null){
+			return cookie.getValue();
 		}
 		return null;
 	}

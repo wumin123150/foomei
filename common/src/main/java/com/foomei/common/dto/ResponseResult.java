@@ -12,6 +12,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import com.foomei.common.base.ExceptionUtil;
@@ -32,6 +33,7 @@ public class ResponseResult<T> {
   private boolean success;
   private int code;
   private String message;
+  private String debug;
   private long total;
   private T data;
 
@@ -111,26 +113,56 @@ public class ResponseResult<T> {
 
   public static ResponseResult createParamError(ComplexResult complexResult) {
     ResponseResult result = createError(ErrorCodeFactory.BAD_REQUEST);
-    result.setData(complexResult.getErrors());
+
+    StringBuilder builder = new StringBuilder();
+    List<ValidationError> errors = complexResult.getErrors();
+    for(ValidationError error : errors) {
+      builder.append(",").append(error.toString());
+    }
+
+    if(builder.length() > 0) {
+      result.setDebug(builder.substring(1).toString());
+    }
+
     return result;
   }
 
   public static ResponseResult createParamError(BindingResult bindingResult) {
     ResponseResult result = createError(ErrorCodeFactory.BAD_REQUEST);
-    result.setData(bindingResult.getFieldErrors());
+
+    StringBuilder builder = new StringBuilder();
+    List<FieldError> errors = bindingResult.getFieldErrors();
+    for(FieldError error : errors) {
+      builder.append(",").append(error.toString());
+    }
+
+    if(builder.length() > 0) {
+      result.setDebug(builder.substring(1).toString());
+    }
+
     return result;
   }
 
   public static ResponseResult createParamError(BindingResult bindingResult, String message) {
     ResponseResult result = createError(ErrorCodeFactory.BAD_REQUEST, message);
-    result.setData(bindingResult.getFieldErrors());
+
+    StringBuilder builder = new StringBuilder();
+    List<FieldError> errors = bindingResult.getFieldErrors();
+    for(FieldError error : errors) {
+      builder.append(",").append(error.toString());
+    }
+
+    if(builder.length() > 0) {
+      result.setDebug(builder.substring(1).toString());
+    }
+
     return result;
   }
 
   public static ResponseResult create4Exception(Exception ex) {
     if (ex instanceof ServiceException) {
       ResponseResult result = createError(ErrorCodeFactory.INTERNAL_SERVER_ERROR, ex.getMessage());
-      result.setData(ExceptionUtil.toStringWithLocation(ex, ClassUtil.getPackageName(ResponseResult.class.getName(), 2)));
+      result.setDebug(ExceptionUtil.toStringWithLocation(ex, ClassUtil.getPackageName(ResponseResult.class.getName(), 2)));
       return result;
     }
 
@@ -145,7 +177,7 @@ public class ResponseResult<T> {
     }
 
     ResponseResult result = createError(ErrorCodeFactory.INTERNAL_SERVER_ERROR);
-    result.setData(ExceptionUtil.toStringWithLocation(ex, ClassUtil.getPackageName(ResponseResult.class.getName(), 2)));
+    result.setDebug(ExceptionUtil.toStringWithLocation(ex, ClassUtil.getPackageName(ResponseResult.class.getName(), 2)));
     return result;
   }
 
@@ -167,6 +199,14 @@ public class ResponseResult<T> {
 
   public void setMessage(String message) {
     this.message = message;
+  }
+
+  public String getDebug() {
+    return debug;
+  }
+
+  public void setDebug(String debug) {
+    this.debug = debug;
   }
 
   public long getTotal() {

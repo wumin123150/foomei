@@ -58,7 +58,7 @@
   <h1>500</h1>
   <h3>您要访问的页面无法正常显示.</h3>
   <hr/>
-  <p>服务器内部<a id="detail" href="javascript:void(0);">错误</a>，请刷新页面重试，或者<a href="${ctx}">点击这里</a> 回到首页.</p>
+  <p>服务器内部<a id="detail" href="javascript:void(0);">错误</a>，请刷新页面重试<span id="back">，<a href="${ctx}">点击这里</a> 回到首页</span>.</p>
   <div id="exception" style="display:none;word-break:break-all;">
     <c:out value="${exception}" /><br>
     <c:forEach var="trace" items="${exception.stackTrace}">
@@ -72,6 +72,9 @@
     $("#detail").click(function(){
       $('#exception').toggle();
     });
+    if (self != top) {
+      $('#back').hide();
+    }
   })
 </script>
 </html>

@@ -24,10 +24,10 @@
   <link rel="stylesheet" href="${ctx}/static/js/layui/css/layui.css" media="all"/>
   <link rel="stylesheet" href="//at.alicdn.com/t/font_470259_i5hllb8man61or.css" media="all" />
   <link rel="stylesheet" href="${ctx}/static/js/layui/main.css" media="all"/>
-</head>
-<style>
+  <style>
 
-</style>
+  </style>
+</head>
 <body class="main_body">
 <div class="layui-layout layui-layout-admin">
   <!-- 顶部 -->
@@ -115,7 +115,7 @@
   </div>
   <div class="layui-body layui-form">
     <div class="layui-tab layui-tab-card" id="top_tabs_box" lay-filter="bodyTab">
-      <! -- 选项卡-->
+      <!-- 选项卡 -->
       <ul class="layui-tab-title top_tab" id="top_tabs">
         <li class="layui-this" lay-id=""><i class="iconfont icon-home"></i> 后台首页</li>
       </ul>
@@ -151,7 +151,6 @@
 <script src="${ctx}/static/js/layui/layui.js"></script>
 <script src="${ctx}/static/js/layui/leftNav.js"></script>
 <script src="${ctx}/static/js/screenfull.min.js"></script>
-</body>
 <script>
   var $,tab;
   layui.config({
@@ -503,4 +502,5 @@
     tab.tabAdd(_this);
   }
 </script>
+</body>
 </html>

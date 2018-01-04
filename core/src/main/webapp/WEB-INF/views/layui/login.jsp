@@ -56,24 +56,22 @@
 </head>
 <body>
 <div class="login">
-    <h1>登录</h1>
-    <form class="layui-form" action="${ctx}/admin/login" method="post">
-      <div class="layui-form-item">
-        <input class="layui-input" name="username" placeholder="用户名" lay-verify="required" type="text" autocomplete="off">
-      </div>
-      <div class="layui-form-item">
-        <input class="layui-input" name="password" placeholder="密码" lay-verify="required" type="password" autocomplete="off">
-      </div>
-      <div class="layui-form-item input-captcha">
-        <input class="layui-input" name="code" placeholder="验证码" lay-verify="required" type="text" autocomplete="off">
-        <div class="captcha"><img src="${ctx}/Kaptcha.jpg" width="116" height="36" style="cursor:pointer;" title="点击刷新"></div>
-      </div>
-      <button class="layui-btn login-btn" lay-submit lay-filter="login">登录</button>
-    </form>
-  </div>
+  <h1>登录</h1>
+  <form class="layui-form" action="${ctx}/admin/login" method="post">
+    <div class="layui-form-item">
+      <input class="layui-input" name="username" placeholder="用户名" lay-verify="required" type="text" autocomplete="off">
+    </div>
+    <div class="layui-form-item">
+      <input class="layui-input" name="password" placeholder="密码" lay-verify="required" type="password" autocomplete="off">
+    </div>
+    <div class="layui-form-item input-captcha">
+      <input class="layui-input" name="code" placeholder="验证码" lay-verify="required" type="text" autocomplete="off">
+      <div class="captcha"><img src="${ctx}/Kaptcha.jpg" width="116" height="36" style="cursor:pointer;" title="点击刷新"></div>
+    </div>
+    <button class="layui-btn login-btn" lay-submit lay-filter="login">登录</button>
+  </form>
 </div>
 <script src="${ctx}/static/js/layui/layui.js"></script>
-</body>
 <script>
   if (window.top !== window.self) {
     window.top.location = window.location;
@@ -117,4 +115,5 @@
     })
   });
 </script>
+</body>
 </html>

@@ -36,35 +36,6 @@ public class BeanMapper {
     registerClassMap(sourceClass, destinationClass, mapFields, ListUtil.<String>emptyList(), null, true, true);
   }
 
-//  public static <S, D> void registerClassMap(Class<S> sourceClass, Class<D> destinationClass, Mapper<S, D> customizedMapper) {
-//    registerClassMap(sourceClass, destinationClass, MapUtil.<String, String>emptyMap(), ListUtil.<String>emptyList(), customizedMapper, true, true);
-//  }
-//
-//  public static <S, D> void registerClassMap(Class<S> sourceClass, Class<D> destinationClass, Map<String, String> mapFields, Mapper<S, D> customizedMapper) {
-//    registerClassMap(sourceClass, destinationClass, mapFields, ListUtil.<String>emptyList(), customizedMapper, true, true);
-//  }
-//
-//  public static <S, D> void registerClassMap(Class<S> sourceClass, Class<D> destinationClass, List<String> excludeFields, Mapper<S, D> customizedMapper) {
-//    registerClassMap(sourceClass, destinationClass, MapUtil.<String, String>emptyMap(), excludeFields, customizedMapper, true, true);
-//  }
-//
-//  public static <S, D> void registerClassMap(Class<S> sourceClass, Class<D> destinationClass, Map<String, String> mapFields, List<String> excludeFields, Mapper<S, D> customizedMapper, boolean mapNulls, boolean mapNullsInReverse) {
-//    if (!mapperFactory.existsRegisteredMapper(TypeFactory.valueOf(sourceClass), TypeFactory.valueOf(destinationClass), false)) {
-//      ClassMapBuilder<S, D> builder = mapperFactory.classMap(sourceClass, destinationClass)
-//        .mapNulls(mapNulls).mapNullsInReverse(mapNullsInReverse);
-//      for (Map.Entry<String, String> entry : mapFields.entrySet()) {
-//        builder.field(entry.getKey(), entry.getValue());
-//      }
-//      for (String field : excludeFields) {
-//        builder.exclude(field);
-//      }
-//      if(customizedMapper != null) {
-//        builder.customize(customizedMapper);
-//      }
-//      builder.byDefault().register();
-//    }
-//  }
-
   public static <S, D> void registerClassMap(Class<S> sourceClass, Class<D> destinationClass, FieldsMapper<S, D> fieldsMapper) {
     registerClassMap(sourceClass, destinationClass, MapUtil.<String, String>emptyMap(), ListUtil.<String>emptyList(), fieldsMapper, true, true);
   }

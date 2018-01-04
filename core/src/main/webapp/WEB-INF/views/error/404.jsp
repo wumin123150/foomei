@@ -58,6 +58,14 @@
   <h1>404</h1>
   <h3>您所访问的页面不存在.</h3>
   <hr/>
-  <p>资源不存在或者没有访问权限， <a href="${ctx}">点击这里</a> 回到首页.</p>
-</body>			
+  <p>资源不存在或者没有访问权限<span id="back">， <a href="${ctx}">点击这里</a> 回到首页</span>.</p>
+</body>
+<script src="${ctx}/webjars/jquery/jquery.min.js"></script>
+<script>
+  jQuery(function ($) {
+    if (self != top) {
+      $('#back').hide();
+    }
+  })
+</script>
 </html>
