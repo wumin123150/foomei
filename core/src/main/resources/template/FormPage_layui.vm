@@ -7,7 +7,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>${comment}管理</title>
+  <title>${tableName}管理</title>
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -23,10 +23,10 @@
 <form class="layui-form layui-form-pane" action="${r'${ctx}'}/api/${variable}/save" method="post" style="width:80%;">
   <input type="hidden" name="id" id="id" value="${r'${'}${variable}.id}"/>
   <#list fields?keys as k>
-  <div class="layui-form-item<#if fieldSizes?keys?seq_contains(k) && fieldSizes[k].first gt 64> layui-form-text</#if>">
+  <div class="layui-form-item<#if fields[k].first == 'textarea'> layui-form-text</#if>">
     <label class="layui-form-label">${fields[k].second}<#if fieldLayVerifys?keys?seq_contains(k)><#if fieldLayVerifys[k]?seq_contains("required")><span class="input-required">*</span></#if></#if></label>
     <div class="layui-input-block">
-    <#if fieldConsts?keys?seq_contains(k)>
+    <#if fields[k].first == 'select'>
     <select name="${k}" id="${k}" data-placeholder="${fields[k].second}">
     <#list fieldConsts[k] as value>
     <#if fields[k].first == 'String'>
@@ -36,9 +36,17 @@
     </#if>
     </#list>
     </select>
-    <#elseif fields[k].first == 'java.time.LocalDate' || fields[k].first == 'java.time.LocalDateTime'>
+    <#elseif fields[k].first == 'radio'>
+    <#list fieldConsts[k] as value>
+    <input type="radio" name="${k}" value="${value.first}" title="${value.second}" <c:if test="${r'${'}${variable}.${k} eq '${value.first}'}">checked</c:if>>
+    </#list>
+    <#elseif fields[k].first == 'checkbox'>
+    <#list fieldConsts[k] as value>
+    <input type="checkbox" name="${k}" value="${value.first}" lay-skin="primary" title="${value.second}" <c:if test="${r'${'}${variable}.${k} eq '{value.first}'}">checked</c:if>>
+    </#list>
+    <#elseif fields[k].first == 'date' || fields[k].first == 'datetime'>
     <input type="text" name="${k}" id="${k}" value="<fmt:formatDate value='${r'${'}${variable}.${k}}'/>"<#if fieldLayVerifys?keys?seq_contains(k)> lay-verify="${fieldLayVerifys[k]?join('|')}"</#if> placeholder="${fields[k].second}" placeholder="${fields[k].second}" autocomplete="off" class="layui-input date-picker">
-    <#elseif fieldSizes?keys?seq_contains(k) && fieldSizes[k].first gt 64>
+    <#elseif fields[k].first == 'textarea'>
     <textarea name="${k}" id="${k}"<#if fieldLayVerifys?keys?seq_contains(k)> lay-verify="${fieldLayVerifys[k]?join('|')}"</#if> placeholder="${fields[k].second}" placeholder='${fields[k].second}' class="layui-textarea">${r'${'}${variable}.${k}}</textarea>
     <#else>
     <input type="text" name="${k}" id="${k}" value="${r'${'}${variable}.${k}}"<#if fieldLayVerifys?keys?seq_contains(k)> lay-verify="${fieldLayVerifys[k]?join('|')}"</#if> placeholder="${fields[k].second}" autocomplete="off" class="layui-input">
@@ -63,11 +71,11 @@
     laydate = layui.laydate;
 
     <#list fields?keys as k>
-    <#if fields[k].first == 'java.time.LocalDate'>
+    <#if fields[k].first == 'date'>
     laydate.render({
       elem: '#${k}'
     });
-    <#elseif fields[k].first == 'java.time.LocalDateTime'>
+    <#elseif fields[k].first == 'datetime'>
     laydate.render({
       elem: '#${k}',
       type: 'datetime'
@@ -76,7 +84,13 @@
     </#list>
 
     form.verify({
-
+      <#list fieldSizes?keys as k>
+      ${k}: function(value){
+        if(value.length > ${fieldSizes[k].first?c}){
+          return '${fieldSizes[k].second}最大长度为${fieldSizes[k].first?c}位';
+        }
+      }<#if k_has_next>,</#if>
+      </#list>
     });
 
     //监听提交

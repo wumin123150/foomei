@@ -10,14 +10,14 @@ import org.apache.commons.lang3.StringUtils;
 import javax.persistence.*;
 
 /**
- * ${comment}
+ * ${tableName}
  */
 @Getter
 @Setter
 @ToString(callSuper=true)
 @NoArgsConstructor
 @Entity
-@Table(name = "${tableName}")
+@Table(name = "${tableCode}")
 @SuppressWarnings("serial")
 public class ${model} extends ${idStrategy}Entity<#if hasImplement> implements ${implements}</#if> {
   <#list props?keys as k>

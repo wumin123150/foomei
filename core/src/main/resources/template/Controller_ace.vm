@@ -17,7 +17,7 @@ import ${package}.service.${model}Service;
 
 import javax.validation.Valid;
 
-@Api(description = "${comment}管理")
+@Api(description = "${tableName}管理")
 @Controller
 @RequestMapping(value = "/${folder}/${variable}")
 public class ${model}Controller {
@@ -29,14 +29,14 @@ public class ${model}Controller {
   @Autowired
   private ${model}Service ${variable}Service;
 
-  @ApiOperation(value = "${comment}列表页面", httpMethod = "GET")
+  @ApiOperation(value = "${tableName}列表页面", httpMethod = "GET")
   @RequestMapping
   public String list(Model model) {
     model.addAttribute("menu", MENU);
     return "${folder}/${variable}/${variable}List";
   }
 
-  @ApiOperation(value = "${comment}新增页面", httpMethod = "GET")
+  @ApiOperation(value = "${tableName}新增页面", httpMethod = "GET")
   @RequestMapping(value = "create", method = RequestMethod.GET)
   public String createForm(Model model) {
     model.addAttribute("menu", MENU);
@@ -46,7 +46,7 @@ public class ${model}Controller {
     return "${folder}/${variable}/${variable}Form";
   }
 
-  @ApiOperation(value = "${comment}新增", httpMethod = "POST")
+  @ApiOperation(value = "${tableName}新增", httpMethod = "POST")
   @RequestMapping(value = "create", method = RequestMethod.POST)
   public String create(@Valid ${model} ${variable}, BindingResult result, Model model, RedirectAttributes redirectAttributes) {
     if (result.hasErrors()) {
@@ -64,7 +64,7 @@ public class ${model}Controller {
     return "redirect:/${folder}/${variable}";
   }
 
-  @ApiOperation(value = "${comment}修改页面", httpMethod = "GET")
+  @ApiOperation(value = "${tableName}修改页面", httpMethod = "GET")
   @RequestMapping(value = "update/{id}", method = RequestMethod.GET)
   public String updateForm(@PathVariable("id") ${idType} id, Model model) {
     model.addAttribute("menu", MENU);
@@ -74,7 +74,7 @@ public class ${model}Controller {
     return "${folder}/${variable}/${variable}Form";
   }
 
-  @ApiOperation(value = "${comment}修改", httpMethod = "POST")
+  @ApiOperation(value = "${tableName}修改", httpMethod = "POST")
   @RequestMapping(value = "update", method = RequestMethod.POST)
   public String update(@Valid @ModelAttribute("preload${model}") ${model} ${variable}, BindingResult result, Model model, RedirectAttributes redirectAttributes) {
     if (result.hasErrors()) {

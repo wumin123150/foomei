@@ -73,15 +73,15 @@ public class JpaCodeUtil {
 
     System.out.println("========== 开始生成Entity ==========");
     String entityPath = projectPath + "/src/main/java/" + packageName.replaceAll("\\.", "/") + "/entity";
+    String tableCode = null;
     String tableName = null;
-    String tableComment = null;
     List<Map<String, String>> columns = null;
     for (Map.Entry<Pair<String, String>, List<Map<String, String>>> table : tables.entrySet()) {
-      tableName = table.getKey().getFirst();
-      tableComment = table.getKey().getSecond();
+      tableCode = table.getKey().getFirst();
+      tableName = table.getKey().getSecond();
       columns = table.getValue();
-      if (!isExclude(excludes, tableName) && hasColumn(columns, "id")) {
-        String model = toModel(tableName, tablePrefix);
+      if (!isExclude(excludes, tableCode) && hasColumn(columns, "id")) {
+        String model = toModel(tableCode, tablePrefix);
         String entity = entityPath + "/" + model + ".java";
         // 生成entity
         File entityFile = new File(entity);
@@ -104,8 +104,8 @@ public class JpaCodeUtil {
           }
 
           Map<String, Object> params = MapUtil.newHashMap();
-          params.put("tableName", tableName);
-          params.put("comment", StringUtils.isNotEmpty(tableComment) ? tableComment : model);
+          params.put("tableCode", tableCode);
+          params.put("tableName", StringUtils.isNotEmpty(tableName) ? tableName : model);
           params.put("package", packageName);
           params.put("model", model);
           params.put("idStrategy", getIdStrategy(columns));
@@ -132,15 +132,15 @@ public class JpaCodeUtil {
 
     System.out.println("========== 开始生成Dto ==========");
     String entityPath = projectPath + "/src/main/java/" + packageName.replaceAll("\\.", "/") + "/dto";
+    String tableCode = null;
     String tableName = null;
-    String tableComment = null;
     List<Map<String, String>> columns = null;
     for (Map.Entry<Pair<String, String>, List<Map<String, String>>> table : tables.entrySet()) {
-      tableName = table.getKey().getFirst();
-      tableComment = table.getKey().getSecond();
+      tableCode = table.getKey().getFirst();
+      tableName = table.getKey().getSecond();
       columns = table.getValue();
-      if (!isExclude(excludes, tableName) && hasColumn(columns, "id")) {
-        String model = toModel(tableName, tablePrefix);
+      if (!isExclude(excludes, tableCode) && hasColumn(columns, "id")) {
+        String model = toModel(tableCode, tablePrefix);
         String entity = entityPath + "/" + model + "Dto.java";
         // 生成dto
         File entityFile = new File(entity);
@@ -148,7 +148,7 @@ public class JpaCodeUtil {
           FileUtil.makesureParentDirExists(entityFile);
 
           Map<String, Object> params = MapUtil.newHashMap();
-          params.put("comment", StringUtils.isNotEmpty(tableComment) ? tableComment : model);
+          params.put("tableName", StringUtils.isNotEmpty(tableName) ? tableName : model);
           params.put("package", packageName);
           params.put("model", model);
           params.put("fields", toFieldDtos(columns));
@@ -170,13 +170,13 @@ public class JpaCodeUtil {
 
     System.out.println("========== 开始生成Dao ==========");
     String daoPath = projectPath + "/src/main/java/" + packageName.replaceAll("\\.", "/") + "/dao/jpa";
-    String tableName = null;
+    String tableCode = null;
     List<Map<String, String>> columns = null;
     for (Map.Entry<Pair<String, String>, List<Map<String, String>>> table : tables.entrySet()) {
-      tableName = table.getKey().getFirst();
+      tableCode = table.getKey().getFirst();
       columns = table.getValue();
-      if (!isExclude(excludes, tableName) && hasColumn(columns, "id")) {
-        String model = toModel(tableName, tablePrefix);
+      if (!isExclude(excludes, tableCode) && hasColumn(columns, "id")) {
+        String model = toModel(tableCode, tablePrefix);
         String dao = daoPath + "/" + model + "Dao.java";
         // 生成dao
         File daoFile = new File(dao);
@@ -185,6 +185,7 @@ public class JpaCodeUtil {
 
           Map<String, String> params = MapUtil.newHashMap();
           params.put("package", packageName);
+          params.put("variable", toVariable(tableCode, tablePrefix));
           params.put("model", model);
           params.put("idType", getIdType(columns));
           String content = FreeMarkerUtil.renderString(FileUtil.toString(new File(localProjectPath, VM_DAO)), params);
@@ -202,13 +203,13 @@ public class JpaCodeUtil {
 
     System.out.println("========== 开始生成Service ==========");
     String servicePath = projectPath + "/src/main/java/" + packageName.replaceAll("\\.", "/") + "/service";
-    String tableName = null;
+    String tableCode = null;
     List<Map<String, String>> columns = null;
     for (Map.Entry<Pair<String, String>, List<Map<String, String>>> table : tables.entrySet()) {
-      tableName = table.getKey().getFirst();
+      tableCode = table.getKey().getFirst();
       columns = table.getValue();
-      if (!isExclude(excludes, tableName) && hasColumn(columns, "id")) {
-        String model = toModel(tableName, tablePrefix);
+      if (!isExclude(excludes, tableCode) && hasColumn(columns, "id")) {
+        String model = toModel(tableCode, tablePrefix);
         String service = servicePath + "/" + model + "Service.java";
         // 生成service
         File serviceFile = new File(service);
@@ -234,15 +235,15 @@ public class JpaCodeUtil {
 
     System.out.println("========== 开始生成Controller ==========");
     String controllerPath = projectPath + "/src/main/java/" + packageName.replaceAll("\\.", "/") + "/web/controller";
+    String tableCode = null;
     String tableName = null;
-    String tableComment = null;
     List<Map<String, String>> columns = null;
     for (Map.Entry<Pair<String, String>, List<Map<String, String>>> table : tables.entrySet()) {
-      tableName = table.getKey().getFirst();
-      tableComment = table.getKey().getSecond();
+      tableCode = table.getKey().getFirst();
+      tableName = table.getKey().getSecond();
       columns = table.getValue();
-      if (!isExclude(excludes, tableName) && hasColumn(columns, "id")) {
-        String model = toModel(tableName, tablePrefix);
+      if (!isExclude(excludes, tableCode) && hasColumn(columns, "id")) {
+        String model = toModel(tableCode, tablePrefix);
         String controller = controllerPath + "/" + model + "Controller.java";
         // controller
         File controllerFile = new File(controller);
@@ -251,9 +252,9 @@ public class JpaCodeUtil {
 
           Map<String, String> params = MapUtil.newHashMap();
           params.put("folder", StringUtils.substringAfterLast(packageName, "."));
-          params.put("comment", StringUtils.isNotEmpty(tableComment) ? tableComment : model);
+          params.put("tableName", StringUtils.isNotEmpty(tableName) ? tableName : model);
           params.put("package", packageName);
-          params.put("variable", toVariable(tableName, tablePrefix));
+          params.put("variable", toVariable(tableCode, tablePrefix));
           params.put("model", model);
           params.put("idType", getIdType(columns));
           String content = FreeMarkerUtil.renderString(FileUtil.toString(new File(localProjectPath, VM_CONTROLLER + theme + ".vm")), params);
@@ -271,15 +272,15 @@ public class JpaCodeUtil {
 
     System.out.println("========== 开始生成Endpoint ==========");
     String endpointPath = projectPath + "/src/main/java/" + packageName.replaceAll("\\.", "/") + "/web/api";
+    String tableCode = null;
     String tableName = null;
-    String tableComment = null;
     List<Map<String, String>> columns = null;
     for (Map.Entry<Pair<String, String>, List<Map<String, String>>> table : tables.entrySet()) {
-      tableName = table.getKey().getFirst();
-      tableComment = table.getKey().getSecond();
+      tableCode = table.getKey().getFirst();
+      tableName = table.getKey().getSecond();
       columns = table.getValue();
-      if (!isExclude(excludes, tableName) && hasColumn(columns, "id")) {
-        String model = toModel(tableName, tablePrefix);
+      if (!isExclude(excludes, tableCode) && hasColumn(columns, "id")) {
+        String model = toModel(tableCode, tablePrefix);
         String endpoint = endpointPath + "/" + model + "Endpoint.java";
         // endpoint
         File endpointFile = new File(endpoint);
@@ -287,9 +288,9 @@ public class JpaCodeUtil {
           FileUtil.makesureParentDirExists(endpointFile);
 
           Map<String, String> params = MapUtil.newHashMap();
-          params.put("comment", StringUtils.isNotEmpty(tableComment) ? tableComment : model);
+          params.put("tableName", StringUtils.isNotEmpty(tableName) ? tableName : model);
           params.put("package", packageName);
-          params.put("variable", toVariable(tableName, tablePrefix));
+          params.put("variable", toVariable(tableCode, tablePrefix));
           params.put("model", model);
           params.put("idType", getIdType(columns));
           String content = FreeMarkerUtil.renderString(FileUtil.toString(new File(localProjectPath, VM_ENDPOINT + theme + ".vm")), params);
@@ -307,15 +308,15 @@ public class JpaCodeUtil {
 
     System.out.println("========== 开始生成ListPage ==========");
     String listPagePath = projectPath + "/src/main/webapp/WEB-INF/views/" + StringUtils.substringAfterLast(packageName, ".");
+    String tableCode = null;
     String tableName = null;
-    String tableComment = null;
     List<Map<String, String>> columns = null;
     for (Map.Entry<Pair<String, String>, List<Map<String, String>>> table : tables.entrySet()) {
-      tableName = table.getKey().getFirst();
-      tableComment = table.getKey().getSecond();
+      tableCode = table.getKey().getFirst();
+      tableName = table.getKey().getSecond();
       columns = table.getValue();
-      if (!isExclude(excludes, tableName) && hasColumn(columns, "id")) {
-        String variable = toVariable(tableName, tablePrefix);
+      if (!isExclude(excludes, tableCode) && hasColumn(columns, "id")) {
+        String variable = toVariable(tableCode, tablePrefix);
         String listPage = listPagePath + "/" + variable + "/" + variable + "List.jsp";
         // listPage
         File listPageFile = new File(listPage);
@@ -324,8 +325,8 @@ public class JpaCodeUtil {
 
           Map<String, Object> params = MapUtil.newHashMap();
           params.put("folder", StringUtils.substringAfterLast(packageName, "."));
-          params.put("comment", StringUtils.isNotEmpty(tableComment) ? tableComment : toModel(tableName, tablePrefix));
-          params.put("variable", toVariable(tableName, tablePrefix));
+          params.put("tableName", StringUtils.isNotEmpty(tableName) ? tableName : toModel(tableCode, tablePrefix));
+          params.put("variable", toVariable(tableCode, tablePrefix));
           params.put("fields", toFieldLists(columns));
           params.put("fieldConsts", toFieldConsts(columns));
           String content = FreeMarkerUtil.renderString(FileUtil.toString(new File(localProjectPath, VM_LIST_PAGE + theme + ".vm")), params);
@@ -343,15 +344,15 @@ public class JpaCodeUtil {
 
     System.out.println("========== 开始生成FormPage ==========");
     String formPagePath = projectPath + "/src/main/webapp/WEB-INF/views/" + StringUtils.substringAfterLast(packageName, ".");
+    String tableCode = null;
     String tableName = null;
-    String tableComment = null;
     List<Map<String, String>> columns = null;
     for (Map.Entry<Pair<String, String>, List<Map<String, String>>> table : tables.entrySet()) {
-      tableName = table.getKey().getFirst();
-      tableComment = table.getKey().getSecond();
+      tableCode = table.getKey().getFirst();
+      tableName = table.getKey().getSecond();
       columns = table.getValue();
-      if (!isExclude(excludes, tableName) && hasColumn(columns, "id")) {
-        String variable = toVariable(tableName, tablePrefix);
+      if (!isExclude(excludes, tableCode) && hasColumn(columns, "id")) {
+        String variable = toVariable(tableCode, tablePrefix);
         String formPage = formPagePath + "/" + variable + "/" + variable + "Form.jsp";
         // formPage
         File formPageFile = new File(formPage);
@@ -360,8 +361,8 @@ public class JpaCodeUtil {
 
           Map<String, Object> params = MapUtil.newHashMap();
           params.put("folder", StringUtils.substringAfterLast(packageName, "."));
-          params.put("comment", StringUtils.isNotEmpty(tableComment) ? tableComment : toModel(tableName, tablePrefix));
-          params.put("variable", toVariable(tableName, tablePrefix));
+          params.put("tableName", StringUtils.isNotEmpty(tableName) ? tableName : toModel(tableCode, tablePrefix));
+          params.put("variable", toVariable(tableCode, tablePrefix));
           params.put("fields", toFieldLists(columns));
           params.put("fieldNotBlanks", toFieldNotBlanks(columns));
           params.put("fieldSizes", toFieldSizes(columns));
@@ -469,8 +470,8 @@ public class JpaCodeUtil {
 
   public static boolean hasColumn(List<Map<String, String>> columnDefines, String column) {
     for (Map<String, String> columnDefine : columnDefines) {
-      String columnName = columnDefine.get("column");
-      if (StringUtils.equalsIgnoreCase(columnName, column)) {
+      String columnCode = columnDefine.get("column");
+      if (StringUtils.equalsIgnoreCase(columnCode, column)) {
         return true;
       }
     }
@@ -483,9 +484,9 @@ public class JpaCodeUtil {
 
   public static String getIdType(List<Map<String, String>> columnDefines) {
     for (Map<String, String> columnDefine : columnDefines) {
-      String columnName = columnDefine.get("column");
-      if (StringUtils.equalsIgnoreCase(columnName, "id")) {
-        return toType(columnDefine.get("type"));
+      String columnCode = columnDefine.get("column");
+      if (StringUtils.equalsIgnoreCase(columnCode, "id")) {
+        return toDataType(columnDefine.get("type"));
       }
     }
     return "String";
@@ -494,9 +495,9 @@ public class JpaCodeUtil {
   public static Map<String, String> toProps(List<Map<String, String>> columnDefines) {
     Map<String, String> fields = MapUtil.newSortedMap();
     for (Map<String, String> columnDefine : columnDefines) {
-      String columnName = columnDefine.get("column");
-      if (!StringUtils.equalsIgnoreCase(columnName, "id")) {
-        fields.put(toField(columnName), StringUtils.upperCase(columnName));
+      String columnCode = columnDefine.get("column");
+      if (!StringUtils.equalsIgnoreCase(columnCode, "id")) {
+        fields.put(toField(columnCode), StringUtils.upperCase(columnCode));
       }
     }
     return fields;
@@ -505,15 +506,15 @@ public class JpaCodeUtil {
   public static List<String> toConsts(List<Map<String, String>> columnDefines) {
     List<String> fields = ListUtil.newArrayList();
     for (Map<String, String> columnDefine : columnDefines) {
-      String columnName = columnDefine.get("column");
-      String consts = StringUtils.substringBetween(columnDefine.get("comment"), "(", ")");
-      String dataType = toType(columnDefine.get("type"));
-      if (!StringUtils.equalsIgnoreCase(columnName, "id") && !StringUtils.equalsIgnoreCase(columnName, "del_flag") && StringUtils.isNotEmpty(consts)) {
+      String columnCode = columnDefine.get("column");
+      String consts = getText(columnDefine.get("comment"), new Pair<String, String>("{", "}"));
+      String dataType = toDataType(columnDefine.get("type"));
+      if (!StringUtils.equalsIgnoreCase(columnCode, "id") && !StringUtils.equalsIgnoreCase(columnCode, "del_flag") && StringUtils.isNotEmpty(consts)) {
         String[] temp = StringUtils.split(consts, ", ");
         for (int i = 0; i < temp.length; i++) {
           String[] values = StringUtils.split(temp[i], ":");
           if(values.length == 2) {
-            fields.add(String.format("public static final %s %s_%s = %s;//%s", dataType, StringUtils.upperCase(columnName), values[0], StringUtils.equals(dataType, "String") ? ("\"" + values[0] + "\"") : values[0], values[1]));
+            fields.add(String.format("public static final %s %s_%s = %s;//%s", dataType, StringUtils.upperCase(columnCode), values[0], StringUtils.equals(dataType, "String") ? ("\"" + values[0] + "\"") : values[0], values[1]));
           }
         }
       }
@@ -524,14 +525,14 @@ public class JpaCodeUtil {
   public static Map<String, Pair<String, String>> toFields(List<Map<String, String>> columnDefines) {
     Map<String, Pair<String, String>> fields = MapUtil.newSortedMap();
     for (Map<String, String> columnDefine : columnDefines) {
-      String columnName = columnDefine.get("column");
+      String columnCode = columnDefine.get("column");
       String comment = columnDefine.get("comment");
-      String dataType = columnDefine.get("type");
-      if (!StringUtils.equalsIgnoreCase(columnName, "id")) {
-        fields.put(toField(columnName), new Pair<String, String>(toType(dataType), comment));
+      String dataType = toDataType(columnDefine.get("type"));
+      if (!StringUtils.equalsIgnoreCase(columnCode, "id")) {
+        fields.put(toField(columnCode), new Pair<String, String>(dataType, comment));
       }
-      if (StringUtils.equalsIgnoreCase(columnName, "del_flag")) {
-        fields.put(toField(columnName), new Pair<String, String>("Boolean", comment));
+      if (StringUtils.equalsIgnoreCase(columnCode, "del_flag")) {
+        fields.put(toField(columnCode), new Pair<String, String>("Boolean", comment));
       }
     }
     return fields;
@@ -540,13 +541,13 @@ public class JpaCodeUtil {
   public static Map<String, Pair<String, String>> toFieldDtos(List<Map<String, String>> columnDefines) {
     Map<String, Pair<String, String>> fields = MapUtil.newSortedMap();
     for (Map<String, String> columnDefine : columnDefines) {
-      String columnName = columnDefine.get("column");
+      String columnCode = columnDefine.get("column");
       String comment = columnDefine.get("comment");
-      String dataType = columnDefine.get("type");
-      if (!StringUtils.equalsIgnoreCase(columnName, "del_flag")
-        && !StringUtils.equalsIgnoreCase(columnName, "creator") && !StringUtils.equalsIgnoreCase(columnName, "create_time")
-        && !StringUtils.equalsIgnoreCase(columnName, "updator") && !StringUtils.equalsIgnoreCase(columnName, "update_time")) {
-        fields.put(toField(columnName), new Pair<String, String>(toType(dataType), comment));
+      String dataType = toDataType(columnDefine.get("type"));
+      if (!StringUtils.equalsIgnoreCase(columnCode, "del_flag")
+        && !StringUtils.equalsIgnoreCase(columnCode, "creator") && !StringUtils.equalsIgnoreCase(columnCode, "create_time")
+        && !StringUtils.equalsIgnoreCase(columnCode, "updator") && !StringUtils.equalsIgnoreCase(columnCode, "update_time")) {
+        fields.put(toField(columnCode), new Pair<String, String>(dataType, comment));
       }
     }
     return fields;
@@ -555,13 +556,28 @@ public class JpaCodeUtil {
   public static Map<String, Pair<String, String>> toFieldLists(List<Map<String, String>> columnDefines) {
     Map<String, Pair<String, String>> fields = MapUtil.newSortedMap();
     for (Map<String, String> columnDefine : columnDefines) {
-      String columnName = columnDefine.get("column");
-      String comment = StringUtils.substringBefore(columnDefine.get("comment"), "(");
-      String dataType = columnDefine.get("type");
-      if (!StringUtils.equalsIgnoreCase(columnName, "id") && !StringUtils.equalsIgnoreCase(columnName, "del_flag")
-        && !StringUtils.equalsIgnoreCase(columnName, "creator") && !StringUtils.equalsIgnoreCase(columnName, "create_time")
-        && !StringUtils.equalsIgnoreCase(columnName, "updator") && !StringUtils.equalsIgnoreCase(columnName, "update_time")) {
-        fields.put(toField(columnName), new Pair<String, String>(toType(dataType), comment));
+      String columnCode = columnDefine.get("column");
+      String columnName = getName(columnDefine.get("comment"));
+      String unit = getText(columnDefine.get("comment"), new Pair<String, String>("[", "]"), new Pair<String, String>("【", "】"));
+      if(StringUtils.isEmpty(unit)) {
+        String consts = getText(columnDefine.get("comment"), new Pair<String, String>("{", "}"));
+        if(StringUtils.isNotEmpty(consts)) {
+          unit = "select";
+        }
+      }
+      if(StringUtils.isEmpty(unit)) {
+        String columnLength = columnDefine.get("stringLength");
+        if(StringUtils.isNotEmpty(columnLength) && Integer.valueOf(columnLength) > 100) {
+          unit = "textarea";
+        }
+      }
+      if(StringUtils.isEmpty(unit)) {
+        unit = toUnit(columnDefine.get("type"));
+      }
+      if (!StringUtils.equalsIgnoreCase(columnCode, "id") && !StringUtils.equalsIgnoreCase(columnCode, "del_flag")
+        && !StringUtils.equalsIgnoreCase(columnCode, "creator") && !StringUtils.equalsIgnoreCase(columnCode, "create_time")
+        && !StringUtils.equalsIgnoreCase(columnCode, "updator") && !StringUtils.equalsIgnoreCase(columnCode, "update_time")) {
+        fields.put(toField(columnCode), new Pair<String, String>(unit, columnName));
       }
     }
     return fields;
@@ -571,7 +587,7 @@ public class JpaCodeUtil {
     Map<String, List<Pair<String, String>>> fields = MapUtil.newSortedMap();
     for (Map<String, String> columnDefine : columnDefines) {
       String columnName = columnDefine.get("column");
-      String consts = StringUtils.substringBetween(columnDefine.get("comment"), "(", ")");
+      String consts = getText(columnDefine.get("comment"), new Pair<String, String>("{", "}"));
       if (!StringUtils.equalsIgnoreCase(columnName, "id") && !StringUtils.equalsIgnoreCase(columnName, "del_flag") && StringUtils.isNotEmpty(consts)) {
         String[] temp = StringUtils.split(consts, ", ");
         for (int i = 0; i < temp.length; i++) {
@@ -592,11 +608,11 @@ public class JpaCodeUtil {
   public static Map<String, String> toFieldNotBlanks(List<Map<String, String>> columnDefines) {
     Map<String, String> fields = MapUtil.newSortedMap();
     for (Map<String, String> columnDefine : columnDefines) {
-      String columnName = columnDefine.get("column");
-      String comment = StringUtils.substringBefore(columnDefine.get("comment"), "(");
+      String columnCode = columnDefine.get("column");
+      String columnName = getName(columnDefine.get("comment"));
       String isNull = columnDefine.get("isNull");
-      if (!StringUtils.equalsIgnoreCase(columnName, "id") && StringUtils.equalsIgnoreCase(isNull, "NO")) {
-        fields.put(toField(columnName), comment);
+      if (!StringUtils.equalsIgnoreCase(columnCode, "id") && StringUtils.equalsIgnoreCase(isNull, "NO")) {
+        fields.put(toField(columnCode), columnName);
       }
     }
     return fields;
@@ -605,11 +621,11 @@ public class JpaCodeUtil {
   public static Map<String, Pair<Long, String>> toFieldSizes(List<Map<String, String>> columnDefines) {
     Map<String, Pair<Long, String>> fields = MapUtil.newSortedMap();
     for (Map<String, String> columnDefine : columnDefines) {
-      String columnName = columnDefine.get("column");
-      String comment = StringUtils.substringBefore(columnDefine.get("comment"), "(");
-      String stringLength = columnDefine.get("stringLength");
-      if (!StringUtils.equalsIgnoreCase(columnName, "id") && StringUtils.isNotEmpty(stringLength)) {
-        fields.put(toField(columnName), new Pair<Long, String>(Long.valueOf(stringLength), comment));
+      String columnCode = columnDefine.get("column");
+      String columnName = getName(columnDefine.get("comment"));
+      String columnLength = columnDefine.get("stringLength");
+      if (!StringUtils.equalsIgnoreCase(columnCode, "id") && StringUtils.isNotEmpty(columnLength)) {
+        fields.put(toField(columnCode), new Pair<Long, String>(Long.valueOf(columnLength), columnName));
       }
     }
     return fields;
@@ -618,35 +634,35 @@ public class JpaCodeUtil {
   public static Map<String, List<String>> toFieldValidateRules(List<Map<String, String>> columnDefines) {
     Map<String, List<String>> fields = MapUtil.newSortedMap();
     for (Map<String, String> columnDefine : columnDefines) {
-      String columnName = columnDefine.get("column");
-      String consts = StringUtils.substringBetween(columnDefine.get("comment"), "(", ")");
-      String dataType = toType(columnDefine.get("type"));
+      String columnCode = columnDefine.get("column");
+      String consts = getText(columnDefine.get("comment"), new Pair<String, String>("{", "}"));
+      String dataType = toDataType(columnDefine.get("type"));
       String isNull = columnDefine.get("isNull");
-      String stringLength = columnDefine.get("stringLength");
-      if (!StringUtils.equalsIgnoreCase(columnName, "id") && !StringUtils.equalsIgnoreCase(columnName, "del_flag")
-        && !StringUtils.equalsIgnoreCase(columnName, "creator") && !StringUtils.equalsIgnoreCase(columnName, "create_time")
-        && !StringUtils.equalsIgnoreCase(columnName, "updator") && !StringUtils.equalsIgnoreCase(columnName, "update_time")) {
+      String columnLength = columnDefine.get("stringLength");
+      if (!StringUtils.equalsIgnoreCase(columnCode, "id") && !StringUtils.equalsIgnoreCase(columnCode, "del_flag")
+        && !StringUtils.equalsIgnoreCase(columnCode, "creator") && !StringUtils.equalsIgnoreCase(columnCode, "create_time")
+        && !StringUtils.equalsIgnoreCase(columnCode, "updator") && !StringUtils.equalsIgnoreCase(columnCode, "update_time")) {
         if (StringUtils.equalsIgnoreCase(isNull, "NO")) {
-          if(fields.containsKey(toField(columnName))) {
-            fields.get(toField(columnName)).add("required: true");
+          if(fields.containsKey(toField(columnCode))) {
+            fields.get(toField(columnCode)).add("required: true");
           } else {
-            fields.put(toField(columnName), ListUtil.newArrayList("required: true"));
+            fields.put(toField(columnCode), ListUtil.newArrayList("required: true"));
           }
         }
 
-        if(StringUtils.isNotEmpty(stringLength)) {
-          if(fields.containsKey(toField(columnName))) {
-            fields.get(toField(columnName)).add("maxlength: " + stringLength);
+        if(StringUtils.isNotEmpty(columnLength)) {
+          if(fields.containsKey(toField(columnCode))) {
+            fields.get(toField(columnCode)).add("maxlength: " + columnLength);
           } else {
-            fields.put(toField(columnName), ListUtil.newArrayList("maxlength: " + stringLength));
+            fields.put(toField(columnCode), ListUtil.newArrayList("maxlength: " + columnLength));
           }
         }
 
-        if((StringUtils.equals(dataType, "Long") || StringUtils.equals(dataType, "Integer")) && StringUtils.isEmpty(consts) && !StringUtils.endsWith(columnName, "_id")) {
-          if(fields.containsKey(toField(columnName))) {
-            fields.get(toField(columnName)).add("digits: true");
+        if((StringUtils.equals(dataType, "Long") || StringUtils.equals(dataType, "Integer")) && StringUtils.isEmpty(consts) && !StringUtils.endsWith(columnCode, "_id")) {
+          if(fields.containsKey(toField(columnCode))) {
+            fields.get(toField(columnCode)).add("digits: true");
           } else {
-            fields.put(toField(columnName), ListUtil.newArrayList("digits: true"));
+            fields.put(toField(columnCode), ListUtil.newArrayList("digits: true"));
           }
         }
       }
@@ -657,26 +673,26 @@ public class JpaCodeUtil {
   public static Map<String, List<String>> toFieldLayVerifys(List<Map<String, String>> columnDefines) {
     Map<String, List<String>> fields = MapUtil.newSortedMap();
     for (Map<String, String> columnDefine : columnDefines) {
-      String columnName = columnDefine.get("column");
-      String consts = StringUtils.substringBetween(columnDefine.get("comment"), "(", ")");
-      String dataType = toType(columnDefine.get("type"));
+      String columnCode = columnDefine.get("column");
+      String consts = getText(columnDefine.get("comment"), new Pair<String, String>("{", "}"));
+      String dataType = toDataType(columnDefine.get("type"));
       String isNull = columnDefine.get("isNull");
-      if (!StringUtils.equalsIgnoreCase(columnName, "id") && !StringUtils.equalsIgnoreCase(columnName, "del_flag")
-        && !StringUtils.equalsIgnoreCase(columnName, "creator") && !StringUtils.equalsIgnoreCase(columnName, "create_time")
-        && !StringUtils.equalsIgnoreCase(columnName, "updator") && !StringUtils.equalsIgnoreCase(columnName, "update_time")) {
+      if (!StringUtils.equalsIgnoreCase(columnCode, "id") && !StringUtils.equalsIgnoreCase(columnCode, "del_flag")
+        && !StringUtils.equalsIgnoreCase(columnCode, "creator") && !StringUtils.equalsIgnoreCase(columnCode, "create_time")
+        && !StringUtils.equalsIgnoreCase(columnCode, "updator") && !StringUtils.equalsIgnoreCase(columnCode, "update_time")) {
         if (StringUtils.equalsIgnoreCase(isNull, "NO")) {
-          if(fields.containsKey(toField(columnName))) {
-            fields.get(toField(columnName)).add("required");
+          if(fields.containsKey(toField(columnCode))) {
+            fields.get(toField(columnCode)).add("required");
           } else {
-            fields.put(toField(columnName), ListUtil.newArrayList("required"));
+            fields.put(toField(columnCode), ListUtil.newArrayList("required"));
           }
         }
 
-        if((StringUtils.equals(dataType, "Long") || StringUtils.equals(dataType, "Integer")) && StringUtils.isEmpty(consts) && !StringUtils.endsWith(columnName, "_id")) {
-          if(fields.containsKey(toField(columnName))) {
-            fields.get(toField(columnName)).add("number");
+        if((StringUtils.equals(dataType, "Long") || StringUtils.equals(dataType, "Integer")) && StringUtils.isEmpty(consts) && !StringUtils.endsWith(columnCode, "_id")) {
+          if(fields.containsKey(toField(columnCode))) {
+            fields.get(toField(columnCode)).add("number");
           } else {
-            fields.put(toField(columnName), ListUtil.newArrayList("number"));
+            fields.put(toField(columnCode), ListUtil.newArrayList("number"));
           }
         }
       }
@@ -696,31 +712,76 @@ public class JpaCodeUtil {
     return toCamel(columnName);
   }
 
-  public static String toType(String dataType) {
-    String type = "String";
-    switch (dataType) {
+  public static String toUnit(String type) {
+    String unit = "text";
+    switch (type) {
+      case "date":
+        unit = "date";
+        break;
+      case "datetime":
+      case "timestamp":
+        unit = "datetime";
+        break;
+      case "text":
+        unit = "textarea";
+        break;
+      case "varchar":
       case "bigint":
-        type = "Long";
+      case "int":
+      case "smallint":
+      case "tinyint":
+      case "decimal":
+    }
+    return unit;
+  }
+
+  public static String toDataType(String type) {
+    String dataType = "String";
+    switch (type) {
+      case "bigint":
+        dataType = "Long";
         break;
       case "int":
       case "smallint":
       case "tinyint":
-        type = "Integer";
+        dataType = "Integer";
         break;
       case "decimal":
-        type = "java.math.BigDecimal";
+        dataType = "java.math.BigDecimal";
         break;
       case "date":
-        type = "java.time.LocalDate";
+        dataType = "java.time.LocalDate";
         break;
       case "datetime":
       case "timestamp":
-          type = "java.time.LocalDateTime";
+        dataType = "java.time.LocalDateTime";
         break;
       case "varchar":
       case "text":
     }
-    return type;
+    return dataType;
+  }
+
+  public static String getText(String text, Pair<String, String>... betweens) {
+    for(Pair<String, String> between : betweens) {
+      String value = StringUtils.substringBetween(text, between.getFirst(), between.getSecond());
+      if(StringUtils.isNotEmpty(value)) {
+        return value;
+      }
+    }
+    return null;
+  }
+
+  public static final String[] NAME_ENDS = new String[]{"(", "（", "[", "【", "{"};
+  public static String getName(String text) {
+    int endIndex = StringUtils.length(text);
+    for(String end : NAME_ENDS) {
+      int index = StringUtils.indexOf(text, end);
+      if(index >= 0 && index < endIndex) {
+        endIndex = index;
+      }
+    }
+    return StringUtils.substring(text, 0, endIndex);
   }
 
   public static String toCamel(String text) {

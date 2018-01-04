@@ -5,7 +5,7 @@
 <c:set var="ctx" value="${r'${pageContext.request.contextPath}'}"/>
 <html>
 <head>
-  <title>${comment}管理</title>
+  <title>${tableName}管理</title>
 </head>
 <pluginCss>
   <!-- page specific plugin styles -->
@@ -39,12 +39,12 @@
           <a href="${r'${ctx}'}/${folder}/index">首页</a>
         </li>
         <li>
-          <a href="${r'${ctx}'}/${folder}/${variable}">${comment}管理</a>
+          <a href="${r'${ctx}'}/${folder}/${variable}">${tableName}管理</a>
         </li>
         <li class="active">
           <c:choose>
-            <c:when test="${r'${'}action == 'create'}">新增${comment}</c:when>
-            <c:when test="${r'${'}action == 'update'}">修改${comment}</c:when>
+            <c:when test="${r'${'}action == 'create'}">新增${tableName}</c:when>
+            <c:when test="${r'${'}action == 'update'}">修改${tableName}</c:when>
           </c:choose>
         </li>
       </ul><!-- /.breadcrumb -->
@@ -55,8 +55,8 @@
       <div class="page-header">
         <h1>
           <c:choose>
-            <c:when test="${r'${'}action == 'create'}">新增${comment}</c:when>
-            <c:when test="${r'${'}action == 'update'}">修改${comment}</c:when>
+            <c:when test="${r'${'}action == 'create'}">新增${tableName}</c:when>
+            <c:when test="${r'${'}action == 'update'}">修改${tableName}</c:when>
           </c:choose>
         </h1>
       </div><!-- /.page-header -->

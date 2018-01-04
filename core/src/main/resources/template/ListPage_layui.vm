@@ -6,7 +6,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>${comment}管理</title>
+  <title>${tableName}管理</title>
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -155,12 +155,12 @@
         });
       } else if (layEvent === 'edit') { //编辑
         var index = layer.open({
-          title: "修改${comment}",
+          title: "修改${tableName}",
           type: 2,
           content: table_edit_url + data.id,
           success: function(layero, index){
             setTimeout(function(){
-              layui.layer.tips('点击此处返回${comment}列表', '.layui-layer-setwin .layui-layer-close', {
+              layui.layer.tips('点击此处返回${tableName}列表', '.layui-layer-setwin .layui-layer-close', {
                 tips: 3
               });
             },1000)
@@ -185,12 +185,12 @@
       switch (action) {
         case 'add':
           var index = layer.open({
-            title: "新增${comment}",
+            title: "新增${tableName}",
             type: 2,
             content: table_add_url,
             success: function(layero, index){
               setTimeout(function(){
-                layui.layer.tips('点击此处返回${comment}列表', '.layui-layer-setwin .layui-layer-close', {
+                layui.layer.tips('点击此处返回${tableName}列表', '.layui-layer-setwin .layui-layer-close', {
                   tips: 3
                 });
               },1000)
