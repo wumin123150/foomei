@@ -23,17 +23,13 @@
 <form class="layui-form layui-form-pane" action="${r'${ctx}'}/api/${variable}/save" method="post" style="width:80%;">
   <input type="hidden" name="id" id="id" value="${r'${'}${variable}.id}"/>
   <#list fields?keys as k>
-  <div class="layui-form-item<#if fields[k].first == 'textarea'> layui-form-text</#if>">
+  <div class="layui-form-item<#if fields[k].first == 'textarea'> layui-form-text</#if>"<#if fields[k].first == 'radio' || fields[k].first == 'checkbox' || fields[k].first == 'switch'> pane=""</#if>>
     <label class="layui-form-label">${fields[k].second}<#if fieldLayVerifys?keys?seq_contains(k)><#if fieldLayVerifys[k]?seq_contains("required")><span class="input-required">*</span></#if></#if></label>
     <div class="layui-input-block">
     <#if fields[k].first == 'select'>
     <select name="${k}" id="${k}" data-placeholder="${fields[k].second}">
     <#list fieldConsts[k] as value>
-    <#if fields[k].first == 'String'>
-    <option value="${value.first}" <c:if test="${r'${'}${variable}.${k} eq '${value.first}'}">selected</c:if>>${value.second}</option>
-    <#else>
-    <option value="${value.first}" <c:if test="${r'${'}${variable}.${k} eq ${value.first}}">selected</c:if>>${value.second}</option>
-    </#if>
+      <option value="${value.first}" <c:if test="${r'${'}${variable}.${k} eq '${value.first}'}">selected</c:if>>${value.second}</option>
     </#list>
     </select>
     <#elseif fields[k].first == 'radio'>
@@ -42,8 +38,10 @@
     </#list>
     <#elseif fields[k].first == 'checkbox'>
     <#list fieldConsts[k] as value>
-    <input type="checkbox" name="${k}" value="${value.first}" lay-skin="primary" title="${value.second}" <c:if test="${r'${'}${variable}.${k} eq '{value.first}'}">checked</c:if>>
+    <input type="checkbox" name="${k}" value="${value.first}" lay-skin="primary" title="${value.second}" <c:if test="${r'${'}${variable}.${k} eq '${value.first}'}">checked</c:if>>
     </#list>
+    <#elseif fields[k].first == 'switch'>
+    <input type="checkbox" name="${k}" value="true" lay-skin="switch" lay-text="${fieldSwitchs[k].first}|${fieldSwitchs[k].second}" <c:if test="${r'${'}${variable}.${k}}">checked</c:if>>
     <#elseif fields[k].first == 'date' || fields[k].first == 'datetime'>
     <input type="text" name="${k}" id="${k}" value="<fmt:formatDate value='${r'${'}${variable}.${k}}'/>"<#if fieldLayVerifys?keys?seq_contains(k)> lay-verify="${fieldLayVerifys[k]?join('|')}"</#if> placeholder="${fields[k].second}" placeholder="${fields[k].second}" autocomplete="off" class="layui-input date-picker">
     <#elseif fields[k].first == 'textarea'>
@@ -85,7 +83,7 @@
 
     form.verify({
       <#list fieldSizes?keys as k>
-      ${k}: function(value){
+      ${k}_maxlength: function(value){
         if(value.length > ${fieldSizes[k].first?c}){
           return '${fieldSizes[k].second}最大长度为${fieldSizes[k].first?c}位';
         }
@@ -106,16 +104,16 @@
           if (result.success) {
             loadIndex && layer.close(loadIndex);
             layer.msg('保存成功', {icon: 1});
+            parent.layer.closeAll("iframe");
           } else {
             loadIndex && layer.close(loadIndex);
-            if(result.data) {
-              var message = '';
-              for(var i=0;i<result.data.length;i++) {
-                message += result.data[i].errorMsg + '<br>';
-              }
-              layer.msg(message, {icon: 2});
-            } else
-              layer.msg(result.message, {icon: 2});
+            var message = '';
+            var messages = result.message.split(';');
+            for(var i=0;i<messages.length;i++) {
+              message += messages[i] + '<br>';
+            }
+            layer.msg(message, {icon: 2});
+            console.log(result.debug);
           }
         },
         error: function () {

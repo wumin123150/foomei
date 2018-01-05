@@ -1,14 +1,6 @@
 package com.foomei.common.collection;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ConcurrentSkipListMap;
@@ -202,6 +194,10 @@ public class MapUtil {
 	 */
 	public static <C, K extends C, V> TreeMap<K, V> newSortedMap(@Nullable Comparator<C> comparator) {
 		return Maps.newTreeMap(comparator);
+	}
+
+	public static <K extends Comparable, V> LinkedHashMap<K, V> newLinkedMap() {
+		return new LinkedHashMap<K, V>();
 	}
 
 	/**

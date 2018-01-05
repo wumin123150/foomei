@@ -98,19 +98,38 @@
                   <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="form-${k}">${fields[k].second}<#if fieldNotBlanks?keys?seq_contains(k)><span class="input-required">*</span></#if></label>
                   <div class="col-xs-12 col-sm-8">
                     <div class="clearfix">
-                      <#if fieldConsts?keys?seq_contains(k)>
+                      <#if fields[k].first == 'select'>
                       <select name="${k}" id="form-${k}" class="form-control" data-placeholder="${fields[k].second}">
                       <#list fieldConsts[k] as value>
-                      <#if fields[k].first == 'String'>
                         <option value="${value.first}" <c:if test="${r'${'}${variable}.${k} eq '${value.first}'}">selected</c:if>>${value.second}</option>
-                      <#else>
-                        <option value="${value.first}" <c:if test="${r'${'}${variable}.${k} eq ${value.first}}">selected</c:if>>${value.second}</option>
-                      </#if>
                       </#list>
                       </select>
-                      <#elseif fields[k].first == 'java.time.LocalDate' || fields[k].first == 'java.time.LocalDateTime'>
+                      <#elseif fields[k].first == 'radio'>
+                      <div class="radio">
+                      <#list fieldConsts[k] as value>
+                        <label>
+                          <input type="radio" name="${k}" class="ace" value="${value.first}" <c:if test="${r'${'}${variable}.${k} eq '${value.first}'}">checked</c:if>>
+                          <span class="lbl">${value.second}</span>
+                        </label>
+                      </#list>
+                      </div>
+                      <#elseif fields[k].first == 'checkbox'>
+                      <div class="checkbox">
+                      <#list fieldConsts[k] as value>
+                        <label>
+                          <input type="checkbox" name="${k}" class="ace" value="${value.first}" <c:if test="${r'${'}${variable}.${k} eq '${value.first}'}">checked</c:if>>
+                          <span class="lbl">${value.second}</span>
+                        </label>
+                      </#list>
+                      </div>
+                      <#elseif fields[k].first == 'switch'>
+                        <label>
+                          <input name="${k}" value="true" class="ace ace-switch" type="checkbox" <c:if test="${r'${'}${variable}.${k}}">checked</c:if>/>
+                          <span class="lbl" data-lbl="${fieldSwitchs[k].first}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${fieldSwitchs[k].second}"></span>
+                        </label>
+                      <#elseif fields[k].first == 'date' || fields[k].first == 'datetime'>
                       <input type="text" name="${k}" value="<fmt:formatDate value='${r'${'}${variable}.${k}}'/>" id="form-${k}" placeholder="${fields[k].second}" class="form-control date-picker"/>
-                      <#elseif fieldSizes?keys?seq_contains(k) && fieldSizes[k].first gt 64>
+                      <#elseif fields[k].first == 'textarea'>
                       <textarea name="${k}" id="form-${k}" placeholder="${fields[k].second}" class="form-control" rows="5">${r'${'}${variable}.${k}}</textarea>
                       <#else>
                       <input type="text" name="${k}" value="${r'${'}${variable}.${k}}" id="form-${k}" placeholder="${fields[k].second}" class="form-control"/>

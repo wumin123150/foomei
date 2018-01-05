@@ -367,6 +367,7 @@ public class JpaCodeUtil {
           params.put("fieldNotBlanks", toFieldNotBlanks(columns));
           params.put("fieldSizes", toFieldSizes(columns));
           params.put("fieldConsts", toFieldConsts(columns));
+          params.put("fieldSwitchs", toFieldSwitchs(columns));
           params.put("fieldLayVerifys", toFieldLayVerifys(columns));
           params.put("fieldValidateRules", toFieldValidateRules(columns));
           String content = FreeMarkerUtil.renderString(FileUtil.toString(new File(localProjectPath, VM_FORM_PAGE + theme + ".vm")), params);
@@ -493,7 +494,7 @@ public class JpaCodeUtil {
   }
 
   public static Map<String, String> toProps(List<Map<String, String>> columnDefines) {
-    Map<String, String> fields = MapUtil.newSortedMap();
+    Map<String, String> fields = MapUtil.newLinkedMap();
     for (Map<String, String> columnDefine : columnDefines) {
       String columnCode = columnDefine.get("column");
       if (!StringUtils.equalsIgnoreCase(columnCode, "id")) {
@@ -509,7 +510,8 @@ public class JpaCodeUtil {
       String columnCode = columnDefine.get("column");
       String consts = getText(columnDefine.get("comment"), new Pair<String, String>("{", "}"));
       String dataType = toDataType(columnDefine.get("type"));
-      if (!StringUtils.equalsIgnoreCase(columnCode, "id") && !StringUtils.equalsIgnoreCase(columnCode, "del_flag") && StringUtils.isNotEmpty(consts)) {
+      String unit = getText(columnDefine.get("comment"), new Pair<String, String>("[", "]"), new Pair<String, String>("【", "】"));
+      if (!StringUtils.equalsIgnoreCase(columnCode, "id") && !StringUtils.equalsIgnoreCase(columnCode, "del_flag") && !StringUtils.equalsIgnoreCase(unit, "switch") && StringUtils.isNotEmpty(consts)) {
         String[] temp = StringUtils.split(consts, ", ");
         for (int i = 0; i < temp.length; i++) {
           String[] values = StringUtils.split(temp[i], ":");
@@ -523,38 +525,43 @@ public class JpaCodeUtil {
   }
 
   public static Map<String, Pair<String, String>> toFields(List<Map<String, String>> columnDefines) {
-    Map<String, Pair<String, String>> fields = MapUtil.newSortedMap();
+    Map<String, Pair<String, String>> fields = MapUtil.newLinkedMap();
     for (Map<String, String> columnDefine : columnDefines) {
       String columnCode = columnDefine.get("column");
       String comment = columnDefine.get("comment");
       String dataType = toDataType(columnDefine.get("type"));
+      String unit = getText(columnDefine.get("comment"), new Pair<String, String>("[", "]"), new Pair<String, String>("【", "】"));
       if (!StringUtils.equalsIgnoreCase(columnCode, "id")) {
         fields.put(toField(columnCode), new Pair<String, String>(dataType, comment));
-      }
-      if (StringUtils.equalsIgnoreCase(columnCode, "del_flag")) {
-        fields.put(toField(columnCode), new Pair<String, String>("Boolean", comment));
+        if (StringUtils.equalsIgnoreCase(unit, "switch")) {
+          fields.put(toField(columnCode), new Pair<String, String>("Boolean", comment));
+        }
       }
     }
     return fields;
   }
 
   public static Map<String, Pair<String, String>> toFieldDtos(List<Map<String, String>> columnDefines) {
-    Map<String, Pair<String, String>> fields = MapUtil.newSortedMap();
+    Map<String, Pair<String, String>> fields = MapUtil.newLinkedMap();
     for (Map<String, String> columnDefine : columnDefines) {
       String columnCode = columnDefine.get("column");
       String comment = columnDefine.get("comment");
       String dataType = toDataType(columnDefine.get("type"));
+      String unit = getText(columnDefine.get("comment"), new Pair<String, String>("[", "]"), new Pair<String, String>("【", "】"));
       if (!StringUtils.equalsIgnoreCase(columnCode, "del_flag")
         && !StringUtils.equalsIgnoreCase(columnCode, "creator") && !StringUtils.equalsIgnoreCase(columnCode, "create_time")
         && !StringUtils.equalsIgnoreCase(columnCode, "updator") && !StringUtils.equalsIgnoreCase(columnCode, "update_time")) {
         fields.put(toField(columnCode), new Pair<String, String>(dataType, comment));
+        if (StringUtils.equals(unit, "switch")) {
+          fields.put(toField(columnCode), new Pair<String, String>("Boolean", comment));
+        }
       }
     }
     return fields;
   }
 
   public static Map<String, Pair<String, String>> toFieldLists(List<Map<String, String>> columnDefines) {
-    Map<String, Pair<String, String>> fields = MapUtil.newSortedMap();
+    Map<String, Pair<String, String>> fields = MapUtil.newLinkedMap();
     for (Map<String, String> columnDefine : columnDefines) {
       String columnCode = columnDefine.get("column");
       String columnName = getName(columnDefine.get("comment"));
@@ -584,7 +591,7 @@ public class JpaCodeUtil {
   }
 
   public static Map<String, List<Pair<String, String>>> toFieldConsts(List<Map<String, String>> columnDefines) {
-    Map<String, List<Pair<String, String>>> fields = MapUtil.newSortedMap();
+    Map<String, List<Pair<String, String>>> fields = MapUtil.newLinkedMap();
     for (Map<String, String> columnDefine : columnDefines) {
       String columnName = columnDefine.get("column");
       String consts = getText(columnDefine.get("comment"), new Pair<String, String>("{", "}"));
@@ -605,8 +612,37 @@ public class JpaCodeUtil {
     return fields;
   }
 
+  public static Map<String, Pair<String, String>> toFieldSwitchs(List<Map<String, String>> columnDefines) {
+    Map<String, Pair<String, String>> fields = MapUtil.newLinkedMap();
+    for (Map<String, String> columnDefine : columnDefines) {
+      String columnName = columnDefine.get("column");
+      String consts = getText(columnDefine.get("comment"), new Pair<String, String>("{", "}"));
+      String unit = getText(columnDefine.get("comment"), new Pair<String, String>("[", "]"), new Pair<String, String>("【", "】"));
+      if (!StringUtils.equalsIgnoreCase(columnName, "id") && !StringUtils.equalsIgnoreCase(columnName, "del_flag") && StringUtils.equalsIgnoreCase(unit, "switch") && StringUtils.isNotEmpty(consts)) {
+        String[] temp = StringUtils.split(consts, ", ");
+        if(temp.length == 2) {
+          String negative = "否";
+          String plus = "是";
+          for (int i = 0; i < temp.length; i++) {
+            String[] values = StringUtils.split(temp[i], ":");
+            if(values.length == 2) {
+              if(StringUtils.equalsIgnoreCase(values[0], "0") || StringUtils.equalsIgnoreCase(values[0], "false")) {
+                negative = values[1];
+              }
+              if(StringUtils.equalsIgnoreCase(values[0], "1") || StringUtils.equalsIgnoreCase(values[0], "true")) {
+                plus = values[1];
+              }
+            }
+          }
+          fields.put(toField(columnName), new Pair<String, String>(plus, negative));
+        }
+      }
+    }
+    return fields;
+  }
+
   public static Map<String, String> toFieldNotBlanks(List<Map<String, String>> columnDefines) {
-    Map<String, String> fields = MapUtil.newSortedMap();
+    Map<String, String> fields = MapUtil.newLinkedMap();
     for (Map<String, String> columnDefine : columnDefines) {
       String columnCode = columnDefine.get("column");
       String columnName = getName(columnDefine.get("comment"));
@@ -619,7 +655,7 @@ public class JpaCodeUtil {
   }
 
   public static Map<String, Pair<Long, String>> toFieldSizes(List<Map<String, String>> columnDefines) {
-    Map<String, Pair<Long, String>> fields = MapUtil.newSortedMap();
+    Map<String, Pair<Long, String>> fields = MapUtil.newLinkedMap();
     for (Map<String, String> columnDefine : columnDefines) {
       String columnCode = columnDefine.get("column");
       String columnName = getName(columnDefine.get("comment"));
@@ -632,7 +668,7 @@ public class JpaCodeUtil {
   }
 
   public static Map<String, List<String>> toFieldValidateRules(List<Map<String, String>> columnDefines) {
-    Map<String, List<String>> fields = MapUtil.newSortedMap();
+    Map<String, List<String>> fields = MapUtil.newLinkedMap();
     for (Map<String, String> columnDefine : columnDefines) {
       String columnCode = columnDefine.get("column");
       String consts = getText(columnDefine.get("comment"), new Pair<String, String>("{", "}"));
@@ -642,27 +678,28 @@ public class JpaCodeUtil {
       if (!StringUtils.equalsIgnoreCase(columnCode, "id") && !StringUtils.equalsIgnoreCase(columnCode, "del_flag")
         && !StringUtils.equalsIgnoreCase(columnCode, "creator") && !StringUtils.equalsIgnoreCase(columnCode, "create_time")
         && !StringUtils.equalsIgnoreCase(columnCode, "updator") && !StringUtils.equalsIgnoreCase(columnCode, "update_time")) {
+        String field = toField(columnCode);
         if (StringUtils.equalsIgnoreCase(isNull, "NO")) {
-          if(fields.containsKey(toField(columnCode))) {
-            fields.get(toField(columnCode)).add("required: true");
+          if(fields.containsKey(field)) {
+            fields.get(field).add("required: true");
           } else {
-            fields.put(toField(columnCode), ListUtil.newArrayList("required: true"));
+            fields.put(field, ListUtil.newArrayList("required: true"));
           }
         }
 
         if(StringUtils.isNotEmpty(columnLength)) {
-          if(fields.containsKey(toField(columnCode))) {
-            fields.get(toField(columnCode)).add("maxlength: " + columnLength);
+          if(fields.containsKey(field)) {
+            fields.get(field).add("maxlength: " + columnLength);
           } else {
-            fields.put(toField(columnCode), ListUtil.newArrayList("maxlength: " + columnLength));
+            fields.put(field, ListUtil.newArrayList("maxlength: " + columnLength));
           }
         }
 
         if((StringUtils.equals(dataType, "Long") || StringUtils.equals(dataType, "Integer")) && StringUtils.isEmpty(consts) && !StringUtils.endsWith(columnCode, "_id")) {
-          if(fields.containsKey(toField(columnCode))) {
-            fields.get(toField(columnCode)).add("digits: true");
+          if(fields.containsKey(field)) {
+            fields.get(field).add("digits: true");
           } else {
-            fields.put(toField(columnCode), ListUtil.newArrayList("digits: true"));
+            fields.put(field, ListUtil.newArrayList("digits: true"));
           }
         }
       }
@@ -671,28 +708,39 @@ public class JpaCodeUtil {
   }
 
   public static Map<String, List<String>> toFieldLayVerifys(List<Map<String, String>> columnDefines) {
-    Map<String, List<String>> fields = MapUtil.newSortedMap();
+    Map<String, List<String>> fields = MapUtil.newLinkedMap();
     for (Map<String, String> columnDefine : columnDefines) {
       String columnCode = columnDefine.get("column");
       String consts = getText(columnDefine.get("comment"), new Pair<String, String>("{", "}"));
       String dataType = toDataType(columnDefine.get("type"));
       String isNull = columnDefine.get("isNull");
+      String columnLength = columnDefine.get("stringLength");
       if (!StringUtils.equalsIgnoreCase(columnCode, "id") && !StringUtils.equalsIgnoreCase(columnCode, "del_flag")
         && !StringUtils.equalsIgnoreCase(columnCode, "creator") && !StringUtils.equalsIgnoreCase(columnCode, "create_time")
         && !StringUtils.equalsIgnoreCase(columnCode, "updator") && !StringUtils.equalsIgnoreCase(columnCode, "update_time")) {
+        String field = toField(columnCode);
+
         if (StringUtils.equalsIgnoreCase(isNull, "NO")) {
-          if(fields.containsKey(toField(columnCode))) {
-            fields.get(toField(columnCode)).add("required");
+          if(fields.containsKey(field)) {
+            fields.get(field).add("required");
           } else {
-            fields.put(toField(columnCode), ListUtil.newArrayList("required"));
+            fields.put(field, ListUtil.newArrayList("required"));
+          }
+        }
+
+        if(StringUtils.isNotEmpty(columnLength)) {
+          if(fields.containsKey(field)) {
+            fields.get(field).add(field + "_maxlength");
+          } else {
+            fields.put(field, ListUtil.newArrayList(field + "_maxlength"));
           }
         }
 
         if((StringUtils.equals(dataType, "Long") || StringUtils.equals(dataType, "Integer")) && StringUtils.isEmpty(consts) && !StringUtils.endsWith(columnCode, "_id")) {
-          if(fields.containsKey(toField(columnCode))) {
-            fields.get(toField(columnCode)).add("number");
+          if(fields.containsKey(field)) {
+            fields.get(field).add("number");
           } else {
-            fields.put(toField(columnCode), ListUtil.newArrayList("number"));
+            fields.put(field, ListUtil.newArrayList("number"));
           }
         }
       }

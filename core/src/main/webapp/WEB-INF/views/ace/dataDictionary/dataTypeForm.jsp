@@ -241,6 +241,7 @@
                 },1000);
               } else {
                 toastr.error(result.message);
+                console.log(result.debug);
               }
             },
             error: function () {

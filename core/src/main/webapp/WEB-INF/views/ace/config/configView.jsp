@@ -234,6 +234,7 @@
                 toastr.success('保存成功');
               } else {
                 toastr.error(result.message);
+                console.log(result.debug);
               }
             },
             error: function () {

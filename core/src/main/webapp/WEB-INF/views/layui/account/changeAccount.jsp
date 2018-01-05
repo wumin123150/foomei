@@ -217,14 +217,13 @@
             layer.msg('保存成功', {icon: 1});
           } else {
             loadIndex && layer.close(loadIndex);
-            if(result.data) {
-              var message = '';
-              for(var i=0;i<result.data.length;i++) {
-                message += result.data[i].errorMsg + '<br>';
-              }
-              layer.msg(message, {icon: 2});
-            } else
-              layer.msg(result.message, {icon: 2});
+            var message = '';
+            var messages = result.message.split(';');
+            for(var i=0;i<messages.length;i++) {
+              message += messages[i] + '<br>';
+            }
+            layer.msg(message, {icon: 2});
+            console.log(result.debug);
           }
         },
         error: function () {
@@ -258,14 +257,13 @@
             layer.msg('保存成功', {icon: 1});
           } else {
             loadIndex && layer.close(loadIndex);
-            if(result.data) {
-              var message = '';
-              for(var i=0;i<result.data.length;i++) {
-                message += result.data[i].errorMsg + '<br>';
-              }
-              layer.msg(message, {icon: 2});
-            } else
-              layer.msg(result.message, {icon: 2});
+            var message = '';
+            var messages = result.message.split(';');
+            for(var i=0;i<messages.length;i++) {
+              message += messages[i] + '<br>';
+            }
+            layer.msg(message, {icon: 2});
+            console.log(result.debug);
           }
         },
         error: function () {

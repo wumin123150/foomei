@@ -35,6 +35,8 @@ public class ${model}Dto {
   @ApiModelProperty(value = "${fields[k].second}")
   <#if fields[k].first == 'java.time.LocalDate' || fields[k].first == 'java.time.LocalDateTime'>
   private java.util.Date ${k};
+  <#elseif fields[k].first == 'Boolean'>
+  private ${fields[k].first} ${k} = false;
   <#else>
   private ${fields[k].first} ${k};
   </#if>

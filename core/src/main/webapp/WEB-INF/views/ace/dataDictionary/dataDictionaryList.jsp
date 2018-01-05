@@ -351,6 +351,7 @@
                   } else {
                     var error = $('<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert"><i class="ace-icon fa fa-times"></i></button><i class="ace-icon fa fa-times"></i>' + result.message + '</div>');
                     $('#validation-form').prepend(error);
+                    console.log(result.debug);
                   }
                 },
                 error: function () {
@@ -418,6 +419,7 @@
                       } else {
                         var error = $('<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert"><i class="ace-icon fa fa-times"></i></button><i class="ace-icon fa fa-times"></i>' + result.message + '</div>');
                         $('#validation-form').prepend(error);
+                        console.log(result.debug);
                       }
                     },
                     error: function () {
@@ -463,6 +465,7 @@
                 toastr.success('删除成功');
               } else {
                 toastr.error(result.message);
+                console.log(result.debug);
               }
             },
             error: function () {

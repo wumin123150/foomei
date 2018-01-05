@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import com.foomei.common.base.ExceptionUtil;
@@ -112,44 +113,48 @@ public class ResponseResult<T> {
   }
 
   public static ResponseResult createParamError(ComplexResult complexResult) {
-    ResponseResult result = createError(ErrorCodeFactory.BAD_REQUEST);
-
+    StringBuilder debugBuilder = new StringBuilder();
     StringBuilder builder = new StringBuilder();
     List<ValidationError> errors = complexResult.getErrors();
     for(ValidationError error : errors) {
-      builder.append(",").append(error.toString());
+      debugBuilder.append(";").append(error.toString());
+      builder.append(";").append(error.getErrorMsg());
     }
 
     if(builder.length() > 0) {
-      result.setDebug(builder.substring(1).toString());
+      ResponseResult result = createError(ErrorCodeFactory.BAD_REQUEST, builder.substring(1).toString());
+      result.setDebug(debugBuilder.substring(1).toString());
+      return result;
+    } else {
+      return createError(ErrorCodeFactory.BAD_REQUEST);
     }
-
-    return result;
   }
 
   public static ResponseResult createParamError(BindingResult bindingResult) {
-    ResponseResult result = createError(ErrorCodeFactory.BAD_REQUEST);
-
+    StringBuilder debugBuilder = new StringBuilder();
     StringBuilder builder = new StringBuilder();
-    List<FieldError> errors = bindingResult.getFieldErrors();
-    for(FieldError error : errors) {
-      builder.append(",").append(error.toString());
+    List<ObjectError> errors = bindingResult.getAllErrors();
+    for(ObjectError error : errors) {
+      debugBuilder.append(";").append(error.toString());
+      builder.append(";").append(error.getDefaultMessage());
     }
 
     if(builder.length() > 0) {
-      result.setDebug(builder.substring(1).toString());
+      ResponseResult result = createError(ErrorCodeFactory.BAD_REQUEST, builder.substring(1).toString());
+      result.setDebug(debugBuilder.substring(1).toString());
+      return result;
+    } else {
+      return createError(ErrorCodeFactory.BAD_REQUEST);
     }
-
-    return result;
   }
 
   public static ResponseResult createParamError(BindingResult bindingResult, String message) {
     ResponseResult result = createError(ErrorCodeFactory.BAD_REQUEST, message);
 
     StringBuilder builder = new StringBuilder();
-    List<FieldError> errors = bindingResult.getFieldErrors();
-    for(FieldError error : errors) {
-      builder.append(",").append(error.toString());
+    List<ObjectError> errors = bindingResult.getAllErrors();
+    for(ObjectError error : errors) {
+      builder.append(";").append(error.toString());
     }
 
     if(builder.length() > 0) {
