@@ -306,7 +306,6 @@
       }
 
       var grade = treeNode ? (treeNode.grade + 1) : 1;
-      debugger
       if (grade > ${type.grade}) {
         BootstrapDialog.alert('已达到规定层级，不能再创建下级节点');
         return;

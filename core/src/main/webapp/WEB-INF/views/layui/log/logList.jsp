@@ -199,6 +199,7 @@
                 type: 1,
                 title: "查看日志",
                 shadeClose: true,
+                move: false,
                 area: ['800px', '80%'],
                 content: $('#dialog-container').html(),
                 btn: [ '关闭'],

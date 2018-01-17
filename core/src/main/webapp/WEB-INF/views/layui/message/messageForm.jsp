@@ -110,7 +110,6 @@
         yes: function(index, layero){
           var userIds = $(layero.find("iframe")[0].contentWindow.userIds).val();
           var userNames = $(layero.find("iframe")[0].contentWindow.userNames).val();
-          debugger
           $('#users').val(userIds);
           $('#userNames').val(userNames);
           top.layer.close(index);

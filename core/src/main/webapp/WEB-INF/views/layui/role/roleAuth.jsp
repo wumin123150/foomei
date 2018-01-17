@@ -172,8 +172,10 @@
         case 'add':
           layer.open({
             type: 1,
-            title: "分配用户",
+            title: "分配用户1",
             shade: 0,
+            move: false,
+            offset: '50px',
             area: ['500px', '240px'],
             content: $('#dialog-container').html(),
             btn: [ '确认', '取消' ],
@@ -214,6 +216,9 @@
                   return repo.name || repo.text;
                 }
               });
+            },
+            cancel: function(index, layer) {
+              $('.select2').select2('destroy');
             },
             btn1: function(index, layero) {
               var userId = layero.find('#userId').val();
