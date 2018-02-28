@@ -115,6 +115,30 @@
         width: auto;
         margin: 0 0 10px 112px;
     }
+	.kit-table-body .layui-table-fixed.layui-table-fixed-r{
+        display: none;
+    }
+    .kit-table .kit-table-header {
+        height: 100%;
+        padding: 10px;
+    }
+    .kit-table .kit-table-header .kit-search-btns {
+        padding: 0 0 10px 0;
+        position: static;
+    }
+    .kit-table .kit-table-header .kit-search-inputs {
+        padding: 0;
+        position: static;
+    }
+    .kit-table .kit-table-header .kit-search-inputs>.layui-input {
+        margin-bottom: 10px;
+    }
+    .kit-table .kit-table-header .kit-search-inputs>.layui-form-select {
+        margin-bottom: 10px;
+    }
+    .kit-table .kit-table-header .kit-search-inputs>.select2 {
+        margin-bottom: 10px;
+    }
 }
 
 @media screen and (max-width: 750px) {

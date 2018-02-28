@@ -16,6 +16,11 @@
   <link rel="stylesheet" href="${ctx}/static/js/layui/css/layui.css" media="all"/>
   <link rel="stylesheet" href="${ctx}/static/js/layui/page.css" media="all"/>
   <style type="text/css">
+    @media screen and (max-width: 768px) {
+      #timeRange {
+        display: none;
+      }
+    }
   </style>
 </head>
 <body>
@@ -26,7 +31,6 @@
         <a href="javascript:;" data-action="batchDel" class="layui-btn layui-btn-sm layui-btn-danger"><i class="layui-icon">&#xe640;</i>删除所选</a>
       </div>
       <div class="kit-search-inputs">
-
         <div class="kit-search-keyword">
           <input type="text" class="layui-input" name="timeRange" id="timeRange" placeholder="时间范围">
           <input type="hidden" name="startTime" id="startTime"/>

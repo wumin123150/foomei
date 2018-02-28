@@ -36,7 +36,7 @@
     }
     @media screen and (max-width: 768px) {
       .layui-upload {
-        margin-left: 0;
+        margin-bottom: 15px;
       }
     }
   </style>
