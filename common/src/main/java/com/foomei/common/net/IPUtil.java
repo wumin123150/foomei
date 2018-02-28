@@ -9,6 +9,8 @@ import com.foomei.common.number.NumberUtil;
 import com.foomei.common.text.MoreStringUtil;
 import com.google.common.net.InetAddresses;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -24,6 +26,8 @@ import javax.servlet.http.HttpServletRequest;
  * @author walker
  */
 public class IPUtil {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(IPUtil.class);
 
 	/**
 	 * 获取客户端IP地址.
@@ -46,6 +50,7 @@ public class IPUtil {
 					ip = inet.getHostAddress();
 				} catch (UnknownHostException e) {
 					e.printStackTrace();
+					LOGGER.error("域名解析失败：", e);
 				}
 			}
 		}

@@ -73,6 +73,7 @@ public class HttpClientUtil {
 //			requestConfig = RequestConfig.custom().setConnectTimeout(120000).setSocketTimeout(60000).setConnectionRequestTimeout(60000).build();
 		} catch (Exception e) {
 			e.printStackTrace();
+			LOGGER.error("远程连接初始化失败：", e);
 		}
 	}
 

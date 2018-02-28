@@ -10,8 +10,13 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 import com.foomei.common.concurrent.ThreadLocalCleanUtil;
+import com.foomei.common.service.impl.JpaServiceImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ApplicationCleanListener implements ServletContextListener {
+
+	protected static final Logger LOGGER = LoggerFactory.getLogger(ApplicationCleanListener.class);
 
 	@Override
 	public void contextDestroyed(ServletContextEvent arg0) {
@@ -26,7 +31,8 @@ public class ApplicationCleanListener implements ServletContextListener {
 		 * ,例如DataSource,jdbcTemplate,dao,service....都无法卸载
 		 */
 		try {
-			System.out.println("clean jdbc Driver......");
+			if(LOGGER.isDebugEnabled())
+				LOGGER.debug("clean jdbc Driver......");
 			for (Enumeration e = DriverManager.getDrivers(); e.hasMoreElements();) {
 				Driver driver = (Driver) e.nextElement();
 				if (driver.getClass().getClassLoader() == getClass().getClassLoader()) {
@@ -34,13 +40,12 @@ public class ApplicationCleanListener implements ServletContextListener {
 				}
 			}
 		} catch (Exception e) {
-			System.out.println("Exception cleaning up java.sql.DriverManager's driver: " + e.getMessage());
+			LOGGER.error("Exception cleaning up java.sql.DriverManager's driver: ", e);
 		}
 
 		try {
 			Class ConnectionImplClass = Thread.currentThread().getContextClassLoader().loadClass("com.mysql.jdbc.ConnectionImpl");
 			if (ConnectionImplClass != null && ConnectionImplClass.getClassLoader() == getClass().getClassLoader()) {
-				System.out.println("clean mysql timer......");
 				Field f = ConnectionImplClass.getDeclaredField("cancelTimer");
 				f.setAccessible(true);
 				Timer timer = (Timer) f.get(null);
@@ -49,7 +54,7 @@ public class ApplicationCleanListener implements ServletContextListener {
 		} catch (java.lang.ClassNotFoundException e1) {
 			// do nothing
 		} catch (Exception e) {
-			System.out.println("Exception cleaning up MySQL cancellation timer: " + e.getMessage());
+			LOGGER.error("Exception cleaning up MySQL cancellation timer: ", e);
 		}
 
 	}

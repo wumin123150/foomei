@@ -1,11 +1,18 @@
 package com.foomei.common.concurrent;
 
+import com.foomei.common.io.JdbcUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.lang.ref.Reference;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class ThreadLocalCleanUtil {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(ThreadLocalCleanUtil.class);
+
 	/**
 	 * 得到当前线程组中的所有线程 description:
 	 * 
@@ -48,6 +55,7 @@ public class ThreadLocalCleanUtil {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+			LOGGER.error("清空线程中的缓存失败：", e);
 		}
 	}
 
@@ -65,14 +73,14 @@ public class ThreadLocalCleanUtil {
 						Object key = ((Reference) table[j]).get();
 						if ((key != null) && (key.getClass().getClassLoader() == classloader)) {
 							remove = true;
-							System.out.println("clean threadLocal key,class=" + key.getClass().getCanonicalName() + ",value=" + key.toString());
+							LOGGER.debug("clean threadLocal key,class=" + key.getClass().getCanonicalName() + ",value=" + key.toString());
 						}
 						Field valueField = table[j].getClass().getDeclaredField("value");
 						valueField.setAccessible(true);
 						Object value = valueField.get(table[j]);
 						if ((value != null) && (value.getClass().getClassLoader() == classloader)) {
 							remove = true;
-							System.out.println("clean threadLocal value,class=" + value.getClass().getCanonicalName() + ",value=" + value.toString());
+							LOGGER.debug("clean threadLocal value,class=" + value.getClass().getCanonicalName() + ",value=" + value.toString());
 						}
 						if (remove) {
 							if (key == null)

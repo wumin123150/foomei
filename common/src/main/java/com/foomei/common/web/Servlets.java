@@ -155,8 +155,8 @@ public class Servlets {
 		}finally{
 			try {
 				response.getWriter().close();
-			} catch (IOException e) {
-				e.printStackTrace();
+			} catch (IOException ignore) {
+				ignore.printStackTrace();
 			}
 		}
 	}

@@ -1,5 +1,9 @@
 package com.foomei.common.io;
 
+import com.foomei.common.web.ApplicationCleanListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,6 +14,8 @@ import java.util.Map;
  * JDBC工具类
  */
 public class JdbcUtil {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(JdbcUtil.class);
 
   // 定义数据库的链接
   private Connection conn;
@@ -23,9 +29,10 @@ public class JdbcUtil {
     try {
       Class.forName(driver);
       conn = DriverManager.getConnection(url, username, password);
-      System.out.println("数据库连接成功");
+      LOGGER.debug("数据库连接成功");
     } catch (Exception e) {
       e.printStackTrace();
+      LOGGER.error("数据库连接失败：", e);
     }
   }
 
@@ -82,10 +89,11 @@ public class JdbcUtil {
         pstmt.close();
       if (null != conn)
         conn.close();
+      LOGGER.debug("释放数据库连接成功");
     } catch (SQLException e) {
       e.printStackTrace();
+      LOGGER.error("释放数据库连接失败：", e);
     }
-    System.out.println("释放数据库连接");
   }
 
 }
