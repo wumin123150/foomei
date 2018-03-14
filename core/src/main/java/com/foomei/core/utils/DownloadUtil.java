@@ -306,6 +306,8 @@ public class DownloadUtil {
         return "video/mp4";
       case "zip":
         return "application/zip";
+      case "apk":
+        return "application/vnd.android.package-archive";
     }
     return null;
   }
