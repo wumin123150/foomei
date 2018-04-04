@@ -46,6 +46,10 @@ public class WordUtil {
     return WordprocessingMLPackage.load(new File(path));
   }
 
+  public static WordprocessingMLPackage getTemplate(InputStream in) throws Docx4JException {
+    return WordprocessingMLPackage.load(in);
+  }
+
   private static <T> List<T> getAllElementFromObject(Object object, Class<T> toSearch) {
     List<T> result = new ArrayList<>();
 
@@ -219,6 +223,38 @@ public class WordUtil {
   }
 
   public static void saveToPdf(String template, String tarPath, Map<String, String> mappings,
+                               Map<String, List<String>> mapParagraphs, Map<String, List<Map<String, String>>> mapTables)
+    throws Docx4JException, FileNotFoundException {
+    WordprocessingMLPackage word = getTemplate(template);
+    replace(word, mappings, mapParagraphs, mapTables);
+    Docx4J.toPDF(word, new FileOutputStream(new File(tarPath)));
+  }
+
+  public static void saveToWord(InputStream template, OutputStream out, Map<String, String> mappings,
+                                Map<String, List<String>> mapParagraphs, Map<String, List<Map<String, String>>> mapTables)
+    throws Docx4JException {
+    WordprocessingMLPackage word = getTemplate(template);
+    replace(word, mappings, mapParagraphs, mapTables);
+    word.save(out);
+  }
+
+  public static void saveToWord(InputStream template, String tarPath, Map<String, String> mappings,
+                                Map<String, List<String>> mapParagraphs, Map<String, List<Map<String, String>>> mapTables)
+    throws Docx4JException {
+    WordprocessingMLPackage word = getTemplate(template);
+    replace(word, mappings, mapParagraphs, mapTables);
+    word.save(new File(tarPath));
+  }
+
+  public static void saveToPdf(InputStream template, OutputStream out, Map<String, String> mappings,
+                               Map<String, List<String>> mapParagraphs, Map<String, List<Map<String, String>>> mapTables)
+    throws Docx4JException {
+    WordprocessingMLPackage word = getTemplate(template);
+    replace(word, mappings, mapParagraphs, mapTables);
+    Docx4J.toPDF(word, out);
+  }
+
+  public static void saveToPdf(InputStream template, String tarPath, Map<String, String> mappings,
                                Map<String, List<String>> mapParagraphs, Map<String, List<Map<String, String>>> mapTables)
     throws Docx4JException, FileNotFoundException {
     WordprocessingMLPackage word = getTemplate(template);

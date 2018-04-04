@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.foomei</groupId>
         <artifactId>foomei-parent</artifactId>
-        <version>2.3.1-GA</version>
+        <version>2.3.2-GA</version>
         <relativePath>../parent/</relativePath>
     </parent>
     <artifactId>foomei-core</artifactId>
@@ -456,12 +456,6 @@
             </activation>
             <properties>
                 <env>dev</env>
-            </properties>
-        </profile>
-        <profile>
-            <id>test</id>
-            <properties>
-                <env>test</env>
             </properties>
         </profile>
         <profile>

@@ -19,9 +19,9 @@ public class ShiroPermissionFilter extends PermissionsAuthorizationFilter {
     if (RequestUtil.isAjaxRequest((HttpServletRequest) request)) {
       Subject subject = getSubject(request, response);
       if (subject.getPrincipal() == null) {
-        renderJson(response, ResponseResult.createError(ErrorCodeFactory.UNAUTHORIZED, "请重新登录。"));
+        renderJson(response, ResponseResult.createError(ErrorCodeFactory.UNAUTHORIZED_CODE, "请重新登录。"));
       } else {
-        renderJson(response, ResponseResult.createError(ErrorCodeFactory.FORBIDDEN, "没有权限访问。"));
+        renderJson(response, ResponseResult.createError(ErrorCodeFactory.FORBIDDEN_CODE, "没有权限访问。"));
       }
       return false;
     }

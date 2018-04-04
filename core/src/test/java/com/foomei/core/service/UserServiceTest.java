@@ -1,6 +1,6 @@
 package com.foomei.core.service;
 
-import com.foomei.common.service.impl.ServiceException;
+import com.foomei.common.exception.ServiceException;
 import com.foomei.core.dao.jpa.UserDao;
 import com.foomei.core.entity.User;
 import org.junit.Before;

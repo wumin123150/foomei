@@ -2,8 +2,8 @@ package com.foomei.core.web.api;
 
 import com.foomei.common.dto.ErrorCodeFactory;
 import com.foomei.common.dto.ResponseResult;
+import com.foomei.common.exception.BaseException;
 import com.foomei.common.security.shiro.CaptchaToken;
-import com.foomei.common.service.impl.ServiceException;
 import com.foomei.common.text.TextValidator;
 import com.foomei.core.service.UserService;
 import com.foomei.core.utils.SmsUtil;
@@ -58,7 +58,7 @@ public class CaptchaEndpoint {
     if (StringUtils.isNotEmpty(phone)) {
       send(phone, null);
     } else {
-      return ResponseResult.createError(ErrorCodeFactory.BAD_REQUEST, "手机不存在");
+      return ResponseResult.createError(ErrorCodeFactory.ARGS_ERROR_CODE, "手机不存在");
     }
 
     return ResponseResult.SUCCEED;
@@ -66,7 +66,7 @@ public class CaptchaEndpoint {
 
   private boolean send(String phone, String content) {
     if (!TextValidator.isMobileSimple(phone)) {
-      throw new ServiceException("手机号码不正确！", ErrorCodeFactory.BAD_REQUEST);
+      throw new BaseException(ErrorCodeFactory.ARGS_ERROR_CODE, "手机号码不正确！");
     }
 
     Integer time = (Integer) SecurityUtils.getSubject().getSession().getAttribute(CaptchaToken.CAPTCHA_SESSION_TIME);
@@ -75,7 +75,7 @@ public class CaptchaEndpoint {
     } else if (time > 0) {
       SecurityUtils.getSubject().getSession().setAttribute(CaptchaToken.CAPTCHA_SESSION_TIME, --time);
     } else {
-      throw new ServiceException("短信运营商规定，短期内不能向同手机发送多条短信，请1小时后再试！", ErrorCodeFactory.BAD_REQUEST);
+      throw new BaseException(ErrorCodeFactory.ARGS_ERROR_CODE, "短信运营商规定，短期内不能向同手机发送多条短信，请1小时后再试！");
     }
 
     String captcha = randomNum(99999, 6);

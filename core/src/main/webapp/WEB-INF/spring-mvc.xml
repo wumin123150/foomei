@@ -11,6 +11,7 @@
 		<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller" />
 		<context:include-filter type="annotation" expression="org.springframework.web.bind.annotation.ControllerAdvice" />
 		<context:include-filter type="assignable" expression="com.foomei.core.web.LogAspect" />
+		<context:include-filter type="assignable" expression="com.foomei.core.web.LogQueue" />
 	</context:component-scan>
 
 	<!-- 定义controller aspectj -->

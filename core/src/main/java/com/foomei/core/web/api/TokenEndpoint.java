@@ -25,7 +25,7 @@ public class TokenEndpoint {
       return ResponseResult.SUCCEED;
     }
 
-    return ResponseResult.createError(ErrorCodeFactory.BAD_REQUEST, "由于您长时间未登录 请重新登录。");
+    return ResponseResult.createError(ErrorCodeFactory.ARGS_ERROR_CODE, "由于您长时间未登录 请重新登录。");
   }
 
 }

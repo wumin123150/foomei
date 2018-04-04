@@ -98,7 +98,7 @@ public class DataDictionaryEndpoint {
   public ResponseResult delete(@PathVariable("id") Long id) {
     List<DataDictionary> children = dataDictionaryService.findChildrenByParent(id);
     if(!ListUtil.isEmpty(children)) {
-      return ResponseResult.createError(ErrorCodeFactory.BAD_REQUEST, "请先删除下级数据");
+      return ResponseResult.createError(ErrorCodeFactory.ARGS_ERROR_CODE, "请先删除下级数据");
     }
 
     dataDictionaryService.delete(id);

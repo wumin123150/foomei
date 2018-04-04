@@ -1,26 +1,21 @@
 package com.foomei.common.dto;
 
-import java.util.List;
-
 import com.baidu.unbiz.fluentvalidator.ComplexResult;
 import com.baidu.unbiz.fluentvalidator.ValidationError;
-import com.baidu.unbiz.fluentvalidator.util.CollectionUtil;
-import com.foomei.common.collection.CommonCollections;
-import com.foomei.common.collection.ListUtil;
+import com.foomei.common.base.ExceptionUtil;
+import com.foomei.common.exception.BaseException;
+import com.foomei.common.mapper.BeanMapper;
+import com.foomei.common.reflect.ClassUtil;
+import com.foomei.common.reflect.ReflectionUtil;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
-import com.foomei.common.base.ExceptionUtil;
-import com.foomei.common.mapper.BeanMapper;
-import com.foomei.common.reflect.ClassUtil;
-import com.foomei.common.reflect.ReflectionUtil;
-import com.foomei.common.service.impl.ServiceException;
+import java.util.List;
 
 public class ResponseResult<T> {
 
@@ -94,9 +89,9 @@ public class ResponseResult<T> {
     this.message = errorCode.getMessage();
   }
 
-  public ResponseResult(ErrorCode errorCode, String message) {
+  public ResponseResult(Integer code, String message) {
     this.success = false;
-    this.code = errorCode.getCode();
+    this.code = code;
     this.message = message;
   }
 
@@ -104,12 +99,12 @@ public class ResponseResult<T> {
     return new ResponseResult(errorCode);
   }
 
-  public static ResponseResult createError(ErrorCode errorCode, String message) {
-    return new ResponseResult(errorCode, message);
+  public static ResponseResult createError(Integer code, String message) {
+    return new ResponseResult(code, message);
   }
 
   public static ResponseResult createParamError(String message) {
-    return new ResponseResult(ErrorCodeFactory.BAD_REQUEST, message);
+    return new ResponseResult(ErrorCodeFactory.ARGS_ERROR_CODE, message);
   }
 
   public static ResponseResult createParamError(ComplexResult complexResult) {
@@ -122,7 +117,7 @@ public class ResponseResult<T> {
     }
 
     if(builder.length() > 0) {
-      ResponseResult result = createError(ErrorCodeFactory.BAD_REQUEST, builder.substring(1).toString());
+      ResponseResult result = createError(ErrorCodeFactory.ARGS_ERROR_CODE, builder.substring(1).toString());
       result.setDebug(debugBuilder.substring(1).toString());
       return result;
     } else {
@@ -140,7 +135,7 @@ public class ResponseResult<T> {
     }
 
     if(builder.length() > 0) {
-      ResponseResult result = createError(ErrorCodeFactory.BAD_REQUEST, builder.substring(1).toString());
+      ResponseResult result = createError(ErrorCodeFactory.ARGS_ERROR_CODE, builder.substring(1).toString());
       result.setDebug(debugBuilder.substring(1).toString());
       return result;
     } else {
@@ -149,7 +144,7 @@ public class ResponseResult<T> {
   }
 
   public static ResponseResult createParamError(BindingResult bindingResult, String message) {
-    ResponseResult result = createError(ErrorCodeFactory.BAD_REQUEST, message);
+    ResponseResult result = createError(ErrorCodeFactory.ARGS_ERROR_CODE, message);
 
     StringBuilder builder = new StringBuilder();
     List<ObjectError> errors = bindingResult.getAllErrors();
@@ -165,8 +160,8 @@ public class ResponseResult<T> {
   }
 
   public static ResponseResult create4Exception(Exception ex) {
-    if (ex instanceof ServiceException) {
-      ResponseResult result = createError(ErrorCodeFactory.INTERNAL_SERVER_ERROR, ex.getMessage());
+    if (ex instanceof BaseException && ((BaseException) ex).getCode() != null) {
+      ResponseResult result = createError(((BaseException) ex).getCode(), ex.getMessage());
       result.setDebug(ExceptionUtil.toStringWithLocation(ex, ClassUtil.getPackageName(ResponseResult.class.getName(), 2)));
       return result;
     }

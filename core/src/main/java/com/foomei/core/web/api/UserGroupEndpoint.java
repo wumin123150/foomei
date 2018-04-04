@@ -119,12 +119,12 @@ public class UserGroupEndpoint {
   @RequestMapping(value = "delete/{id}")
   public ResponseResult delete(@PathVariable("id") Long id) {
     if (userService.existGroup(id)) {
-      return ResponseResult.createError(ErrorCodeFactory.BAD_REQUEST, "请先删除此机构下的用户");
+      return ResponseResult.createError(ErrorCodeFactory.ARGS_ERROR_CODE, "请先删除此机构下的用户");
     }
 
     List<UserGroup> children = userGroupService.findChildrenByParent(id);
     if(!ListUtil.isEmpty(children)) {
-      return ResponseResult.createError(ErrorCodeFactory.BAD_REQUEST, "请先删除下级机构");
+      return ResponseResult.createError(ErrorCodeFactory.ARGS_ERROR_CODE, "请先删除下级机构");
     }
 
     userGroupService.delete(id);

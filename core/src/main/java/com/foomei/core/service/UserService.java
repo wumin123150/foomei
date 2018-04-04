@@ -1,9 +1,10 @@
 package com.foomei.core.service;
 
+import com.foomei.common.dto.ErrorCodeFactory;
+import com.foomei.common.exception.BaseException;
 import com.foomei.common.persistence.Hibernates;
 import com.foomei.common.security.DigestUtil;
 import com.foomei.common.service.impl.JpaServiceImpl;
-import com.foomei.common.service.impl.ServiceException;
 import com.foomei.common.text.EncodeUtil;
 import com.foomei.common.web.ThreadContext;
 import com.foomei.core.dao.jpa.UserDao;
@@ -95,7 +96,7 @@ public class UserService extends JpaServiceImpl<User, Long> {
 
     if (isSupervisor(user)) {
       LOGGER.warn("操作员{}尝试修改超级管理员", ThreadContext.getUserName());
-      throw new ServiceException("不能修改超级管理员");
+      throw new BaseException(ErrorCodeFactory.INTERNAL_SERVER_ERROR_CODE, "不能修改超级管理员");
     }
 
     // 设定安全的密码，生成随机的salt并经过1024次 sha-1 hash

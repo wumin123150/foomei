@@ -9,7 +9,6 @@ import com.foomei.common.mapper.JsonMapper;
 import com.foomei.common.net.IPUtil;
 import com.foomei.common.net.RequestUtil;
 import com.foomei.core.entity.Log;
-import com.foomei.core.service.LogService;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.lang3.StringUtils;
@@ -23,7 +22,6 @@ import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -51,9 +49,6 @@ public class LogAspect {
   private long startTime = 0L;
   // 结束时间
   private long endTime = 0L;
-
-  @Autowired
-  LogService logService;
 
   @Before("@annotation(io.swagger.annotations.ApiOperation)")
   // @Before("execution(* *..controller.*.*(..))")
@@ -128,15 +123,16 @@ public class LogAspect {
     }
 
     log.setIp(IPUtil.getIp(request));
-    log.setUrl(ObjectUtil.toPrettyString(request.getRequestURL()));
+    log.setUrl(request.getRequestURL().toString());
     log.setMethod(request.getMethod());
     log.setUserAgent(request.getHeader("User-Agent"));
     log.setParameter(jsonMapper.toJson(parameter));
     log.setResult(result instanceof String ? (String) result : jsonMapper.toJson(result));
     log.setLogTime(new Date(startTime));
     log.setSpendTime((int) (endTime - startTime));
-    log.setUsername(ObjectUtil.toPrettyString(request.getUserPrincipal()));
-    logService.save(log);
+    log.setUsername(request.getUserPrincipal() != null ? request.getUserPrincipal().getName() : "");
+//    logService.save(log);
+    LogQueue.getInstance().push(log);
 
     return result;
   }

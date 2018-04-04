@@ -39,6 +39,11 @@ public class LogService extends JpaServiceImpl<Log, String> {
   @Autowired
   private LogDao logDao;
 
+  @Transactional(readOnly = false)
+  public void save(Iterable<Log> entities) {
+    logDao.save(entities);
+  }
+
   public Page<Log> getPage(final String searchKey, final Date startTime, final Date endTime, Pageable page) {
     return logDao.findAll(new Specification<Log>() {
       public Predicate toPredicate(Root<Log> root, CriteriaQuery<?> query, CriteriaBuilder cb) {

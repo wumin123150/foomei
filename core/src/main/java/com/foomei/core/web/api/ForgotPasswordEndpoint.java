@@ -35,11 +35,11 @@ public class ForgotPasswordEndpoint {
     String phoneCode = (String) SecurityUtils.getSubject().getSession().getAttribute(CaptchaToken.CAPTCHA_SESSION_PHONE);
     String captchaCode = (String) SecurityUtils.getSubject().getSession().getAttribute(CaptchaToken.CAPTCHA_SESSION_KEY);
     if (StringUtils.isEmpty(captchaCode)) {
-      return ResponseResult.createError(ErrorCodeFactory.BAD_REQUEST, "验证码已过期");
+      return ResponseResult.createError(ErrorCodeFactory.ARGS_ERROR_CODE, "验证码已过期");
     } else if (!captchaCode.equalsIgnoreCase(captcha)) {
-      return ResponseResult.createError(ErrorCodeFactory.BAD_REQUEST, "验证码错误");
+      return ResponseResult.createError(ErrorCodeFactory.ARGS_ERROR_CODE, "验证码错误");
     } else if (StringUtils.isEmpty(phoneCode) || !StringUtils.equals(username, phoneCode)) {
-      return ResponseResult.createError(ErrorCodeFactory.BAD_REQUEST, "用户名和验证码不匹配");
+      return ResponseResult.createError(ErrorCodeFactory.ARGS_ERROR_CODE, "用户名和验证码不匹配");
     }
 
     userService.changePassword(username, password);

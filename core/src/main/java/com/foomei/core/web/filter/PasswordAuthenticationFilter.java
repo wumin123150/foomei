@@ -11,8 +11,8 @@ import com.foomei.common.security.shiro.InactiveAccountException;
 import com.foomei.common.security.shiro.ShiroUser;
 import com.foomei.common.web.Servlets;
 import com.foomei.core.entity.Log;
-import com.foomei.core.service.LogService;
 import com.foomei.core.service.UserService;
+import com.foomei.core.web.LogQueue;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
@@ -42,8 +42,6 @@ public class PasswordAuthenticationFilter extends FormAuthenticationFilter {
 
   @Autowired
   private UserService userService;
-  @Autowired
-  private LogService logService;
 
   // 开始时间
   private long startTime = 0L;
@@ -86,7 +84,7 @@ public class PasswordAuthenticationFilter extends FormAuthenticationFilter {
 
   public void redirectToLogin(ServletRequest request, ServletResponse response) throws IOException {
     if (RequestUtil.isAjaxRequest((HttpServletRequest) request)) {
-      renderJson(response, ResponseResult.createError(ErrorCodeFactory.UNAUTHORIZED, "请重新登录。"));
+      renderJson(response, ResponseResult.createError(ErrorCodeFactory.UNAUTHORIZED_CODE, "请重新登录。"));
     } else {
       String loginUrl = getLoginUrl();
       WebUtils.issueRedirect(request, response, loginUrl);
@@ -120,7 +118,7 @@ public class PasswordAuthenticationFilter extends FormAuthenticationFilter {
     setFailureAttribute(request, e);
     if (RequestUtil.isAjaxRequest((HttpServletRequest) request)) {
       String message = (String) request.getAttribute(getFailureKeyAttribute());
-      renderJson(response, ResponseResult.createError(ErrorCodeFactory.UNAUTHORIZED, message));
+      renderJson(response, ResponseResult.createError(ErrorCodeFactory.UNAUTHORIZED_CODE, message));
 
       return false;
     } else {
@@ -166,7 +164,7 @@ public class PasswordAuthenticationFilter extends FormAuthenticationFilter {
     }
 
     log.setIp(IPUtil.getIp(request));
-    log.setUrl(ObjectUtil.toPrettyString(request.getRequestURL()));
+    log.setUrl(request.getRequestURL().toString());
     log.setMethod(request.getMethod());
     log.setUserAgent(request.getHeader("User-Agent"));
     log.setParameter("{\"username\":\"" + username + "\"}");
@@ -174,7 +172,7 @@ public class PasswordAuthenticationFilter extends FormAuthenticationFilter {
     log.setLogTime(new Date(startTime));
     log.setSpendTime((int) (endTime - startTime));
     log.setUsername(username);
-    logService.save(log);
+    LogQueue.getInstance().push(log);
   }
 
 }

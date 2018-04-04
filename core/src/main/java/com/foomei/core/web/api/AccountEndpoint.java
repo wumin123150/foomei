@@ -88,7 +88,7 @@ public class AccountEndpoint {
       userService.changePassword(id, newPassword);
       return ResponseResult.SUCCEED;
     } else {
-      return ResponseResult.createError(ErrorCodeFactory.BAD_REQUEST, "原密码错误");
+      return ResponseResult.createError(ErrorCodeFactory.ARGS_ERROR_CODE, "原密码错误");
     }
   }
 

@@ -20,14 +20,14 @@ public class SmsUtil {
   }
 
   public static boolean send(String phones, String content) {
-    Map<String, String> params = MapUtil.newHashMap();
+    Map<String, Object> params = MapUtil.newHashMap();
     params.put("phones", phones);
     params.put("content", content);
     params.put("identityKey", identityKey);
 
     try {
       if (support) {
-        String result = HttpClientUtil.postString(url, params, "UTF-8");
+        String result = HttpClientUtil.postString(url, params);
         return StringUtils.contains(result, "<code>0</code>");
       } else {
         return true;
