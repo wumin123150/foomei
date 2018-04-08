@@ -80,7 +80,7 @@
             <artifactId>pagehelper</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.github.abel533</groupId>
+            <groupId>tk.mybatis</groupId>
             <artifactId>mapper</artifactId>
         </dependency>
 

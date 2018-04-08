@@ -7,9 +7,8 @@ import com.foomei.common.persistence.search.SearchRequest;
 import com.foomei.common.persistence.search.SimpleFilter;
 import com.foomei.common.reflect.ClassUtil;
 import com.foomei.common.time.DateFormatUtil;
-import com.github.abel533.entity.Example;
-import com.github.abel533.entity.Example.Criteria;
 import org.springframework.data.domain.Sort.Order;
+import tk.mybatis.mapper.entity.Example;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
@@ -40,7 +39,7 @@ public class DynamicExample {
   public static <T> Example filterTo(final BooleanOperator operator, final List<SearchFilter> searchFilters, final Class<T> entityClazz) {
     Example example = new Example(entityClazz);
 
-    Criteria criteria = null;
+    Example.Criteria criteria = null;
     if (CollectionUtil.isNotEmpty(searchFilters)) {
       for (SearchFilter searchFilter : searchFilters) {
         if (operator == BooleanOperator.OR || criteria == null) {

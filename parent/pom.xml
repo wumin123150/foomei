@@ -10,13 +10,14 @@
 
     <properties>
         <!-- 主要依赖库的版本定义 -->
-        <foomei.version>2.3.1-GA</foomei.version>
+        <foomei.version>2.3.2-GA</foomei.version>
         <spring.version>4.3.7.RELEASE</spring.version>
         <hibernate.version>4.3.11.Final</hibernate.version>
-        <mybatis.version>3.4.2</mybatis.version>
-        <mybatis-spring.version>1.3.1</mybatis-spring.version>
-        <mybatis-pager.version>5.0.0</mybatis-pager.version>
-        <mybatis-mapper.version>3.0.1</mybatis-mapper.version>
+        <mybatis.version>3.4.5</mybatis.version>
+        <mybatis-spring.version>1.3.2</mybatis-spring.version>
+        <mybatis-pager.version>5.1.3</mybatis-pager.version>
+        <mybatis-mapper.version>3.5.3</mybatis-mapper.version>
+        <mybatis-generator.version>1.3.6</mybatis-generator.version>
         <spring-data-jpa.version>1.8.0.RELEASE</spring-data-jpa.version>
         <druid.version>1.0.29</druid.version>
         <sitemesh.version>3.0.1</sitemesh.version>
@@ -197,7 +198,7 @@
                 <version>${mybatis-pager.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.github.abel533</groupId>
+                <groupId>tk.mybatis</groupId>
                 <artifactId>mapper</artifactId>
                 <version>${mybatis-mapper.version}</version>
                 <exclusions>
@@ -206,6 +207,11 @@
                         <artifactId>commons-beanutils</artifactId>
                     </exclusion>
                 </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.mybatis.generator</groupId>
+                <artifactId>mybatis-generator-core</artifactId>
+                <version>${mybatis-generator.version}</version>
             </dependency>
 
             <!-- connection pool -->

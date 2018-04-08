@@ -1,12 +1,14 @@
 package com.foomei.common.service.impl;
 
 import com.foomei.common.dao.MybatisDao;
+import com.foomei.common.entity.CreateRecord;
 import com.foomei.common.entity.DeleteRecord;
+import com.foomei.common.entity.UpdateRecord;
 import com.foomei.common.persistence.DynamicExample;
 import com.foomei.common.persistence.search.SearchRequest;
 import com.foomei.common.reflect.ClassUtil;
 import com.foomei.common.service.MybatisService;
-import com.github.abel533.entity.Example;
+import com.foomei.common.web.ThreadContext;
 import com.github.pagehelper.PageHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,8 +17,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
+import tk.mybatis.mapper.entity.Example;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 public abstract class MybatisServiceImpl<T, ID extends Serializable> implements MybatisService<T, ID> {
@@ -40,14 +44,50 @@ public abstract class MybatisServiceImpl<T, ID extends Serializable> implements 
 
   @Transactional(readOnly = false)
   public T insert(T entity) {
+    if(entity instanceof CreateRecord && !((CreateRecord) entity).isCreated()) {
+      ((CreateRecord) entity).setCreateTime(new Date());
+      ((CreateRecord) entity).setCreator(ThreadContext.getUserId());
+      if (entity instanceof DeleteRecord) {
+        ((DeleteRecord) entity).setDelFlag(false);
+      }
+    }
     dao.insert(entity);
     LOGGER.info("insert entity: {}", entity);
     return entity;
   }
 
   @Transactional(readOnly = false)
+  public T insertSelective(T entity) {
+    if(entity instanceof CreateRecord && !((CreateRecord) entity).isCreated()) {
+      ((CreateRecord) entity).setCreateTime(new Date());
+      ((CreateRecord) entity).setCreator(ThreadContext.getUserId());
+      if (entity instanceof DeleteRecord) {
+        ((DeleteRecord) entity).setDelFlag(false);
+      }
+    }
+    dao.insertSelective(entity);
+    LOGGER.info("insert entity: {}", entity);
+    return entity;
+  }
+
+  @Transactional(readOnly = false)
   public T update(T entity) {
+    if (entity instanceof UpdateRecord) {
+      ((UpdateRecord) entity).setUpdateTime(new Date());
+      ((UpdateRecord) entity).setUpdator(ThreadContext.getUserId());
+    }
     dao.updateByPrimaryKey(entity);
+    LOGGER.info("update entity: {}", entity);
+    return entity;
+  }
+
+  @Transactional(readOnly = false)
+  public T updateSelective(T entity) {
+    if (entity instanceof UpdateRecord) {
+      ((UpdateRecord) entity).setUpdateTime(new Date());
+      ((UpdateRecord) entity).setUpdator(ThreadContext.getUserId());
+    }
+    dao.updateByPrimaryKeySelective(entity);
     LOGGER.info("update entity: {}", entity);
     return entity;
   }
