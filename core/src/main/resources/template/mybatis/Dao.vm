@@ -1,0 +1,9 @@
+package ${package}.dao.mybatis;
+
+import com.foomei.common.dao.MybatisDao;
+
+import ${package}.entity.${model};
+
+public interface ${model}Mapper extends MybatisDao<${model}>{
+
+}

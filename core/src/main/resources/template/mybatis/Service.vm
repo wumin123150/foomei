@@ -1,0 +1,21 @@
+package ${package}.service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.foomei.common.service.impl.MybatisServiceImpl;
+import ${package}.dao.mybatis.${model}Mapper;
+import ${package}.entity.${model};
+
+/**
+* ${model}Service
+*/
+@Service
+@Transactional
+public class ${model}Manager extends MybatisServiceImpl<${model}, ${idType}> {
+
+  @Autowired
+  private ${model}Mapper ${variable}Mapper;
+
+}

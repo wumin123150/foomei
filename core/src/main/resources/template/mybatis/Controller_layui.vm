@@ -1,0 +1,41 @@
+package ${package}.web.controller;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+import ${package}.entity.${model};
+import ${package}.service.${model}Manager;
+
+@Api(description = "${tableName}管理")
+@Controller
+@RequestMapping(value = "/${folder}/${variable}")
+public class ${model}Controller {
+
+  @Autowired
+  private ${model}Manager ${variable}Manager;
+
+  @ApiOperation(value = "${tableName}列表页面", httpMethod = "GET")
+  @RequestMapping
+  public String list(Model model) {
+    return "${folder}/${variable}/${variable}List";
+  }
+
+  @ApiOperation(value = "${tableName}新增页面", httpMethod = "GET")
+  @RequestMapping(value = "create", method = RequestMethod.GET)
+  public String createForm(Model model) {
+    model.addAttribute("${variable}", new ${model}());
+    return "${folder}/${variable}/${variable}Form";
+  }
+
+  @ApiOperation(value = "${tableName}修改页面", httpMethod = "GET")
+  @RequestMapping(value = "update/{id}", method = RequestMethod.GET)
+  public String updateForm(@PathVariable("id") ${idType} id, Model model) {
+    model.addAttribute("${variable}", ${variable}Manager.get(id));
+    return "${folder}/${variable}/${variable}Form";
+  }
+
+}

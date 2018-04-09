@@ -14,7 +14,7 @@
 	<description>Spring公共配置</description>
 
 	<!-- 使用annotation 自动注册bean,并检查@Required,@Autowired的属性已被注入 -->
-	<context:component-scan base-package="com.foomei.*.dao.jpa,com.foomei.*.service">
+	<context:component-scan base-package="com.foomei.*.dao,com.foomei.*.service">
 		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller" />
 		<context:exclude-filter type="annotation" expression="org.springframework.web.bind.annotation.ControllerAdvice" />
 	</context:component-scan>
@@ -55,17 +55,17 @@
 		<!-- 增删查改插件 -->
 		<!-- <property name="configLocation" value="classpath:/mybatis/mybatis-config.xml" /> -->
 		<property name="plugins">
-	    <array>
-	      <bean class="com.github.pagehelper.PageInterceptor">
-	        <property name="properties">
-	          <value>
-	            dialect=com.github.pagehelper.dialect.helper.MySqlDialect
-	            reasonable=true
-	          </value>
-	        </property>
-	      </bean>
-	    </array>
-	  </property>
+			<array>
+				<bean class="com.github.pagehelper.PageInterceptor">
+					<property name="properties">
+						<value>
+							dialect=com.github.pagehelper.dialect.helper.MySqlDialect
+							reasonable=true
+						</value>
+					</property>
+				</bean>
+			</array>
+		</property>
 	</bean>
 	<!-- 扫描basePackage下所有以@MyBatisRepository标识的 接口 -->
 	<bean class="tk.mybatis.spring.mapper.MapperScannerConfigurer">
@@ -82,6 +82,28 @@
 	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
 		<property name="entityManagerFactory" ref="entityManagerFactory" />
 	</bean>
+
+	<!-- AOP配置事物 -->
+	<tx:advice id="transactionAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="get*" read-only="true" propagation="REQUIRED" />
+			<tx:method name="find*" read-only="true" propagation="REQUIRED" />
+			<tx:method name="select*" read-only="true" propagation="REQUIRED" />
+			<tx:method name="exist*" read-only="true" propagation="REQUIRED" />
+			<tx:method name="count*" read-only="true" propagation="REQUIRED" />
+			<tx:method name="save*" propagation="REQUIRED" rollback-for="Exception" />
+			<tx:method name="insert*" propagation="REQUIRED" rollback-for="Exception" />
+			<tx:method name="update*" propagation="REQUIRED" rollback-for="Exception" />
+			<tx:method name="delete*"  propagation="REQUIRED" rollback-for="Exception" />
+			<tx:method name="*" propagation="REQUIRED" />
+		</tx:attributes>
+	</tx:advice>
+
+	<!-- 配置AOP切面 -->
+	<aop:config>
+		<aop:pointcut id="transactionPointcut" expression="execution(* com.foomei.*.service..*.*(..))"/>
+		<aop:advisor pointcut-ref="transactionPointcut" advice-ref="transactionAdvice"/>
+	</aop:config>
 
 	<!-- 使用annotation定义事务 -->
 	<tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true" />

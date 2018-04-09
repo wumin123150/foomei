@@ -15,15 +15,16 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class JpaCodeUtil {
+public class MybatisCodeUtil {
 
   // 模板路径
   private static String VM_FORM_PAGE = "src/main/resources/template/FormPage_";
   private static String VM_LIST_PAGE = "src/main/resources/template/ListPage_";
-  private static String VM_ENDPOINT = "src/main/resources/template/jpa/Endpoint_";
-  private static String VM_CONTROLLER = "src/main/resources/template/jpa/Controller_";
-  private static String VM_SERVICE = "src/main/resources/template/jpa/Service.vm";
-  private static String VM_DAO = "src/main/resources/template/jpa/Dao.vm";
+  private static String VM_MAPPER_XML = "src/main/resources/template/mybatis/Mapper.vm";
+  private static String VM_ENDPOINT = "src/main/resources/template/mybatis/Endpoint_";
+  private static String VM_CONTROLLER = "src/main/resources/template/mybatis/Controller_";
+  private static String VM_SERVICE = "src/main/resources/template/mybatis/Service.vm";
+  private static String VM_DAO = "src/main/resources/template/mybatis/Dao.vm";
   private static String VM_DTO = "src/main/resources/template/Dto.vm";
   private static String VM_ENTITY = "src/main/resources/template/Entity.vm";
 
@@ -31,7 +32,7 @@ public class JpaCodeUtil {
   public static final String COLUMN_SQL = "SELECT column_name, data_type, column_comment, character_maximum_length, is_nullable, column_key FROM INFORMATION_SCHEMA.COLUMNS WHERE table_schema = '%s' AND table_name = '%s';";
 
   public static Map<Pair<String, String>, List<Map<String, String>>> getTableDefine(String jdbcDriver, String jdbcUrl,
-                                                                      String jdbcUsername, String jdbcPassword, String database, String tablePrefix) throws Exception {
+                                                                                    String jdbcUsername, String jdbcPassword, String database, String tablePrefix) throws Exception {
 
     Map<Pair<String, String>, List<Map<String, String>>> tables = new LinkedHashMap<>();
     try {
@@ -54,7 +55,7 @@ public class JpaCodeUtil {
           String isNull = (String) columnDefine.get("IS_NULLABLE");
           String columnKey = (String) columnDefine.get("COLUMN_KEY");
           columns.add(MapUtil.newHashMap(new String[]{"column", "type", "comment", "stringLength", "isNull", "key"}, new String[]{columnName,
-                  dataType, columnComment, stringLength, isNull, columnKey}));
+            dataType, columnComment, stringLength, isNull, columnKey}));
         }
 
         tables.put(new Pair<String, String>(tableName, tableComment), columns);
@@ -65,6 +66,42 @@ public class JpaCodeUtil {
     }
 
     return tables;
+  }
+
+  public static void generateMapperXml(Map<Pair<String, String>, List<Map<String, String>>> tables, String tablePrefix,
+                                       String packageName, String projectPath, List<String> excludes, List<String> includes) throws Exception {
+    String localProjectPath = localProjectPath();
+
+    System.out.println("========== 开始生成Mapper Xml ==========");
+    String xmlPath = projectPath + "/src/main/resources/mybatis";
+    String tableCode = null;
+    String tableName = null;
+    List<Map<String, String>> columns = null;
+    for (Map.Entry<Pair<String, String>, List<Map<String, String>>> table : tables.entrySet()) {
+      tableCode = table.getKey().getFirst();
+      tableName = table.getKey().getSecond();
+      columns = table.getValue();
+      if (!isContain(excludes, tableCode) && hasColumn(columns, "id")) {
+        String model = toModel(tableCode, tablePrefix);
+        String xml = xmlPath + "/" + model + "Mapper.xml";
+        // 生成xml
+        File xmlFile = new File(xml);
+        if (!xmlFile.exists() || isContain(includes, tableCode)) {
+          FileUtil.makesureParentDirExists(xmlFile);
+
+          Map<String, Object> params = MapUtil.newHashMap();
+          params.put("package", packageName);
+          params.put("model", model);
+          params.put("idType", getIdType(columns));
+          params.put("columns", toColumns(columns));
+          params.put("columnFields", toColumnFields(columns));
+          String content = FreeMarkerUtil.renderString(FileUtil.toString(new File(localProjectPath, VM_MAPPER_XML)), params);
+          FileUtil.write(content, xmlFile);
+          System.out.println(xml);
+        }
+      }
+    }
+    System.out.println("========== 结束生成Mapper Xml ==========");
   }
 
   public static void generateEntity(Map<Pair<String, String>, List<Map<String, String>>> tables, String tablePrefix,
@@ -117,7 +154,7 @@ public class JpaCodeUtil {
           params.put("hasCreateRecord", hasCreateRecord);
           params.put("hasDeleteRecord", hasDeleteRecord);
           String content = FreeMarkerUtil.renderString(FileUtil.toString(new File(localProjectPath, VM_ENTITY)),
-                  params);
+            params);
           FileUtil.write(content, entityFile);
           System.out.println(entity);
         }
@@ -127,7 +164,7 @@ public class JpaCodeUtil {
   }
 
   public static void generateDto(Map<Pair<String, String>, List<Map<String, String>>> tables, String tablePrefix,
-                                    String packageName, String projectPath, List<String> excludes, List<String> includes) throws IOException {
+                                 String packageName, String projectPath, List<String> excludes, List<String> includes) throws IOException {
     String localProjectPath = localProjectPath();
 
     System.out.println("========== 开始生成Dto ==========");
@@ -169,7 +206,7 @@ public class JpaCodeUtil {
     String localProjectPath = localProjectPath();
 
     System.out.println("========== 开始生成Dao ==========");
-    String daoPath = projectPath + "/src/main/java/" + packageName.replaceAll("\\.", "/") + "/dao/jpa";
+    String daoPath = projectPath + "/src/main/java/" + packageName.replaceAll("\\.", "/") + "/dao/mybatis";
     String tableCode = null;
     List<Map<String, String>> columns = null;
     for (Map.Entry<Pair<String, String>, List<Map<String, String>>> table : tables.entrySet()) {
@@ -177,7 +214,7 @@ public class JpaCodeUtil {
       columns = table.getValue();
       if (!isContain(excludes, tableCode) && hasColumn(columns, "id")) {
         String model = toModel(tableCode, tablePrefix);
-        String dao = daoPath + "/" + model + "Dao.java";
+        String dao = daoPath + "/" + model + "Mapper.java";
         // 生成dao
         File daoFile = new File(dao);
         if (!daoFile.exists() || isContain(includes, tableCode)) {
@@ -187,7 +224,6 @@ public class JpaCodeUtil {
           params.put("package", packageName);
           params.put("variable", toVariable(tableCode, tablePrefix));
           params.put("model", model);
-          params.put("idType", getIdType(columns));
           String content = FreeMarkerUtil.renderString(FileUtil.toString(new File(localProjectPath, VM_DAO)), params);
           FileUtil.write(content, daoFile);
           System.out.println(dao);
@@ -210,7 +246,7 @@ public class JpaCodeUtil {
       columns = table.getValue();
       if (!isContain(excludes, tableCode) && hasColumn(columns, "id")) {
         String model = toModel(tableCode, tablePrefix);
-        String service = servicePath + "/" + model + "Service.java";
+        String service = servicePath + "/" + model + "Manager.java";
         // 生成service
         File serviceFile = new File(service);
         if (!serviceFile.exists() || isContain(includes, tableCode)) {
@@ -220,7 +256,7 @@ public class JpaCodeUtil {
           params.put("package", packageName);
           params.put("variable", toVariable(tableCode, tablePrefix));
           params.put("model", model);
-          params.put("idType", getIdType(columns));
+          params.put("idType", getIdDataType(columns));
           String content = FreeMarkerUtil.renderString(FileUtil.toString(new File(localProjectPath, VM_SERVICE)), params);
           FileUtil.write(content, serviceFile);
           System.out.println(service);
@@ -231,7 +267,7 @@ public class JpaCodeUtil {
   }
 
   public static void generateController(Map<Pair<String, String>, List<Map<String, String>>> tables, String tablePrefix,
-                                     String packageName, String projectPath, String theme, List<String> excludes, List<String> includes) throws IOException {
+                                        String packageName, String projectPath, String theme, List<String> excludes, List<String> includes) throws IOException {
     String localProjectPath = localProjectPath();
 
     System.out.println("========== 开始生成Controller ==========");
@@ -257,7 +293,7 @@ public class JpaCodeUtil {
           params.put("package", packageName);
           params.put("variable", toVariable(tableCode, tablePrefix));
           params.put("model", model);
-          params.put("idType", getIdType(columns));
+          params.put("idType", getIdDataType(columns));
           String content = FreeMarkerUtil.renderString(FileUtil.toString(new File(localProjectPath, VM_CONTROLLER + theme + ".vm")), params);
           FileUtil.write(content, controllerFile);
           System.out.println(controller);
@@ -268,7 +304,7 @@ public class JpaCodeUtil {
   }
 
   public static void generateEndpoint(Map<Pair<String, String>, List<Map<String, String>>> tables, String tablePrefix,
-                                        String packageName, String projectPath, String theme, List<String> excludes, List<String> includes) throws IOException {
+                                      String packageName, String projectPath, String theme, List<String> excludes, List<String> includes) throws IOException {
     String localProjectPath = localProjectPath();
 
     System.out.println("========== 开始生成Endpoint ==========");
@@ -293,7 +329,7 @@ public class JpaCodeUtil {
           params.put("package", packageName);
           params.put("variable", toVariable(tableCode, tablePrefix));
           params.put("model", model);
-          params.put("idType", getIdType(columns));
+          params.put("idType", getIdDataType(columns));
           String content = FreeMarkerUtil.renderString(FileUtil.toString(new File(localProjectPath, VM_ENDPOINT + theme + ".vm")), params);
           FileUtil.write(content, endpointFile);
           System.out.println(endpoint);
@@ -380,20 +416,6 @@ public class JpaCodeUtil {
     System.out.println("========== 结束生成FormPage ==========");
   }
 
-  public static void generateModule(String jdbcDriver, String jdbcUrl, String jdbcUsername, String jdbcPassword,
-                                    String database, String tablePrefix, String packageName, String projectPath, String theme, Map<String, List<String>> excludes, Map<String, List<String>> includes) throws Exception {
-    Map<Pair<String, String>, List<Map<String, String>>> tables = getTableDefine(jdbcDriver, jdbcUrl, jdbcUsername, jdbcPassword, database, tablePrefix);
-
-    generateEntity(tables, tablePrefix, packageName, projectPath, excludes.get("entity"), includes.get("entity"));
-    generateDto(tables, tablePrefix, packageName, projectPath, excludes.get("dto"), includes.get("dto"));
-    generateDao(tables, tablePrefix, packageName, projectPath, excludes.get("dao"), includes.get("dao"));
-    generateService(tables, tablePrefix, packageName, projectPath, excludes.get("service"), includes.get("service"));
-    generateController(tables, tablePrefix, packageName, projectPath, theme, excludes.get("controller"), includes.get("controller"));
-    generateEndpoint(tables, tablePrefix, packageName, projectPath, theme, excludes.get("endpoint"), includes.get("endpoint"));
-    generateListPage(tables, tablePrefix, packageName, projectPath, theme, excludes.get("listpage"), includes.get("listpage"));
-    generateFormPage(tables, tablePrefix, packageName, projectPath, theme, excludes.get("formpage"), includes.get("formpage"));
-  }
-
   public static void generateLocal(String jdbcDriver, String jdbcUrl, String jdbcUsername, String jdbcPassword,
                                    String database, String packageBase, String theme, Map<String, List<String>> excludes, Map<String, List<String>> includes) throws Exception {
     Map<Pair<String, String>, List<Map<String, String>>> tables = getTableDefine(jdbcDriver, jdbcUrl, jdbcUsername, jdbcPassword, database, "");
@@ -415,14 +437,15 @@ public class JpaCodeUtil {
     String localProjectPath = localProjectPath();
     for (Map.Entry<String, Map<Pair<String, String>, List<Map<String, String>>>> module : modules.entrySet()) {
       System.out.println("========== 开始生成Module(" + module + ") ==========");
+      generateMapperXml(module.getValue(), module.getKey() + "_", packageBase + "." + "my", localProjectPath, excludes.get("entity"), includes.get("entity"));
       generateEntity(module.getValue(), module.getKey() + "_", packageBase + "." + module.getKey(), localProjectPath, excludes.get("entity"), includes.get("entity"));
       generateDto(module.getValue(), module.getKey() + "_", packageBase + "." + module.getKey(), localProjectPath, excludes.get("dto"), includes.get("dto"));
       generateDao(module.getValue(), module.getKey() + "_", packageBase + "." + module.getKey(), localProjectPath, excludes.get("dao"), includes.get("dao"));
       generateService(module.getValue(), module.getKey() + "_", packageBase + "." + module.getKey(), localProjectPath, excludes.get("service"), includes.get("service"));
       generateController(module.getValue(), module.getKey() + "_", packageBase + "." + module.getKey(), localProjectPath, theme, excludes.get("controller"), includes.get("controller"));
       generateEndpoint(module.getValue(), module.getKey() + "_", packageBase + "." + module.getKey(), localProjectPath, theme, excludes.get("endpoint"), includes.get("endpoint"));
-      generateListPage(module.getValue(), module.getKey() + "_", packageBase + "." + module.getKey(), localProjectPath, theme, excludes.get("listpage"), includes.get("listpage"));
-      generateFormPage(module.getValue(), module.getKey() + "_", packageBase + "." + module.getKey(), localProjectPath, theme, excludes.get("formpage"), includes.get("formpage"));
+//      generateListPage(module.getValue(), module.getKey() + "_", packageBase + "." + module.getKey(), localProjectPath, theme, excludes.get("listpage"), includes.get("listpage"));
+//      generateFormPage(module.getValue(), module.getKey() + "_", packageBase + "." + module.getKey(), localProjectPath, theme, excludes.get("formpage"), includes.get("formpage"));
       System.out.println("========== 结束生成Module(" + module + ") ==========");
     }
   }
@@ -500,11 +523,21 @@ public class JpaCodeUtil {
     return false;
   }
 
-  public static String getIdStrategy(List<Map<String, String>> columnDefines) {
-    return StringUtils.equals("Long", getIdType(columnDefines)) ? "Id" : "Uuid";
+  public static String getIdType(List<Map<String, String>> columnDefines) {
+    for (Map<String, String> columnDefine : columnDefines) {
+      String columnCode = columnDefine.get("column");
+      if (StringUtils.equalsIgnoreCase(columnCode, "id")) {
+        return columnDefine.get("type");
+      }
+    }
+    return null;
   }
 
-  public static String getIdType(List<Map<String, String>> columnDefines) {
+  public static String getIdStrategy(List<Map<String, String>> columnDefines) {
+    return StringUtils.equals("Long", getIdDataType(columnDefines)) ? "Id" : "Uuid";
+  }
+
+  public static String getIdDataType(List<Map<String, String>> columnDefines) {
     for (Map<String, String> columnDefine : columnDefines) {
       String columnCode = columnDefine.get("column");
       if (StringUtils.equalsIgnoreCase(columnCode, "id")) {
@@ -540,6 +573,27 @@ public class JpaCodeUtil {
             fields.add(String.format("public static final %s %s_%s = %s;//%s", dataType, StringUtils.upperCase(columnCode), values[0], StringUtils.equals(dataType, "String") ? ("\"" + values[0] + "\"") : values[0], values[1]));
           }
         }
+      }
+    }
+    return fields;
+  }
+
+  public static List<String> toColumns(List<Map<String, String>> columnDefines) {
+    List<String> columns = ListUtil.newArrayList();
+    for (Map<String, String> columnDefine : columnDefines) {
+      String columnCode = columnDefine.get("column");
+      columns.add(columnCode);
+    }
+    return columns;
+  }
+
+  public static Map<String, Pair<String, String>> toColumnFields(List<Map<String, String>> columnDefines) {
+    Map<String, Pair<String, String>> fields = MapUtil.newLinkedMap();
+    for (Map<String, String> columnDefine : columnDefines) {
+      String columnCode = columnDefine.get("column");
+      String type = columnDefine.get("type");
+      if (!StringUtils.equalsIgnoreCase(columnCode, "id")) {
+        fields.put(columnCode, new Pair<String, String>(type, toField(columnCode)));
       }
     }
     return fields;

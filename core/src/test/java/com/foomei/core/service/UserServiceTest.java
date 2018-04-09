@@ -1,6 +1,6 @@
 package com.foomei.core.service;
 
-import com.foomei.common.exception.ServiceException;
+import com.foomei.common.exception.BaseException;
 import com.foomei.core.dao.jpa.UserDao;
 import com.foomei.core.entity.User;
 import org.junit.Before;
@@ -34,8 +34,8 @@ public class UserServiceTest {
     try {
       User admin = new User(1L);
       userService.save(admin);
-      failBecauseExceptionWasNotThrown(ServiceException.class);
-    } catch (ServiceException e) {
+      failBecauseExceptionWasNotThrown(BaseException.class);
+    } catch (BaseException e) {
       // expected exception
     }
     Mockito.verify(mockUserDao, Mockito.times(1)).save(user);
