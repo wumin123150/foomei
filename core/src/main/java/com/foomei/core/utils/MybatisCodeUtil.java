@@ -1,5 +1,6 @@
 package com.foomei.core.utils;
 
+import com.foomei.common.base.BooleanUtil;
 import com.foomei.common.collection.ListUtil;
 import com.foomei.common.collection.MapUtil;
 import com.foomei.common.collection.type.Pair;
@@ -69,7 +70,7 @@ public class MybatisCodeUtil {
   }
 
   public static void generateMapperXml(Map<Pair<String, String>, List<Map<String, String>>> tables, String tablePrefix,
-                                       String packageName, String projectPath, List<String> excludes, List<String> includes) throws Exception {
+                                       String packageName, String projectPath, List<String> includes, List<String> excludes, boolean override) throws Exception {
     String localProjectPath = localProjectPath();
 
     System.out.println("========== 开始生成Mapper Xml ==========");
@@ -81,15 +82,16 @@ public class MybatisCodeUtil {
       tableCode = table.getKey().getFirst();
       tableName = table.getKey().getSecond();
       columns = table.getValue();
-      if (!isContain(excludes, tableCode) && hasColumn(columns, "id")) {
+      if (isGenerate(includes, excludes, tableCode) && hasColumn(columns, "id")) {
         String model = toModel(tableCode, tablePrefix);
-        String xml = xmlPath + "/" + model + "Mapper.xml";
+        String xml = xmlPath + "/" + StringUtils.substringBefore(tablePrefix, "_") + "/" + model + "Mapper.xml";
         // 生成xml
         File xmlFile = new File(xml);
-        if (!xmlFile.exists() || isContain(includes, tableCode)) {
+        if (!xmlFile.exists() || override) {
           FileUtil.makesureParentDirExists(xmlFile);
 
           Map<String, Object> params = MapUtil.newHashMap();
+          params.put("tableName", StringUtils.isNotEmpty(tableName) ? tableName : model);
           params.put("package", packageName);
           params.put("model", model);
           params.put("idType", getIdType(columns));
@@ -105,7 +107,7 @@ public class MybatisCodeUtil {
   }
 
   public static void generateEntity(Map<Pair<String, String>, List<Map<String, String>>> tables, String tablePrefix,
-                                    String packageName, String projectPath, List<String> excludes, List<String> includes) throws IOException {
+                                    String packageName, String projectPath, List<String> includes, List<String> excludes, boolean override) throws IOException {
     String localProjectPath = localProjectPath();
 
     System.out.println("========== 开始生成Entity ==========");
@@ -117,12 +119,12 @@ public class MybatisCodeUtil {
       tableCode = table.getKey().getFirst();
       tableName = table.getKey().getSecond();
       columns = table.getValue();
-      if (!isContain(excludes, tableCode) && hasColumn(columns, "id")) {
+      if (isGenerate(includes, excludes, tableCode) && hasColumn(columns, "id")) {
         String model = toModel(tableCode, tablePrefix);
         String entity = entityPath + "/" + model + ".java";
         // 生成entity
         File entityFile = new File(entity);
-        if (!entityFile.exists() || isContain(includes, tableCode)) {
+        if (!entityFile.exists() || override) {
           FileUtil.makesureParentDirExists(entityFile);
 
           List<String> records = ListUtil.newArrayList();
@@ -164,7 +166,7 @@ public class MybatisCodeUtil {
   }
 
   public static void generateDto(Map<Pair<String, String>, List<Map<String, String>>> tables, String tablePrefix,
-                                 String packageName, String projectPath, List<String> excludes, List<String> includes) throws IOException {
+                                 String packageName, String projectPath, List<String> includes, List<String> excludes, boolean override) throws IOException {
     String localProjectPath = localProjectPath();
 
     System.out.println("========== 开始生成Dto ==========");
@@ -176,12 +178,12 @@ public class MybatisCodeUtil {
       tableCode = table.getKey().getFirst();
       tableName = table.getKey().getSecond();
       columns = table.getValue();
-      if (!isContain(excludes, tableCode) && hasColumn(columns, "id")) {
+      if (isGenerate(includes, excludes, tableCode) && hasColumn(columns, "id")) {
         String model = toModel(tableCode, tablePrefix);
         String entity = entityPath + "/" + model + "Dto.java";
         // 生成dto
         File entityFile = new File(entity);
-        if (!entityFile.exists() || isContain(includes, tableCode)) {
+        if (!entityFile.exists() || override) {
           FileUtil.makesureParentDirExists(entityFile);
 
           Map<String, Object> params = MapUtil.newHashMap();
@@ -202,7 +204,7 @@ public class MybatisCodeUtil {
   }
 
   public static void generateDao(Map<Pair<String, String>, List<Map<String, String>>> tables, String tablePrefix,
-                                 String packageName, String projectPath, List<String> excludes, List<String> includes) throws IOException {
+                                 String packageName, String projectPath, List<String> includes, List<String> excludes, boolean override) throws IOException {
     String localProjectPath = localProjectPath();
 
     System.out.println("========== 开始生成Dao ==========");
@@ -212,12 +214,12 @@ public class MybatisCodeUtil {
     for (Map.Entry<Pair<String, String>, List<Map<String, String>>> table : tables.entrySet()) {
       tableCode = table.getKey().getFirst();
       columns = table.getValue();
-      if (!isContain(excludes, tableCode) && hasColumn(columns, "id")) {
+      if (isGenerate(includes, excludes, tableCode) && hasColumn(columns, "id")) {
         String model = toModel(tableCode, tablePrefix);
         String dao = daoPath + "/" + model + "Mapper.java";
         // 生成dao
         File daoFile = new File(dao);
-        if (!daoFile.exists() || isContain(includes, tableCode)) {
+        if (!daoFile.exists() || override) {
           FileUtil.makesureParentDirExists(daoFile);
 
           Map<String, String> params = MapUtil.newHashMap();
@@ -234,7 +236,7 @@ public class MybatisCodeUtil {
   }
 
   public static void generateService(Map<Pair<String, String>, List<Map<String, String>>> tables, String tablePrefix,
-                                     String packageName, String projectPath, List<String> excludes, List<String> includes) throws IOException {
+                                     String packageName, String projectPath, List<String> includes, List<String> excludes, boolean override) throws IOException {
     String localProjectPath = localProjectPath();
 
     System.out.println("========== 开始生成Service ==========");
@@ -244,12 +246,12 @@ public class MybatisCodeUtil {
     for (Map.Entry<Pair<String, String>, List<Map<String, String>>> table : tables.entrySet()) {
       tableCode = table.getKey().getFirst();
       columns = table.getValue();
-      if (!isContain(excludes, tableCode) && hasColumn(columns, "id")) {
+      if (isGenerate(includes, excludes, tableCode) && hasColumn(columns, "id")) {
         String model = toModel(tableCode, tablePrefix);
         String service = servicePath + "/" + model + "Manager.java";
         // 生成service
         File serviceFile = new File(service);
-        if (!serviceFile.exists() || isContain(includes, tableCode)) {
+        if (!serviceFile.exists() || override) {
           FileUtil.makesureParentDirExists(serviceFile);
 
           Map<String, String> params = MapUtil.newHashMap();
@@ -267,7 +269,7 @@ public class MybatisCodeUtil {
   }
 
   public static void generateController(Map<Pair<String, String>, List<Map<String, String>>> tables, String tablePrefix,
-                                        String packageName, String projectPath, String theme, List<String> excludes, List<String> includes) throws IOException {
+                                        String packageName, String projectPath, String theme, List<String> includes, List<String> excludes, boolean override) throws IOException {
     String localProjectPath = localProjectPath();
 
     System.out.println("========== 开始生成Controller ==========");
@@ -279,12 +281,12 @@ public class MybatisCodeUtil {
       tableCode = table.getKey().getFirst();
       tableName = table.getKey().getSecond();
       columns = table.getValue();
-      if (!isContain(excludes, tableCode) && hasColumn(columns, "id")) {
+      if (isGenerate(includes, excludes, tableCode) && hasColumn(columns, "id")) {
         String model = toModel(tableCode, tablePrefix);
         String controller = controllerPath + "/" + model + "Controller.java";
         // controller
         File controllerFile = new File(controller);
-        if (!controllerFile.exists() || isContain(includes, tableCode)) {
+        if (!controllerFile.exists() || override) {
           FileUtil.makesureParentDirExists(controllerFile);
 
           Map<String, String> params = MapUtil.newHashMap();
@@ -304,7 +306,7 @@ public class MybatisCodeUtil {
   }
 
   public static void generateEndpoint(Map<Pair<String, String>, List<Map<String, String>>> tables, String tablePrefix,
-                                      String packageName, String projectPath, String theme, List<String> excludes, List<String> includes) throws IOException {
+                                      String packageName, String projectPath, String theme, List<String> includes, List<String> excludes, boolean override) throws IOException {
     String localProjectPath = localProjectPath();
 
     System.out.println("========== 开始生成Endpoint ==========");
@@ -316,12 +318,12 @@ public class MybatisCodeUtil {
       tableCode = table.getKey().getFirst();
       tableName = table.getKey().getSecond();
       columns = table.getValue();
-      if (!isContain(excludes, tableCode) && hasColumn(columns, "id")) {
+      if (isGenerate(includes, excludes, tableCode) && hasColumn(columns, "id")) {
         String model = toModel(tableCode, tablePrefix);
         String endpoint = endpointPath + "/" + model + "Endpoint.java";
         // endpoint
         File endpointFile = new File(endpoint);
-        if (!endpointFile.exists() || isContain(includes, tableCode)) {
+        if (!endpointFile.exists() || override) {
           FileUtil.makesureParentDirExists(endpointFile);
 
           Map<String, String> params = MapUtil.newHashMap();
@@ -340,7 +342,7 @@ public class MybatisCodeUtil {
   }
 
   public static void generateListPage(Map<Pair<String, String>, List<Map<String, String>>> tables, String tablePrefix,
-                                      String packageName, String projectPath, String theme, List<String> excludes, List<String> includes) throws IOException {
+                                      String packageName, String projectPath, String theme, List<String> includes, List<String> excludes, boolean override) throws IOException {
     String localProjectPath = localProjectPath();
 
     System.out.println("========== 开始生成ListPage ==========");
@@ -352,12 +354,12 @@ public class MybatisCodeUtil {
       tableCode = table.getKey().getFirst();
       tableName = table.getKey().getSecond();
       columns = table.getValue();
-      if (!isContain(excludes, tableCode) && hasColumn(columns, "id")) {
+      if (isGenerate(includes, excludes, tableCode) && hasColumn(columns, "id")) {
         String variable = toVariable(tableCode, tablePrefix);
         String listPage = listPagePath + "/" + variable + "/" + variable + "List.jsp";
         // listPage
         File listPageFile = new File(listPage);
-        if (!listPageFile.exists() || isContain(includes, tableCode)) {
+        if (!listPageFile.exists() || override) {
           FileUtil.makesureParentDirExists(listPageFile);
 
           Map<String, Object> params = MapUtil.newHashMap();
@@ -376,7 +378,7 @@ public class MybatisCodeUtil {
   }
 
   public static void generateFormPage(Map<Pair<String, String>, List<Map<String, String>>> tables, String tablePrefix,
-                                      String packageName, String projectPath, String theme, List<String> excludes, List<String> includes) throws IOException {
+                                      String packageName, String projectPath, String theme, List<String> includes, List<String> excludes, boolean override) throws IOException {
     String localProjectPath = localProjectPath();
 
     System.out.println("========== 开始生成FormPage ==========");
@@ -388,12 +390,12 @@ public class MybatisCodeUtil {
       tableCode = table.getKey().getFirst();
       tableName = table.getKey().getSecond();
       columns = table.getValue();
-      if (!isContain(excludes, tableCode) && hasColumn(columns, "id")) {
+      if (isGenerate(includes, excludes, tableCode) && hasColumn(columns, "id")) {
         String variable = toVariable(tableCode, tablePrefix);
         String formPage = formPagePath + "/" + variable + "/" + variable + "Form.jsp";
         // formPage
         File formPageFile = new File(formPage);
-        if (!formPageFile.exists() || isContain(includes, tableCode)) {
+        if (!formPageFile.exists() || override) {
           FileUtil.makesureParentDirExists(formPageFile);
 
           Map<String, Object> params = MapUtil.newHashMap();
@@ -417,7 +419,7 @@ public class MybatisCodeUtil {
   }
 
   public static void generateLocal(String jdbcDriver, String jdbcUrl, String jdbcUsername, String jdbcPassword,
-                                   String database, String packageBase, String theme, Map<String, List<String>> excludes, Map<String, List<String>> includes) throws Exception {
+                                   String database, String packageBase, String theme, Map<String, List<String>> includes, Map<String, List<String>> excludes, boolean override) throws Exception {
     Map<Pair<String, String>, List<Map<String, String>>> tables = getTableDefine(jdbcDriver, jdbcUrl, jdbcUsername, jdbcPassword, database, "");
 
     Map<String, Map<Pair<String, String>, List<Map<String, String>>>> modules = new LinkedHashMap<>();
@@ -437,15 +439,15 @@ public class MybatisCodeUtil {
     String localProjectPath = localProjectPath();
     for (Map.Entry<String, Map<Pair<String, String>, List<Map<String, String>>>> module : modules.entrySet()) {
       System.out.println("========== 开始生成Module(" + module + ") ==========");
-      generateMapperXml(module.getValue(), module.getKey() + "_", packageBase + "." + "my", localProjectPath, excludes.get("entity"), includes.get("entity"));
-      generateEntity(module.getValue(), module.getKey() + "_", packageBase + "." + module.getKey(), localProjectPath, excludes.get("entity"), includes.get("entity"));
-      generateDto(module.getValue(), module.getKey() + "_", packageBase + "." + module.getKey(), localProjectPath, excludes.get("dto"), includes.get("dto"));
-      generateDao(module.getValue(), module.getKey() + "_", packageBase + "." + module.getKey(), localProjectPath, excludes.get("dao"), includes.get("dao"));
-      generateService(module.getValue(), module.getKey() + "_", packageBase + "." + module.getKey(), localProjectPath, excludes.get("service"), includes.get("service"));
-      generateController(module.getValue(), module.getKey() + "_", packageBase + "." + module.getKey(), localProjectPath, theme, excludes.get("controller"), includes.get("controller"));
-      generateEndpoint(module.getValue(), module.getKey() + "_", packageBase + "." + module.getKey(), localProjectPath, theme, excludes.get("endpoint"), includes.get("endpoint"));
-//      generateListPage(module.getValue(), module.getKey() + "_", packageBase + "." + module.getKey(), localProjectPath, theme, excludes.get("listpage"), includes.get("listpage"));
-//      generateFormPage(module.getValue(), module.getKey() + "_", packageBase + "." + module.getKey(), localProjectPath, theme, excludes.get("formpage"), includes.get("formpage"));
+      generateMapperXml(module.getValue(), module.getKey() + "_", packageBase + "." + module.getKey(), localProjectPath, includes.get("xml"), excludes.get("xml"), override);
+//      generateEntity(module.getValue(), module.getKey() + "_", packageBase + "." + module.getKey(), localProjectPath, includes.get("entity"), excludes.get("entity"), override);
+//      generateDto(module.getValue(), module.getKey() + "_", packageBase + "." + module.getKey(), localProjectPath, includes.get("dto"), excludes.get("dto"), override);
+//      generateDao(module.getValue(), module.getKey() + "_", packageBase + "." + module.getKey(), localProjectPath, includes.get("dao"), excludes.get("dao"), override);
+//      generateService(module.getValue(), module.getKey() + "_", packageBase + "." + module.getKey(), localProjectPath, includes.get("service"), excludes.get("service"), override);
+//      generateController(module.getValue(), module.getKey() + "_", packageBase + "." + module.getKey(), localProjectPath, theme, includes.get("controller"), excludes.get("controller"), override);
+//      generateEndpoint(module.getValue(), module.getKey() + "_", packageBase + "." + module.getKey(), localProjectPath, theme, includes.get("endpoint"), excludes.get("endpoint"), override);
+//      generateListPage(module.getValue(), module.getKey() + "_", packageBase + "." + module.getKey(), localProjectPath, theme, includes.get("listpage"), excludes.get("listpage"), override);
+//      generateFormPage(module.getValue(), module.getKey() + "_", packageBase + "." + module.getKey(), localProjectPath, theme, includes.get("formpage"), excludes.get("formpage"), override);
       System.out.println("========== 结束生成Module(" + module + ") ==========");
     }
   }
@@ -458,25 +460,8 @@ public class MybatisCodeUtil {
     String jdbcPassword = resource.getString("jdbc.password");
     String database = StringUtils.substring(jdbcUrl, StringUtils.lastIndexOf(jdbcUrl, "/") + 1, StringUtils.indexOf(jdbcUrl, "?"));
 
+    String override = resource.getString("code.override");
     String theme = resource.getString("system.theme");
-
-    String excludeController = resource.getString("exclude.controller");
-    String excludeEndpoint = resource.getString("exclude.endpoint");
-    String excludeService = resource.getString("exclude.service");
-    String excludeDao = resource.getString("exclude.dao");
-    String excludeDto = resource.getString("exclude.dto");
-    String excludeEntity = resource.getString("exclude.entity");
-    String excludeListPage = resource.getString("exclude.listpage");
-    String excludeFormPage = resource.getString("exclude.formpage");
-    Map<String, List<String>> excludes = MapUtil.newHashMap();
-    excludes.put("controller", ListUtil.newArrayList(StringUtils.split(excludeController, ", ")));
-    excludes.put("endpoint", ListUtil.newArrayList(StringUtils.split(excludeEndpoint, ", ")));
-    excludes.put("service", ListUtil.newArrayList(StringUtils.split(excludeService, ", ")));
-    excludes.put("dao", ListUtil.newArrayList(StringUtils.split(excludeDao, ", ")));
-    excludes.put("dto", ListUtil.newArrayList(StringUtils.split(excludeDto, ", ")));
-    excludes.put("entity", ListUtil.newArrayList(StringUtils.split(excludeEntity, ", ")));
-    excludes.put("listpage", ListUtil.newArrayList(StringUtils.split(excludeListPage, ", ")));
-    excludes.put("formpage", ListUtil.newArrayList(StringUtils.split(excludeFormPage, ", ")));
 
     String includeController = resource.getString("include.controller");
     String includeEndpoint = resource.getString("include.endpoint");
@@ -484,6 +469,7 @@ public class MybatisCodeUtil {
     String includeDao = resource.getString("include.dao");
     String includeDto = resource.getString("include.dto");
     String includeEntity = resource.getString("include.entity");
+    String includeXml = resource.getString("include.xml");
     String includeListPage = resource.getString("include.listpage");
     String includeFormPage = resource.getString("include.formpage");
     Map<String, List<String>> includes = MapUtil.newHashMap();
@@ -493,10 +479,31 @@ public class MybatisCodeUtil {
     includes.put("dao", ListUtil.newArrayList(StringUtils.split(includeDao, ", ")));
     includes.put("dto", ListUtil.newArrayList(StringUtils.split(includeDto, ", ")));
     includes.put("entity", ListUtil.newArrayList(StringUtils.split(includeEntity, ", ")));
+    includes.put("xml", ListUtil.newArrayList(StringUtils.split(includeXml, ", ")));
     includes.put("listpage", ListUtil.newArrayList(StringUtils.split(includeListPage, ", ")));
     includes.put("formpage", ListUtil.newArrayList(StringUtils.split(includeFormPage, ", ")));
 
-    generateLocal(jdbcDriver, jdbcUrl, jdbcUsername, jdbcPassword, database, packageBase, theme, excludes, includes);
+    String excludeController = resource.getString("exclude.controller");
+    String excludeEndpoint = resource.getString("exclude.endpoint");
+    String excludeService = resource.getString("exclude.service");
+    String excludeDao = resource.getString("exclude.dao");
+    String excludeDto = resource.getString("exclude.dto");
+    String excludeEntity = resource.getString("exclude.entity");
+    String excludeXml = resource.getString("exclude.xml");
+    String excludeListPage = resource.getString("exclude.listpage");
+    String excludeFormPage = resource.getString("exclude.formpage");
+    Map<String, List<String>> excludes = MapUtil.newHashMap();
+    excludes.put("controller", ListUtil.newArrayList(StringUtils.split(excludeController, ", ")));
+    excludes.put("endpoint", ListUtil.newArrayList(StringUtils.split(excludeEndpoint, ", ")));
+    excludes.put("service", ListUtil.newArrayList(StringUtils.split(excludeService, ", ")));
+    excludes.put("dao", ListUtil.newArrayList(StringUtils.split(excludeDao, ", ")));
+    excludes.put("dto", ListUtil.newArrayList(StringUtils.split(excludeDto, ", ")));
+    excludes.put("entity", ListUtil.newArrayList(StringUtils.split(excludeEntity, ", ")));
+    excludes.put("xml", ListUtil.newArrayList(StringUtils.split(excludeXml, ", ")));
+    excludes.put("listpage", ListUtil.newArrayList(StringUtils.split(excludeListPage, ", ")));
+    excludes.put("formpage", ListUtil.newArrayList(StringUtils.split(excludeFormPage, ", ")));
+
+    generateLocal(jdbcDriver, jdbcUrl, jdbcUsername, jdbcPassword, database, packageBase, theme, includes, excludes, BooleanUtil.toBoolean(override));
   }
 
   public static void main(String[] args) throws Exception {
@@ -526,8 +533,12 @@ public class MybatisCodeUtil {
   public static String getIdType(List<Map<String, String>> columnDefines) {
     for (Map<String, String> columnDefine : columnDefines) {
       String columnCode = columnDefine.get("column");
+      String columnType = columnDefine.get("type");
       if (StringUtils.equalsIgnoreCase(columnCode, "id")) {
-        return columnDefine.get("type");
+        if(StringUtils.equalsIgnoreCase(columnType, "int")) {
+          return "INTEGER";
+        }
+        return StringUtils.upperCase(columnType);
       }
     }
     return null;
@@ -593,7 +604,7 @@ public class MybatisCodeUtil {
       String columnCode = columnDefine.get("column");
       String type = columnDefine.get("type");
       if (!StringUtils.equalsIgnoreCase(columnCode, "id")) {
-        fields.put(columnCode, new Pair<String, String>(type, toField(columnCode)));
+        fields.put(columnCode, new Pair<String, String>(StringUtils.upperCase(type), toField(columnCode)));
       }
     }
     return fields;
@@ -917,6 +928,10 @@ public class MybatisCodeUtil {
       builder.replace(0, 1, String.valueOf(Character.toLowerCase(builder.charAt(0))));
     }
     return builder.toString();
+  }
+
+  public static boolean isGenerate(List<String> includes, List<String> excludes, String tableName) {
+    return isContain(includes, tableName) || !isContain(excludes, tableName);
   }
 
   public static boolean isContain(List<String> patterns, String tableName) {

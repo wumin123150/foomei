@@ -1,21 +1,18 @@
 package com.foomei.common.persistence;
 
-@Deprecated
-public class DynamicExample {
-
-}
-
-/**
- * 使用tkmybatis
+import com.baomidou.mybatisplus.enums.SqlLike;
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.foomei.common.collection.CollectionUtil;
 import com.foomei.common.persistence.search.BooleanOperator;
 import com.foomei.common.persistence.search.SearchFilter;
 import com.foomei.common.persistence.search.SearchRequest;
 import com.foomei.common.persistence.search.SimpleFilter;
 import com.foomei.common.reflect.ClassUtil;
+import com.foomei.common.reflect.ReflectionUtil;
 import com.foomei.common.time.DateFormatUtil;
-import org.springframework.data.domain.Sort.Order;
-import tk.mybatis.mapper.entity.Example;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
@@ -24,37 +21,33 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-@Deprecated
-public class DynamicExample {
+public class DynamicWrapper {
 
   @SuppressWarnings({"unchecked", "rawtypes"})
-  public static <T> Example bySearchRequest(final SearchRequest searchRequest, final Class<T> entityClazz) {
-    Example example = filterTo(searchRequest.getOperator(), searchRequest.getSearchFilters(), entityClazz);
+  public static <T> EntityWrapper bySearchRequest(final SearchRequest searchRequest, final Class<T> entityClazz) {
+    EntityWrapper wrapper = filterTo(searchRequest.getOperator(), searchRequest.getSearchFilters(), entityClazz);
     if (searchRequest.getSort() != null) {
-      StringBuilder builder = new StringBuilder();
       for (Iterator iterator = searchRequest.getSort().iterator(); iterator.hasNext(); ) {
-        Order order = (Order) iterator.next();
-        builder.append(",").append(order.getProperty()).append(" ").append(order.getDirection().name());
-      }
-      if (builder.length() > 0) {
-        example.setOrderByClause(builder.substring(1));
+        Sort.Order order = (Sort.Order) iterator.next();
+        wrapper.orderBy(order.getProperty(), !Sort.Direction.DESC.equals(order.getDirection()));
       }
     }
-    return example;
+    return wrapper;
   }
 
   @SuppressWarnings({"unchecked", "rawtypes"})
-  public static <T> Example filterTo(final BooleanOperator operator, final List<SearchFilter> searchFilters, final Class<T> entityClazz) {
-    Example example = new Example(entityClazz);
+  public static <T> EntityWrapper filterTo(final BooleanOperator operator, final List<SearchFilter> searchFilters, final Class<T> entityClazz) {
+    EntityWrapper wrapper = new EntityWrapper();
 
-    Example.Criteria criteria = null;
+    T newEntity = ReflectionUtil.invokeConstructor(entityClazz);
+    wrapper.setEntity(newEntity);
+
     if (CollectionUtil.isNotEmpty(searchFilters)) {
       for (SearchFilter searchFilter : searchFilters) {
-        if (operator == BooleanOperator.OR || criteria == null) {
-          criteria = example.or();
-        }
-
         if (searchFilter instanceof SimpleFilter) {
+          if(operator == BooleanOperator.OR) {
+            wrapper.or();
+          }
 
           SimpleFilter filter = (SimpleFilter) searchFilter;
 
@@ -68,72 +61,72 @@ public class DynamicExample {
           switch (filter.getOperator()) {
             case EQ:
               value = stringTo(filter.getValue(), fieldClazz);
-              criteria.andEqualTo(filter.getPropertyName(), value);
+              wrapper.eq(filter.getPropertyName(), value);
               break;
             case NE:
               value = stringTo(filter.getValue(), fieldClazz);
-              criteria.andNotEqualTo(filter.getPropertyName(), value);
+              wrapper.ne(filter.getPropertyName(), value);
               break;
             case LT:
               value = stringTo(filter.getValue(), fieldClazz);
-              criteria.andLessThan(filter.getPropertyName(), value);
+              wrapper.lt(filter.getPropertyName(), value);
               break;
             case LE:
               value = stringTo(filter.getValue(), fieldClazz);
-              criteria.andLessThanOrEqualTo(filter.getPropertyName(), value);
+              wrapper.le(filter.getPropertyName(), value);
               break;
             case GT:
               value = stringTo(filter.getValue(), fieldClazz);
-              criteria.andGreaterThan(filter.getPropertyName(), value);
+              wrapper.gt(filter.getPropertyName(), value);
               break;
             case GE:
               value = stringTo(filter.getValue(), fieldClazz);
-              criteria.andGreaterThanOrEqualTo(filter.getPropertyName(), value);
+              wrapper.ge(filter.getPropertyName(), value);
               break;
             case SW:
-              criteria.andLike(filter.getPropertyName(), filter.getValue() + "%");
+              wrapper.like(filter.getPropertyName(), toString(filter.getValue()), SqlLike.RIGHT);
               break;
             case SN:
-              criteria.andNotLike(filter.getPropertyName(), filter.getValue() + "%");
+              wrapper.notLike(filter.getPropertyName(), toString(filter.getValue()), SqlLike.RIGHT);
               break;
             case EW:
-              criteria.andLike(filter.getPropertyName(), "%" + filter.getValue());
+              wrapper.like(filter.getPropertyName(), toString(filter.getValue()), SqlLike.LEFT);
               break;
             case EN:
-              criteria.andNotLike(filter.getPropertyName(), "%" + filter.getValue());
+              wrapper.notLike(filter.getPropertyName(), toString(filter.getValue()), SqlLike.LEFT);
               break;
             case CN:
-              criteria.andLike(filter.getPropertyName(), "%" + filter.getValue() + "%");
+              wrapper.like(filter.getPropertyName(), toString(filter.getValue()));
               break;
             case NC:
-              criteria.andNotLike(filter.getPropertyName(), "%" + filter.getValue() + "%");
+              wrapper.notLike(filter.getPropertyName(), toString(filter.getValue()));
               break;
             case NU:
-              criteria.andIsNull(filter.getPropertyName());
+              wrapper.isNull(filter.getPropertyName());
               break;
             case NN:
-              criteria.andIsNotNull(filter.getPropertyName());
+              wrapper.isNotNull(filter.getPropertyName());
               break;
             case IN:
               List<Object> in = new ArrayList();
               for (Object val : (List) filter.getValue()) {
                 in.add(stringTo(val, fieldClazz));
               }
-              criteria.andIn(filter.getPropertyName(), in);
+              wrapper.in(filter.getPropertyName(), in);
               break;
             case NI:
               List<Object> nin = new ArrayList();
               for (Object val : (List) filter.getValue()) {
                 nin.add(stringTo(val, fieldClazz));
               }
-              criteria.andNotIn(filter.getPropertyName(), nin);
+              wrapper.notIn(filter.getPropertyName(), nin);
               break;
           }
         }
       }
     }
 
-    return example;
+    return wrapper;
   }
 
   private static Object stringTo(Object value, final Class clazz) {
@@ -166,5 +159,11 @@ public class DynamicExample {
     return value;
   }
 
+  private static String toString(Object value) {
+    if (value == null) {
+      return "";
+    }
+    return String.valueOf(value);
+  }
+
 }
-*/

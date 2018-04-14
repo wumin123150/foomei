@@ -14,16 +14,13 @@ public interface MybatisService<T, ID extends Serializable> {
   public List<T> getAll();
 
   @Transactional(readOnly = false)
-  public T insert(T entity);
+  public boolean save(T entity);
 
   @Transactional(readOnly = false)
-  public T insertSelective(T entity);
+  public boolean insert(T entity);
 
   @Transactional(readOnly = false)
-  public T update(T entity);
-
-  @Transactional(readOnly = false)
-  public T updateSelective(T entity);
+  public boolean update(T entity);
 
   @Transactional(readOnly = false)
   public void delete(ID id);

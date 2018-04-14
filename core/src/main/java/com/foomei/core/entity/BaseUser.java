@@ -1,5 +1,6 @@
 package com.foomei.core.entity;
 
+import com.baomidou.mybatisplus.annotations.TableName;
 import com.foomei.common.entity.IdEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -23,6 +24,7 @@ import javax.persistence.Table;
 @ApiModel(description = "用户")
 @Entity
 @Table(name = "Core_User")
+@TableName("Core_User")
 @SuppressWarnings("serial")
 public class BaseUser extends IdEntity {
 

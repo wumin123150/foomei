@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.foomei</groupId>
         <artifactId>foomei-parent</artifactId>
-        <version>2.3.2-GA</version>
+        <version>2.3.3-GA</version>
         <relativePath>../parent/</relativePath>
     </parent>
     <artifactId>foomei-core</artifactId>
@@ -67,6 +67,7 @@
         </dependency>
 
         <!-- mybatis -->
+        <!--
         <dependency>
             <groupId>org.mybatis</groupId>
             <artifactId>mybatis</artifactId>
@@ -83,9 +84,10 @@
             <groupId>tk.mybatis</groupId>
             <artifactId>mapper</artifactId>
         </dependency>
+        -->
         <dependency>
-            <groupId>org.mybatis.generator</groupId>
-            <artifactId>mybatis-generator-core</artifactId>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus</artifactId>
         </dependency>
 
         <!-- spring data access -->

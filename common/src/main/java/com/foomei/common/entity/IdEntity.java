@@ -7,6 +7,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
+import com.baomidou.mybatisplus.annotations.TableId;
+import com.baomidou.mybatisplus.enums.IdType;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -26,6 +28,7 @@ public abstract class IdEntity implements Serializable {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
+  @TableId(type = IdType.AUTO)
   protected Long id;
 
   public Long getId() {

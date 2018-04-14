@@ -10,7 +10,7 @@ import com.foomei.core.entity.DataDictionary;
 
 public interface DataDictionaryDao extends JpaDao<DataDictionary, Long> {
 
-  @Query("SELECT entity FROM DataDictionary entity WHERE entity.type.code=:typeCode AND entity.code=:code")
+  @Query("SELECT entity FROM DataDictionary entity WHERE entity.type.code=:typeCode AND entity.code=:code ORDER BY entity.priority ASC")
   DataDictionary findByTypeAndCode(@Param("typeCode") String typeCode, @Param("code") String code);
 
   @Query("SELECT entity FROM DataDictionary entity WHERE entity.type.id=:typeId ORDER BY entity.priority ASC")

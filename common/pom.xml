@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>com.foomei</groupId>
 		<artifactId>foomei-parent</artifactId>
-		<version>2.3.2-GA</version>
+		<version>2.3.3-GA</version>
 		<relativePath>../parent/</relativePath>
 	</parent>
 	<artifactId>foomei-common</artifactId>
@@ -24,6 +24,7 @@
 			<artifactId>spring-data-jpa</artifactId>
 			<optional>true</optional>
 		</dependency>
+		<!--
 		<dependency>
 			<groupId>org.mybatis</groupId>
 			<artifactId>mybatis</artifactId>
@@ -37,6 +38,12 @@
 		<dependency>
 			<groupId>tk.mybatis</groupId>
 			<artifactId>mapper</artifactId>
+			<optional>true</optional>
+		</dependency>
+		-->
+		<dependency>
+			<groupId>com.baomidou</groupId>
+			<artifactId>mybatis-plus</artifactId>
 			<optional>true</optional>
 		</dependency>
 		<!-- PERSISTENCE end -->

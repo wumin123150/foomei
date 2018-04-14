@@ -1,9 +1,10 @@
 package com.foomei.core.dao.mybatis;
 
-import java.util.List;
-
 import com.foomei.common.base.annotation.MybatisRepository;
+import com.foomei.common.dao.MybatisDao;
 import com.foomei.core.entity.BaseUser;
+
+import java.util.List;
 
 /**
  * 通过@MapperScannerConfigurer扫描目录中的所有接口, 动态在Spring Context中生成实现.
@@ -12,7 +13,7 @@ import com.foomei.core.entity.BaseUser;
  * @author walker
  */
 @MybatisRepository
-public interface UserMybatisDao {
+public interface UserMybatisDao extends MybatisDao<BaseUser>  {
 
 	List<BaseUser> findByRole(List<String> roleCodes);
 
