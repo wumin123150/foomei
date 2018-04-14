@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.foomei.upms.repository.mybatis.UserMybatisDao">
+	<select id="findByRole" parameterType="map" resultType="BaseUser">
+		select u.id, u.login_name as loginName, u.name
+		from core_user u, core_user_role ur, core_role r
+		where u.id = ur.user_id and ur.role_id = r.id and r.code in
+		<foreach collection="list" item="roleCodes"  open="(" separator="," close=")">  
+	    	#{roleCodes}  
+		</foreach>  
+	</select>
+</mapper> 

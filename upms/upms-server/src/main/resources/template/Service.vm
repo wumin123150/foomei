@@ -1,0 +1,17 @@
+package ${package}.service;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.foomei.common.service.impl.JpaServiceImpl;
+import ${package}.dao.jpa.${model}Dao;
+import ${package}.entity.${model};
+
+/**
+* ${model}Service
+*/
+@Service
+@Transactional(readOnly = true)
+public class ${model}Service extends JpaServiceImpl<${model}Dao, ${model}, ${idType}> {
+
+}

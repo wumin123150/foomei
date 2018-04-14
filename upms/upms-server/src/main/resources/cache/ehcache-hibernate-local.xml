@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache updateCheck="false" name="hibernateCache">
+
+	<diskStore path="java.io.tmpdir/ehcache/foomei/hibernate" />
+
+	<!-- DefaultCache setting. -->
+	<defaultCache
+			maxEntriesLocalHeap="10000"
+			eternal="false"
+			timeToIdleSeconds="120"
+			timeToLiveSeconds="120"
+			diskSpoolBufferSizeMB="30"
+			maxEntriesLocalDisk="10000000"
+			diskExpiryThreadIntervalSeconds="120"
+			memoryStoreEvictionPolicy="LRU">
+		<persistence strategy="localTempSwap"/>
+	</defaultCache>
+
+	<!-- Special objects setting. -->
+	<cache name="com.foomei.upms.entity.User" maxEntriesLocalHeap="1000" eternal="true" overflowToDisk="true"
+           maxEntriesLocalDisk="1000000" />
+	<cache name="com.foomei.upms.entity.User.roleList" maxEntriesLocalHeap="1000" eternal="true" overflowToDisk="true"
+           maxEntriesLocalDisk="1000000" />
+	<cache name="com.foomei.upms.entity.User.groupList" maxEntriesLocalHeap="100" eternal="true" overflowToDisk="true"
+           maxEntriesLocalDisk="1000000" />
+	<cache name="com.foomei.upms.entity.Role" maxEntriesLocalHeap="100" eternal="true" overflowToDisk="true"
+           maxEntriesLocalDisk="1000" />
+	<cache name="com.foomei.upms.entity.Role.permissionList" maxEntriesLocalHeap="100" eternal="true" overflowToDisk="true"
+           maxEntriesLocalDisk="1000" />
+	<cache name="com.foomei.upms.entity.Permission" maxEntriesLocalHeap="100" eternal="true" overflowToDisk="true"
+           maxEntriesLocalDisk="1000" />
+	<cache name="com.foomei.upms.entity.GroupTree" maxEntriesLocalHeap="100" eternal="true" overflowToDisk="true"
+           maxEntriesLocalDisk="1000" />
+	<cache name="com.foomei.upms.entity.UserGroup" maxEntriesLocalHeap="100" eternal="true" overflowToDisk="true"
+           maxEntriesLocalDisk="1000" />
+	<cache name="com.foomei.upms.entity.UserGroup.roleList" maxEntriesLocalHeap="100" eternal="true" overflowToDisk="true"
+           maxEntriesLocalDisk="1000" />
+	<cache name="com.foomei.upms.entity.Config" maxEntriesLocalHeap="100" eternal="true" overflowToDisk="true"
+           maxEntriesLocalDisk="1000" />
+	<cache name="com.foomei.upms.entity.Area" maxEntriesLocalHeap="100" eternal="true" overflowToDisk="true"
+           maxEntriesLocalDisk="5000" />
+	<cache name="com.foomei.upms.entity.DataType" maxEntriesLocalHeap="100" eternal="true" overflowToDisk="true"
+           maxEntriesLocalDisk="1000" />
+	<cache name="com.foomei.upms.entity.DataDictionary" maxEntriesLocalHeap="100" eternal="true" overflowToDisk="true"
+           maxEntriesLocalDisk="1000" />
+</ehcache>
