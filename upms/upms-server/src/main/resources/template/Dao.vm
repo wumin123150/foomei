@@ -1,8 +1,0 @@
-package ${package}.dao.jpa;
-
-import com.foomei.common.dao.JpaDao;
-import ${package}.entity.${model};
-
-public interface ${model}Dao extends JpaDao<${model}, ${idType}>{
-
-}
