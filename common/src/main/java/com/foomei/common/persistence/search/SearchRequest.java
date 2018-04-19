@@ -55,6 +55,8 @@ public class SearchRequest {
   }
 
   public SearchRequest(final JqGridFilter jqGridFilter, final PageQuery pageQuery) {
+    this.page = pageQuery.buildPageRequest(null);
+
     toSearchFilters(jqGridFilter);
   }
 
