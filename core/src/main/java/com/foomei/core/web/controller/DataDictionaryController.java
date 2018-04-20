@@ -44,8 +44,8 @@ public class DataDictionaryController {
   @RequestMapping(value = "create")
   public String create(Long typeId, Long parentId, Model model) {
     DataDictionary dataDictionary = new DataDictionary();
+    dataDictionary.setTypeId(typeId);
     model.addAttribute("dataDictionary", dataDictionary);
-    model.addAttribute("type", dataTypeService.get(typeId));
     model.addAttribute("parent", parentId == null ? null : dataDictionaryService.get(parentId));
     return theme + "/dataDictionary/dataDictionaryForm";
   }
@@ -56,7 +56,6 @@ public class DataDictionaryController {
   public String update(@PathVariable("id") Long id, Model model) {
     DataDictionary dataDictionary = dataDictionaryService.get(id);
     model.addAttribute("dataDictionary", dataDictionary);
-    model.addAttribute("type", dataDictionary.getType());
     model.addAttribute("parent", dataDictionary.getParentId() == null ? null : dataDictionaryService.get(dataDictionary.getParentId()));
     return theme + "/dataDictionary/dataDictionaryForm";
   }

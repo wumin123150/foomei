@@ -2,11 +2,12 @@ package com.foomei.core.web;
 
 import com.foomei.common.mapper.BeanMapper;
 import com.foomei.common.mapper.FieldsMapper;
-import com.foomei.core.dto.DataDictionaryDto;
 import com.foomei.core.dto.RoleDto;
 import com.foomei.core.dto.UserDto;
 import com.foomei.core.dto.UserGroupDto;
-import com.foomei.core.entity.*;
+import com.foomei.core.entity.Role;
+import com.foomei.core.entity.User;
+import com.foomei.core.entity.UserGroup;
 
 public class BeanMapperRegister {
 
@@ -18,26 +19,6 @@ public class BeanMapperRegister {
         userDto.setGroups(BeanMapper.mapList(user.getGroupList(), UserGroup.class, UserGroupDto.class));
       }
     });
-
-    BeanMapper.registerClassMap(DataDictionary.class, DataDictionaryDto.class, new FieldsMapper<DataDictionary, DataDictionaryDto>() {
-      @Override
-      public void map(DataDictionary dataDictionary, DataDictionaryDto dataDictionaryDto) {
-        if(dataDictionary.getType() != null) {
-          dataDictionaryDto.setTypeId(dataDictionary.getType().getId());
-          dataDictionaryDto.setTypeCode(dataDictionary.getType().getCode());
-        }
-      }
-
-      @Override
-      public void reverseMap(DataDictionaryDto dataDictionaryDto, DataDictionary dataDictionary) {
-        if(dataDictionaryDto.getTypeId() != null) {
-          dataDictionary.setType(new DataType(dataDictionaryDto.getTypeId()));
-        } else {
-          dataDictionary.setType(null);
-        }
-      }
-    });
   }
-
 
 }

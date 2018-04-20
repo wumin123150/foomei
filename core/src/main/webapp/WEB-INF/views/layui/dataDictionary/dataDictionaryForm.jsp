@@ -21,8 +21,7 @@
 <body class="kit-main">
 <form id="form" class="layui-form layui-form-pane" action="${ctx}/api/dataDictionary/save" method="post" style="width:80%;">
   <input type="hidden" name="id" id="id" value="${dataDictionary.id}"/>
-  <input type="hidden" name="typeId" id="typeId" value="${type.id}"/>
-  <input type="hidden" name="typeCode" id="typeCode" value="${type.code}"/>
+  <input type="hidden" name="typeId" id="typeId" value="${dataDictionary.typeId}"/>
   <div class="layui-form-item">
     <label class="layui-form-label">上级</label>
     <div class="layui-input-block">

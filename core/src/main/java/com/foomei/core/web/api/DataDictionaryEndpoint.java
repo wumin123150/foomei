@@ -66,7 +66,7 @@ public class DataDictionaryEndpoint {
   @RequiresRoles("admin")
   @RequestMapping(value = "save", method = RequestMethod.POST)
   public ResponseResult<DataDictionaryDto> save(DataDictionaryDto dictionaryDto) {
-    ComplexResult result = validate(dictionaryDto, dictionaryDto.getTypeCode());
+    ComplexResult result = validate(dictionaryDto);
     if (!result.isSuccess()) {
       return ResponseResult.createParamError(result);
     }
@@ -117,20 +117,20 @@ public class DataDictionaryEndpoint {
    */
   @ApiOperation(value = "检查数据字典代码是否存在", httpMethod = "GET")
   @ApiImplicitParams({
-    @ApiImplicitParam(name = "typeCode", value = "数据类型代码", required = true, dataType = "string", paramType = "query"),
+    @ApiImplicitParam(name = "typeId", value = "数据类型ID", required = true, dataType = "long", paramType = "query"),
     @ApiImplicitParam(name = "code", value = "数据字典代码", required = true, dataType = "string", paramType = "query")
   })
   @RequestMapping("checkCode")
-  public boolean checkCode(Long id, String typeCode, String code) {
-    return !dataDictionaryService.existCode(id, typeCode, code);
+  public boolean checkCode(Long id, Long typeId, String code) {
+    return !dataDictionaryService.existCode(id, typeId, code);
   }
 
-  private ComplexResult validate(DataDictionaryDto dataDictionary, final String typeCode) {
+  private ComplexResult validate(DataDictionaryDto dataDictionary) {
     ComplexResult result = FluentValidator.checkAll()
       .on(dataDictionary, new HibernateSupportedValidator<DataDictionaryDto>().setHiberanteValidator(Validation.buildDefaultValidatorFactory().getValidator()))
       .on(dataDictionary, new ValidatorHandler<DataDictionaryDto>() {
         public boolean validate(ValidatorContext context, DataDictionaryDto t) {
-          if (dataDictionaryService.existCode(t.getId(), typeCode, t.getCode())) {
+          if (dataDictionaryService.existCode(t.getId(), t.getTypeId(), t.getCode())) {
             context.addErrorMsg("代码已经被使用");
             return false;
           }

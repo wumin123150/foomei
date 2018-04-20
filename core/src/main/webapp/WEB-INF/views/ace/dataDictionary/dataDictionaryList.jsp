@@ -103,7 +103,6 @@
               <form class="form-horizontal" id="validation-form" action="#" method="post" role="form">
                 <input type="hidden" name="id" id="id"/>
                 <input type="hidden" name="typeId" id="typeId" value="${type.id}"/>
-                <input type="hidden" name="typeCode" id="typeCode" value="${type.code}"/>
                 <input type="hidden" name="parentId" id="parentId"/>
                 <input type="hidden" name="item"/>
                 <div class="form-group">
@@ -235,7 +234,7 @@
               data: {
                 id: function () {
                   return $('#id').val();
-                }, typeCode: '${type.code}',
+                }, typeId: '${type.id}',
                 code: function () {
                   return $('#form-code').val();
                 }

@@ -29,16 +29,12 @@ public class DataDictionaryService extends JpaServiceImpl<DataDictionary, Long> 
   @Autowired
   private DataDictionaryDao dataDictionaryDao;
 
-  public DataDictionary getByTypeAndCode(String typeCode, String code) {
-    return dataDictionaryDao.findByTypeAndCode(typeCode, code);
+  public DataDictionary getByTypeAndCode(Long typeId, String code) {
+    return dataDictionaryDao.findByTypeAndCode(typeId, code);
   }
 
   public List<DataDictionary> findByType(Long typeId) {
     return dataDictionaryDao.findByType(typeId);
-  }
-
-  public List<DataDictionary> findByTypeCode(String typeCode) {
-    return dataDictionaryDao.findByTypeCode(typeCode);
   }
 
   public List<DataDictionary> findByTypeAndGrade(Long typeId, Integer grade) {
@@ -49,8 +45,8 @@ public class DataDictionaryService extends JpaServiceImpl<DataDictionary, Long> 
     return dataDictionaryDao.findChildrenByParent(id);
   }
 
-  public List<DataDictionary> findChildrenByTypeAndCode(String typeCode, String code) {
-    DataDictionary parent = getByTypeAndCode(typeCode, code);
+  public List<DataDictionary> findChildrenByTypeAndCode(Long typeId, String code) {
+    DataDictionary parent = getByTypeAndCode(typeId, code);
     if (parent != null) {
       return dataDictionaryDao.findChildrenByParent(parent.getId());
     }
@@ -61,7 +57,7 @@ public class DataDictionaryService extends JpaServiceImpl<DataDictionary, Long> 
     QDataDictionary qDataDictionary = QDataDictionary.dataDictionary;
     List<BooleanExpression> expressions = new ArrayList<>();
 
-    expressions.add(qDataDictionary.type.id.eq(typeId));
+    expressions.add(qDataDictionary.typeId.eq(typeId));
 
     if (StringUtils.isNotEmpty(searchKey)) {
       expressions.add(qDataDictionary.code.like(StringUtils.trimToEmpty(searchKey))
@@ -77,8 +73,8 @@ public class DataDictionaryService extends JpaServiceImpl<DataDictionary, Long> 
     return dataDictionaryDao.findAll(Expressions.allOf(expressions.toArray(new BooleanExpression[expressions.size()])), page);
   }
 
-  public boolean existCode(Long id, String typeCode, String code) {
-    DataDictionary dataDictionary = getByTypeAndCode(typeCode, code);
+  public boolean existCode(Long id, Long typeId, String code) {
+    DataDictionary dataDictionary = getByTypeAndCode(typeId, code);
     if (dataDictionary == null || (id != null && id.equals(dataDictionary.getId()))) {
       return false;
     } else {

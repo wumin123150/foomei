@@ -9,8 +9,6 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 /**
@@ -28,9 +26,7 @@ import javax.persistence.Table;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class DataDictionary extends IdEntity {
 
-  @ManyToOne
-  @JoinColumn(name = "type_id")
-  private DataType type;//类型
+  private Long typeId;//类型ID
   private String code;//代码
   private String name;//名称
   private Integer priority;//序号

@@ -17,8 +17,6 @@ public class DataDictionaryDto {
   @ApiModelProperty(value = "类型ID", required = true)
   @NotNull(message = "类型不能为空")
   private Long typeId;
-  @ApiModelProperty(value = "类型编码", required = true)
-  private String typeCode;
   @ApiModelProperty(value = "代码", required = true)
   @NotBlank(message = "代码不能为空")
   @Size(max = 64, message = "代码最大长度为64位")
