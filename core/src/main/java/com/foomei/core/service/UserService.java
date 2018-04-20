@@ -1,5 +1,6 @@
 package com.foomei.core.service;
 
+import com.foomei.common.collection.ListUtil;
 import com.foomei.common.dto.ErrorCodeFactory;
 import com.foomei.common.exception.BaseException;
 import com.foomei.common.persistence.Hibernates;
@@ -8,7 +9,9 @@ import com.foomei.common.service.impl.JpaServiceImpl;
 import com.foomei.common.text.EncodeUtil;
 import com.foomei.common.web.ThreadContext;
 import com.foomei.core.dao.jpa.UserDao;
-import com.foomei.core.entity.*;
+import com.foomei.core.entity.QUser;
+import com.foomei.core.entity.User;
+import com.foomei.core.entity.UserGroup;
 import com.google.common.base.Charsets;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
@@ -43,8 +46,11 @@ public class UserService extends JpaServiceImpl<User, Long> {
   @Autowired
   private UserDao userDao;
 
+  /**
+   * 账号忽略大小写
+   */
   public User getByLoginName(String loginName) {
-    return userDao.findByLoginName(loginName);
+    return userDao.findOne(QUser.user.loginName.equalsIgnoreCase(loginName));
   }
 
   public User getByWeixin(String openId) {
@@ -55,7 +61,7 @@ public class UserService extends JpaServiceImpl<User, Long> {
    * 按名称查询用户, 并对用户的延迟加载关联进行初始化.
    */
   public User getByLoginNameInitialized(String name) {
-    User user = userDao.findByLoginName(name);
+    User user = getByLoginName(name);
     if (user != null) {
       Hibernates.initLazyProperty(user.getRoleList());
       Hibernates.initLazyProperty(user.getGroupList());
@@ -138,73 +144,55 @@ public class UserService extends JpaServiceImpl<User, Long> {
   }
 
   public Page<User> getPageByRole(final String searchKey, final Long roleId, Pageable page) {
-    return userDao.findAll(new Specification<User>() {
-      public Predicate toPredicate(Root<User> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
-        List<Predicate> predicates = new ArrayList<Predicate>();
+    QUser qUser = QUser.user;
+    List<BooleanExpression> expressions = new ArrayList<>();
 
-        if (StringUtils.isNotEmpty(searchKey)) {
-          Predicate p1 = cb.like(root.get("loginName").as(String.class), "%" + StringUtils.trimToEmpty(searchKey) + "%");
-          Predicate p2 = cb.like(root.get("name").as(String.class), "%" + StringUtils.trimToEmpty(searchKey) + "%");
-          Predicate p3 = cb.like(root.get("mobile").as(String.class), "%" + StringUtils.trimToEmpty(searchKey) + "%");
-          Predicate p4 = cb.like(root.get("email").as(String.class), "%" + StringUtils.trimToEmpty(searchKey) + "%");
-          predicates.add(cb.or(p1, p2, p3, p4));
-        }
+    if (StringUtils.isNotEmpty(searchKey)) {
+      expressions.add(qUser.loginName.like(StringUtils.trimToEmpty(searchKey))
+        .or(qUser.name.like(StringUtils.trimToEmpty(searchKey)))
+        .or(qUser.mobile.like(StringUtils.trimToEmpty(searchKey)))
+        .or(qUser.email.like(StringUtils.trimToEmpty(searchKey))));
+    }
 
-        if (roleId != null) {
-          predicates.add(cb.equal(root.join("roleList").get(Role.PROP_ID).as(Long.class), roleId));
-        }
+    if (roleId != null) {
+      expressions.add(qUser.roleList.any().id.eq(roleId));
+    }
 
-        return cb.and(predicates.toArray(new Predicate[predicates.size()]));
-      }
-    }, page);
+    return userDao.findAll(Expressions.allOf(expressions.toArray(new BooleanExpression[expressions.size()])), page);
   }
 
   public List<User> getListByGroup(final Long groupId) {
-    return userDao.findAll(new Specification<User>() {
-      public Predicate toPredicate(Root<User> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
-        List<Predicate> predicates = new ArrayList<Predicate>();
-        predicates.add(cb.equal(root.join("groupList").get(UserGroup.PROP_ID).as(Long.class), groupId));
-        predicates.add(cb.notEqual(root.get("status").as(String.class), User.STATUS_TERMINATED));
-        return cb.and(predicates.toArray(new Predicate[predicates.size()]));
-      }
-    });
+    QUser qUser = QUser.user;
+    List<BooleanExpression> expressions = new ArrayList<>();
+    expressions.add(qUser.groupList.any().id.eq(groupId));
+    expressions.add(qUser.status.ne(User.STATUS_TERMINATED));
+    return ListUtil.newArrayList(userDao.findAll(Expressions.allOf(expressions.toArray(new BooleanExpression[expressions.size()]))));
+//    return userDao.findAll(new Specification<User>() {
+//      public Predicate toPredicate(Root<User> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+//        List<Predicate> predicates = new ArrayList<Predicate>();
+//        predicates.add(cb.equal(root.join("groupList").get(UserGroup.PROP_ID).as(Long.class), groupId));
+//        predicates.add(cb.notEqual(root.get("status").as(String.class), User.STATUS_TERMINATED));
+//        return cb.and(predicates.toArray(new Predicate[predicates.size()]));
+//      }
+//    });
   }
 
   public Page<User> getPageByGroup(final String searchKey, final Long groupId, Pageable page) {
-//    QUser qUser = QUser.user;
-//    List<BooleanExpression> expressions = new ArrayList<>();
-//
-//    if (StringUtils.isNotEmpty(searchKey)) {
-//      expressions.add(qUser.loginName.like(StringUtils.trimToEmpty(searchKey))
-//        .or(qUser.name.like(StringUtils.trimToEmpty(searchKey)))
-//        .or(qUser.mobile.like(StringUtils.trimToEmpty(searchKey)))
-//        .or(qUser.email.like(StringUtils.trimToEmpty(searchKey))));
-//    }
-//
-//    if (groupId != null) {
-//      expressions.add(qUser.groupList.contains(QUserGroup.userGroup.id.eq(groupId)));
-//    }
-//
-//    return userDao.findAll(Expressions.allOf(expressions.toArray(new BooleanExpression[expressions.size()])), page);
-    return userDao.findAll(new Specification<User>() {
-      public Predicate toPredicate(Root<User> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
-        List<Predicate> predicates = new ArrayList<Predicate>();
+    QUser qUser = QUser.user;
+    List<BooleanExpression> expressions = new ArrayList<>();
 
-        if (StringUtils.isNotEmpty(searchKey)) {
-          Predicate p1 = cb.like(root.get("loginName").as(String.class), "%" + StringUtils.trimToEmpty(searchKey) + "%");
-          Predicate p2 = cb.like(root.get("name").as(String.class), "%" + StringUtils.trimToEmpty(searchKey) + "%");
-          Predicate p3 = cb.like(root.get("mobile").as(String.class), "%" + StringUtils.trimToEmpty(searchKey) + "%");
-          Predicate p4 = cb.like(root.get("email").as(String.class), "%" + StringUtils.trimToEmpty(searchKey) + "%");
-          predicates.add(cb.or(p1, p2, p3, p4));
-        }
+    if (StringUtils.isNotEmpty(searchKey)) {
+      expressions.add(qUser.loginName.like(StringUtils.trimToEmpty(searchKey))
+        .or(qUser.name.like(StringUtils.trimToEmpty(searchKey)))
+        .or(qUser.mobile.like(StringUtils.trimToEmpty(searchKey)))
+        .or(qUser.email.like(StringUtils.trimToEmpty(searchKey))));
+    }
 
-        if (groupId != null) {
-          predicates.add(cb.equal(root.join("groupList").get(UserGroup.PROP_ID).as(Long.class), groupId));
-        }
+    if (groupId != null) {
+      expressions.add(qUser.groupList.any().id.eq(groupId));
+    }
 
-        return cb.and(predicates.toArray(new Predicate[predicates.size()]));
-      }
-    }, page);
+    return userDao.findAll(Expressions.allOf(expressions.toArray(new BooleanExpression[expressions.size()])), page);
   }
 
   public boolean existLoginName(Long id, String loginName) {

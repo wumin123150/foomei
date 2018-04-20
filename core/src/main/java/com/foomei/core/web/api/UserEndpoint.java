@@ -186,6 +186,10 @@ public class UserEndpoint {
       .on(user, new HibernateSupportedValidator<UserVo>().setHiberanteValidator(Validation.buildDefaultValidatorFactory().getValidator()))
       .on(user, new ValidatorHandler<UserVo>() {
         public boolean validate(ValidatorContext context, UserVo t) {
+          if(StringUtils.containsWhitespace(t.getLoginName())) {
+            context.addErrorMsg("账号不能有空格");
+            return false;
+          }
           if (userService.existLoginName(t.getId(), t.getLoginName())) {
             context.addErrorMsg("账号已经被使用");
             return false;

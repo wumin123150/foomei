@@ -1,12 +1,12 @@
 package com.foomei.core.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.foomei.common.service.impl.JpaServiceImpl;
 import com.foomei.core.dao.jpa.BaseUserDao;
 import com.foomei.core.entity.BaseUser;
+import com.foomei.core.entity.QUser;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 用户管理业务类.
@@ -21,7 +21,7 @@ public class BaseUserService extends JpaServiceImpl<BaseUser, Long> {
   private BaseUserDao baseUserDao;
 
   public BaseUser getByLoginName(String loginName) {
-    return baseUserDao.findByLoginName(loginName);
+    return baseUserDao.findOne(QUser.user.loginName.equalsIgnoreCase(loginName));
   }
 
   public boolean existLoginName(Long id, String loginName) {
