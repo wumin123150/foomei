@@ -1,6 +1,5 @@
 package com.foomei.core.web.api;
 
-import com.foomei.common.collection.ArrayUtil;
 import com.foomei.common.collection.ListUtil;
 import com.foomei.common.dto.PageQuery;
 import com.foomei.common.dto.ResponseResult;
@@ -18,7 +17,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -41,7 +39,7 @@ public class MessageTextEndpoint {
   @RequiresRoles("admin")
   @RequestMapping(value = "page", method = RequestMethod.GET)
   public ResponseResult<Page<MessageTextDto>> page(PageQuery pageQuery, HttpServletRequest request) {
-    Page<MessageText> page = messageTextService.getPage(new SearchRequest(pageQuery, new Sort(Sort.Direction.DESC, MessageText.PROP_CREATE_TIME), MessageText.PROP_CONTENT));
+    Page<MessageText> page = messageTextService.getPage(new SearchRequest(pageQuery, "content"));
     return ResponseResult.createSuccess(page, MessageText.class, MessageTextDto.class);
   }
 
@@ -49,14 +47,14 @@ public class MessageTextEndpoint {
   @RequiresRoles("admin")
   @RequestMapping(value = "page2", method = RequestMethod.GET)
   public ResponseResult<List<MessageTextDto>> page2(PageQuery pageQuery) {
-    Page<MessageText> page = messageTextService.getPage(new SearchRequest(pageQuery, new Sort(Sort.Direction.DESC, MessageText.PROP_CREATE_TIME), MessageText.PROP_CONTENT));
+    Page<MessageText> page = messageTextService.getPage(new SearchRequest(pageQuery, "content"));
     return ResponseResult.createSuccess(page.getContent(), page.getTotalElements(), MessageText.class, MessageTextDto.class);
   }
 
   @ApiOperation(value = "我的消息内容分页列表", httpMethod = "GET", produces = "application/json")
   @RequestMapping(value = "myPage", method = RequestMethod.GET)
   public ResponseResult<Page<MessageTextDto>> myPage(PageQuery pageQuery, HttpServletRequest request) {
-    Page<MessageText> page = messageTextService.getMyPage(pageQuery.getSearchKey(), pageQuery.buildPageRequest(new Sort(Sort.Direction.DESC, MessageText.PROP_CREATE_TIME)));
+    Page<MessageText> page = messageTextService.getMyPage(pageQuery.getSearchKey(), pageQuery.buildPageRequest());
     return ResponseResult.createSuccess(page, MessageText.class, MessageTextDto.class);
   }
 

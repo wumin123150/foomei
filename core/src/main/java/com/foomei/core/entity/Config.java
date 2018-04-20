@@ -26,12 +26,6 @@ import javax.persistence.Table;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Config extends IdEntity {
 
-  public static final String PROP_CODE = "code";
-  public static final String PROP_VALUE = "value";
-  public static final String PROP_NAME = "name";
-  public static final String PROP_REMARK = "remark";
-  public static final String PROP_EDITABLE = "editable";
-
   private String code;//键
   private String value;//值
   private String name;//名称

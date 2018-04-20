@@ -51,7 +51,7 @@ public class UserEndpoint {
   @ApiOperation(value = "用户智能搜索", notes = "按账号和名称查询", httpMethod = "GET", produces = "application/json")
   @RequestMapping(value = "search")
   public ResponseResult<Page<BaseUser>> search(PageQuery pageQuery) {
-    Page<BaseUser> users = baseUserService.getPage(new SearchRequest(pageQuery, new Sort(Sort.Direction.DESC, BaseUser.PROP_NAME), BaseUser.PROP_NAME, BaseUser.PROP_LOGIN_NAME));
+    Page<BaseUser> users = baseUserService.getPage(new SearchRequest(pageQuery, new Sort(Sort.Direction.DESC, "name"), "name", "loginName"));
     return ResponseResult.createSuccess(users);
   }
 
@@ -64,7 +64,7 @@ public class UserEndpoint {
       JqGridFilter jqGridFilter = JsonMapper.INSTANCE.fromJson(request.getParameter("filters"), JqGridFilter.class);
       page = userService.getPage(new SearchRequest(jqGridFilter, pageQuery));
     } else {
-      page = userService.getPage(new SearchRequest(pageQuery, User.PROP_NAME, User.PROP_LOGIN_NAME, User.PROP_MOBILE));
+      page = userService.getPage(new SearchRequest(pageQuery, "name", "loginName", "mobile"));
     }
     return ResponseResult.createSuccess(page, User.class, UserDto.class);
   }
@@ -80,12 +80,12 @@ public class UserEndpoint {
   @RequiresRoles("admin")
   @RequestMapping(value = "page2")
   public ResponseResult<List<UserDto>> page2(PageQuery pageQuery, String loginName, String name, String mobile, String email, String status) {
-    SearchRequest searchRequest = new SearchRequest(pageQuery, User.PROP_NAME, User.PROP_LOGIN_NAME, User.PROP_MOBILE)
-      .addContain(User.PROP_LOGIN_NAME, loginName)
-      .addContain(User.PROP_NAME, name)
-      .addContain(User.PROP_MOBILE, mobile)
-      .addContain(User.PROP_EMAIL, email)
-      .addEqualToNotEmpty(User.PROP_STATUS, status);
+    SearchRequest searchRequest = new SearchRequest(pageQuery, "name", "loginName", "mobile")
+      .addContain("loginName", loginName)
+      .addContain("name", name)
+      .addContain("mobile", mobile)
+      .addContain("email", email)
+      .addEqualToNotEmpty("status", status);
     Page<User> page = userService.getPage(searchRequest);
     return ResponseResult.createSuccess(page.getContent(), page.getTotalElements(), User.class, UserDto.class);
   }
@@ -108,6 +108,7 @@ public class UserEndpoint {
     }
 
     User user = BeanMapper.map(userVo, User.class);
+    user.setPlainPassword(userVo.getPassword());
     user = userService.save(user);
 
     if(StringUtils.isNotEmpty(userVo.getAvatarId())) {
@@ -131,6 +132,7 @@ public class UserEndpoint {
     User user = userService.get(userVo.getId());
     userVo.setLoginName(user.getLoginName());//修改不能设置账号
     userVo.setPassword(null);//修改不能设置密码
+    user.setPlainPassword(null);
     user = BeanMapper.map(userVo, user, UserVo.class, User.class);
 
     if(StringUtils.isNotEmpty(userVo.getAvatarId())) {

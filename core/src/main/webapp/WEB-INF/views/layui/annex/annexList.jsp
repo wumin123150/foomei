@@ -112,6 +112,10 @@
         msgName: 'message',
         countName: 'total',
         dataName: 'data'
+      },
+      initSort: {
+        field: 'createTime',
+        type: 'desc'
       }
     });
     //渲染表单

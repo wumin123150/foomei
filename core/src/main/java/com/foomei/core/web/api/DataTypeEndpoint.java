@@ -45,7 +45,7 @@ public class DataTypeEndpoint {
       JqGridFilter jqGridFilter = JsonMapper.INSTANCE.fromJson(request.getParameter("filters"), JqGridFilter.class);
       page = dataTypeService.getPage(new SearchRequest(jqGridFilter, pageQuery));
     } else {
-      page = dataTypeService.getPage(new SearchRequest(pageQuery, DataType.PROP_CODE, DataType.PROP_NAME));
+      page = dataTypeService.getPage(new SearchRequest(pageQuery, "code", "name"));
     }
 
     return ResponseResult.createSuccess(page, DataType.class, DataTypeDto.class);
@@ -55,7 +55,7 @@ public class DataTypeEndpoint {
   @RequiresRoles("admin")
   @RequestMapping(value = "page2", method = RequestMethod.GET)
   public ResponseResult<List<DataTypeDto>> page2(PageQuery pageQuery) {
-    Page<DataType> page = dataTypeService.getPage(new SearchRequest(pageQuery, DataType.PROP_CODE, DataType.PROP_NAME));
+    Page<DataType> page = dataTypeService.getPage(new SearchRequest(pageQuery, "code", "name"));
     return ResponseResult.createSuccess(page.getContent(), page.getTotalElements(), DataType.class, DataTypeDto.class);
   }
 

@@ -8,10 +8,10 @@ import com.foomei.common.service.impl.JpaServiceImpl;
 import com.foomei.common.text.EncodeUtil;
 import com.foomei.common.web.ThreadContext;
 import com.foomei.core.dao.jpa.UserDao;
-import com.foomei.core.entity.Role;
-import com.foomei.core.entity.User;
-import com.foomei.core.entity.UserGroup;
+import com.foomei.core.entity.*;
 import com.google.common.base.Charsets;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -143,15 +143,15 @@ public class UserService extends JpaServiceImpl<User, Long> {
         List<Predicate> predicates = new ArrayList<Predicate>();
 
         if (StringUtils.isNotEmpty(searchKey)) {
-          Predicate p1 = cb.like(root.get(User.PROP_LOGIN_NAME).as(String.class), "%" + StringUtils.trimToEmpty(searchKey) + "%");
-          Predicate p2 = cb.like(root.get(User.PROP_NAME).as(String.class), "%" + StringUtils.trimToEmpty(searchKey) + "%");
-          Predicate p3 = cb.like(root.get(User.PROP_MOBILE).as(String.class), "%" + StringUtils.trimToEmpty(searchKey) + "%");
-          Predicate p4 = cb.like(root.get(User.PROP_EMAIL).as(String.class), "%" + StringUtils.trimToEmpty(searchKey) + "%");
+          Predicate p1 = cb.like(root.get("loginName").as(String.class), "%" + StringUtils.trimToEmpty(searchKey) + "%");
+          Predicate p2 = cb.like(root.get("name").as(String.class), "%" + StringUtils.trimToEmpty(searchKey) + "%");
+          Predicate p3 = cb.like(root.get("mobile").as(String.class), "%" + StringUtils.trimToEmpty(searchKey) + "%");
+          Predicate p4 = cb.like(root.get("email").as(String.class), "%" + StringUtils.trimToEmpty(searchKey) + "%");
           predicates.add(cb.or(p1, p2, p3, p4));
         }
 
         if (roleId != null) {
-          predicates.add(cb.equal(root.join(User.PROP_ROLE_LIST).get(Role.PROP_ID).as(Long.class), roleId));
+          predicates.add(cb.equal(root.join("roleList").get(Role.PROP_ID).as(Long.class), roleId));
         }
 
         return cb.and(predicates.toArray(new Predicate[predicates.size()]));
@@ -163,28 +163,43 @@ public class UserService extends JpaServiceImpl<User, Long> {
     return userDao.findAll(new Specification<User>() {
       public Predicate toPredicate(Root<User> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
         List<Predicate> predicates = new ArrayList<Predicate>();
-        predicates.add(cb.equal(root.join(User.PROP_GROUP_LIST).get(UserGroup.PROP_ID).as(Long.class), groupId));
-        predicates.add(cb.notEqual(root.get(User.PROP_STATUS).as(String.class), User.STATUS_TERMINATED));
+        predicates.add(cb.equal(root.join("groupList").get(UserGroup.PROP_ID).as(Long.class), groupId));
+        predicates.add(cb.notEqual(root.get("status").as(String.class), User.STATUS_TERMINATED));
         return cb.and(predicates.toArray(new Predicate[predicates.size()]));
       }
     });
   }
 
   public Page<User> getPageByGroup(final String searchKey, final Long groupId, Pageable page) {
+//    QUser qUser = QUser.user;
+//    List<BooleanExpression> expressions = new ArrayList<>();
+//
+//    if (StringUtils.isNotEmpty(searchKey)) {
+//      expressions.add(qUser.loginName.like(StringUtils.trimToEmpty(searchKey))
+//        .or(qUser.name.like(StringUtils.trimToEmpty(searchKey)))
+//        .or(qUser.mobile.like(StringUtils.trimToEmpty(searchKey)))
+//        .or(qUser.email.like(StringUtils.trimToEmpty(searchKey))));
+//    }
+//
+//    if (groupId != null) {
+//      expressions.add(qUser.groupList.contains(QUserGroup.userGroup.id.eq(groupId)));
+//    }
+//
+//    return userDao.findAll(Expressions.allOf(expressions.toArray(new BooleanExpression[expressions.size()])), page);
     return userDao.findAll(new Specification<User>() {
       public Predicate toPredicate(Root<User> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
         List<Predicate> predicates = new ArrayList<Predicate>();
 
         if (StringUtils.isNotEmpty(searchKey)) {
-          Predicate p1 = cb.like(root.get(User.PROP_LOGIN_NAME).as(String.class), "%" + StringUtils.trimToEmpty(searchKey) + "%");
-          Predicate p2 = cb.like(root.get(User.PROP_NAME).as(String.class), "%" + StringUtils.trimToEmpty(searchKey) + "%");
-          Predicate p3 = cb.like(root.get(User.PROP_MOBILE).as(String.class), "%" + StringUtils.trimToEmpty(searchKey) + "%");
-          Predicate p4 = cb.like(root.get(User.PROP_EMAIL).as(String.class), "%" + StringUtils.trimToEmpty(searchKey) + "%");
+          Predicate p1 = cb.like(root.get("loginName").as(String.class), "%" + StringUtils.trimToEmpty(searchKey) + "%");
+          Predicate p2 = cb.like(root.get("name").as(String.class), "%" + StringUtils.trimToEmpty(searchKey) + "%");
+          Predicate p3 = cb.like(root.get("mobile").as(String.class), "%" + StringUtils.trimToEmpty(searchKey) + "%");
+          Predicate p4 = cb.like(root.get("email").as(String.class), "%" + StringUtils.trimToEmpty(searchKey) + "%");
           predicates.add(cb.or(p1, p2, p3, p4));
         }
 
         if (groupId != null) {
-          predicates.add(cb.equal(root.join(User.PROP_GROUP_LIST).get(UserGroup.PROP_ID).as(Long.class), groupId));
+          predicates.add(cb.equal(root.join("groupList").get(UserGroup.PROP_ID).as(Long.class), groupId));
         }
 
         return cb.and(predicates.toArray(new Predicate[predicates.size()]));
@@ -209,7 +224,7 @@ public class UserService extends JpaServiceImpl<User, Long> {
   public boolean existGroup(final Long groupId) {
     Specification<User> conditions = new Specification<User>() {
       public Predicate toPredicate(Root<User> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
-        return cb.equal(root.join(User.PROP_GROUP_LIST).get(UserGroup.PROP_ID).as(Long.class), groupId);
+        return cb.equal(root.join("groupList").get(UserGroup.PROP_ID).as(Long.class), groupId);
       }
     };
     List<User> users = userDao.findAll(conditions);

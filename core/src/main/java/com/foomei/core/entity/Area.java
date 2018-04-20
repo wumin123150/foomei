@@ -29,15 +29,6 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Area implements Serializable {
 
-  public static final String PROP_ID = "id";
-  public static final String PROP_CODE = "code";
-  public static final String PROP_NAME = "name";
-  public static final String PROP_FULL_NAME = "fullName";
-  public static final String PROP_GRADE = "grade";
-  public static final String PROP_TYPE = "type";
-  public static final String PROP_ROOT_ID = "rootId";
-  public static final String PROP_PARENT_ID = "parentId";
-
   public static final String TYPE_SHEN = "1";//省
   public static final String TYPE_ZHI_SHI = "2";//直辖市
   public static final String TYPE_DI_SHI = "3";//地级市、地区、自治州、省直辖县、自治县

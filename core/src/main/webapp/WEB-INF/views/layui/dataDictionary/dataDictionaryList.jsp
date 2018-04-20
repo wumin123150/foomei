@@ -63,7 +63,7 @@
 <script>
   var tableId = 'kit-table';
   var tableFilter = 'kit-table';
-  var table_page_url = "${ctx}/api/dataDictionary/page2";
+  var table_page_url = "${ctx}/api/dataDictionary/page2?typeId=${type.id}";
   var table_add_url = "${ctx}/admin/dataDictionary/create?typeId=${type.id}&parentId=";
   var table_edit_url = "${ctx}/admin/dataDictionary/update/";
   var table_del_url = "${ctx}/api/dataDictionary/delete/";

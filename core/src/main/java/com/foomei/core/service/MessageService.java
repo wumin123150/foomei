@@ -7,18 +7,16 @@ import com.foomei.core.dao.jpa.MessageDao;
 import com.foomei.core.entity.BaseUser;
 import com.foomei.core.entity.Message;
 import com.foomei.core.entity.MessageText;
+import com.foomei.core.entity.QMessage;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -66,33 +64,28 @@ public class MessageService extends JpaServiceImpl<Message, String> {
   }
 
   public Page<Message> getMyPage(final String searchKey, final Integer readStatus, Pageable page) {
-    return messageDao.findAll(new Specification<Message>() {
-      public Predicate toPredicate(Root<Message> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
-        List<Predicate> predicates = new ArrayList<Predicate>();
+    QMessage qMessage = QMessage.message;
+    List<BooleanExpression> expressions = new ArrayList<>();
 
-        if (StringUtils.isNotEmpty(searchKey)) {
-          predicates.add(cb.like(root.get(Message.PROP_TEXT).get(MessageText.PROP_CONTENT).as(String.class), "%" + StringUtils.trimToEmpty(searchKey) + "%"));
-        }
+    expressions.add(qMessage.receiver.id.eq(ThreadContext.getUserId()));
 
-        if (readStatus != null) {
-          predicates.add(cb.equal(root.get(Message.PROP_READ_STATUS).as(Integer.class), readStatus));
-        }
+    if (StringUtils.isNotEmpty(searchKey)) {
+      expressions.add(qMessage.text.content.like(StringUtils.trimToEmpty(searchKey)));
+    }
 
-        predicates.add(cb.equal(root.get(Message.PROP_RECEIVER).get(BaseUser.PROP_ID).as(Long.class), ThreadContext.getUserId()));
-        return cb.and(predicates.toArray(new Predicate[predicates.size()]));
-      }
-    }, page);
+    if (readStatus != null) {
+      expressions.add(qMessage.readStatus.eq(readStatus));
+    }
+
+    return messageDao.findAll(Expressions.allOf(expressions.toArray(new BooleanExpression[expressions.size()])), page);
   }
 
   public long countMyUnread(final String loginName) {
-    return messageDao.count(new Specification<Message>() {
-      public Predicate toPredicate(Root<Message> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
-        List<Predicate> predicates = new ArrayList<Predicate>();
-        predicates.add(cb.equal(root.get(Message.PROP_RECEIVER).get(BaseUser.PROP_LOGIN_NAME).as(String.class), loginName));
-        predicates.add(cb.equal(root.get(Message.PROP_READ_STATUS).as(Integer.class), Message.READ_STATUS_UNREAD));
-        return cb.and(predicates.toArray(new Predicate[predicates.size()]));
-      }
-    });
+    QMessage qMessage = QMessage.message;
+    List<BooleanExpression> expressions = new ArrayList<>();
+    expressions.add(qMessage.receiver.loginName.eq(loginName));
+    expressions.add(qMessage.readStatus.eq(Message.READ_STATUS_UNREAD));
+    return messageDao.count(Expressions.allOf(expressions.toArray(new BooleanExpression[expressions.size()])));
   }
 
 }

@@ -65,7 +65,7 @@
           { checkbox: true, fixed: true },
           { field: 'content', title: '内容', minWidth: 400 },
           { field: 'sender', title: '发送人', width: 150, templet: '<div>{{#  if(d.sender != null){ }} {{d.sender.name}} {{#  } else { }} 系统 {{#  } }}</div>' },
-          { field: 'createTime', title: '更新时间', width: 160 },
+          { field: 'createTime', title: '更新时间', width: 160, sort: true },
           { fixed: 'right', title: '操作', width: 180, align: 'center', toolbar: '#kit-table-bar' }
         ]
       ],
@@ -83,6 +83,10 @@
         msgName: 'message',
         countName: 'total',
         dataName: 'data'
+      },
+      initSort: {
+        field: 'createTime',
+        type: 'desc'
       }
     });
     //渲染表单

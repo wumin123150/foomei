@@ -27,13 +27,6 @@ import com.foomei.common.entity.UuidEntity;
 @SuppressWarnings("serial")
 public class Token extends UuidEntity {
 
-  public static final String PROP_USER = "user";
-  public static final String PROP_EXPIRE_TIME = "expireTime";
-  public static final String PROP_TERMINAL = "terminal";
-  public static final String PROP_REMARK = "remark";
-  public static final String PROP_STATUS = "status";
-  public static final String PROP_CREATE_TIME = "createTime";
-
   public static final int STATUS_ENABLE = 0;
   public static final int STATUS_DISABLE = 1;
 

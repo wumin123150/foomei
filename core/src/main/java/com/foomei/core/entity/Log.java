@@ -24,17 +24,6 @@ import com.foomei.common.entity.UuidEntity;
 @SuppressWarnings("serial")
 public class Log extends UuidEntity {
 
-  public static final String PROP_DESCRIPTION = "description";
-  public static final String PROP_USERNAME = "username";
-  public static final String PROP_LOG_TIME = "logTime";
-  public static final String PROP_SPEND_TIME = "spendTime";
-  public static final String PROP_IP = "ip";
-  public static final String PROP_URL = "url";
-  public static final String PROP_METHOD = "method";
-  public static final String PROP_USER_AGENT = "userAgent";
-  public static final String PROP_PARAMETER = "parameter";
-  public static final String PROP_RESULT = "result";
-
   private String description;//操作描述
   private String username;//操作用户
   private Date logTime;//操作时间

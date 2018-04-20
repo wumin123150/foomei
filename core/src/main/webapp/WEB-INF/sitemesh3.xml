@@ -6,13 +6,15 @@
 	<mapping decorator="/WEB-INF/layouts/default.jsp"/>
 	
 	<!-- 对不同的路径，启用不同的装饰器 -->
+	<!--
 	<mapping path="/admin/*" decorator="/WEB-INF/layouts/admin-default.jsp"/>
-	
+	 -->
+
 	<!-- 排除，不进行装饰的路径 -->
 	<mapping path="/register" exclue="true"/>
 	<mapping path="/login" exclue="true"/>
 	<mapping path="/retrieve" exclue="true"/>
-	<mapping path="/admin/login" exclue="true"/>
+	<mapping path="/admin/*" exclue="true"/>
 	<mapping path="/static/*" exclue="true"/>
 	<mapping path="/cxf/*" exclue="true"/>
 	<mapping path="/api/*" exclue="true"/>

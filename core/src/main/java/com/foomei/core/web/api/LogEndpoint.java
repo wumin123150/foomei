@@ -52,7 +52,7 @@ public class LogEndpoint {
       JqGridFilter jqGridFilter = JsonMapper.INSTANCE.fromJson(request.getParameter("filters"), JqGridFilter.class);
       page = logService.getPage(new SearchRequest(jqGridFilter, pageQuery));
     } else {
-      page = logService.getPage(pageQuery.getSearchKey(), startTime, endTime, pageQuery.buildPageRequest(new Sort(Sort.Direction.DESC, Log.PROP_LOG_TIME)));
+      page = logService.getPage(pageQuery.getSearchKey(), startTime, endTime, pageQuery.buildPageRequest());
     }
     return ResponseResult.createSuccess(page, Log.class, LogDto.class);
   }
@@ -67,7 +67,7 @@ public class LogEndpoint {
   @RequestMapping(value = "page2")
   public ResponseResult<List<LogDto>> page2(PageQuery pageQuery,
                                            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm") Date startTime, @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm") Date endTime) {
-    Page<Log> page = logService.getPage(pageQuery.getSearchKey(), startTime, endTime, pageQuery.buildPageRequest(new Sort(Sort.Direction.DESC, Log.PROP_LOG_TIME)));
+    Page<Log> page = logService.getPage(pageQuery.getSearchKey(), startTime, endTime, pageQuery.buildPageRequest());
     return ResponseResult.createSuccess(page.getContent(), page.getTotalElements(), Log.class, LogDto.class);
   }
 

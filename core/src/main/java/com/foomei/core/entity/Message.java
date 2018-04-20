@@ -26,13 +26,6 @@ import java.util.Date;
 @SuppressWarnings("serial")
 public class Message extends UuidEntity {
 
-  public static final String PROP_TEXT = "text";
-  public static final String PROP_RECEIVER = "receiver";
-  public static final String PROP_SEND_STATUS = "sendStatus";
-  public static final String PROP_SEND_TIME = "sendTime";
-  public static final String PROP_READ_STATUS = "readStatus";
-  public static final String PROP_READ_TIME = "readTime";
-
   public static final Integer SEND_STATUS_SENDING = 0;
   public static final Integer SEND_STATUS_SENT = 1;
   public static final Integer SEND_STATUS_FAIL = 2;

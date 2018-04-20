@@ -54,7 +54,7 @@ public class AnnexEndpoint {
       JqGridFilter jqGridFilter = JsonMapper.INSTANCE.fromJson(request.getParameter("filters"), JqGridFilter.class);
       page = annexService.getPage(new SearchRequest(jqGridFilter, pageQuery));
     } else {
-      page = annexService.getPage(pageQuery.getSearchKey(), startTime, endTime, pageQuery.buildPageRequest(new Sort(Sort.Direction.DESC, Annex.PROP_CREATE_TIME)));
+      page = annexService.getPage(pageQuery.getSearchKey(), startTime, endTime, pageQuery.buildPageRequest());
     }
     return ResponseResult.createSuccess(page, Annex.class, AnnexDto.class);
   }
@@ -68,7 +68,7 @@ public class AnnexEndpoint {
   @RequestMapping(value = "page2")
   public ResponseResult<List<AnnexDto>> page2(PageQuery pageQuery,
                                              @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm") Date startTime, @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm") Date endTime) {
-    Page<Annex> page = annexService.getPage(pageQuery.getSearchKey(), startTime, endTime, pageQuery.buildPageRequest(new Sort(Sort.Direction.DESC, Annex.PROP_CREATE_TIME)));
+    Page<Annex> page = annexService.getPage(pageQuery.getSearchKey(), startTime, endTime, pageQuery.buildPageRequest());
     return ResponseResult.createSuccess(page.getContent(), page.getTotalElements(), Annex.class, AnnexDto.class);
   }
 

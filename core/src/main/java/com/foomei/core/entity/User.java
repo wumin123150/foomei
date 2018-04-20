@@ -31,26 +31,6 @@ import java.util.List;
 // 默认的缓存策略.
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class User extends IdEntity {
-  public static final String PROP_LOGIN_NAME = "loginName";
-  public static final String PROP_PASSWORD = "password";
-  public static final String PROP_SALT = "salt";
-  public static final String PROP_NAME = "name";
-  public static final String PROP_QUESTION = "question";
-  public static final String PROP_ANSWER = "answer";
-  public static final String PROP_SEX = "sex";
-  public static final String PROP_BIRTHDAY = "birthday";
-  public static final String PROP_MOBILE = "mobile";
-  public static final String PROP_EMAIL = "email";
-  public static final String PROP_AVATAR = "avatar";
-  public static final String PROP_OPEN_ID = "openId";
-  public static final String PROP_REGISTER_TIME = "registerTime";
-  public static final String PROP_REGISTER_IP = "registerIp";
-  public static final String PROP_LAST_LOGIN_TIME = "lastLoginTime";
-  public static final String PROP_LAST_LOGIN_IP = "lastLoginIp";
-  public static final String PROP_LOGIN_COUNT = "loginCount";
-  public static final String PROP_STATUS = "status";
-  public static final String PROP_GROUP_LIST = "groupList";
-  public static final String PROP_ROLE_LIST = "roleList";
 
   public static final String STATUS_INACTIVE = "I";
   public static final String STATUS_ACTIVE = "A";

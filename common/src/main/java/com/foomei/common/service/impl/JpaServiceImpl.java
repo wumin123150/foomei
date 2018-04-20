@@ -2,7 +2,6 @@ package com.foomei.common.service.impl;
 
 import com.foomei.common.collection.ArrayUtil;
 import com.foomei.common.collection.CollectionUtil;
-import com.foomei.common.collection.ListUtil;
 import com.foomei.common.dao.JpaDao;
 import com.foomei.common.entity.CreateRecord;
 import com.foomei.common.entity.DeleteRecord;
@@ -12,7 +11,7 @@ import com.foomei.common.persistence.search.SearchRequest;
 import com.foomei.common.reflect.ClassUtil;
 import com.foomei.common.service.JpaService;
 import com.foomei.common.web.ThreadContext;
-import org.apache.commons.beanutils.BeanUtils;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,8 +20,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.PostConstruct;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -32,9 +33,17 @@ public abstract class JpaServiceImpl<T, ID extends Serializable> implements JpaS
 
   protected JpaDao<T, ID> dao;
   protected Class<T> entityClazz;
+  protected JPAQueryFactory queryFactory;
+
+  private EntityManager entityManager;
 
   public JpaServiceImpl() {
     this.entityClazz = ClassUtil.getClassGenricType(getClass(), 0);
+  }
+
+  @PostConstruct
+  public void init() {
+    queryFactory = new JPAQueryFactory(entityManager);
   }
 
   public T get(ID id) {
@@ -133,6 +142,12 @@ public abstract class JpaServiceImpl<T, ID extends Serializable> implements JpaS
   @Autowired
   public void setJpaDao(JpaDao<T, ID> jpaDao) {
     this.dao = jpaDao;
+  }
+
+  @Autowired
+  @PersistenceContext
+  public void setEntityManager(EntityManager entityManager) {
+    this.entityManager = entityManager;
   }
 
 }

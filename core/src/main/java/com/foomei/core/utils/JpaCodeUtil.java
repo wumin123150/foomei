@@ -554,7 +554,7 @@ public class JpaCodeUtil {
       String unit = getText(columnDefine.get("comment"), new Pair<String, String>("[", "]"), new Pair<String, String>("【", "】"));
       if (!StringUtils.equalsIgnoreCase(columnCode, "id")) {
         fields.put(toField(columnCode), new Pair<String, String>(dataType, comment));
-        if (StringUtils.equalsIgnoreCase(unit, "switch")) {
+        if (StringUtils.equalsIgnoreCase(unit, "switch") || StringUtils.equalsIgnoreCase(columnCode, "del_flag")) {
           fields.put(toField(columnCode), new Pair<String, String>("Boolean", comment));
         }
       }

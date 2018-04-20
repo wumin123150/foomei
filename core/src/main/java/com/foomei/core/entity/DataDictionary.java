@@ -28,14 +28,6 @@ import javax.persistence.Table;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class DataDictionary extends IdEntity {
 
-  public static final String PROP_TYPE = "type";
-  public static final String PROP_CODE = "code";
-  public static final String PROP_NAME = "name";
-  public static final String PROP_PRIORITY = "priority";
-  public static final String PROP_GRADE = "grade";
-  public static final String PROP_PARENT_ID = "parentId";
-  public static final String PROP_REMARK = "remark";
-
   @ManyToOne
   @JoinColumn(name = "type_id")
   private DataType type;//类型

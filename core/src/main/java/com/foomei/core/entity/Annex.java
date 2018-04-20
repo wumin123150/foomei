@@ -23,14 +23,6 @@ import java.util.Date;
 @SuppressWarnings("serial")
 public class Annex extends UuidEntity implements CreateRecord {
 
-  public static final String PROP_OBJECT_ID = "objectId";
-  public static final String PROP_OBJECT_TYPE = "objectType";
-  public static final String PROP_PATH = "path";
-  public static final String PROP_NAME = "name";
-  public static final String PROP_TYPE = "type";
-  public static final String PROP_CREATE_TIME = "createTime";
-  public static final String PROP_CREATOR = "creator";
-
   public static final String PATH_TEMP = "/temp";
   public static final String OBJECT_TYPE_TEMP = "temp";
 

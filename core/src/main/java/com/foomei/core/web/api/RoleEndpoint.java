@@ -54,7 +54,7 @@ public class RoleEndpoint {
       JqGridFilter jqGridFilter = JsonMapper.INSTANCE.fromJson(request.getParameter("filters"), JqGridFilter.class);
       page = roleService.getPage(new SearchRequest(jqGridFilter, pageQuery));
     } else {
-      page = roleService.getPage(new SearchRequest(pageQuery, Role.PROP_CODE, Role.PROP_NAME));
+      page = roleService.getPage(new SearchRequest(pageQuery, "code", "name"));
     }
     return ResponseResult.createSuccess(page, Role.class, RoleDto.class);
   }
@@ -63,7 +63,7 @@ public class RoleEndpoint {
   @RequiresRoles("admin")
   @RequestMapping(value = "page2")
   public ResponseResult<List<RoleDto>> page2(PageQuery pageQuery) {
-    Page<Role> page = roleService.getPage(new SearchRequest(pageQuery, Role.PROP_CODE, Role.PROP_NAME));
+    Page<Role> page = roleService.getPage(new SearchRequest(pageQuery, "code", "name"));
     return ResponseResult.createSuccess(page.getContent(), page.getTotalElements(), Role.class, RoleDto.class);
   }
 

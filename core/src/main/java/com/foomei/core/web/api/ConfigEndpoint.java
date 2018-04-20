@@ -51,7 +51,7 @@ public class ConfigEndpoint {
       JqGridFilter jqGridFilter = JsonMapper.INSTANCE.fromJson(request.getParameter("filters"), JqGridFilter.class);
       page = configService.getPage(new SearchRequest(jqGridFilter, pageQuery));
     } else {
-      page = configService.getPage(new SearchRequest(pageQuery, Config.PROP_CODE, Config.PROP_NAME));
+      page = configService.getPage(new SearchRequest(pageQuery));
     }
 
     return ResponseResult.createSuccess(page, Config.class, ConfigVo.class);
@@ -61,7 +61,7 @@ public class ConfigEndpoint {
   @RequiresRoles("admin")
   @RequestMapping(value = "page2", method = RequestMethod.GET)
   public ResponseResult<List<ConfigVo>> page2(PageQuery pageQuery) {
-    Page<Config> page = configService.getPage(new SearchRequest(pageQuery, Config.PROP_CODE, Config.PROP_NAME));
+    Page<Config> page = configService.getPage(new SearchRequest(pageQuery));
     return ResponseResult.createSuccess(page.getContent(), page.getTotalElements(), Config.class, ConfigVo.class);
   }
 
@@ -81,7 +81,7 @@ public class ConfigEndpoint {
   })
   @RequestMapping("find/{code}")
   public ResponseResult<List<ConfigDto>> findByCode(@PathVariable("code") String code) {
-    SearchRequest searchRequest = new SearchRequest().addStartWith(Config.PROP_CODE, code + ".");
+    SearchRequest searchRequest = new SearchRequest().addStartWith("code", code + ".");
     List<Config> configs = configService.getList(searchRequest);
     return ResponseResult.createSuccess(configs, Config.class, ConfigDto.class);
   }

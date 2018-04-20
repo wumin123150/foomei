@@ -28,9 +28,9 @@ import javax.persistence.Table;
 @SuppressWarnings("serial")
 public class BaseUser extends IdEntity {
 
-  public static final String PROP_LOGIN_NAME = "loginName";
-  public static final String PROP_NAME = "name";
-  public static final String PROP_AVATAR = "avatar";
+//  public static final String PROP_LOGIN_NAME = "loginName";
+//  public static final String PROP_NAME = "name";
+//  public static final String PROP_AVATAR = "avatar";
 
   @ApiModelProperty(value = "账号")
   private String loginName;

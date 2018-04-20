@@ -1,35 +1,29 @@
 package com.foomei.core.service;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
 import com.foomei.common.collection.ArrayUtil;
-import com.foomei.core.entity.Log;
+import com.foomei.common.collection.ListUtil;
+import com.foomei.common.service.impl.JpaServiceImpl;
+import com.foomei.common.web.FileRepository;
+import com.foomei.core.dao.jpa.AnnexDao;
+import com.foomei.core.entity.Annex;
+import com.foomei.core.entity.QAnnex;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.foomei.common.service.impl.JpaServiceImpl;
-import com.foomei.common.web.FileRepository;
-import com.foomei.core.dao.jpa.AnnexDao;
-import com.foomei.core.entity.Annex;
-import com.foomei.core.web.CoreThreadContext;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * 附件管理业务类.
@@ -159,39 +153,33 @@ public class AnnexService extends JpaServiceImpl<Annex, String> {
   }
 
   public Page<Annex> getPage(final String searchKey, final Date startTime, final Date endTime, Pageable page) {
-    return annexDao.findAll(new Specification<Annex>() {
-      public Predicate toPredicate(Root<Annex> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
-        List<Predicate> predicates = new ArrayList<Predicate>();
+    QAnnex qAnnex = QAnnex.annex;
+    List<BooleanExpression> expressions = new ArrayList<>();
 
-        if (StringUtils.isNotEmpty(searchKey)) {
-          Predicate p1 = cb.like(root.get(Annex.PROP_OBJECT_TYPE).as(String.class), "%" + StringUtils.trimToEmpty(searchKey) + "%");
-          Predicate p2 = cb.like(root.get(Annex.PROP_PATH).as(String.class), "%" + StringUtils.trimToEmpty(searchKey) + "%");
-          Predicate p3 = cb.like(root.get(Annex.PROP_NAME).as(String.class), "%" + StringUtils.trimToEmpty(searchKey) + "%");
-          Predicate p4 = cb.like(root.get(Annex.PROP_TYPE).as(String.class), "%" + StringUtils.trimToEmpty(searchKey) + "%");
-          predicates.add(cb.or(p1, p2, p3, p4));
-        }
+    if (StringUtils.isNotEmpty(searchKey)) {
+      expressions.add(qAnnex.objectType.like(StringUtils.trimToEmpty(searchKey))
+        .or(qAnnex.path.like(StringUtils.trimToEmpty(searchKey)))
+        .or(qAnnex.name.like(StringUtils.trimToEmpty(searchKey)))
+        .or(qAnnex.type.like(StringUtils.trimToEmpty(searchKey))));
+    }
 
-        if (startTime != null && endTime != null) {
-          predicates.add(cb.between(root.get(Annex.PROP_CREATE_TIME).as(Date.class), startTime, endTime));
-        } else if (startTime != null) {
-          predicates.add(cb.greaterThanOrEqualTo(root.get(Annex.PROP_CREATE_TIME).as(Date.class), startTime));
-        } else if (endTime != null) {
-          predicates.add(cb.lessThanOrEqualTo(root.get(Annex.PROP_CREATE_TIME).as(Date.class), endTime));
-        }
+    if (startTime != null && endTime != null) {
+      expressions.add(qAnnex.createTime.between(startTime, endTime));
+    } else if (startTime != null) {
+      expressions.add(qAnnex.createTime.goe(startTime));
+    } else if (endTime != null) {
+      expressions.add(qAnnex.createTime.loe(endTime));
+    }
 
-        return predicates.isEmpty() ? null : cb.and(predicates.toArray(new Predicate[predicates.size()]));
-      }
-    }, page);
+    return annexDao.findAll(Expressions.allOf(expressions.toArray(new BooleanExpression[expressions.size()])), page);
   }
 
   public List<Annex> findByObject(final String objectId, final String objectType) {
-    return annexDao.findAll(new Specification<Annex>() {
-      public Predicate toPredicate(Root<Annex> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
-        Predicate p1 = cb.equal(root.get(Annex.PROP_OBJECT_ID).as(String.class), objectId);
-        Predicate p2 = cb.equal(root.get(Annex.PROP_OBJECT_TYPE).as(String.class), objectType);
-        return cb.and(p1, p2);
-      }
-    });
+    QAnnex qAnnex = QAnnex.annex;
+    List<BooleanExpression> expressions = new ArrayList<>();
+    expressions.add(qAnnex.objectId.eq(objectId));
+    expressions.add(qAnnex.objectType.eq(objectType));
+    return ListUtil.newArrayList(annexDao.findAll(Expressions.allOf(expressions.toArray(new BooleanExpression[expressions.size()]))));
   }
 
 }
