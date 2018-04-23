@@ -34,10 +34,6 @@ public class Annex extends UuidEntity implements CreateRecord {
   private Date createTime;//创建时间
   private Long creator;//创建人
 
-  public boolean isCreated() {
-    return id != null;
-  }
-
   public String getRequestURI() {
     return "/annex" + path;
   }

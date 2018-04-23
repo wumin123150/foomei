@@ -23,24 +23,7 @@
 		<property name="templateLoaderPath" value="classpath:/email" />
 	</bean>
 	
-	<!-- 邮件发送器 -->
-	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
-		<property name="host" value="smtp.foomei.com" />
-		<property name="username" value="support@foomei.com" />
-		<property name="password" value="Foomei2014#" />
-		<property name="defaultEncoding" value="UTF-8"/>
-		<property name="javaMailProperties">
-			<props>
-				<prop key="mail.smtp.auth">true</prop>
-				<!-- 使用gmail smtp server的必须参数 -->
-				<!-- 
-				<prop key="mail.smtp.starttls.enable">true</prop>
-				 -->
-			</props>
-		</property>
-	</bean>
-	
-	<beans profile="production">
+	<beans profile="prod">
 		<!-- 邮件发送器 -->
 		<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
 			<property name="host" value="smtp.foomei.com" />
@@ -59,12 +42,12 @@
 		</bean>
 	</beans>
 	
-	<beans profile="development,functional,test">
+	<beans profile="dev,svr,test">
 		<!-- 发送至greenmail的邮件发送器 -->
 		<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
 			<!-- 配置greenmail simulatore中的默认值 -->
 			<property name="host" value="localhost" />
-			<property name="port" value="${mailserver.port}" />
+			<property name="port" value="25" />
 			<property name="username" value="greenmail@localhost.com" />
 			<property name="password" value="greenmail" />
 			<property name="defaultEncoding" value="UTF-8"/>
@@ -73,11 +56,6 @@
 					<prop key="mail.smtp.auth">true</prop>
 				</props>
 			</property>
-		</bean>
-		
-		<!-- greenmail smtp邮件服务器模拟器  -->
-		<bean id="greenmail" class="com.foomei.test.email.MailServerSimulator" lazy-init="false">
-			<property name="port" value="${mailserver.port}" />
 		</bean>
 	</beans>
 </beans>

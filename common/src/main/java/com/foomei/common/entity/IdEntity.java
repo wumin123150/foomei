@@ -1,16 +1,15 @@
 package com.foomei.common.entity;
 
-import java.io.Serializable;
+import com.baomidou.mybatisplus.annotations.TableId;
+import com.baomidou.mybatisplus.enums.IdType;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
-
-import com.baomidou.mybatisplus.annotations.TableId;
-import com.baomidou.mybatisplus.enums.IdType;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
+import java.io.Serializable;
 
 /**
  * 统一定义id的entity基类.
@@ -24,7 +23,6 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 public abstract class IdEntity implements Serializable {
 
   private static final long serialVersionUID = 1886787906868589321L;
-  public static final String PROP_ID = "id";
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
@@ -37,6 +35,10 @@ public abstract class IdEntity implements Serializable {
 
   public void setId(Long id) {
     this.id = id;
+  }
+
+  public boolean isCreated() {
+    return id != null;
   }
 
   public boolean equals(Object o) {

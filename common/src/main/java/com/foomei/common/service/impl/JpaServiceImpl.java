@@ -56,9 +56,11 @@ public abstract class JpaServiceImpl<T, ID extends Serializable> implements JpaS
 
   @Transactional(readOnly = false)
   public T save(T entity) {
-    if(entity instanceof CreateRecord && !((CreateRecord) entity).isCreated()) {
-      ((CreateRecord) entity).setCreateTime(new Date());
-      ((CreateRecord) entity).setCreator(ThreadContext.getUserId());
+    if(!((CreateRecord) entity).isCreated()) {
+      if(entity instanceof CreateRecord) {
+        ((CreateRecord) entity).setCreateTime(new Date());
+        ((CreateRecord) entity).setCreator(ThreadContext.getUserId());
+      }
       if (entity instanceof DeleteRecord) {
         ((DeleteRecord) entity).setDelFlag(false);
       }

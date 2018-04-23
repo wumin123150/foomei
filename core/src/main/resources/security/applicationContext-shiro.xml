@@ -61,7 +61,7 @@
                 /admin/login = adminAuthc
                 /logout = logout
                 /admin/** = adminAuthc, adminUser, roles[admin]
-                /front/** = authc, roles[attendant]
+                /front/** = authc
                 /member/** = authc
                 /socket/** = anon
                 /api/captcha/** = anon

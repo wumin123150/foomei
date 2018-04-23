@@ -2,6 +2,7 @@ package com.foomei.common.entity;
 
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.enums.IdType;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.annotations.GenericGenerator;
@@ -23,7 +24,6 @@ import java.io.Serializable;
 public abstract class UuidEntity implements Serializable {
 
   private static final long serialVersionUID = 2570752361703229119L;
-  public static final String PROP_ID = "id";
 
   @Id
   @GeneratedValue(generator = "uuid")
@@ -37,6 +37,10 @@ public abstract class UuidEntity implements Serializable {
 
   public void setId(String id) {
     this.id = id;
+  }
+
+  public boolean isCreated() {
+    return StringUtils.isNotEmpty(id);
   }
 
   public boolean equals(Object o) {

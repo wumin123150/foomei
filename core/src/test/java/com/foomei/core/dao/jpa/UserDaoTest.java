@@ -17,9 +17,9 @@ public class UserDaoTest extends SpringTransactionalTestCase {
   private UserDao userDao;
 
   @Test
-  public void findByLoginName() {
-    User user = userDao.findByLoginName("admin");
-    assertThat(user).isNotNull();
+  public void findByOpenId() {
+    User user = userDao.findByOpenId("admin");
+    assertThat(user).isNull();
   }
 
 }

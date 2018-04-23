@@ -30,8 +30,8 @@ public class DataDictionaryService extends JpaServiceImpl<DataDictionary, Long> 
   private DataDictionaryDao dataDictionaryDao;
 
   public DataDictionary getByTypeAndCode(Long typeId, String code) {
-    QDataDictionary qDataDictionary = QDataDictionary.dataDictionary;
     return dataDictionaryDao.findByTypeAndCode(typeId, code);
+//    QDataDictionary qDataDictionary = QDataDictionary.dataDictionary;
 //    return queryFactory.selectFrom(qDataDictionary).where(qDataDictionary.typeId.eq(typeId).and(qDataDictionary.code.eq(code))).fetchOne();
   }
 

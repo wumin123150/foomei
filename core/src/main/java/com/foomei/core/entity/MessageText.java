@@ -37,8 +37,4 @@ public class MessageText extends UuidEntity implements CreateRecord {
     this.sender = sender;
   }
 
-  public boolean isCreated() {
-    return id != null;
-  }
-
 }
