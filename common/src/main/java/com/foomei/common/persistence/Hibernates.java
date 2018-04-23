@@ -105,7 +105,7 @@ public class Hibernates {
 			Long id = ((IdEntity)value).getId();
 			if(id != null) {
 				Object lazyValue = ReflectionUtil.invokeConstructor(field.getType());
-				ReflectionUtil.setProperty(lazyValue, IdEntity.PROP_ID, id);
+				ReflectionUtil.setProperty(lazyValue, "id", id);
 				ReflectionUtil.setField(entity, field, lazyValue);
 			} else {
 				ReflectionUtil.setField(entity, field, null);
@@ -115,7 +115,7 @@ public class Hibernates {
 			String id = ((UuidEntity)value).getId();
 			if(StringUtils.isNotEmpty(id)) {
 				Object lazyValue = ReflectionUtil.invokeConstructor(field.getType());
-				ReflectionUtil.setProperty(lazyValue, IdEntity.PROP_ID, id);
+				ReflectionUtil.setProperty(lazyValue, "id", id);
 				ReflectionUtil.setField(entity, field, lazyValue);
 			} else {
 				ReflectionUtil.setField(entity, field, null);

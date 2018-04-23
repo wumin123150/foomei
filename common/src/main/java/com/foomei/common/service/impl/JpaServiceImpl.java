@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
@@ -54,16 +55,14 @@ public abstract class JpaServiceImpl<T, ID extends Serializable> implements JpaS
     return dao.findAll();
   }
 
-  @Transactional(readOnly = false)
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   public T save(T entity) {
-    if(!((CreateRecord) entity).isCreated()) {
-      if(entity instanceof CreateRecord) {
-        ((CreateRecord) entity).setCreateTime(new Date());
-        ((CreateRecord) entity).setCreator(ThreadContext.getUserId());
-      }
-      if (entity instanceof DeleteRecord) {
-        ((DeleteRecord) entity).setDelFlag(false);
-      }
+    if(entity instanceof CreateRecord && !((CreateRecord) entity).isCreated()) {
+      ((CreateRecord) entity).setCreateTime(new Date());
+      ((CreateRecord) entity).setCreator(ThreadContext.getUserId());
+    }
+    if(entity instanceof DeleteRecord && !((DeleteRecord) entity).isCreated()) {
+      ((DeleteRecord) entity).setDelFlag(false);
     }
     if (entity instanceof UpdateRecord) {
       ((UpdateRecord) entity).setUpdateTime(new Date());
@@ -74,20 +73,20 @@ public abstract class JpaServiceImpl<T, ID extends Serializable> implements JpaS
     return t;
   }
 
-  @Transactional(readOnly = false)
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   public T saveAndFlush(T entity) {
     T t = dao.save(entity);
     dao.flush();
     return t;
   }
 
-  @Transactional(readOnly = false)
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   public void delete(ID id) {
     T t = this.get(id);
     this.delete(t);
   }
 
-  @Transactional(readOnly = false)
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   public void delete(final T entity) {
     if (entity == null) {
       return;
@@ -101,7 +100,7 @@ public abstract class JpaServiceImpl<T, ID extends Serializable> implements JpaS
     }
   }
 
-  @Transactional(readOnly = false)
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   public void deleteInBatch(final ID[] ids) {
     if (ArrayUtils.isEmpty(ids)) {
       return;
@@ -110,7 +109,7 @@ public abstract class JpaServiceImpl<T, ID extends Serializable> implements JpaS
     this.deleteInBatch(entities);
   }
 
-  @Transactional(readOnly = false)
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   public void deleteInBatch(final List<T> entities) {
     if (CollectionUtil.isEmpty(entities)) {
       return;

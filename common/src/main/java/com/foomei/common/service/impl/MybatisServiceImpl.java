@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
@@ -43,7 +44,7 @@ public abstract class MybatisServiceImpl<M extends BaseMapper<T>, T, ID extends 
     return super.selectList(new EntityWrapper<T>());
   }
 
-  @Transactional(readOnly = false)
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   public boolean save(T entity) {
     if(entity instanceof CreateRecord && !((CreateRecord) entity).isCreated()) {
       ((CreateRecord) entity).setCreateTime(new Date());
@@ -61,7 +62,7 @@ public abstract class MybatisServiceImpl<M extends BaseMapper<T>, T, ID extends 
     return result;
   }
 
-  @Transactional(readOnly = false)
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   public boolean insert(T entity) {
     if(entity instanceof CreateRecord && !((CreateRecord) entity).isCreated()) {
       ((CreateRecord) entity).setCreateTime(new Date());
@@ -75,7 +76,7 @@ public abstract class MybatisServiceImpl<M extends BaseMapper<T>, T, ID extends 
     return result;
   }
 
-  @Transactional(readOnly = false)
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   public boolean update(T entity) {
     if (entity instanceof UpdateRecord) {
       ((UpdateRecord) entity).setUpdateTime(new Date());
@@ -86,7 +87,7 @@ public abstract class MybatisServiceImpl<M extends BaseMapper<T>, T, ID extends 
     return result;
   }
 
-  @Transactional(readOnly = false)
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   public void delete(ID id) {
     T entity = get(id);
     if (entity instanceof DeleteRecord) {

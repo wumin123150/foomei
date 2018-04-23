@@ -59,10 +59,10 @@ public class UserVo {
       @Override
       public void map(User user, UserVo userVo) {
         if(ListUtil.isNotEmpty(user.getRoleList())) {
-          userVo.setRoles(CollectionExtractor.extractToList(user.getRoleList(), Role.PROP_ID));
+          userVo.setRoles(CollectionExtractor.extractToList(user.getRoleList(), "id"));
         }
         if(ListUtil.isNotEmpty(user.getGroupList())) {
-          userVo.setGroups(CollectionExtractor.extractToList(user.getGroupList(), UserGroup.PROP_ID));
+          userVo.setGroups(CollectionExtractor.extractToList(user.getGroupList(), "id"));
         }
       }
 

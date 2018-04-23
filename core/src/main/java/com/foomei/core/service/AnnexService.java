@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.awt.image.BufferedImage;
@@ -32,7 +33,6 @@ import java.util.Locale;
  */
 // Spring Service Bean的标识.
 @Service
-@Transactional(readOnly = true)
 public class AnnexService extends JpaServiceImpl<Annex, String> {
 
   @Autowired
@@ -44,13 +44,11 @@ public class AnnexService extends JpaServiceImpl<Annex, String> {
     return annexDao.findByPath(path);
   }
 
-  @Transactional(readOnly = false)
   public void delete(String id) {
     Annex annex = get(id);
     this.delete(annex);
   }
 
-  @Transactional(readOnly = false)
   public void deleteInBatch(final String[] ids) {
     if (ArrayUtils.isEmpty(ids)) {
       return;
@@ -61,13 +59,11 @@ public class AnnexService extends JpaServiceImpl<Annex, String> {
     }
   }
 
-  @Transactional(readOnly = false)
   public void delete(Annex annex) {
     fileRepository.deleteRelevantByPath(annex.getPath());
     super.delete(annex);
   }
 
-  @Transactional(readOnly = false)
   public void deleteByObject(String objectId, String objectType) {
     List<Annex> annexs = findByObject(objectId, objectType);
     for (Annex annex : annexs) {
@@ -75,7 +71,7 @@ public class AnnexService extends JpaServiceImpl<Annex, String> {
     }
   }
 
-  @Transactional(readOnly = false)
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   public Annex copy(Annex annex, String path, String objectId, String objectType) throws IOException {
     String filePath = fileRepository.storeByPath(annex.getPath(), path);
 
@@ -90,7 +86,6 @@ public class AnnexService extends JpaServiceImpl<Annex, String> {
     return entity;
   }
 
-  @Transactional(readOnly = false)
   public Annex save(BufferedImage image, String fileName, String path, String objectId, String objectType)
           throws IOException {
     String ext = FilenameUtils.getExtension(fileName).toLowerCase(Locale.ENGLISH);
@@ -107,7 +102,6 @@ public class AnnexService extends JpaServiceImpl<Annex, String> {
     return entity;
   }
 
-  @Transactional(readOnly = false)
   public Annex save(byte[] data, String fileName, String path, String objectId, String objectType)
           throws IOException {
     String ext = FilenameUtils.getExtension(fileName).toLowerCase(Locale.ENGLISH);
@@ -124,7 +118,6 @@ public class AnnexService extends JpaServiceImpl<Annex, String> {
     return entity;
   }
 
-  @Transactional(readOnly = false)
   public Annex save(byte[] data, String fileName, String objectId, String objectType) throws IOException {
     String filePath = fileRepository.storeByFilename(data, fileName);
 
@@ -139,7 +132,7 @@ public class AnnexService extends JpaServiceImpl<Annex, String> {
     return entity;
   }
 
-  @Transactional(readOnly = false)
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   public Annex move(String id, String objectId, String objectType, String path) throws IOException {
     Annex entity = get(id);
     String filePath = fileRepository.moveByPath(entity.getPath(), path);

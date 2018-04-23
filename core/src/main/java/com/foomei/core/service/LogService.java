@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -26,7 +27,6 @@ import java.util.List;
  * @author walker
  */
 @Service
-@Transactional(readOnly = true)
 public class LogService extends JpaServiceImpl<Log, String> {
 
   @Value("${log.period:30}")
@@ -35,7 +35,6 @@ public class LogService extends JpaServiceImpl<Log, String> {
   @Autowired
   private LogDao logDao;
 
-  @Transactional(readOnly = false)
   public void save(Iterable<Log> entities) {
     logDao.save(entities);
   }
@@ -62,7 +61,7 @@ public class LogService extends JpaServiceImpl<Log, String> {
     return logDao.findAll(Expressions.allOf(expressions.toArray(new BooleanExpression[expressions.size()])), page);
   }
 
-  @Transactional(readOnly = false)
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   public void clear() {
     Date deadline = DateUtil.subDays(DateUtil.today(), period);
     logDao.clear(deadline);

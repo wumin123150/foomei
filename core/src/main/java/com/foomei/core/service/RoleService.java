@@ -1,12 +1,10 @@
 package com.foomei.core.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.foomei.common.service.impl.JpaServiceImpl;
 import com.foomei.core.dao.jpa.RoleDao;
 import com.foomei.core.entity.Role;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * 角色管理业务类.
@@ -14,7 +12,6 @@ import com.foomei.core.entity.Role;
  * @author walker
  */
 @Service
-@Transactional(readOnly = true)
 public class RoleService extends JpaServiceImpl<Role, Long> {
 
   @Autowired

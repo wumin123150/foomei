@@ -2,6 +2,7 @@ package com.foomei.common.service;
 
 import com.foomei.common.persistence.search.SearchRequest;
 import org.springframework.data.domain.Page;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
@@ -13,16 +14,16 @@ public interface MybatisService<T, ID extends Serializable> {
 
   public List<T> getAll();
 
-  @Transactional(readOnly = false)
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   public boolean save(T entity);
 
-  @Transactional(readOnly = false)
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   public boolean insert(T entity);
 
-  @Transactional(readOnly = false)
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   public boolean update(T entity);
 
-  @Transactional(readOnly = false)
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   public void delete(ID id);
 
   public List<T> getList(SearchRequest searchRequest);

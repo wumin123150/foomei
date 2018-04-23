@@ -48,7 +48,7 @@ public class UserGroupVo {
           userGroupVo.setDirectorId(userGroup.getDirector().getId());
         }
         if(ListUtil.isNotEmpty(userGroup.getRoleList())) {
-          userGroupVo.setRoles(CollectionExtractor.extractToList(userGroup.getRoleList(), Role.PROP_ID));
+          userGroupVo.setRoles(CollectionExtractor.extractToList(userGroup.getRoleList(), "id"));
         }
       }
 

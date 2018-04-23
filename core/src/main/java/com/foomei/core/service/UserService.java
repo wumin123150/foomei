@@ -11,7 +11,6 @@ import com.foomei.common.web.ThreadContext;
 import com.foomei.core.dao.jpa.UserDao;
 import com.foomei.core.entity.QUser;
 import com.foomei.core.entity.User;
-import com.foomei.core.entity.UserGroup;
 import com.google.common.base.Charsets;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
@@ -21,6 +20,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -37,7 +37,6 @@ import java.util.List;
  * @author walker
  */
 @Service
-@Transactional(readOnly = true)
 public class UserService extends JpaServiceImpl<User, Long> {
   public static final String HASH_ALGORITHM = "SHA-1";
   public static final int HASH_INTERATIONS = 1024;
@@ -93,7 +92,6 @@ public class UserService extends JpaServiceImpl<User, Long> {
    * <p>
    * 如果企图修改超级用户,取出当前操作员用户,打印其信息然后抛出异常.
    */
-  @Transactional(readOnly = false)
   public User save(User user) {
     if(user.getId() == null) {
       user.setRegisterTime(new Date());
@@ -113,14 +111,13 @@ public class UserService extends JpaServiceImpl<User, Long> {
     return super.save(user);
   }
 
-  @Transactional(readOnly = false)
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   public void start(Long id) {
     User user = get(id);
     user.setStatus(User.STATUS_ACTIVE);
     save(user);
   }
 
-  @Transactional(readOnly = false)
   public void delete(Long id) {
 //		userDao.delete(id);
     //停用
@@ -129,14 +126,14 @@ public class UserService extends JpaServiceImpl<User, Long> {
     save(user);
   }
 
-  @Transactional(readOnly = false)
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   public void bindingWeixin(Long id, String openId) {
     User user = get(id);
     user.setOpenId(openId);
     save(user);
   }
 
-  @Transactional(readOnly = false)
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   public void unbindingWeixin(Long id) {
     User user = get(id);
     user.setOpenId(null);
@@ -212,7 +209,7 @@ public class UserService extends JpaServiceImpl<User, Long> {
   public boolean existGroup(final Long groupId) {
     Specification<User> conditions = new Specification<User>() {
       public Predicate toPredicate(Root<User> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
-        return cb.equal(root.join("groupList").get(UserGroup.PROP_ID).as(Long.class), groupId);
+        return cb.equal(root.join("groupList").get("id").as(Long.class), groupId);
       }
     };
     List<User> users = userDao.findAll(conditions);
@@ -229,7 +226,7 @@ public class UserService extends JpaServiceImpl<User, Long> {
     return false;
   }
 
-  @Transactional(readOnly = false)
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   public void changePassword(Long id, String password) {
     User user = get(id);
     user.setPlainPassword(password);
@@ -239,7 +236,7 @@ public class UserService extends JpaServiceImpl<User, Long> {
     LOGGER.info("change password for: {}", user.getName());
   }
 
-  @Transactional(readOnly = false)
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   public void changePassword(String username, String password) {
     User user = getByLoginName(username);
     user.setPlainPassword(password);
@@ -250,7 +247,7 @@ public class UserService extends JpaServiceImpl<User, Long> {
     // TODO:发送邮件提醒用户
   }
 
-  @Transactional(readOnly = false)
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   public void loginSuccess(String loginName, String ip) {
     User user = getByLoginName(loginName);
     user.setLastLoginTime(new Date());

@@ -6,7 +6,6 @@ import com.foomei.core.entity.BaseUser;
 import com.foomei.core.entity.QUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 用户管理业务类.
@@ -14,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
  * @author walker
  */
 @Service
-@Transactional(readOnly = true)
 public class BaseUserService extends JpaServiceImpl<BaseUser, Long> {
 
   @Autowired

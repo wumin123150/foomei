@@ -21,7 +21,7 @@ public class DynamicSpecification {
 			public Predicate toPredicate(Root<T> root, CriteriaQuery<?> query, CriteriaBuilder builder) {
 				Predicate predicate = filterTo(root, builder, searchRequest.getOperator(), searchRequest.getSearchFilters());
 				if(searchRequest.hasDelFlagFilter() && DeleteRecord.class.isAssignableFrom(entityClazz)) {
-					Predicate delFlagPredicate = builder.equal(root.get(DeleteRecord.PROP_DEL_FLAG).as(Boolean.class), false);
+					Predicate delFlagPredicate = builder.equal(root.get("delFlag").as(Boolean.class), false);
 					return predicate != null ? builder.and(delFlagPredicate, predicate): delFlagPredicate;
 				}
 				return predicate;

@@ -2,6 +2,7 @@ package com.foomei.common.service;
 
 import com.foomei.common.persistence.search.SearchRequest;
 import org.springframework.data.domain.Page;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
@@ -13,22 +14,22 @@ public interface JpaService<T, ID extends Serializable> {
 
 	public List<T> getAll();
 
-	@Transactional(readOnly = false)
+	@Transactional(propagation = Propagation.REQUIRED, readOnly = false)
 	public T save(T entity);
 
-	@Transactional(readOnly = false)
+	@Transactional(propagation = Propagation.REQUIRED, readOnly = false)
 	public T saveAndFlush(T entity);
 
-	@Transactional(readOnly = false)
+	@Transactional(propagation = Propagation.REQUIRED, readOnly = false)
 	public void delete(ID id);
 
-	@Transactional(readOnly = false)
+	@Transactional(propagation = Propagation.REQUIRED, readOnly = false)
 	public void delete(final T entity);
 
-	@Transactional(readOnly = false)
+	@Transactional(propagation = Propagation.REQUIRED, readOnly = false)
 	public void deleteInBatch(final ID[] ids);
 
-	@Transactional(readOnly = false)
+	@Transactional(propagation = Propagation.REQUIRED, readOnly = false)
 	public void deleteInBatch(final List<T> entities);
 	
 	public List<T> getList(SearchRequest searchRequest);

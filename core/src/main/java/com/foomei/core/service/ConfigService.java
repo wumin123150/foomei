@@ -1,12 +1,10 @@
 package com.foomei.core.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.foomei.common.service.impl.JpaServiceImpl;
 import com.foomei.core.dao.jpa.ConfigDao;
 import com.foomei.core.entity.Config;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * 系统配置管理业务类.
@@ -14,7 +12,6 @@ import com.foomei.core.entity.Config;
  * @author walker
  */
 @Service
-@Transactional(readOnly = true)
 public class ConfigService extends JpaServiceImpl<Config, Long> {
 
   @Autowired

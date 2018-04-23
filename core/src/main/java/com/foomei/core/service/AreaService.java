@@ -1,14 +1,12 @@
 package com.foomei.core.service;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.foomei.common.service.impl.JpaServiceImpl;
 import com.foomei.core.dao.jpa.AreaDao;
 import com.foomei.core.entity.Area;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * 省市县类.
@@ -16,7 +14,6 @@ import com.foomei.core.entity.Area;
  * @author walker
  */
 @Service
-@Transactional(readOnly = true)
 public class AreaService extends JpaServiceImpl<Area, String> {
 
   @Autowired

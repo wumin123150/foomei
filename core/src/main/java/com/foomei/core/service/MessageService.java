@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -27,7 +28,6 @@ import java.util.List;
  * @author walker
  */
 @Service
-@Transactional(readOnly = true)
 public class MessageService extends JpaServiceImpl<Message, String> {
 
 //  @Autowired
@@ -37,7 +37,6 @@ public class MessageService extends JpaServiceImpl<Message, String> {
   @Autowired
   private MessageDao messageDao;
 
-  @Transactional(readOnly = false)
   public List<Message> save(String content, Long sender, List<Long> receivers) {
     MessageText text = messageTextService.save(new MessageText(content, sender != null ? new BaseUser(sender) : null));
 
@@ -51,7 +50,7 @@ public class MessageService extends JpaServiceImpl<Message, String> {
     return messages;
   }
 
-  @Transactional(readOnly = false)
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   public void read(String id) {
     Message message = get(id);
     message.setReadStatus(Message.READ_STATUS_READED);

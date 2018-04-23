@@ -5,7 +5,6 @@ import com.foomei.core.dao.jpa.DataTypeDao;
 import com.foomei.core.entity.DataType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 数据类型管理业务类.
@@ -13,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
  * @author walker
  */
 @Service
-@Transactional(readOnly = true)
 public class DataTypeService extends JpaServiceImpl<DataType, Long> {
 
   @Autowired

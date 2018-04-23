@@ -1,17 +1,17 @@
 package com.foomei.core.service;
 
-import java.util.Date;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.foomei.common.service.impl.JpaServiceImpl;
 import com.foomei.common.time.DateUtil;
 import com.foomei.core.dao.jpa.TokenDao;
 import com.foomei.core.entity.Token;
 import com.foomei.core.entity.User;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * 令牌管理业务类.
@@ -19,19 +19,18 @@ import com.foomei.core.entity.User;
  * @author walker
  */
 @Service
-@Transactional(readOnly = true)
 public class TokenService extends JpaServiceImpl<Token, String> {
 
   @Autowired
   private TokenDao tokenDao;
 
-  @Transactional(readOnly = false)
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   public void disable(Long userId) {
     tokenDao.disable(userId);
     LOGGER.info("disable entity {}, userId is {}", Token.class.getName(), userId);
   }
 
-  @Transactional(readOnly = false)
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   public String apply(Long userId, String terminal, String remark) {
     disable(userId);
 
