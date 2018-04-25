@@ -24,13 +24,8 @@ import javax.persistence.Table;
 @ApiModel(description = "用户")
 @Entity
 @Table(name = "Core_User")
-@TableName("Core_User")
 @SuppressWarnings("serial")
 public class BaseUser extends IdEntity {
-
-//  public static final String PROP_LOGIN_NAME = "loginName";
-//  public static final String PROP_NAME = "name";
-//  public static final String PROP_AVATAR = "avatar";
 
   @ApiModelProperty(value = "账号")
   private String loginName;

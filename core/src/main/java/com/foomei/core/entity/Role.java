@@ -29,9 +29,6 @@ import java.util.List;
 @SuppressWarnings("serial")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Role extends IdEntity {
-//  public static final String PROP_CODE = "code";
-//  public static final String PROP_NAME = "name";
-//  public static final String PROP_PERMISSION_LIST = "permissionList";
   
   private String code;//代码
   private String name;//名称

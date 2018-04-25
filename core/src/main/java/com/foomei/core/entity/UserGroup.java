@@ -30,15 +30,6 @@ import java.util.List;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class UserGroup extends IdEntity implements DeleteRecord {
 
-//  public static final String PROP_CODE = "code";
-//  public static final String PROP_NAME = "name";
-//  public static final String PROP_TYPE = "type";
-//  public static final String PROP_GRADE = "grade";
-//  public static final String PROP_PATH = "path";
-//  public static final String PROP_PARENT_ID = "parentId";
-//  public static final String PROP_REMARK = "remark";
-//  public static final String PROP_DEL_FLAG = "delFlag";
-
   public static final Integer TYPE_COMPAMY = 0;//公司
   public static final Integer TYPE_DEPARTMENT = 1;//部门
   public static final Integer TYPE_GROUP = 2;//小组

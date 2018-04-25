@@ -25,9 +25,6 @@ import javax.persistence.Table;
 @SuppressWarnings("serial")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Permission extends IdEntity {
-//  public static final String PROP_CODE = "code";
-//  public static final String PROP_NAME = "name";
-//  public static final String PROP_PRIORITY = "priority";
 
   private String code;//代码
   private String name;//名称

@@ -23,9 +23,6 @@ import java.util.Date;
 @SuppressWarnings("serial")
 public class Annex extends UuidEntity implements CreateRecord {
 
-  public static final String PATH_TEMP = "/temp";
-  public static final String OBJECT_TYPE_TEMP = "temp";
-
   private String objectId;//对象ID
   private String objectType;//对象类型
   private String path;//存储路径

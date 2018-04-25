@@ -8,7 +8,7 @@
 	<packaging>pom</packaging>
 
 	<description>This is a Spring Framework based JavaEE application reference architecture. </description>
-	<url>http://www.github.com/wumin123150/wumin</url>
+	<url>http://www.github.com/wumin123150/foomei</url>
 	<inceptionYear>2014-2017</inceptionYear>
 	<organization>
 		<name>Foomei</name>
@@ -43,13 +43,13 @@
 	
     <issueManagement>
         <system>Github</system>
-        <url>https://github.com/wumin123150/wumin/issues</url>
+        <url>https://github.com/wumin123150/foomei/issues</url>
     </issueManagement>
 
     <scm>
-        <url>https://github.com/wumin123150/wumin</url>
-        <connection>scm:git:git://github.com/wumin123150/wumin.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com:wumin123150/wumin.git</developerConnection>
+        <url>https://github.com/wumin123150/foomei</url>
+        <connection>scm:git:git://github.com/wumin123150/foomei.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com:wumin123150/foomei.git</developerConnection>
     </scm>
 
 </project>
