@@ -1,5 +1,6 @@
 package com.foomei.core.utils;
 
+import com.foomei.common.base.BooleanUtil;
 import com.foomei.common.collection.ListUtil;
 import com.foomei.common.collection.MapUtil;
 import com.foomei.common.collection.type.Pair;
@@ -68,7 +69,7 @@ public class JpaCodeUtil {
   }
 
   public static void generateEntity(Map<Pair<String, String>, List<Map<String, String>>> tables, String tablePrefix,
-                                    String packageName, String projectPath, List<String> excludes, List<String> includes) throws IOException {
+                                    String packageName, String projectPath, List<String> includes, List<String> excludes, boolean override) throws IOException {
     String localProjectPath = localProjectPath();
 
     System.out.println("========== 开始生成Entity ==========");
@@ -80,12 +81,12 @@ public class JpaCodeUtil {
       tableCode = table.getKey().getFirst();
       tableName = table.getKey().getSecond();
       columns = table.getValue();
-      if (!isContain(excludes, tableCode) && hasColumn(columns, "id")) {
+      if (isGenerate(includes, excludes, tableCode) && hasColumn(columns, "id")) {
         String model = toModel(tableCode, tablePrefix);
         String entity = entityPath + "/" + model + ".java";
         // 生成entity
         File entityFile = new File(entity);
-        if (!entityFile.exists() || isContain(includes, tableCode)) {
+        if (!entityFile.exists() || override) {
           FileUtil.makesureParentDirExists(entityFile);
 
           List<String> records = ListUtil.newArrayList();
@@ -127,7 +128,7 @@ public class JpaCodeUtil {
   }
 
   public static void generateDto(Map<Pair<String, String>, List<Map<String, String>>> tables, String tablePrefix,
-                                    String packageName, String projectPath, List<String> excludes, List<String> includes) throws IOException {
+                                    String packageName, String projectPath, List<String> includes, List<String> excludes, boolean override) throws IOException {
     String localProjectPath = localProjectPath();
 
     System.out.println("========== 开始生成Dto ==========");
@@ -139,12 +140,12 @@ public class JpaCodeUtil {
       tableCode = table.getKey().getFirst();
       tableName = table.getKey().getSecond();
       columns = table.getValue();
-      if (!isContain(excludes, tableCode) && hasColumn(columns, "id")) {
+      if (isGenerate(includes, excludes, tableCode) && hasColumn(columns, "id")) {
         String model = toModel(tableCode, tablePrefix);
         String entity = entityPath + "/" + model + "Dto.java";
         // 生成dto
         File entityFile = new File(entity);
-        if (!entityFile.exists() || isContain(includes, tableCode)) {
+        if (!entityFile.exists() || override) {
           FileUtil.makesureParentDirExists(entityFile);
 
           Map<String, Object> params = MapUtil.newHashMap();
@@ -165,7 +166,7 @@ public class JpaCodeUtil {
   }
 
   public static void generateDao(Map<Pair<String, String>, List<Map<String, String>>> tables, String tablePrefix,
-                                 String packageName, String projectPath, List<String> excludes, List<String> includes) throws IOException {
+                                 String packageName, String projectPath, List<String> includes, List<String> excludes, boolean override) throws IOException {
     String localProjectPath = localProjectPath();
 
     System.out.println("========== 开始生成Dao ==========");
@@ -175,12 +176,12 @@ public class JpaCodeUtil {
     for (Map.Entry<Pair<String, String>, List<Map<String, String>>> table : tables.entrySet()) {
       tableCode = table.getKey().getFirst();
       columns = table.getValue();
-      if (!isContain(excludes, tableCode) && hasColumn(columns, "id")) {
+      if (isGenerate(includes, excludes, tableCode) && hasColumn(columns, "id")) {
         String model = toModel(tableCode, tablePrefix);
         String dao = daoPath + "/" + model + "Dao.java";
         // 生成dao
         File daoFile = new File(dao);
-        if (!daoFile.exists() || isContain(includes, tableCode)) {
+        if (!daoFile.exists() || override) {
           FileUtil.makesureParentDirExists(daoFile);
 
           Map<String, String> params = MapUtil.newHashMap();
@@ -198,7 +199,7 @@ public class JpaCodeUtil {
   }
 
   public static void generateService(Map<Pair<String, String>, List<Map<String, String>>> tables, String tablePrefix,
-                                     String packageName, String projectPath, List<String> excludes, List<String> includes) throws IOException {
+                                     String packageName, String projectPath, List<String> includes, List<String> excludes, boolean override) throws IOException {
     String localProjectPath = localProjectPath();
 
     System.out.println("========== 开始生成Service ==========");
@@ -208,12 +209,12 @@ public class JpaCodeUtil {
     for (Map.Entry<Pair<String, String>, List<Map<String, String>>> table : tables.entrySet()) {
       tableCode = table.getKey().getFirst();
       columns = table.getValue();
-      if (!isContain(excludes, tableCode) && hasColumn(columns, "id")) {
+      if (isGenerate(includes, excludes, tableCode) && hasColumn(columns, "id")) {
         String model = toModel(tableCode, tablePrefix);
         String service = servicePath + "/" + model + "Service.java";
         // 生成service
         File serviceFile = new File(service);
-        if (!serviceFile.exists() || isContain(includes, tableCode)) {
+        if (!serviceFile.exists() || override) {
           FileUtil.makesureParentDirExists(serviceFile);
 
           Map<String, String> params = MapUtil.newHashMap();
@@ -231,7 +232,7 @@ public class JpaCodeUtil {
   }
 
   public static void generateController(Map<Pair<String, String>, List<Map<String, String>>> tables, String tablePrefix,
-                                     String packageName, String projectPath, String theme, List<String> excludes, List<String> includes) throws IOException {
+                                     String packageName, String projectPath, String theme, List<String> includes, List<String> excludes, boolean override) throws IOException {
     String localProjectPath = localProjectPath();
 
     System.out.println("========== 开始生成Controller ==========");
@@ -243,12 +244,12 @@ public class JpaCodeUtil {
       tableCode = table.getKey().getFirst();
       tableName = table.getKey().getSecond();
       columns = table.getValue();
-      if (!isContain(excludes, tableCode) && hasColumn(columns, "id")) {
+      if (isGenerate(includes, excludes, tableCode) && hasColumn(columns, "id")) {
         String model = toModel(tableCode, tablePrefix);
         String controller = controllerPath + "/" + model + "Controller.java";
         // controller
         File controllerFile = new File(controller);
-        if (!controllerFile.exists() || isContain(includes, tableCode)) {
+        if (!controllerFile.exists() || override) {
           FileUtil.makesureParentDirExists(controllerFile);
 
           Map<String, String> params = MapUtil.newHashMap();
@@ -268,7 +269,7 @@ public class JpaCodeUtil {
   }
 
   public static void generateEndpoint(Map<Pair<String, String>, List<Map<String, String>>> tables, String tablePrefix,
-                                        String packageName, String projectPath, String theme, List<String> excludes, List<String> includes) throws IOException {
+                                        String packageName, String projectPath, String theme, List<String> includes, List<String> excludes, boolean override) throws IOException {
     String localProjectPath = localProjectPath();
 
     System.out.println("========== 开始生成Endpoint ==========");
@@ -280,12 +281,12 @@ public class JpaCodeUtil {
       tableCode = table.getKey().getFirst();
       tableName = table.getKey().getSecond();
       columns = table.getValue();
-      if (!isContain(excludes, tableCode) && hasColumn(columns, "id")) {
+      if (isGenerate(includes, excludes, tableCode) && hasColumn(columns, "id")) {
         String model = toModel(tableCode, tablePrefix);
         String endpoint = endpointPath + "/" + model + "Endpoint.java";
         // endpoint
         File endpointFile = new File(endpoint);
-        if (!endpointFile.exists() || isContain(includes, tableCode)) {
+        if (!endpointFile.exists() || override) {
           FileUtil.makesureParentDirExists(endpointFile);
 
           Map<String, String> params = MapUtil.newHashMap();
@@ -304,7 +305,7 @@ public class JpaCodeUtil {
   }
 
   public static void generateListPage(Map<Pair<String, String>, List<Map<String, String>>> tables, String tablePrefix,
-                                      String packageName, String projectPath, String theme, List<String> excludes, List<String> includes) throws IOException {
+                                      String packageName, String projectPath, String theme, List<String> includes, List<String> excludes, boolean override) throws IOException {
     String localProjectPath = localProjectPath();
 
     System.out.println("========== 开始生成ListPage ==========");
@@ -316,12 +317,12 @@ public class JpaCodeUtil {
       tableCode = table.getKey().getFirst();
       tableName = table.getKey().getSecond();
       columns = table.getValue();
-      if (!isContain(excludes, tableCode) && hasColumn(columns, "id")) {
+      if (isGenerate(includes, excludes, tableCode) && hasColumn(columns, "id")) {
         String variable = toVariable(tableCode, tablePrefix);
         String listPage = listPagePath + "/" + variable + "/" + variable + "List.jsp";
         // listPage
         File listPageFile = new File(listPage);
-        if (!listPageFile.exists() || isContain(includes, tableCode)) {
+        if (!listPageFile.exists() || override) {
           FileUtil.makesureParentDirExists(listPageFile);
 
           Map<String, Object> params = MapUtil.newHashMap();
@@ -340,7 +341,7 @@ public class JpaCodeUtil {
   }
 
   public static void generateFormPage(Map<Pair<String, String>, List<Map<String, String>>> tables, String tablePrefix,
-                                      String packageName, String projectPath, String theme, List<String> excludes, List<String> includes) throws IOException {
+                                      String packageName, String projectPath, String theme, List<String> includes, List<String> excludes, boolean override) throws IOException {
     String localProjectPath = localProjectPath();
 
     System.out.println("========== 开始生成FormPage ==========");
@@ -352,12 +353,12 @@ public class JpaCodeUtil {
       tableCode = table.getKey().getFirst();
       tableName = table.getKey().getSecond();
       columns = table.getValue();
-      if (!isContain(excludes, tableCode) && hasColumn(columns, "id")) {
+      if (isGenerate(includes, excludes, tableCode) && hasColumn(columns, "id")) {
         String variable = toVariable(tableCode, tablePrefix);
         String formPage = formPagePath + "/" + variable + "/" + variable + "Form.jsp";
         // formPage
         File formPageFile = new File(formPage);
-        if (!formPageFile.exists() || isContain(includes, tableCode)) {
+        if (!formPageFile.exists() || override) {
           FileUtil.makesureParentDirExists(formPageFile);
 
           Map<String, Object> params = MapUtil.newHashMap();
@@ -381,21 +382,21 @@ public class JpaCodeUtil {
   }
 
   public static void generateModule(String jdbcDriver, String jdbcUrl, String jdbcUsername, String jdbcPassword,
-                                    String database, String tablePrefix, String packageName, String projectPath, String theme, Map<String, List<String>> excludes, Map<String, List<String>> includes) throws Exception {
+                                    String database, String tablePrefix, String packageName, String projectPath, String theme, Map<String, List<String>> includes, Map<String, List<String>> excludes, boolean override) throws Exception {
     Map<Pair<String, String>, List<Map<String, String>>> tables = getTableDefine(jdbcDriver, jdbcUrl, jdbcUsername, jdbcPassword, database, tablePrefix);
 
-    generateEntity(tables, tablePrefix, packageName, projectPath, excludes.get("entity"), includes.get("entity"));
-    generateDto(tables, tablePrefix, packageName, projectPath, excludes.get("dto"), includes.get("dto"));
-    generateDao(tables, tablePrefix, packageName, projectPath, excludes.get("dao"), includes.get("dao"));
-    generateService(tables, tablePrefix, packageName, projectPath, excludes.get("service"), includes.get("service"));
-    generateController(tables, tablePrefix, packageName, projectPath, theme, excludes.get("controller"), includes.get("controller"));
-    generateEndpoint(tables, tablePrefix, packageName, projectPath, theme, excludes.get("endpoint"), includes.get("endpoint"));
-    generateListPage(tables, tablePrefix, packageName, projectPath, theme, excludes.get("listpage"), includes.get("listpage"));
-    generateFormPage(tables, tablePrefix, packageName, projectPath, theme, excludes.get("formpage"), includes.get("formpage"));
+    generateEntity(tables, tablePrefix, packageName, projectPath, includes.get("entity"), excludes.get("entity"), override);
+    generateDto(tables, tablePrefix, packageName, projectPath, includes.get("dto"), excludes.get("dto"), override);
+    generateDao(tables, tablePrefix, packageName, projectPath, includes.get("dao"), excludes.get("dao"), override);
+    generateService(tables, tablePrefix, packageName, projectPath, includes.get("service"), excludes.get("service"), override);
+    generateController(tables, tablePrefix, packageName, projectPath, theme, includes.get("controller"), excludes.get("controller"), override);
+    generateEndpoint(tables, tablePrefix, packageName, projectPath, theme, includes.get("endpoint"), excludes.get("endpoint"), override);
+    generateListPage(tables, tablePrefix, packageName, projectPath, theme, includes.get("listpage"), excludes.get("listpage"), override);
+    generateFormPage(tables, tablePrefix, packageName, projectPath, theme, includes.get("formpage"), excludes.get("formpage"), override);
   }
 
   public static void generateLocal(String jdbcDriver, String jdbcUrl, String jdbcUsername, String jdbcPassword,
-                                   String database, String packageBase, String theme, Map<String, List<String>> excludes, Map<String, List<String>> includes) throws Exception {
+                                   String database, String packageBase, String theme, Map<String, List<String>> includes, Map<String, List<String>> excludes, boolean override) throws Exception {
     Map<Pair<String, String>, List<Map<String, String>>> tables = getTableDefine(jdbcDriver, jdbcUrl, jdbcUsername, jdbcPassword, database, "");
 
     Map<String, Map<Pair<String, String>, List<Map<String, String>>>> modules = new LinkedHashMap<>();
@@ -415,14 +416,14 @@ public class JpaCodeUtil {
     String localProjectPath = localProjectPath();
     for (Map.Entry<String, Map<Pair<String, String>, List<Map<String, String>>>> module : modules.entrySet()) {
       System.out.println("========== 开始生成Module(" + module + ") ==========");
-      generateEntity(module.getValue(), module.getKey() + "_", packageBase + "." + module.getKey(), localProjectPath, excludes.get("entity"), includes.get("entity"));
-      generateDto(module.getValue(), module.getKey() + "_", packageBase + "." + module.getKey(), localProjectPath, excludes.get("dto"), includes.get("dto"));
-      generateDao(module.getValue(), module.getKey() + "_", packageBase + "." + module.getKey(), localProjectPath, excludes.get("dao"), includes.get("dao"));
-      generateService(module.getValue(), module.getKey() + "_", packageBase + "." + module.getKey(), localProjectPath, excludes.get("service"), includes.get("service"));
-      generateController(module.getValue(), module.getKey() + "_", packageBase + "." + module.getKey(), localProjectPath, theme, excludes.get("controller"), includes.get("controller"));
-      generateEndpoint(module.getValue(), module.getKey() + "_", packageBase + "." + module.getKey(), localProjectPath, theme, excludes.get("endpoint"), includes.get("endpoint"));
-      generateListPage(module.getValue(), module.getKey() + "_", packageBase + "." + module.getKey(), localProjectPath, theme, excludes.get("listpage"), includes.get("listpage"));
-      generateFormPage(module.getValue(), module.getKey() + "_", packageBase + "." + module.getKey(), localProjectPath, theme, excludes.get("formpage"), includes.get("formpage"));
+      generateEntity(module.getValue(), module.getKey() + "_", packageBase + "." + module.getKey(), localProjectPath, includes.get("entity"), excludes.get("entity"), override);
+      generateDto(module.getValue(), module.getKey() + "_", packageBase + "." + module.getKey(), localProjectPath, includes.get("dto"), excludes.get("dto"), override);
+      generateDao(module.getValue(), module.getKey() + "_", packageBase + "." + module.getKey(), localProjectPath, includes.get("dao"), excludes.get("dao"), override);
+      generateService(module.getValue(), module.getKey() + "_", packageBase + "." + module.getKey(), localProjectPath, includes.get("service"), excludes.get("service"), override);
+      generateController(module.getValue(), module.getKey() + "_", packageBase + "." + module.getKey(), localProjectPath, theme, includes.get("controller"), excludes.get("controller"), override);
+      generateEndpoint(module.getValue(), module.getKey() + "_", packageBase + "." + module.getKey(), localProjectPath, theme, includes.get("endpoint"), excludes.get("endpoint"), override);
+      generateListPage(module.getValue(), module.getKey() + "_", packageBase + "." + module.getKey(), localProjectPath, theme, includes.get("listpage"), excludes.get("listpage"), override);
+      generateFormPage(module.getValue(), module.getKey() + "_", packageBase + "." + module.getKey(), localProjectPath, theme, includes.get("formpage"), excludes.get("formpage"), override);
       System.out.println("========== 结束生成Module(" + module + ") ==========");
     }
   }
@@ -435,6 +436,7 @@ public class JpaCodeUtil {
     String jdbcPassword = resource.getString("jdbc.password");
     String database = StringUtils.substring(jdbcUrl, StringUtils.lastIndexOf(jdbcUrl, "/") + 1, StringUtils.indexOf(jdbcUrl, "?"));
 
+    String override = resource.getString("code.override");
     String theme = resource.getString("system.theme");
 
     String excludeController = resource.getString("exclude.controller");
@@ -473,7 +475,7 @@ public class JpaCodeUtil {
     includes.put("listpage", ListUtil.newArrayList(StringUtils.split(includeListPage, ", ")));
     includes.put("formpage", ListUtil.newArrayList(StringUtils.split(includeFormPage, ", ")));
 
-    generateLocal(jdbcDriver, jdbcUrl, jdbcUsername, jdbcPassword, database, packageBase, theme, excludes, includes);
+    generateLocal(jdbcDriver, jdbcUrl, jdbcUsername, jdbcPassword, database, packageBase, theme, includes, excludes, BooleanUtil.toBoolean(override));
   }
 
   public static void main(String[] args) throws Exception {
@@ -863,6 +865,10 @@ public class JpaCodeUtil {
       builder.replace(0, 1, String.valueOf(Character.toLowerCase(builder.charAt(0))));
     }
     return builder.toString();
+  }
+
+  public static boolean isGenerate(List<String> includes, List<String> excludes, String tableName) {
+    return isContain(includes, tableName) || !isContain(excludes, tableName);
   }
 
   public static boolean isContain(List<String> patterns, String tableName) {
