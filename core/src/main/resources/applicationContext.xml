@@ -72,16 +72,15 @@
 	<!-- AOP配置事物 -->
 	<tx:advice id="transactionAdvice" transaction-manager="transactionManager">
 		<tx:attributes>
-			<tx:method name="add*" propagation="REQUIRED"/>
-			<tx:method name="append*" propagation="REQUIRED"/>
-			<tx:method name="save*" propagation="REQUIRED"/>
-			<tx:method name="update*" propagation="REQUIRED"/>
-			<tx:method name="modify*" propagation="REQUIRED"/>
-			<tx:method name="edit*" propagation="REQUIRED"/>
-			<tx:method name="insert*" propagation="REQUIRED"/>
-			<tx:method name="delete*" propagation="REQUIRED"/>
-			<tx:method name="remove*" propagation="REQUIRED"/>
-			<tx:method name="repair" propagation="REQUIRED"/>
+			<tx:method name="add*" propagation="REQUIRED" read-only="false"/>
+			<tx:method name="append*" propagation="REQUIRED" read-only="false"/>
+			<tx:method name="save*" propagation="REQUIRED" read-only="false"/>
+			<tx:method name="update*" propagation="REQUIRED" read-only="false"/>
+			<tx:method name="modify*" propagation="REQUIRED" read-only="false"/>
+			<tx:method name="edit*" propagation="REQUIRED" read-only="false"/>
+			<tx:method name="insert*" propagation="REQUIRED" read-only="false"/>
+			<tx:method name="delete*" propagation="REQUIRED" read-only="false"/>
+			<tx:method name="remove*" propagation="REQUIRED" read-only="false"/>
 
 			<tx:method name="get*" propagation="REQUIRED" read-only="true"/>
 			<tx:method name="find*" propagation="REQUIRED" read-only="true"/>

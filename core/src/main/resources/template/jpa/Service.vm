@@ -12,7 +12,6 @@ import ${package}.entity.${model};
 * ${model}Service
 */
 @Service
-@Transactional(readOnly = true)
 public class ${model}Service extends JpaServiceImpl<${model}, ${idType}> {
 
   @Autowired

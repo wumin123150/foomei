@@ -172,7 +172,7 @@
           $("body").addClass(window.sessionStorage.getItem("skin"));
         }else{
           $(".layui-layout-admin .layui-header").css("background-color",skin.split(',')[0]);
-          $(".layui-bg-black").css("background-color",skin.split(',')[1]);
+          $(".layui-bg-black").css("cssText","background-color:"+skin.split(',')[1]+"!important");
         }
       }
     }
@@ -214,14 +214,14 @@
           $(".skins_box").removeClass("layui-hide");
           $(".skins_box .layui-form-radio").on("click",function(){
             var skinColor;
-            if($(this).find("span").text() == "橙色"){
+            if($(this).find("div").text() == "橙色"){
               skinColor = "orange";
-            }else if($(this).find("span").text() == "蓝色"){
+            }else if($(this).find("div").text() == "蓝色"){
               skinColor = "blue";
-            }else if($(this).find("span").text() == "默认"){
+            }else if($(this).find("div").text() == "默认"){
               skinColor = "";
             }
-            if($(this).find("span").text() != "自定义"){
+            if($(this).find("div").text() != "自定义"){
               $(".topColor,.leftColor").val('');
               $("body").removeAttr("class").addClass("main_body "+skinColor+"");
               $(".skinCustom").removeAttr("style");
@@ -235,7 +235,7 @@
             $(".layui-layout-admin .layui-header").css("background-color",$(this).val());
           })
           $(".leftColor").blur(function(){
-            $(".layui-bg-black").css("background-color",$(this).val());
+            $(".layui-bg-black").css("cssText", "background-color:"+$(this).val()+"!important");
           })
 
           form.on("submit(changeSkin)",function(data){

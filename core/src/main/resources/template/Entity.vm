@@ -20,10 +20,6 @@ import javax.persistence.*;
 @Table(name = "${tableCode}")
 @SuppressWarnings("serial")
 public class ${model} extends ${idStrategy}Entity<#if hasImplement> implements ${implements}</#if> {
-  <#list props?keys as k>
-  public static final String PROP_${props[k]} = "${k}";
-  </#list>
-
   <#list consts as const>
   ${const}
   </#list>
