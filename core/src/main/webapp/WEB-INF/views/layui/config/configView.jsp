@@ -27,7 +27,6 @@
 </head>
 <body class="kit-main">
 <form id="form" class="layui-form layui-form-pane" action="${ctx}/api/config/updateAll" method="post" style="width:80%;">
-  <input type="hidden" name="id" id="id" value="${config.id}"/>
   <c:forEach var="config" items="${configs}" varStatus="status">
     <div class="layui-form-item <c:if test='${config.type eq 1}'> layui-form-text</c:if>" <c:if test='${config.type eq 2 || config.type eq 3}'>pane=""</c:if>>
       <label class="layui-form-label">${config.name}（${config.code}）<c:if test="${fn:length(config.remark)>1}"><a class="layui-btn layui-btn-xs btn-help" href="javascript:;" data-content="${config.remark}"><i class="layui-icon">&#xe607;</i></a></c:if></label>

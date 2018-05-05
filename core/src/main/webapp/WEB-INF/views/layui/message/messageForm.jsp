@@ -29,7 +29,7 @@
 </head>
 <body class="kit-main">
 <form class="layui-form layui-form-pane" action="${ctx}/api/messageText/create" method="post" style="width:80%;">
-  <input type="hidden" name="id" id="id" value="${role.id}"/>
+  <input type="hidden" name="id" id="id" value="${message.id}"/>
   <div class="layui-form-item layui-form-text">
     <label class="layui-form-label">内容<span class="input-required">*</span></label>
     <div class="layui-input-block">

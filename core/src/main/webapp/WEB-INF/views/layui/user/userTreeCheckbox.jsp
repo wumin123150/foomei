@@ -82,7 +82,7 @@
   }
 
   jQuery(function ($) {
-    $.get('${ctx}/api/userGroup/list', function(result) {
+    $.getJSON('${ctx}/api/userGroup/list', function(result) {
       if(result.success) {
         for(var i=0;i<result.data.length;i++) {
           if(result.data[i].parentId == null) {
@@ -95,7 +95,7 @@
         $.fn.zTree.init($('#tree'), setting, result.data);
 
         for(var i =0; i < result.data.length; i++) {
-          $.get('${ctx}/api/membership/list?groupId=' + result.data[i].id, function(result) {
+          $.getJSON('${ctx}/api/membership/list?groupId=' + result.data[i].id, function(result) {
             var groupId = this.url.substr(this.url.indexOf('=') + 1);
             if(result.success && result.data.length > 0) {
               for (var i = 0; i < result.data.length; i++) {

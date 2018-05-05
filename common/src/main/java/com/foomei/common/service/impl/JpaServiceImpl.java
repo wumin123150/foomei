@@ -36,7 +36,7 @@ public abstract class JpaServiceImpl<T, ID extends Serializable> implements JpaS
   protected Class<T> entityClazz;
   protected JPAQueryFactory queryFactory;
 
-  private EntityManager entityManager;
+  protected EntityManager entityManager;
 
   public JpaServiceImpl() {
     this.entityClazz = ClassUtil.getClassGenricType(getClass(), 0);

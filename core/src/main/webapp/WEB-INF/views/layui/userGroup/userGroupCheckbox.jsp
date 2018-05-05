@@ -80,7 +80,7 @@
   }
 
   jQuery(function ($) {
-    $.get('${ctx}/api/userGroup/list', function(result) {
+    $.getJSON('${ctx}/api/userGroup/list', function(result) {
       if(result.success) {
         for(var i=0;i<result.data.length;i++) {
           if(result.data[i].parentId == null) {
