@@ -19,9 +19,8 @@
             </list>
         </property>
         <property name="cacheManager" ref="shiroEhcacheManager"/>
-        <!--
 		<property name="sessionManager" ref="sessionManager" />
-		-->
+		<property name="rememberMeManager" ref="rememberMeManager"/>  
     </bean>
 
     <bean id="authenticator" class="com.foomei.common.security.shiro.OneModularRealmAuthenticator"/>
@@ -92,15 +91,39 @@
     <bean id="shiroEhcacheManager" class="com.foomei.common.security.shiro.EhCacheManager">
         <property name="cacheManagerConfigFile" value="classpath:security/ehcache-shiro.xml"/>
     </bean>
-    <!--
+    
 	<bean id="sessionManager" class="org.apache.shiro.web.session.mgt.DefaultWebSessionManager">
-		<property name="globalSessionTimeout" value="1800000"/>
-		<property name="sessionDAO" ref="sessionDAO"/>
+        <property name="sessionDAO" ref="sessionDAO" />  
+        <!-- 会话超时时间，单位：毫秒 -->  
+        <property name="globalSessionTimeout" value="1800000" />  
+        <!-- 定时清理失效会话, 清理用户直接关闭浏览器造成的孤立会话 -->  
+        <property name="sessionValidationInterval" value="1800000" />  
+        <property name="sessionIdCookie" ref="simpleCookie" />  
+        <property name="sessionIdCookieEnabled" value="true" />  
 	</bean>
+	
 	<bean id="sessionDAO" class="org.apache.shiro.session.mgt.eis.EnterpriseCacheSessionDAO">
-		<property name="activeSessionsCacheName" value="shiro-activeSessionCache"/>
+		<property name="cacheManager" ref="shiroEhcacheManager" />
 	</bean>
-	-->
+	
+	<!-- 会话Cookie模板 -->  
+    <bean id="simpleCookie" class="org.apache.shiro.web.servlet.SimpleCookie">  
+        <constructor-arg name="name" value="shiro.sesssion"/>  
+        <property name="path" value="/"/>  
+    </bean>  
+  
+    <bean id="rememberMeCookie" class="org.apache.shiro.web.servlet.SimpleCookie">  
+        <constructor-arg value="rememberMe"/>  
+        <property name="httpOnly" value="true"/>  
+        <property name="maxAge" value="604800"/><!-- 7天 -->  
+    </bean>  
+  
+    <!-- rememberMe管理器 -->  
+    <bean id="rememberMeManager" class="org.apache.shiro.web.mgt.CookieRememberMeManager">  
+        <property name="cipherKey" value="#{T(org.apache.shiro.codec.Base64).decode('4AvVhmFLUs0KTA3Kprsdag==')}"/>  
+        <property name="cookie" ref="rememberMeCookie"/>  
+    </bean>  
+	
 
     <!-- 保证实现了Shiro内部lifecycle函数的bean执行 -->
     <bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
