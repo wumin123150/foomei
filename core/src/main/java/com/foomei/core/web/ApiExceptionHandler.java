@@ -5,7 +5,6 @@ import com.foomei.common.dto.ResponseResult;
 import com.foomei.common.mapper.JsonMapper;
 import com.foomei.common.net.IPUtil;
 import com.foomei.common.net.RequestUtil;
-import com.foomei.common.web.MediaTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -32,7 +31,7 @@ public class ApiExceptionHandler {
     logError(ex, request);
 
     HttpHeaders headers = new HttpHeaders();
-    headers.setContentType(MediaType.parseMediaType(MediaTypes.JSON_UTF_8));
+    headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
     ResponseResult result = ResponseResult.create4Exception(ex);
 
     return new ResponseEntity<ResponseResult>(result, headers, HttpStatus.OK);

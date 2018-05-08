@@ -2,7 +2,6 @@ package com.foomei.common.persistence;
 
 import com.baomidou.mybatisplus.enums.SqlLike;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.foomei.common.collection.CollectionUtil;
 import com.foomei.common.persistence.search.BooleanOperator;
 import com.foomei.common.persistence.search.SearchFilter;
@@ -11,7 +10,6 @@ import com.foomei.common.persistence.search.SimpleFilter;
 import com.foomei.common.reflect.ClassUtil;
 import com.foomei.common.reflect.ReflectionUtil;
 import com.foomei.common.time.DateFormatUtil;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import java.lang.reflect.Field;
