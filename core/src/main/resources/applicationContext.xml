@@ -107,9 +107,6 @@
 	<!-- 定义aspectj -->
 	<aop:aspectj-autoproxy proxy-target-class="true" />
 
-	<!-- hibernate validator -->
-	<bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean" />
-
 	<bean id="propertyHolder" class="com.foomei.common.web.PropertyHolder">
 		<property name="ignoreResourceNotFound" value="true" />
 		<property name="locations">

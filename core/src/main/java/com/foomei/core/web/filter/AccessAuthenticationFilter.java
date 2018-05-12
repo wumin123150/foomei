@@ -44,7 +44,7 @@ public class AccessAuthenticationFilter extends PasswordAuthenticationFilter {
 
   public void renderSuccess(Subject subject, ServletRequest request, ServletResponse response, String... headers) {
     ShiroUser user = (ShiroUser) subject.getPrincipal();
-    String authcToken = tokenService.apply(user.getId(), null, null);
+    String authcToken = tokenService.apply(user.getId(), ((HttpServletRequest)request).getHeader("User-Agent"), null);
     if(headers == null)
       headers = new String[] {String.format("AuthcToken:%s", authcToken)};
     else

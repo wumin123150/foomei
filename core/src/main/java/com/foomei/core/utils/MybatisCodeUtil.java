@@ -439,9 +439,9 @@ public class MybatisCodeUtil {
     String localProjectPath = localProjectPath();
     for (Map.Entry<String, Map<Pair<String, String>, List<Map<String, String>>>> module : modules.entrySet()) {
       System.out.println("========== 开始生成Module(" + module + ") ==========");
-      generateMapperXml(module.getValue(), module.getKey() + "_", packageBase + "." + module.getKey(), localProjectPath, includes.get("xml"), excludes.get("xml"), override);
-//      generateEntity(module.getValue(), module.getKey() + "_", packageBase + "." + module.getKey(), localProjectPath, includes.get("entity"), excludes.get("entity"), override);
-//      generateDto(module.getValue(), module.getKey() + "_", packageBase + "." + module.getKey(), localProjectPath, includes.get("dto"), excludes.get("dto"), override);
+//      generateMapperXml(module.getValue(), module.getKey() + "_", packageBase + "." + module.getKey(), localProjectPath, includes.get("xml"), excludes.get("xml"), override);
+      generateEntity(module.getValue(), module.getKey() + "_", packageBase + "." + module.getKey(), localProjectPath, includes.get("entity"), excludes.get("entity"), override);
+      generateDto(module.getValue(), module.getKey() + "_", packageBase + "." + module.getKey(), localProjectPath, includes.get("dto"), excludes.get("dto"), override);
 //      generateDao(module.getValue(), module.getKey() + "_", packageBase + "." + module.getKey(), localProjectPath, includes.get("dao"), excludes.get("dao"), override);
 //      generateService(module.getValue(), module.getKey() + "_", packageBase + "." + module.getKey(), localProjectPath, includes.get("service"), excludes.get("service"), override);
 //      generateController(module.getValue(), module.getKey() + "_", packageBase + "." + module.getKey(), localProjectPath, theme, includes.get("controller"), excludes.get("controller"), override);

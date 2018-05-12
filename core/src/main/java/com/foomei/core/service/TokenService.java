@@ -31,16 +31,17 @@ public class TokenService extends JpaServiceImpl<Token, String> {
   }
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-  public String apply(Long userId, String terminal, String remark) {
+  public String apply(Long userId, String userAgent, String remark) {
     disable(userId);
 
     Token token = new Token();
     token.setUser(new User(userId));
-    token.setTerminal(terminal);
+    token.setUserAgent(userAgent);
     token.setRemark(remark);
-    token.setCreateTime(new Date());
+    token.setEnableTime(new Date());
     token.setExpireTime(DateUtil.addDays(new Date(), Token.DEFAULT_EXPIRE));
     token.setStatus(Token.STATUS_ENABLE);
+    token.setCreateTime(new Date());
 
     save(token);
 

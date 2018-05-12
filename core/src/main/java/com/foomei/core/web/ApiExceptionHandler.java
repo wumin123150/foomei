@@ -37,12 +37,6 @@ public class ApiExceptionHandler {
     return new ResponseEntity<ResponseResult>(result, headers, HttpStatus.OK);
   }
 
-  // public void logError(Exception ex) {
-  // Map<String, String> map = Maps.newHashMap();
-  // map.put("message", ex.getMessage());
-  // logger.error(jsonMapper.toJson(map), ex);
-  // }
-
   public void logError(Exception ex, HttpServletRequest request) {
     Map<String, String> map = MapUtil.newHashMap();
     map.put("message", ex.getMessage());
@@ -50,4 +44,5 @@ public class ApiExceptionHandler {
     map.put("path", RequestUtil.getLocation(request));
     LOGGER.error(jsonMapper.toJson(map), ex);
   }
+
 }

@@ -14,10 +14,7 @@
 		<context:include-filter type="assignable" expression="com.foomei.core.web.LogQueue" />
 	</context:component-scan>
 
-	<!-- 定义controller aspectj -->
-	<aop:aspectj-autoproxy proxy-target-class="true" />
-
-	<mvc:annotation-driven content-negotiation-manager="contentNegotiationManager">
+	<mvc:annotation-driven validator="validator">
 		<mvc:message-converters register-defaults="true">
 			<!-- 将StringHttpMessageConverter的默认编码设为UTF-8 -->
 			<bean class="org.springframework.http.converter.StringHttpMessageConverter">
@@ -30,22 +27,15 @@
 		</mvc:message-converters>
 	</mvc:annotation-driven>
 
+	<bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean" />
+	<bean class="org.springframework.validation.beanvalidation.MethodValidationPostProcessor"/>
+
 	<mvc:interceptors>
 		<mvc:interceptor>
 			<mvc:mapping path="/**" />
 			<bean id="contextInterceptor" class="com.foomei.core.web.ContextInterceptor" />
 		</mvc:interceptor>
 	</mvc:interceptors>
-
-	<!-- REST中根据URL后缀自动判定Content-Type及相应的View -->
-	<bean id="contentNegotiationManager" class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
-		<property name="mediaTypes">
-			<value>
-				json=application/json
-				xml=application/xml
-			</value>
-		</property>
-	</bean>
 
 	<!-- 定义JSP文件的位置 -->
 	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
@@ -76,6 +66,9 @@
 	<!-- 定义无需Controller的url<->view直接映射 -->
 	<mvc:view-controller path="/" view-name="index" />
 	<mvc:view-controller path="/index" view-name="index" />
+
+	<!-- 定义controller aspectj -->
+	<aop:aspectj-autoproxy proxy-target-class="true" />
 	
 	<!-- 将Controller抛出的异常转到特定View, 保持SiteMesh的装饰效果 -->
 	<bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">

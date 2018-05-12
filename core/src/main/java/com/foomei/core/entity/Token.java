@@ -36,8 +36,9 @@ public class Token extends UuidEntity {
   @ManyToOne
   @JoinColumn(name = "user_id")
   private User user;//用户
+  private Date enableTime;//启用时间
   private Date expireTime;//过期时间
-  private String terminal;//终端
+  private String userAgent;//用户标识
   private String remark;//备注
   private Integer status;//状态(0:有效,1:失效)
   private Date createTime;//创建时间
