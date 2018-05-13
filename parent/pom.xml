@@ -40,7 +40,7 @@
         <javasimon.version>4.1.2</javasimon.version>
         <jackson.version>2.8.7</jackson.version>
         <slf4j.version>1.7.25</slf4j.version>
-        <logback.version>1.2.2</logback.version>
+        <logback.version>1.2.3</logback.version>
         <logback-spring.version>0.1.4</logback-spring.version>
         <commons-lang3.version>3.5</commons-lang3.version>
         <commons-io.version>2.5</commons-io.version>
