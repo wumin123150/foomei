@@ -261,8 +261,9 @@ create table core_token
 (
    id                   varchar(36) not null comment '编号',
    user_id              bigint comment '用户ID',
+   enable_time          datetime comment '启用时间',
    expire_time          datetime comment '过期时间',
-   terminal             varchar(16) comment '终端',
+   user_agent           varchar(200) comment '用户标识',
    remark               varchar(128) comment '备注',
    status               tinyint(1) comment '状态(0:有效,1:失效)',
    create_time          datetime comment '创建时间',

@@ -88,7 +88,7 @@
     <bean id="permsFilter" class="com.foomei.core.web.filter.ShiroPermissionFilter"/>
 
     <!-- 用户授权信息Cache, 采用EhCache -->
-    <bean id="shiroEhcacheManager" class="com.foomei.common.security.shiro.EhCacheManager">
+    <bean id="shiroEhcacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager">
         <property name="cacheManagerConfigFile" value="classpath:security/ehcache-shiro.xml"/>
     </bean>
     

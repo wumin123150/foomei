@@ -1,39 +1,98 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration>
-	<jmxConfigurator />
+<configuration scan="true">
+	<property name="log.root.level" value="${log.root.level}" /> <!-- 日志级别 -->
+	<property name="log.spring.level" value="${log.spring.level}" />
+	<property name="log.base" value="${log.base}" />
+	<property name="log.moduleName" value="${log.moduleName}" />
+	<property name="log.max.size" value="100MB" />
+	<property name="PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} |-%-5level [%-18.18thread] %-56.56logger{56}:%-4.4line -| %msg%n" />
 
+	<!--控制台输出 -->
 	<appender name="console" class="ch.qos.logback.core.ConsoleAppender">
-		<encoder>
-			<pattern>%date{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+		<encoder charset="UTF-8">
+			<pattern>${PATTERN}</pattern>
 		</encoder>
 	</appender>
-	
-	<appender name="rollingFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<file>foomei.log</file>
-		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-			<fileNamePattern>${catalina.base}/logs/foomei.%d{yyyy-MM-dd}.log</fileNamePattern>
+
+	<!-- 用来保存输出所有级别的日志 -->
+	<appender name="file.all" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<!-- 文件路径 -->
+		<file>${log.base}/${log.moduleName}_all.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+			<!-- 文件名称 -->
+			<fileNamePattern>${log.base}/archive/${log.moduleName}_all_%d{yyyy-MM-dd}.%i.log.zip</fileNamePattern>
+			<maxFileSize>${log.max.size}</maxFileSize>
+			<!-- 文件最大保存历史数量 -->
+			<maxHistory>30</maxHistory>
 		</rollingPolicy>
-		<encoder>
-			<pattern>%date{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+		<encoder charset="UTF-8">
+			<pattern>${PATTERN}</pattern>
 		</encoder>
 	</appender>
-	
-	<!-- project default level -->
-	<logger name="com.foomei" level="INFO" />
-	
-	<logger name="org.springframework" level="INFO" />
 
-	<!--log4jdbc -->
-	<logger name="jdbc.sqltiming" level="INFO"/>
-	
-	<!-- cxf inbound/outbound logger -->
-	<!-- 
-	<logger name="org.apache.cxf.services" level="INFO" />
-	 -->
+	<appender name="file.all.other" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<File>${log.base}/${log.moduleName}_other.log</File>
+		<rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+			<fileNamePattern>${log.base}/archive/${log.moduleName}_other_%d{yyyy-MM-dd}.%i.log.zip</fileNamePattern>
+			<maxFileSize>${log.max.size}</maxFileSize>
+			<maxHistory>30</maxHistory>
+		</rollingPolicy>
+		<encoder charset="UTF-8">
+			<pattern>${PATTERN}</pattern>
+		</encoder>
+	</appender>
 
-	<!-- root -->
-	<root level="WARN">
+	<!-- 只用保存输出error级别的日志 -->
+	<appender name="file.error" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<File>${log.base}/${log.moduleName}_err.log</File>
+		<rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+			<fileNamePattern>${log.base}/archive/${log.moduleName}_err_%d{yyyy-MM-dd}.%i.log.zip</fileNamePattern>
+			<maxFileSize>${log.max.size}</maxFileSize>
+		</rollingPolicy>
+		<encoder charset="UTF-8">
+			<pattern>${PATTERN}</pattern>
+		</encoder>
+		<!-- 下面为配置只输出error级别的日志 -->
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>ERROR</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+	</appender>
+
+	<!-- 不丢失日志.默认的,如果队列的80%已满,则会丢弃TRACT、DEBUG、INFO级别的日志 -->
+	<!-- 更改默认的队列的深度,该值会影响性能.默认值为256 -->
+	<!-- 添加附加的appender,最多只能添加一个 -->
+	<appender name="file.async" class="ch.qos.logback.classic.AsyncAppender">
+		<discardingThreshold>0</discardingThreshold>
+		<queueSize>256</queueSize>
+		<includeCallerData>true</includeCallerData>
+		<appender-ref ref="file.all" />
+	</appender>
+
+	<appender name="file.async.other" class="ch.qos.logback.classic.AsyncAppender">
+		<discardingThreshold>0</discardingThreshold>
+		<queueSize>256</queueSize>
+		<includeCallerData>true</includeCallerData>
+		<appender-ref ref="file.all.other" />
+	</appender>
+
+	<logger name="com.foomei" additivity="false">
+		<level value="${log.root.level}" />
 		<appender-ref ref="console" />
-		<appender-ref ref="rollingFile" />
+		<appender-ref ref="file.async" />
+		<appender-ref ref="file.error" />
+	</logger>
+
+	<logger name="org" additivity="true" level="${log.spring.level}" />
+	<logger name="com.baomidou.mybatisplus" additivity="true" level="${log.spring.level}" />
+	<logger name="ma.glasnost.orika" additivity="true" level="${log.spring.level}" />
+	<logger name="net.sf.ehcache" additivity="true" level="${log.spring.level}" />
+	<logger name="springfox" additivity="true" level="WARN" />
+
+	<root level="${log.root.level}">
+		<appender-ref ref="console" />
+		<appender-ref ref="file.async.other" />
+		<appender-ref ref="file.error" />
 	</root>
 </configuration>

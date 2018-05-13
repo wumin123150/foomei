@@ -19,6 +19,11 @@
 		</param-value>
 	</context-param>
 
+	<context-param>
+		<param-name>logbackConfigLocation</param-name>
+		<param-value>classpath:logback.xml</param-value>
+	</context-param>
+
 	<!-- Filter 定义 -->
 	<!-- Character Encoding filter -->
 	<filter>
@@ -113,6 +118,9 @@
 	<listener>
 		<listener-class>com.foomei.common.web.ApplicationCleanListener</listener-class>
 	</listener>
+	<listener>
+		<listener-class>ch.qos.logback.ext.spring.web.LogbackConfigListener</listener-class>
+	</listener>
 
 	<!-- Spring MVC Servlet -->
 	<servlet>
@@ -153,6 +161,15 @@
 	<servlet-mapping>
 		<servlet-name>DruidStatView</servlet-name>
 		<url-pattern>/druid/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>ViewStatusMessages</servlet-name>
+		<servlet-class>ch.qos.logback.classic.ViewStatusMessagesServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ViewStatusMessages</servlet-name>
+		<url-pattern>/lbClassicStatus</url-pattern>
 	</servlet-mapping>
 
 	<servlet>
