@@ -185,7 +185,7 @@ public class UserEndpoint {
     ComplexResult result = FluentValidator.checkAll()
       .on(user, new HibernateSupportedValidator<UserDto>().setHiberanteValidator(Validation.buildDefaultValidatorFactory().getValidator()))
       .on(user, new ValidatorHandler<UserDto>() {
-        public boolean validate(ValidatorContext context, UserVo t) {
+        public boolean validate(ValidatorContext context, UserDto t) {
           if(StringUtils.containsWhitespace(t.getLoginName())) {
             context.addErrorMsg("账号不能有空格");
             return false;

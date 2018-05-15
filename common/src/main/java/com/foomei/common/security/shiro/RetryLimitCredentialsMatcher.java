@@ -12,36 +12,67 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.foomei.common.service.impl.JpaServiceImpl;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.util.Assert;
 
-public class RetryLimitCredentialsMatcher extends HashedCredentialsMatcher {
-    
-    private static final Logger LOGGER = LoggerFactory.getLogger(JpaServiceImpl.class);
+/**
+ * 输错5次密码锁定半小时，ehcache.xml配置
+ */
+public class RetryLimitCredentialsMatcher extends HashedCredentialsMatcher implements InitializingBean {
 
-      //集群中可能会导致出现验证多过5次的现象，因为AtomicInteger只能保证单节点并发    
-      private Cache<String, AtomicInteger> passwordRetryCache;
+  private static final Logger LOGGER = LoggerFactory.getLogger(RetryLimitCredentialsMatcher.class);
+  private final static String DEFAULT_CHACHE_NAME = "retryLimitCache";
 
-      public RetryLimitCredentialsMatcher(CacheManager cacheManager) {
-          passwordRetryCache = cacheManager.getCache("shiro.passwordRetryCache");
-      }
+  private final CacheManager cacheManager;
+  private String retryLimitCacheName;
+  private Cache<String, AtomicInteger> passwordRetryCache;
+  private PasswordHash passwordHash;
 
-      @Override
-      public boolean doCredentialsMatch(AuthenticationToken token, AuthenticationInfo info) {
-          String username = (String)token.getPrincipal();
-          //retry count + 1
-          AtomicInteger retryCount = passwordRetryCache.get(username);
-          if(null == retryCount) {
-              retryCount = new AtomicInteger(0);
-              passwordRetryCache.put(username, retryCount);
-          }
-          if(retryCount.incrementAndGet() > 5) {
-              LOGGER.warn("username: " + username + " tried to login more than 5 times in period");
-              throw new ExcessiveAttemptsException("username: " + username + " tried to login more than 5 times in period");
-          } 
-           boolean matches = super.doCredentialsMatch(token, info); 
-           if(matches) {
-                //clear retry data
-                passwordRetryCache.remove(username); 
-           } 
-           return matches; 
-      }
+  public RetryLimitCredentialsMatcher(CacheManager cacheManager) {
+    this.cacheManager = cacheManager;
+    this.retryLimitCacheName = DEFAULT_CHACHE_NAME;
   }
+
+  public String getRetryLimitCacheName() {
+    return retryLimitCacheName;
+  }
+
+  public void setRetryLimitCacheName(String retryLimitCacheName) {
+    this.retryLimitCacheName = retryLimitCacheName;
+  }
+
+  public void setPasswordHash(PasswordHash passwordHash) {
+    this.passwordHash = passwordHash;
+  }
+
+  @Override
+  public boolean doCredentialsMatch(AuthenticationToken authcToken, AuthenticationInfo info) {
+    String username = (String) authcToken.getPrincipal();
+    //retry count + 1
+    AtomicInteger retryCount = passwordRetryCache.get(username);
+    if (retryCount == null) {
+      retryCount = new AtomicInteger(0);
+      passwordRetryCache.put(username, retryCount);
+    }
+    if (retryCount.incrementAndGet() > 5) {
+      LOGGER.warn("username: " + username + " tried to login more than 5 times in period");
+      throw new ExcessiveAttemptsException("username: " + username + " tried to login more than 5 times in period");
+    } else {
+      passwordRetryCache.put(username, retryCount);
+    }
+
+    boolean matches = super.doCredentialsMatch(authcToken, info);
+    if(matches) {
+      //clear retry data
+      passwordRetryCache.remove(username);
+    }
+    return matches;
+  }
+
+  public void afterPropertiesSet() throws Exception {
+    Assert.notNull(passwordHash, "you must set passwordHash!");
+    super.setHashAlgorithmName(passwordHash.getAlgorithmName());
+    super.setHashIterations(passwordHash.getHashIterations());
+    this.passwordRetryCache = cacheManager.getCache(retryLimitCacheName);
+  }
+}

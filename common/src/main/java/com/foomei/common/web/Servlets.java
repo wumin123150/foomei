@@ -13,6 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.base.Charsets;
 import com.google.common.net.HttpHeaders;
+import org.springframework.http.MediaType;
 
 /**
  * Http与Servlet工具类.
@@ -165,10 +166,10 @@ public class Servlets {
 	 * 直接输出JSON.
 	 * 
 	 * @param json json字符串.
-	 * @see #render(String, String, String...)
+	 * @see #render(HttpServletResponse, String, String, String...)
 	 */
 	public static void renderJson(HttpServletResponse response, final String json, final String... headers) {
-		render(response, "application/json", json, headers);
+		render(response, MediaType.APPLICATION_JSON_UTF8_VALUE, json, headers);
 	}
 
 	/**

@@ -1,38 +1,35 @@
 package com.foomei.core.service;
 
-import java.io.Serializable;
-import java.util.Comparator;
-import java.util.Set;
-
-import javax.annotation.PostConstruct;
-
-import com.foomei.common.security.shiro.ShiroUser;
 import com.foomei.common.mapper.BeanMapper;
-import org.apache.shiro.authc.AccountException;
-import org.apache.shiro.authc.AuthenticationException;
-import org.apache.shiro.authc.AuthenticationInfo;
-import org.apache.shiro.authc.AuthenticationToken;
-import org.apache.shiro.authc.DisabledAccountException;
-import org.apache.shiro.authc.ExpiredCredentialsException;
-import org.apache.shiro.authc.LockedAccountException;
-import org.apache.shiro.authc.SimpleAuthenticationInfo;
-import org.apache.shiro.authc.UnknownAccountException;
-import org.apache.shiro.authz.AuthorizationInfo;
-import org.apache.shiro.authz.SimpleAuthorizationInfo;
-import org.apache.shiro.realm.AuthorizingRealm;
-import org.apache.shiro.subject.PrincipalCollection;
-
 import com.foomei.common.security.shiro.InactiveAccountException;
+import com.foomei.common.security.shiro.ShiroUser;
 import com.foomei.common.security.shiro.SkipCredentialsMatcher;
 import com.foomei.common.security.shiro.WeixinToken;
 import com.foomei.core.entity.Role;
 import com.foomei.core.entity.User;
 import com.foomei.core.entity.UserGroup;
 import com.google.common.collect.Sets;
+import org.apache.shiro.authc.*;
+import org.apache.shiro.authz.AuthorizationInfo;
+import org.apache.shiro.authz.SimpleAuthorizationInfo;
+import org.apache.shiro.cache.CacheManager;
+import org.apache.shiro.realm.AuthorizingRealm;
+import org.apache.shiro.subject.PrincipalCollection;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.annotation.PostConstruct;
+import java.io.Serializable;
+import java.util.Comparator;
+import java.util.Set;
 
 public class ShiroWeixinRealm extends AuthorizingRealm {
 
-  protected UserService userService;
+  @Autowired
+  private UserService userService;
+
+  public ShiroWeixinRealm(CacheManager cacheManager) {
+    super(cacheManager);
+  }
 
   /**
    * 认证回调函数,登录时调用.
@@ -103,10 +100,6 @@ public class ShiroWeixinRealm extends AuthorizingRealm {
   @PostConstruct
   public void initAuthenticationTokenClass() {
     setAuthenticationTokenClass(WeixinToken.class);
-  }
-
-  public void setUserService(UserService userService) {
-    this.userService = userService;
   }
 
   public static class RoleComparator implements Comparator<Role>, Serializable {

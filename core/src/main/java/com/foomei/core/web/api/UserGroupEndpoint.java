@@ -136,7 +136,7 @@ public class UserGroupEndpoint {
   @RequestMapping(value = "get/{id}")
   public ResponseResult get(@PathVariable("id") Long id) {
     UserGroup userGroup = userGroupService.get(id);
-    return ResponseResult.createSuccess(userGroup, UserGroupDto.class);
+    return ResponseResult.createSuccess(userGroup, UserGroupVo.class);
   }
 
   /**

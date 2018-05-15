@@ -8,13 +8,16 @@
 
 	<description>EhCache配置文件</description>
 
-	<cache:annotation-driven />
+	<!-- cache注解，和spring-redis.xml中的只能使用一个 -->
+	<cache:annotation-driven cache-manager="cacheManager" proxy-target-class="true"/>
 
 	<bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">
 		<property name="cacheManager" ref="cacheManagerFactory" />
+		<property name="transactionAware" value="true"/>
 	</bean>
 
 	<bean id="cacheManagerFactory" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
 		<property name="configLocation" value="classpath:/cache/ehcache-config.xml" />
 	</bean>
+
 </beans>

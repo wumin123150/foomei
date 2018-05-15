@@ -5,6 +5,7 @@ import com.foomei.common.dto.ErrorCodeFactory;
 import com.foomei.common.exception.BaseException;
 import com.foomei.common.persistence.Hibernates;
 import com.foomei.common.security.DigestUtil;
+import com.foomei.common.security.shiro.PasswordHash;
 import com.foomei.common.service.impl.JpaServiceImpl;
 import com.foomei.common.text.EncodeUtil;
 import com.foomei.common.web.ThreadContext;
@@ -38,12 +39,12 @@ import java.util.List;
  */
 @Service
 public class UserService extends JpaServiceImpl<User, Long> {
-  public static final String HASH_ALGORITHM = "SHA-1";
-  public static final int HASH_INTERATIONS = 1024;
   private static final int SALT_SIZE = 8;
 
   @Autowired
   private UserDao userDao;
+  @Autowired
+  private PasswordHash passwordHash;
 
   /**
    * 账号忽略大小写
@@ -219,7 +220,7 @@ public class UserService extends JpaServiceImpl<User, Long> {
   public boolean checkPassword(final Long id, final String password) {
     User user = get(id);
     if (user != null) {
-      String hashPassword = EncodeUtil.encodeHex(DigestUtil.sha1(password.getBytes(Charsets.UTF_8), EncodeUtil.decodeHex(user.getSalt()), HASH_INTERATIONS));
+      String hashPassword = passwordHash.toHex(password, PasswordHash.toBytes(user.getSalt()));
       return StringUtils.equalsIgnoreCase(hashPassword, user.getPassword());
     }
 
@@ -262,10 +263,8 @@ public class UserService extends JpaServiceImpl<User, Long> {
    */
   private void entryptPassword(User user) {
     byte[] salt = DigestUtil.generateSalt(SALT_SIZE);
-    user.setSalt(EncodeUtil.encodeHex(salt));
-
-    byte[] hashPassword = DigestUtil.sha1(user.getPlainPassword().getBytes(Charsets.UTF_8), salt, HASH_INTERATIONS);
-    user.setPassword(EncodeUtil.encodeHex(hashPassword));
+    user.setSalt(PasswordHash.toHex(salt));
+    user.setPassword(passwordHash.toHex(user.getPlainPassword(), salt));
   }
 
   /**
